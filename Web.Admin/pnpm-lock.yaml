@@ -18,8 +18,8 @@ importers:
         specifier: ^2.0.5
         version: 2.0.5(axios@1.20.0(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0))(rolldown@1.2.11)(vite@8.3.1(@types/node@24.13.4)(sass@1.105.0))
       '@fast-china/utils':
-        specifier: ^2.1.9
-        version: 2.1.9(vue@3.5.43(typescript@6.0.3))
+        specifier: ^2.1.10
+        version: 2.1.10(vue@3.5.43(typescript@6.0.3))
       '@fast-element-plus/icons-vue':
         specifier: ^2.0.3
         version: 2.0.3(vue@3.5.43(typescript@6.0.3))
@@ -438,8 +438,8 @@ packages:
       eslint: ^10.0.0
       typescript: ^6.0.0
 
-  '@fast-china/utils@2.1.9':
-    resolution: {integrity: sha512-XnLE3aiXLimIYmL/buSnX1SVdjuDqMZg/KFPWgDbWs3DjouiJMtuo9r9NhmIoWplis6iZOqVksCXaU5LZ/nsqQ==}
+  '@fast-china/utils@2.1.10':
+    resolution: {integrity: sha512-h9HJIc9w7MsFpqW8189uZMvQwfPJFDhP8XoA4Q02nJo1WxX2Wsm/1M4ft0fwy+qeBKoC9Dxtrghts3N3P3zJYw==}
     engines: {node: ^22.18.0 || ^24.18.0, pnpm: ^11.0.0}
     peerDependencies:
       vue: ^3.5.11
@@ -3367,7 +3367,7 @@ snapshots:
       - eslint-import-resolver-node
       - supports-color
 
-  '@fast-china/utils@2.1.9(vue@3.5.43(typescript@6.0.3))':
+  '@fast-china/utils@2.1.10(vue@3.5.43(typescript@6.0.3))':
     dependencies:
       vue: 3.5.43(typescript@6.0.3)
 
