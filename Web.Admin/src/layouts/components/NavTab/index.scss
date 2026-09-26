@@ -87,13 +87,13 @@
 				border-radius: var(--el-border-radius-base);
 				cursor: pointer;
 				&:hover {
-					font-weight: var(--el-font-weight-primary);
+					font-weight: 600;
 					color: var(--el-color-primary);
 					border-color: var(--el-color-primary-light-5);
 					background-color: var(--el-color-primary-light-9);
 				}
 				&.is-active {
-					font-weight: var(--el-font-weight-primary);
+					font-weight: 600;
 					background-color: var(--el-color-primary);
 					color: var(--el-color-white);
 					border-color: var(--el-color-primary);
@@ -150,14 +150,14 @@
 					border-radius: 1px;
 				}
 				&:hover {
-					font-weight: var(--el-font-weight-primary);
+					font-weight: 600;
 					color: var(--el-color-primary);
 					&::after {
 						width: 100%;
 					}
 				}
 				&.is-active {
-					font-weight: var(--el-font-weight-primary);
+					font-weight: 600;
 					color: var(--el-color-primary);
 					&::after {
 						width: 100%;
@@ -213,12 +213,12 @@
 					border-radius: 1px;
 				}
 				&:hover {
-					font-weight: var(--el-font-weight-primary);
+					font-weight: 600;
 					color: var(--el-color-primary);
 					background-color: var(--el-color-primary-light-9);
 				}
 				&.is-active {
-					font-weight: var(--el-font-weight-primary);
+					font-weight: 600;
 					background-color: var(--el-color-primary-light-9);
 					color: var(--el-color-primary);
 					&::after {

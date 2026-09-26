@@ -337,7 +337,7 @@ onUnmounted(deactivate);
 	:deep(.el-card__header) {
 		padding: 5px 5px 15px;
 		font-size: 15px;
-		font-weight: 700;
+		font-weight: 600;
 	}
 	:deep(.el-card__body) {
 		--el-card-padding: 20px 10px;
@@ -372,11 +372,11 @@ onUnmounted(deactivate);
 	gap: 5px;
 	.percentage_value {
 		font-size: 16px !important;
-		font-weight: bold;
+		font-weight: 600;
 		padding-bottom: 2px;
 	}
 	.percentage_label {
-		font-weight: bold;
+		font-weight: 600;
 		font-size: 12px !important;
 	}
 }

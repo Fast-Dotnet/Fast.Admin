@@ -44,6 +44,7 @@ const canvasRef = useTemplateRef<HTMLCanvasElement>("canvasRef");
 let ctx: CanvasRenderingContext2D = null;
 /** 当前动画帧请求标识 */
 let animationFrameId: number = null;
+let textFont: string;
 
 const state = reactive({
 	/** 鼠标当前位置作为丝带目标点 */
@@ -213,7 +214,7 @@ const loop = () => {
 
 	/* 更新并绘制点击产生的上浮文字。 */
 	ctx.globalCompositeOperation = "source-over";
-	ctx.font = "bold 18px Arial";
+	ctx.font = textFont;
 	ctx.textBaseline = "top";
 
 	for (let i = state.floatingTexts.length - 1; i >= 0; i--) {
@@ -310,6 +311,7 @@ onMounted(() => {
 	/* 获取 2D 绘图上下文；不支持时不再初始化动画。 */
 	ctx = canvasRef.value.getContext("2d");
 	if (!ctx) return;
+	textFont = `600 18px ${getComputedStyle(canvasRef.value).fontFamily}`;
 
 	state.running = true;
 	state.hue = new Oscillator({

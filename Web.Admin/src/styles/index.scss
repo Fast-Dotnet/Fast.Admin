@@ -5,9 +5,10 @@
 @use "./modern.scss";
 
 :root {
+	--el-font-weight-primary: 400;
 	--el-font-family:
-		system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif,
-		"Apple Color Emoji", "Segoe UI Emoji";
+		"PingFang SC", "Microsoft YaHei", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif, "Apple Color Emoji",
+		"Segoe UI Emoji";
 }
 
 * {

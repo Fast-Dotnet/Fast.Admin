@@ -127,14 +127,14 @@ watch(() => router.currentRoute.value.path, matchModule, { immediate: true });
 		.el-sub-menu {
 			&.is-active {
 				.el-sub-menu__title {
-					font-weight: var(--el-font-weight-primary);
+					font-weight: 600;
 					border-bottom: 3px solid var(--el-menu-active-color);
 				}
 			}
 		}
 		.el-menu-item {
 			&.is-active {
-				font-weight: var(--el-font-weight-primary);
+				font-weight: 600;
 				border-bottom: 3px solid var(--el-menu-active-color);
 			}
 		}

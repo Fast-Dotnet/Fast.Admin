@@ -1,4 +1,7 @@
 @mixin fa-common-theme-vars {
+	/* 标题、选中项与关键数据使用半粗字重 */
+	--wot-font-weight-semibold: 600;
+
 	/* 页面布局变量 */
 	--fa-page-padding: 24rpx;
 	--fa-page-section-gap: 24rpx;

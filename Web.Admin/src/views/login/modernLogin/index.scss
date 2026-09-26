@@ -45,7 +45,7 @@
 		h1 {
 			margin: 18px 0;
 			font-size: clamp(52px, 5.6vw, 82px);
-			font-weight: 800;
+			font-weight: 600;
 			line-height: 0.98;
 			letter-spacing: -4px;
 			color: var(--login-heading);
@@ -76,7 +76,7 @@
 	gap: 8px;
 	padding: 7px 11px;
 	font-size: 10px;
-	font-weight: 700;
+	font-weight: 600;
 	letter-spacing: 1.2px;
 	color: color-mix(in srgb, var(--el-color-primary) 78%, #172554);
 	border: 1px solid color-mix(in srgb, var(--el-color-primary) 16%, transparent);
@@ -135,7 +135,7 @@
 		small {
 			margin-left: auto;
 			font-size: 9px;
-			font-weight: 700;
+			font-weight: 600;
 			letter-spacing: 1.3px;
 			color: var(--login-faint);
 		}
@@ -189,6 +189,7 @@
 		display: block;
 		margin-top: 7px;
 		font-size: 23px;
+		font-weight: 600;
 		color: var(--login-heading);
 	}
 }
@@ -254,6 +255,7 @@
 	strong {
 		margin-top: 4px;
 		font-size: 18px;
+		font-weight: 600;
 		color: var(--login-heading);
 	}
 }

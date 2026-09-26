@@ -55,7 +55,7 @@ html.small {
 	}
 	span {
 		font-size: var(--el-font-size-large);
-		font-weight: var(--el-font-weight-primary);
+		font-weight: 600;
 		max-width: 100%;
 		display: block;
 		white-space: nowrap;

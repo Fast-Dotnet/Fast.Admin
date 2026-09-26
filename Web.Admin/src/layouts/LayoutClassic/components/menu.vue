@@ -53,7 +53,7 @@ const menuList = computed(() => userInfoStore.menuList.filter((f) => f.visible))
 		.el-sub-menu {
 			&.is-active {
 				.el-sub-menu__title.el-tooltip__trigger {
-					font-weight: var(--el-font-weight-primary);
+					font-weight: 600;
 					.el-icon {
 						color: var(--el-color-white);
 					}
@@ -120,7 +120,7 @@ const menuList = computed(() => userInfoStore.menuList.filter((f) => f.visible))
 			}
 
 			&.is-active {
-				font-weight: var(--el-font-weight-primary);
+				font-weight: 600;
 				color: var(--el-color-white);
 				// background-color: var(--el-menu-active-color);
 				background: none;

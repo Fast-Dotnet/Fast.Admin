@@ -172,7 +172,7 @@ onUnmounted(() => {
 			justify-content: center;
 			span {
 				font-size: 20vw;
-				font-weight: 700;
+				font-weight: 600;
 			}
 		}
 	}
