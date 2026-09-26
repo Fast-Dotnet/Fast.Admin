@@ -26,35 +26,35 @@
       {
         "Group": "Auth",
         "Title": "鉴权",
-        "Description": "Fast.Api 鉴权接口",
+        "Description": "Fast.Admin 身份认证接口，提供登录、验证码及当前用户信息查询能力。",
         "Version": "3.0.0",
         "Order": 999
       },
       {
         "Group": "File",
         "Title": "文件",
-        "Description": "Fast.File 文件接口",
+        "Description": "Fast.Admin 文件服务接口，提供文件上传、下载与管理能力。",
         "Version": "3.0.0",
         "Order": 998
       },
       {
         "Group": "Center",
         "Title": "管理后台",
-        "Description": "一个持续集百家所长 众多黑科技的 .NET Web应用框架。<br/>前后端分离架构，开箱即用，紧随前沿技术。<br/>作者By 小方<br/><a href='https://gitee.com/FastDotnet/Fast.Admin'>https://gitee.com/FastDotnet/Fast.Admin</a>",
+        "Description": "Fast.Admin 开源企业管理系统的平台管理接口，提供租户、应用、账号、菜单、字典及系统日志管理能力。<br/>基于 Fast.NET，采用前后端分离架构。<br/>作者：小方 · 许可证：Apache-2.0<br/><a href='https://gitee.com/FastDotnet/Fast.Admin'>项目源码：Fast.Admin</a>",
         "Version": "3.0.0",
         "Order": 998
       },
       {
         "Group": "Admin",
         "Title": "业务后台",
-        "Description": "一个持续集百家所长 众多黑科技的 .NET Web应用框架。<br/>前后端分离架构，开箱即用，紧随前沿技术。<br/>作者By 小方<br/><a href='https://gitee.com/FastDotnet/Fast.Admin'>https://gitee.com/FastDotnet/Fast.Admin</a>",
+        "Description": "Fast.Admin 开源企业管理系统的租户业务管理接口，提供机构、部门、员工、岗位、角色及操作日志管理能力。<br/>基于 Fast.NET，采用前后端分离架构。<br/>作者：小方 · 许可证：Apache-2.0<br/><a href='https://gitee.com/FastDotnet/Fast.Admin'>项目源码：Fast.Admin</a>",
         "Version": "3.0.0",
         "Order": 997
       },
       {
         "Group": "Scheduler",
         "Title": "调度作业",
-        "Description": "一个持续集百家所长 众多黑科技的 .NET Web应用框架。<br/>前后端分离架构，开箱即用，紧随前沿技术。<br/>作者By 小方<br/><a href='https://gitee.com/FastDotnet/Fast.Admin'>https://gitee.com/FastDotnet/Fast.Admin</a>",
+        "Description": "Fast.Admin 开源企业管理系统的任务调度接口，提供调度器控制、作业管理、手动执行及运行日志查询能力。<br/>基于 Fast.NET，采用前后端分离架构。<br/>作者：小方 · 许可证：Apache-2.0<br/><a href='https://gitee.com/FastDotnet/Fast.Admin'>项目源码：Fast.Admin</a>",
         "Version": "3.0.0",
         "Order": 996
       }
