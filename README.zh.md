@@ -110,14 +110,14 @@ Fast.Admin 是一个面向企业管理场景的前后端分离开源项目，以
 
 ## 技术栈与兼容性
 
-| 范围       | 当前技术栈                                                             |
-| ---------- | ---------------------------------------------------------------------- |
-| 服务端     | .NET 10、ASP.NET Core、Fast.NET、SqlSugar、Redis、JWT、SignalR、Quartz |
-| Web 管理端 | Vue 3.5、TypeScript 6、Vite 8、Element Plus、Pinia、Axios、ECharts     |
-| APP 工程   | uni-app、Vue 3、TypeScript、Wot Design Uni（开发中）                   |
-| Node.js    | `^24.18.0`                                                             |
-| pnpm       | `^11.0.0`                                                              |
-| 许可证     | Apache-2.0                                                             |
+| 范围       | 当前技术栈                                                               |
+| ---------- | ------------------------------------------------------------------------ |
+| 服务端     | .NET 10、ASP.NET Core、Fast.NET、SqlSugar、Redis、JWT、SignalR、Quartz   |
+| Web 管理端 | Vue 3.5、TypeScript 6、Vite 8、Element Plus、Pinia、Axios、ECharts       |
+| APP 工程   | uni-app、Vue 3.4、TypeScript 6、Vite 5、Wot UI 2（`@wot-ui/ui`，开发中） |
+| Node.js    | `^24.18.0`                                                               |
+| pnpm       | `^11.0.0`                                                                |
+| 许可证     | Apache-2.0                                                               |
 
 服务端当前目标框架为 `net10.0`。准备部署前，请确认本机 SDK、Node.js、pnpm、数据库和 Redis 环境与项目配置匹配。
 

@@ -15,7 +15,7 @@
   "SwaggerSettings": {
     // 启用
     "Enable": true,
-    "DocumentTitle": "Fast",
+    "DocumentTitle": "Fast.Admin API 文档",
     "RoutePrefix": "",
     "DocExpansionState": "None",
     "EnableAllGroups": true,

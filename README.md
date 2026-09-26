@@ -110,14 +110,14 @@ Exact features, authorization boundaries, and third-party service availability d
 
 ## Technology and compatibility
 
-| Area         | Current stack                                                          |
-| ------------ | ---------------------------------------------------------------------- |
-| Server       | .NET 10, ASP.NET Core, Fast.NET, SqlSugar, Redis, JWT, SignalR, Quartz |
-| Web console  | Vue 3.5, TypeScript 6, Vite 8, Element Plus, Pinia, Axios, ECharts     |
-| App projects | uni-app, Vue 3, TypeScript, Wot Design Uni (in development)            |
-| Node.js      | `^24.18.0`                                                             |
-| pnpm         | `^11.0.0`                                                              |
-| License      | Apache-2.0                                                             |
+| Area         | Current stack                                                                    |
+| ------------ | -------------------------------------------------------------------------------- |
+| Server       | .NET 10, ASP.NET Core, Fast.NET, SqlSugar, Redis, JWT, SignalR, Quartz           |
+| Web console  | Vue 3.5, TypeScript 6, Vite 8, Element Plus, Pinia, Axios, ECharts               |
+| App projects | uni-app, Vue 3.4, TypeScript 6, Vite 5, Wot UI 2 (`@wot-ui/ui`) (in development) |
+| Node.js      | `^24.18.0`                                                                       |
+| pnpm         | `^11.0.0`                                                                        |
+| License      | Apache-2.0                                                                       |
 
 The server currently targets `net10.0`. Before deployment, make sure the installed SDK, Node.js, pnpm, database, and Redis environment match the project configuration.
 
