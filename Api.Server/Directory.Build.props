@@ -13,6 +13,9 @@
         <Copyright>版权所有 © 2018-Now 小方</Copyright>
 
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
+
+        <SatelliteResourceLanguages>en-US;zh-CN</SatelliteResourceLanguages>
+        <GenerateResxSourceIncludeDefaultValues>True</GenerateResxSourceIncludeDefaultValues>
     </PropertyGroup>
 
 </Project>
