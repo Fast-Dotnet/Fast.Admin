@@ -502,7 +502,7 @@ const handleTenantLogin = async (tenant: LoginTenantOutput) => {
 	}
 }
 
-:global(.login-tenant-popper) {
+.login-tenant-popper {
 	max-width: min(430px, calc(100vw - 24px));
 	border: 1px solid var(--el-border-color-lighter);
 	border-radius: 14px;
@@ -510,11 +510,11 @@ const handleTenantLogin = async (tenant: LoginTenantOutput) => {
 	overflow: hidden;
 }
 
-:global(.login-tenant-popper .el-select-dropdown__list) {
+.login-tenant-popper .el-select-dropdown__list {
 	padding: 0;
 }
 
-:global(.login-tenant-popper .el-select-dropdown__item) {
+.login-tenant-popper .el-select-dropdown__item {
 	height: auto;
 	min-height: 72px;
 	margin: 0;
@@ -528,35 +528,35 @@ const handleTenantLogin = async (tenant: LoginTenantOutput) => {
 		background-color 180ms ease;
 }
 
-:global(.login-tenant-popper .el-select-dropdown__item:last-child) {
+.login-tenant-popper .el-select-dropdown__item:last-child {
 	border-bottom: 0;
 }
 
-:global(.login-tenant-popper .el-select-dropdown__item.is-hovering) {
+.login-tenant-popper .el-select-dropdown__item.is-hovering {
 	background: var(--el-color-primary-light-9);
 }
 
-:global(.login-tenant-popper .el-select-dropdown__item.is-selected) {
+.login-tenant-popper .el-select-dropdown__item.is-selected {
 	background: color-mix(in srgb, var(--el-color-primary) 12%, var(--el-bg-color));
 }
 
-:global(.login-tenant-popper .el-select-dropdown__item.is-selected .tenant-option__content strong) {
+.login-tenant-popper .el-select-dropdown__item.is-selected .tenant-option__content strong {
 	color: var(--el-color-primary);
 }
 
-:global(.login-tenant-popper .el-select-dropdown__footer) {
+.login-tenant-popper .el-select-dropdown__footer {
 	padding: 0;
 	border-top: 1px solid var(--el-border-color-lighter);
 }
 
-:global(.login-tenant-popper .el-select-dropdown__footer .el-button) {
+.login-tenant-popper .el-select-dropdown__footer .el-button {
 	width: 100%;
 	height: 52px;
 	margin: 0;
 	border-radius: 0;
 }
 
-:global(.login-tenant-popper .tenant-option) {
+.login-tenant-popper .tenant-option {
 	display: grid;
 	width: 100%;
 	min-width: 0;
@@ -565,7 +565,7 @@ const handleTenantLogin = async (tenant: LoginTenantOutput) => {
 	gap: 12px;
 }
 
-:global(.login-tenant-popper .tenant-option__logo) {
+.login-tenant-popper .tenant-option__logo {
 	width: 42px;
 	height: 42px;
 	object-fit: cover;
@@ -574,32 +574,32 @@ const handleTenantLogin = async (tenant: LoginTenantOutput) => {
 	box-shadow: 0 3px 8px rgb(15 23 42 / 10%);
 }
 
-:global(.login-tenant-popper .tenant-option__content) {
+.login-tenant-popper .tenant-option__content {
 	display: flex;
 	min-width: 0;
 	flex-direction: column;
 	gap: 4px;
 }
 
-:global(.login-tenant-popper .tenant-option__content strong),
-:global(.login-tenant-popper .tenant-option__content span) {
+.login-tenant-popper .tenant-option__content strong,
+.login-tenant-popper .tenant-option__content span {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
 
-:global(.login-tenant-popper .tenant-option__content strong) {
+.login-tenant-popper .tenant-option__content strong {
 	color: var(--el-text-color-primary);
 	font-size: 14px;
 	font-weight: 600;
 }
 
-:global(.login-tenant-popper .tenant-option__content span) {
+.login-tenant-popper .tenant-option__content span {
 	font-size: 12px;
 	color: var(--el-text-color-secondary);
 }
 
-:global(.login-tenant-popper .tenant-option__remove) {
+.login-tenant-popper .tenant-option__remove {
 	width: 28px;
 	height: 28px;
 	padding: 0;
@@ -610,13 +610,13 @@ const handleTenantLogin = async (tenant: LoginTenantOutput) => {
 		transform 180ms ease;
 }
 
-:global(.login-tenant-popper .tenant-option__remove:hover) {
+.login-tenant-popper .tenant-option__remove:hover {
 	color: var(--el-color-danger);
 	background: var(--el-color-danger-light-9);
 	transform: rotate(90deg) scale(1.06);
 }
 
-:global(.login-tenant-popper .tenant-option__remove:active) {
+.login-tenant-popper .tenant-option__remove:active {
 	transform: rotate(90deg) scale(0.9);
 }
 
@@ -684,7 +684,7 @@ const handleTenantLogin = async (tenant: LoginTenantOutput) => {
 	.login-form *,
 	.login-form *::before,
 	.login-form *::after,
-	:global(.login-tenant-popper .tenant-option__remove) {
+	.login-tenant-popper .tenant-option__remove {
 		scroll-behavior: auto !important;
 		animation-duration: 0.01ms !important;
 		animation-iteration-count: 1 !important;

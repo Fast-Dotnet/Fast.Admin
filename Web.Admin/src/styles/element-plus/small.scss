@@ -1,4 +1,4 @@
-html.small {
+:where(html.small) {
 	.el-scrollbar {
 		.el-scrollbar__bar {
 			&.is-horizontal {
@@ -17,14 +17,14 @@ html.small {
 		}
 	}
 
-	.el-select-dropdown {
+	:where(.el-select-dropdown) {
 		.el-select-dropdown__item {
 			padding: 0 15px;
 			height: 30px;
 			line-height: 30px;
 		}
 	}
-	.el-tree-select__popper {
+	:where(.el-tree-select__popper) {
 		.el-select-dropdown__item {
 			padding: 0 15px 0 0;
 		}

@@ -2,7 +2,7 @@
 @use "./small.scss";
 
 /* 修复 Chrome 浏览器输入框内选中字符行高异常的bug */
-.el-input .el-input__inner {
+:where(.el-input) .el-input__inner {
 	line-height: calc(var(--el-input-height, 40px) - 4px);
 }
 
@@ -33,9 +33,10 @@
 
 .el-card {
 	padding: 10px;
-	.el-card__header {
-		border-bottom: 1px solid var(--el-border-color-extra-light);
-	}
+}
+
+:where(.el-card) .el-card__header {
+	border-bottom: 1px solid var(--el-border-color-extra-light);
 }
 
 .el-tabs {
@@ -55,7 +56,7 @@
 	}
 }
 
-.el-tabs.el-tabs--top .el-tabs__content {
+:where(.el-tabs.el-tabs--top) .el-tabs__content {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
@@ -102,12 +103,12 @@
 	margin: 0 4px !important;
 }
 
-.el-select-dropdown {
+:where(.el-select-dropdown) {
 	.el-select-dropdown__item {
 		padding: 0 20px;
 	}
 }
-.el-tree-select__popper {
+:where(.el-tree-select__popper) {
 	.el-select-dropdown__item {
 		padding: 0 20px 0 0;
 	}
