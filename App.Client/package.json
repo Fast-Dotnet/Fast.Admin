@@ -1,7 +1,8 @@
 {
-	"name": "com.fastdotnet.app",
+	"name": "fast.admin.client",
 	"version": "1.0.0",
-	"description": "Fast.Admin mobile application.",
+	"private": true,
+	"description": "Fast.Admin mobile client application.",
 	"type": "module",
 	"license": "Apache-2.0",
 	"homepage": "https://admin.fastdotnet.com",
@@ -10,7 +11,8 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://gitee.com/FastDotnet/Fast.Admin"
+		"url": "https://gitee.com/FastDotnet/Fast.Admin",
+		"directory": "App.Client"
 	},
 	"author": "小方",
 	"scripts": {

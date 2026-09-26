@@ -1,7 +1,8 @@
 {
-	"name": "Fast.Admin",
+	"name": "fast.admin.web",
 	"version": "1.0.0",
-	"description": "Fast Admin.",
+	"private": true,
+	"description": "Fast.Admin web administration application.",
 	"type": "module",
 	"license": "Apache-2.0",
 	"homepage": "https://admin.fastdotnet.com",
@@ -10,7 +11,8 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://gitee.com/FastDotnet/Fast.Admin"
+		"url": "https://gitee.com/FastDotnet/Fast.Admin",
+		"directory": "Web.Admin"
 	},
 	"author": "小方",
 	"scripts": {
