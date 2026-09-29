@@ -87,7 +87,7 @@ const initWebSocket = async (): Promise<void> => {
 				connection.onreconnected(() => {
 					reLoadingInstance?.close();
 					ElMessage.success("服务重连成功");
-					logger.warn("WebSocket", "服务重连成功...");
+					logger.debug("WebSocket", "服务重连成功...");
 				});
 			}
 
@@ -106,7 +106,7 @@ const initWebSocket = async (): Promise<void> => {
 					type: "success",
 					duration: 1000,
 				});
-				logger.log("WebSocket", "服务连接成功...", userInfoStore.employeeName);
+				logger.debug("WebSocket", "服务连接成功...", userInfoStore.employeeName);
 
 				try {
 					loadingInstance = ElLoading.service({
@@ -122,10 +122,7 @@ const initWebSocket = async (): Promise<void> => {
 						type: "success",
 						duration: 1000,
 					});
-					logger.log("WebSocket", "系统连接成功...");
-				} catch (error) {
-					logger.error("WebSocket", error);
-					throw error;
+					logger.debug("WebSocket", "系统连接成功...");
 				} finally {
 					loadingInstance?.close();
 				}

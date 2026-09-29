@@ -21,24 +21,19 @@ public class JwtBearerHandle : IJwtBearerHandle
     /// <inheritdoc />
     public async Task<bool> AuthorizeHandle(AuthorizationHandlerContext context, HttpContext httpContext)
     {
+        ArgumentNullException.ThrowIfNull(httpContext);
         if (httpContext.User.Identity?.IsAuthenticated != true)
             return false;
 
-        // 获取 IUser，当前请求生命周期，只会解析一次
-        IUser _user = httpContext.RequestServices.GetService<IUser>();
-
         // 从 AccessToken 中读取 Data
-        string data = httpContext.User.FindFirst("Data")
-            ?.Value;
-        if (string.IsNullOrWhiteSpace(data) || _user == null)
+        string data = httpContext.User.FindFirst("Data")?.Value;
+        if (string.IsNullOrWhiteSpace(data))
             return false;
 
         Dictionary<string, string> payload;
         try
         {
-            payload = data
-                .Base64ToString()
-                .ToObject<Dictionary<string, string>>();
+            payload = data.Base64ToString().ToObject<Dictionary<string, string>>();
         }
         catch
         {
@@ -48,50 +43,73 @@ public class JwtBearerHandle : IJwtBearerHandle
         if (payload == null)
             return false;
 
-        // 从 payload 中读取 DeviceType,SessionId,AppNo,TenantNo,EmployeeNo
-        if (payload.TryGetValue(nameof(AuthUserInfo.DeviceType), out string deviceTypeValue)
-            && Enum.TryParse<AppEnvironmentEnum>(deviceTypeValue, true, out AppEnvironmentEnum deviceType)
-            && payload.TryGetValue(nameof(AuthUserInfo.SessionId), out string sessionId)
-            && payload.TryGetValue(nameof(AuthUserInfo.AppNo), out string appNo)
-            && payload.TryGetValue(nameof(AuthUserInfo.TenantNo), out string tenantNo)
-            && payload.TryGetValue(nameof(AuthUserInfo.EmployeeNo), out string employeeNo))
+        if (!payload.TryGetValue(nameof(AuthUserInfo.DeviceType), out string deviceTypeValue)
+            || !Enum.TryParse(deviceTypeValue, true, out AppEnvironmentEnum deviceType)
+            || !payload.TryGetValue(nameof(AuthUserInfo.SessionId), out string sessionId)
+            || !payload.TryGetValue(nameof(AuthUserInfo.AppNo), out string appNo)
+            || !payload.TryGetValue(nameof(AuthUserInfo.TenantNo), out string tenantNo)
+            || !payload.TryGetValue(nameof(AuthUserInfo.EmployeeNo), out string employeeNo))
+            return false;
+
+        if (string.IsNullOrWhiteSpace(sessionId)
+            || string.IsNullOrWhiteSpace(appNo)
+            || string.IsNullOrWhiteSpace(tenantNo)
+            || string.IsNullOrWhiteSpace(employeeNo))
+            return false;
+
+        // 请求已取消时终止后续处理
+        httpContext.RequestAborted.ThrowIfCancellationRequested();
+
+        // 获取 IUser，当前请求生命周期，只会解析一次
+        IUser _user = httpContext.RequestServices.GetService<IUser>();
+        // 获取授权用户信息
+        AuthUserInfo authUserInfo = await _user.GetAuthUserInfo(deviceType, appNo, tenantNo, employeeNo, sessionId);
+        if (authUserInfo == null)
+            return false;
+
+        if (authUserInfo.TenantId <= 0
+            || authUserInfo.SessionId != sessionId
+            || authUserInfo.AppNo != appNo
+            || authUserInfo.TenantNo != tenantNo
+            || authUserInfo.EmployeeNo != employeeNo
+            || authUserInfo.DeviceType != deviceType)
+            return false;
+
+
+        try
         {
-            // 获取授权用户信息
-            AuthUserInfo authUserInfo = await _user.GetAuthUserInfo(deviceType, appNo, tenantNo, employeeNo, sessionId);
-
-            if (authUserInfo == null)
-                return false;
-
             // 判断设备信息是否和缓存中的一致
             if (GlobalContext.DeviceId != authUserInfo.DeviceId || GlobalContext.DeviceType != authUserInfo.DeviceType)
                 return false;
-
-            // 设置授权用户
-            _user.SetAuthUser(authUserInfo);
-
-            return true;
+        }
+        catch (UserFriendlyException)
+        {
+            return false;
         }
 
-        return false;
+        // 请求已取消时终止后续处理
+        httpContext.RequestAborted.ThrowIfCancellationRequested();
+
+        // 设置授权用户
+        _user.SetAuthUser(authUserInfo);
+        return true;
     }
 
     /// <inheritdoc />
-    public async Task<object> AuthorizeFailHandle(AuthorizationHandlerContext context,
-        HttpContext httpContext,
+    public async Task<object> AuthorizeFailHandle(AuthorizationHandlerContext context, HttpContext httpContext,
         Exception exception)
     {
-        return await Task.FromResult(UnifyContext.GetRestfulResult(StatusCodes.Status401Unauthorized,
-            false,
-            null,
-            "401 未经授权",
+        return await Task.FromResult(UnifyContext.GetRestfulResult(StatusCodes.Status401Unauthorized, false, null, "401 未经授权",
             httpContext));
     }
 
     /// <inheritdoc />
-    public async Task<bool> PermissionHandle(AuthorizationHandlerContext context,
-        IAuthorizationRequirement requirement,
+    public async Task<bool> PermissionHandle(AuthorizationHandlerContext context, IAuthorizationRequirement requirement,
         HttpContext httpContext)
     {
+        // 请求已取消时终止后续处理
+        httpContext.RequestAborted.ThrowIfCancellationRequested();
+
         // 获取 IUser
         IUser _user = httpContext.RequestServices.GetService<IUser>();
 
@@ -100,9 +118,7 @@ public class JwtBearerHandle : IJwtBearerHandle
             return true;
 
         // 获取权限标识
-        PermissionAttribute permissionAttribute = httpContext
-            .GetEndpoint()
-            ?.Metadata.GetMetadata<PermissionAttribute>();
+        PermissionAttribute permissionAttribute = httpContext.GetEndpoint()?.Metadata.GetMetadata<PermissionAttribute>();
 
         if (permissionAttribute?.TagList == null || permissionAttribute.TagList.Count == 0)
             return true;
@@ -110,23 +126,19 @@ public class JwtBearerHandle : IJwtBearerHandle
         // 输出权限标识
         httpContext.Response.Headers.TryAdd("Auth-Permission", string.Join(",", permissionAttribute.TagList));
 
-        if (_user.ButtonCodeList == null || _user.ButtonCodeList?.Count == 0)
+        if (_user.ButtonCodeList == null || _user.ButtonCodeList.Count == 0)
             return false;
 
         // 满足一个即可
-        if (_user
-            .ButtonCodeList.Intersect(permissionAttribute.TagList)
-            .Any())
+        if (_user.ButtonCodeList.Intersect(permissionAttribute.TagList).Any())
             return true;
 
         return await Task.FromResult(false);
     }
 
     /// <inheritdoc />
-    public async Task<object> PermissionFailHandle(AuthorizationHandlerContext context,
-        IAuthorizationRequirement requirement,
-        HttpContext httpContext,
-        Exception exception)
+    public async Task<object> PermissionFailHandle(AuthorizationHandlerContext context, IAuthorizationRequirement requirement,
+        HttpContext httpContext, Exception exception)
     {
         return await Task.FromResult<object>(null);
     }

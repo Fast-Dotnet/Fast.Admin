@@ -1,6 +1,6 @@
 import { NavigationFailureType, isNavigationFailure } from "vue-router";
 import { ElNotification } from "element-plus";
-import { logger, randomString } from "@fast-china/utils";
+import { randomString } from "@fast-china/utils";
 import { MenuTypeEnum } from "@/api/enums/MenuTypeEnum";
 import router from "@/router";
 import { useUserInfo } from "@/stores";
@@ -141,7 +141,6 @@ export const routerUtil = {
 					message: "导航失败，路由无效！",
 					type: "error",
 				});
-				logger.error("routerUtil", error);
 				throw error;
 			});
 	},

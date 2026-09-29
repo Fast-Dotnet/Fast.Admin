@@ -47,7 +47,6 @@ public sealed class User : AuthUserInfo, IUser, IScopedDependency
     /// <summary>
     /// 授权用户信息
     /// </summary>
-    /// <remarks>作用域注册，保证当前请求管道中是唯一的，并且只会加载一次</remarks>
     public User(ICache<AuthCCL> authCache, IHttpContextAccessor httpContextAccessor, ILogger<IUser> logger)
     {
         _authCache = authCache;

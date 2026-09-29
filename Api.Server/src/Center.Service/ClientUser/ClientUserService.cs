@@ -28,6 +28,39 @@ public class ClientUserService : IDynamicApplication
     }
 
     /// <summary>
+    /// 客户端用户选择器
+    /// </summary>
+    [HttpPost]
+    [ApiInfo("客户端用户选择器", HttpRequestActionEnum.Paged)]
+    public async Task<PagedResult<ElSelectorOutput<long>>> ClientUserSelector(PagedInput input)
+    {
+        ApplicationOpenIdModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
+        PagedResult<ClientUserModel> data = await _repository
+            .Entities.Where(wh => wh.AppId == applicationModel.AppId)
+            .WhereIF(!string.IsNullOrWhiteSpace(input.SearchValue),
+                wh => wh.Mobile.Contains(input.SearchValue)
+                      || wh.OpenId.Contains(input.SearchValue)
+                      || wh.NickName.Contains(input.SearchValue))
+            .OrderBy(ob => ob.Mobile)
+            .Select(sl => new ClientUserModel
+            {
+                UserId = sl.UserId,
+                Mobile = sl.Mobile,
+                OpenId = sl.OpenId,
+                NickName = sl.NickName,
+                Avatar = sl.Avatar
+            })
+            .ToPagedListAsync(input);
+
+        return data.ToPagedData(sl => new ElSelectorOutput<long>
+        {
+            Value = sl.UserId,
+            Label = !string.IsNullOrWhiteSpace(sl.Mobile) ? sl.Mobile : sl.OpenId,
+            Data = new {sl.NickName, sl.Avatar}
+        });
+    }
+
+    /// <summary>
     /// 获取客户端用户分页列表
     /// </summary>
     [HttpPost]

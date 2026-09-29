@@ -40,7 +40,7 @@ import { loginApi } from "@/api/services/Auth/login";
 import { CommonRoute } from "@/common";
 import { useUpdate } from "@/hooks";
 import defaultLogo from "@/static/logo.png";
-import { useApp, useUserInfo } from "@/stores";
+import { useApp, useConfig, useUserInfo } from "@/stores";
 
 definePage({
 	name: "Launcher",
@@ -53,6 +53,7 @@ definePage({
 });
 
 const appStore = useApp();
+const configStore = useConfig();
 const userInfoStore = useUserInfo();
 const router = useRouter();
 
@@ -168,6 +169,9 @@ const appLaunch = () => {
 	appStore
 		.launch()
 		.then(() => {
+			// 设置主题色
+			configStore.setTheme(appStore.themeColor);
+
 			state.statusText = "服务连接成功";
 			checkUpdate();
 		})

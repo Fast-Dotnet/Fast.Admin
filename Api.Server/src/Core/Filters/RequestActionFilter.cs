@@ -29,6 +29,11 @@ public class RequestActionFilter : IAsyncActionFilter
     private readonly ISqlSugarEntityService _sqlSugarEntityService;
 
     /// <summary>
+    /// 业务租户
+    /// </summary>
+    private readonly ITenant _tenant;
+
+    /// <summary>
     /// 日志
     /// </summary>
     private readonly ILogger _logger;
@@ -36,9 +41,10 @@ public class RequestActionFilter : IAsyncActionFilter
     /// <summary>
     /// 请求日志拦截
     /// </summary>
-    public RequestActionFilter(ISqlSugarEntityService sqlSugarEntityService, ILogger<IAsyncActionFilter> logger)
+    public RequestActionFilter(ISqlSugarEntityService sqlSugarEntityService, ITenant tenant, ILogger<IAsyncActionFilter> logger)
     {
         _sqlSugarEntityService = sqlSugarEntityService;
+        _tenant = tenant;
         _logger = logger;
     }
 
@@ -74,15 +80,11 @@ public class RequestActionFilter : IAsyncActionFilter
             IList<object> endpointMetadata = actionContext.ActionDescriptor.EndpointMetadata;
 
             // 判断是否存在禁用请求日志特性，支持 Controller 和 Action
-            if (endpointMetadata
-                .OfType<DisabledRequestLogAttribute>()
-                .Any())
+            if (endpointMetadata.OfType<DisabledRequestLogAttribute>().Any())
                 return;
 
             // 获取 ApiInfo 特性，Controller 和 Action 同时存在时优先使用 Action
-            ApiInfoAttribute apiInfoAttribute = endpointMetadata
-                .OfType<ApiInfoAttribute>()
-                .LastOrDefault();
+            ApiInfoAttribute apiInfoAttribute = endpointMetadata.OfType<ApiInfoAttribute>().LastOrDefault();
             if (!Enum.TryParse(httpRequest.Method, true, out HttpRequestMethodEnum requestMethod))
             {
                 // 默认 Get 请求
@@ -91,8 +93,7 @@ public class RequestActionFilter : IAsyncActionFilter
 
             // 获取 CenterLog 库的连接字符串配置
             ConnectionSettingsOptions connectionSetting =
-                await _sqlSugarEntityService.GetConnectionSetting(CommonConst.Default.TenantId,
-                    CommonConst.Default.TenantNo,
+                await _sqlSugarEntityService.GetConnectionSetting(CommonConst.Default.TenantId, CommonConst.Default.TenantNo,
                     DatabaseTypeEnum.CenterLog);
             ConnectionConfig connectionConfig = SqlSugarContext.GetConnectionConfig(connectionSetting);
 
@@ -118,8 +119,8 @@ public class RequestActionFilter : IAsyncActionFilter
                 CreatedUserId = _user?.EmployeeId,
                 CreatedUserName = _user?.EmployeeName,
                 CreatedTime = dateTime,
-                TenantId = _user?.TenantId,
-                TenantName = _user?.TenantName,
+                TenantId = _tenant.TenantId,
+                TenantName = _tenant.TenantName,
                 // 可能为空
                 Device = userAgentInfo?.Device,
                 OS = userAgentInfo?.OS,
@@ -131,10 +132,7 @@ public class RequestActionFilter : IAsyncActionFilter
 
             // 独立客户端不加载 AOP，防止写审计日志再次触发审计；等待写入完成后才结束请求
             using var db = new SqlSugarClient(connectionConfig);
-            await db
-                .Insertable(requestLogModel)
-                .SplitTable()
-                .ExecuteCommandAsync();
+            await db.Insertable(requestLogModel).SplitTable().ExecuteCommandAsync();
         }
         catch (Exception ex)
         {

@@ -82,7 +82,7 @@ export const useApp = defineStore(
 
 			try {
 				const apiRes = await appApi.launch();
-				logger.log("Launch", apiRes);
+				logger.debug("Launch", apiRes);
 				Object.assign(state, apiRes);
 				state.hasLaunch = true;
 			} catch (error) {

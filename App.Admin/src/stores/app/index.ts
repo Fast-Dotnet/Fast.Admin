@@ -7,7 +7,6 @@ import { EditionEnum } from "@/api/enums/EditionEnum";
 import { EnvironmentTypeEnum } from "@/api/enums/EnvironmentTypeEnum";
 import { appApi } from "@/api/services/Center/app";
 import { dictionaryApi } from "@/api/services/Center/dictionary";
-import { useConfig } from "../config";
 import type { LaunchOutput } from "@/api/services/Center/app/models/LaunchOutput";
 
 export const defaultThemeColor = "#409EFF";
@@ -137,8 +136,6 @@ export const useApp = defineStore(
 
 				// 处理数据字典
 				await setDictionary();
-
-				useConfig().setTheme(state.themeColor);
 			}
 		};
 

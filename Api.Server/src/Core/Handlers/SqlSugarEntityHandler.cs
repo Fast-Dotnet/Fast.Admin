@@ -24,6 +24,11 @@ public class SqlSugarEntityHandler : ISqlSugarEntityHandler
     private readonly IUser _user;
 
     /// <summary>
+    /// 业务租户
+    /// </summary>
+    private readonly ITenant _tenant;
+
+    /// <summary>
     /// SqlSugar 实体服务
     /// </summary>
     private readonly ISqlSugarEntityService _sqlSugarEntityService;
@@ -41,12 +46,11 @@ public class SqlSugarEntityHandler : ISqlSugarEntityHandler
     /// <summary>
     /// 初始化 SqlSugar 实体处理器
     /// </summary>
-    public SqlSugarEntityHandler(IUser user,
-        ISqlSugarEntityService sqlSugarEntityService,
-        IHttpContextAccessor httpContextAccessor,
-        SqlSugarLogChannel sqlSugarLogChannel)
+    public SqlSugarEntityHandler(IUser user, ITenant tenant, ISqlSugarEntityService sqlSugarEntityService,
+        IHttpContextAccessor httpContextAccessor, SqlSugarLogChannel sqlSugarLogChannel)
     {
         _user = user;
+        _tenant = tenant;
         _sqlSugarEntityService = sqlSugarEntityService;
         _httpContext = httpContextAccessor.HttpContext;
         _sqlSugarLogChannel = sqlSugarLogChannel;
@@ -54,8 +58,7 @@ public class SqlSugarEntityHandler : ISqlSugarEntityHandler
 
     /// <inheritdoc />
     public async Task<ConnectionSettingsOptions> GetConnectionSettings<TEntity>(ISqlSugarClient sqlSugarClient,
-        SugarDbTypeAttribute sugarDbType,
-        Type entityType)
+        SugarDbTypeAttribute sugarDbType, Type entityType)
     {
         string databaseTypeStr = sugarDbType.Type?.ToString();
         if (string.IsNullOrWhiteSpace(databaseTypeStr))
@@ -71,11 +74,10 @@ public class SqlSugarEntityHandler : ISqlSugarEntityHandler
             case DatabaseTypeEnum.Gateway:
             case DatabaseTypeEnum.Deploy:
                 return await _sqlSugarEntityService.GetConnectionSetting(CommonConst.Default.TenantId,
-                    CommonConst.Default.TenantNo,
-                    databaseType);
+                    CommonConst.Default.TenantNo, databaseType);
             case DatabaseTypeEnum.Admin:
             case DatabaseTypeEnum.AdminLog:
-                return await _sqlSugarEntityService.GetConnectionSetting(_user.TenantId, _user.TenantNo, databaseType);
+                return await _sqlSugarEntityService.GetConnectionSetting(_tenant.TenantId.GetValueOrDefault(), _tenant.TenantNo, databaseType);
             default:
                 throw new SqlSugarException("未知的 Database 类型！");
         }
@@ -86,8 +88,7 @@ public class SqlSugarEntityHandler : ISqlSugarEntityHandler
     {
         // 获取 CenterLog 库的连接字符串配置
         ConnectionSettingsOptions connectionSetting =
-            await _sqlSugarEntityService.GetConnectionSetting(CommonConst.Default.TenantId,
-                CommonConst.Default.TenantNo,
+            await _sqlSugarEntityService.GetConnectionSetting(CommonConst.Default.TenantId, CommonConst.Default.TenantNo,
                 DatabaseTypeEnum.CenterLog);
         ConnectionConfig connectionConfig = SqlSugarContext.GetConnectionConfig(connectionSetting);
 
@@ -105,8 +106,8 @@ public class SqlSugarEntityHandler : ISqlSugarEntityHandler
             CreatedUserId = _user.EmployeeId,
             CreatedUserName = _user.EmployeeName,
             CreatedTime = DateTime.Now,
-            TenantId = _user.TenantId,
-            TenantName = _user.TenantName
+            TenantId = _tenant.TenantId,
+            TenantName = _tenant.TenantName
         };
         sqlExecutionLogModel.RecordCreate(_httpContext);
 
@@ -115,19 +116,12 @@ public class SqlSugarEntityHandler : ISqlSugarEntityHandler
     }
 
     /// <inheritdoc />
-    public async Task ExecuteTimeoutAsync(string fileName,
-        int fileLine,
-        string methodName,
-        string rawSql,
-        SugarParameter[] parameters,
-        TimeSpan executeTime,
-        string handlerSql,
-        string message)
+    public async Task ExecuteTimeoutAsync(string fileName, int fileLine, string methodName, string rawSql,
+        SugarParameter[] parameters, TimeSpan executeTime, string handlerSql, string message)
     {
         // 获取 CenterLog 库的连接字符串配置
         ConnectionSettingsOptions connectionSetting =
-            await _sqlSugarEntityService.GetConnectionSetting(CommonConst.Default.TenantId,
-                CommonConst.Default.TenantNo,
+            await _sqlSugarEntityService.GetConnectionSetting(CommonConst.Default.TenantId, CommonConst.Default.TenantNo,
                 DatabaseTypeEnum.CenterLog);
         ConnectionConfig connectionConfig = SqlSugarContext.GetConnectionConfig(connectionSetting);
 
@@ -148,8 +142,8 @@ public class SqlSugarEntityHandler : ISqlSugarEntityHandler
             CreatedUserId = _user.EmployeeId,
             CreatedUserName = _user.EmployeeName,
             CreatedTime = DateTime.Now,
-            TenantId = _user.TenantId,
-            TenantName = _user.TenantName
+            TenantId = _tenant.TenantId,
+            TenantName = _tenant.TenantName
         };
         sqlTimeoutLogModel.RecordCreate(_httpContext);
 
@@ -158,21 +152,13 @@ public class SqlSugarEntityHandler : ISqlSugarEntityHandler
     }
 
     /// <inheritdoc />
-    public async Task ExecuteDiffLogAsync(DiffType diffType,
-        string tableName,
-        string tableDescription,
-        object businessData,
-        List<List<DiffLogColumnInfo>> beforeColumnList,
-        List<List<DiffLogColumnInfo>> afterColumnList,
-        string rawSql,
-        SugarParameter[] parameters,
-        TimeSpan? executeTime,
-        string handlerSql)
+    public async Task ExecuteDiffLogAsync(DiffType diffType, string tableName, string tableDescription, object businessData,
+        List<List<DiffLogColumnInfo>> beforeColumnList, List<List<DiffLogColumnInfo>> afterColumnList, string rawSql,
+        SugarParameter[] parameters, TimeSpan? executeTime, string handlerSql)
     {
         // 获取 CenterLog 库的连接字符串配置
         ConnectionSettingsOptions connectionSetting =
-            await _sqlSugarEntityService.GetConnectionSetting(CommonConst.Default.TenantId,
-                CommonConst.Default.TenantNo,
+            await _sqlSugarEntityService.GetConnectionSetting(CommonConst.Default.TenantId, CommonConst.Default.TenantNo,
                 DatabaseTypeEnum.CenterLog);
         ConnectionConfig connectionConfig = SqlSugarContext.GetConnectionConfig(connectionSetting);
 
@@ -203,8 +189,8 @@ public class SqlSugarEntityHandler : ISqlSugarEntityHandler
             CreatedUserId = _user.EmployeeId,
             CreatedUserName = _user.EmployeeName,
             CreatedTime = DateTime.Now,
-            TenantId = _user.TenantId,
-            TenantName = _user.TenantName
+            TenantId = _tenant.TenantId,
+            TenantName = _tenant.TenantName
         };
         sqlDiffLogModel.RecordCreate(_httpContext);
 
@@ -213,18 +199,12 @@ public class SqlSugarEntityHandler : ISqlSugarEntityHandler
     }
 
     /// <inheritdoc />
-    public async Task ExecuteErrorAsync(string fileName,
-        int fileLine,
-        string methodName,
-        string rawSql,
-        SugarParameter[] parameters,
-        string handlerSql,
-        SqlSugarException exception)
+    public async Task ExecuteErrorAsync(string fileName, int fileLine, string methodName, string rawSql,
+        SugarParameter[] parameters, string handlerSql, SqlSugarException exception)
     {
         // 获取 CenterLog 库的连接字符串配置
         ConnectionSettingsOptions connectionSetting =
-            await _sqlSugarEntityService.GetConnectionSetting(CommonConst.Default.TenantId,
-                CommonConst.Default.TenantNo,
+            await _sqlSugarEntityService.GetConnectionSetting(CommonConst.Default.TenantId, CommonConst.Default.TenantNo,
                 DatabaseTypeEnum.CenterLog);
         ConnectionConfig connectionConfig = SqlSugarContext.GetConnectionConfig(connectionSetting);
 
@@ -247,8 +227,8 @@ public class SqlSugarEntityHandler : ISqlSugarEntityHandler
             CreatedUserId = _user.EmployeeId,
             CreatedUserName = _user.EmployeeName,
             CreatedTime = DateTime.Now,
-            TenantId = _user.TenantId,
-            TenantName = _user.TenantName
+            TenantId = _tenant.TenantId,
+            TenantName = _tenant.TenantName
         };
         sqlExceptionLogModel.RecordCreate(_httpContext);
 
@@ -271,7 +251,7 @@ public class SqlSugarEntityHandler : ISqlSugarEntityHandler
     /// <inheritdoc />
     public long? AssignTenantId()
     {
-        return _user.TenantId;
+        return _tenant.TenantId;
     }
 
     /// <inheritdoc />

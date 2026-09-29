@@ -1,5 +1,5 @@
 import { axiosUtil } from "@fast-china/axios";
-import type { PagedResult } from "fast-element-plus";
+import type { ElSelectorOutput, PagedInput, PagedResult } from "fast-element-plus";
 import type { EditClientUserInput } from "./models/EditClientUserInput";
 import type { QueryClientUserDetailOutput } from "./models/QueryClientUserDetailOutput";
 import type { QueryClientUserPagedInput } from "./models/QueryClientUserPagedInput";
@@ -9,6 +9,17 @@ import type { QueryClientUserPagedOutput } from "./models/QueryClientUserPagedOu
  * 客户端用户服务Api
  */
 export const clientUserApi = {
+	/**
+	 * 客户端用户选择器
+	 */
+	clientUserSelector(data: PagedInput): Promise<PagedResult<ElSelectorOutput<string>>> {
+		return axiosUtil.request<PagedResult<ElSelectorOutput<string>>>({
+			url: "/clientUser/clientUserSelector",
+			method: "post",
+			data,
+			requestType: "query",
+		});
+	},
 	/**
 	 * 获取客户端用户分页列表
 	 */
