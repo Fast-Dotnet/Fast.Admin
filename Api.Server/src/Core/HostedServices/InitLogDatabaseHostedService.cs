@@ -46,8 +46,7 @@ public class InitLogDatabaseHostedService : IHostedService
         {
             // 获取 CenterLog 库连接字符串
             ConnectionSettingsOptions connectionSettings =
-                await _sqlSugarEntityService.GetConnectionSetting(CommonConst.Default.TenantId,
-                    CommonConst.Default.TenantNo,
+                await _sqlSugarEntityService.GetConnectionSetting(CommonConst.Default.TenantId, CommonConst.Default.TenantNo,
                     DatabaseTypeEnum.CenterLog);
 
             using var db = new SqlSugarClient(SqlSugarContext.GetConnectionConfig(connectionSettings));
@@ -57,7 +56,9 @@ public class InitLogDatabaseHostedService : IHostedService
 
             // 查询核心表是否存在
             if (db.DbMaintenance.IsAnyTable<ExceptionLogModel>())
+            {
                 return;
+            }
 
             // 加载Aop
             SugarEntityFilter.LoadSugarAop(FastContext.HostEnvironment.IsDevelopment(), db);
@@ -75,23 +76,19 @@ public class InitLogDatabaseHostedService : IHostedService
             });
 
             // 获取所有不分表的Model类型
-            Type[] tableTypes = SqlSugarContext
-                .SqlSugarEntityList.Where(wh => !wh.IsSplitTable)
+            Type[] tableTypes = SqlSugarContext.SqlSugarEntityList.Where(wh => !wh.IsSplitTable)
                 .Where(wh => (DatabaseTypeEnum)wh.SugarDbType == DatabaseTypeEnum.CenterLog)
                 .Select(sl => sl.EntityType)
                 .ToArray();
             // 获取所有分表的Model类型
-            Type[] splitTableTypes = SqlSugarContext
-                .SqlSugarEntityList.Where(wh => wh.IsSplitTable)
+            Type[] splitTableTypes = SqlSugarContext.SqlSugarEntityList.Where(wh => wh.IsSplitTable)
                 .Where(wh => (DatabaseTypeEnum)wh.SugarDbType == DatabaseTypeEnum.CenterLog)
                 .Select(sl => sl.EntityType)
                 .ToArray();
 
             // 创建表
             db.CodeFirst.InitTables(tableTypes);
-            db
-                .CodeFirst.SplitTables()
-                .InitTables(splitTableTypes);
+            db.CodeFirst.SplitTables().InitTables(splitTableTypes);
 
             MAppContext.ConsoleWrite(console =>
             {

@@ -23,8 +23,7 @@ public class OperateLogService : IDynamicApplication
     private readonly ISqlSugarRepository<DepartmentModel> _adminRepository;
     private readonly ISqlSugarRepository<OperateLogModel> _repository;
 
-    public OperateLogService(IUser user,
-        ISqlSugarRepository<DepartmentModel> adminRepository,
+    public OperateLogService(IUser user, ISqlSugarRepository<DepartmentModel> adminRepository,
         ISqlSugarRepository<OperateLogModel> repository)
     {
         _user = user;
@@ -45,8 +44,8 @@ public class OperateLogService : IDynamicApplication
             throw new UserFriendlyException("请选择具体的时间范围！");
         }
 
-        ISugarQueryable<OperateLogModel> queryable = _repository
-            .Entities.WhereIF(input.OperateType != null, wh => wh.OperateType == input.OperateType)
+        ISugarQueryable<OperateLogModel> queryable = _repository.Entities
+            .WhereIF(input.OperateType != null, wh => wh.OperateType == input.OperateType)
             .WhereIF(input.EmployeeId != null, wh => wh.CreatedUserId == input.EmployeeId)
             .WhereIF(input.BizId != null, wh => wh.BizId == input.BizId);
         List<long> customDepartmentIds = _user.DataScopeDepartmentIdList ?? [];
@@ -66,8 +65,7 @@ public class OperateLogService : IDynamicApplication
         // 本部门及以下数据
         else if (_user.DataScopeType == DataScopeTypeEnum.DeptWithChild)
         {
-            List<long> departmentIds = await _adminRepository
-                .Queryable<DepartmentModel>()
+            List<long> departmentIds = await _adminRepository.Queryable<DepartmentModel>()
                 .Where(wh => wh.DepartmentId == _user.DepartmentId
                              || SqlFunc.JsonArrayAny(wh.ParentIds, _user.DepartmentId ?? 0)
                              || customDepartmentIds.Contains(wh.DepartmentId))
@@ -78,11 +76,9 @@ public class OperateLogService : IDynamicApplication
         // 本机构及以下数据
         else if (_user.DataScopeType == DataScopeTypeEnum.OrgWithChild)
         {
-            List<long> departmentIds = await _adminRepository
-                .Queryable<DepartmentModel>()
+            List<long> departmentIds = await _adminRepository.Queryable<DepartmentModel>()
                 .Where(wh => wh.OrgId
-                             == SqlFunc
-                                 .Subqueryable<EmployeeOrgModel>()
+                             == SqlFunc.Subqueryable<EmployeeOrgModel>()
                                  // 主部门
                                  .Where(e => e.EmployeeId == _user.EmployeeId && e.IsPrimary)
                                  .Where(e => e.OrgId == wh.OrgId)
@@ -102,8 +98,7 @@ public class OperateLogService : IDynamicApplication
             queryable = queryable.Where(_ => false);
         }
 
-        return await queryable
-            .SplitTable()
+        return await queryable.SplitTable()
             .OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
             .ToPagedListAsync(input);
     }

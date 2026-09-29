@@ -45,9 +45,7 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        devCLMenuModel = await db
-            .Insertable(devCLMenuModel)
-            .ExecuteReturnEntityAsync();
+        devCLMenuModel = await db.Insertable(devCLMenuModel).ExecuteReturnEntityAsync();
 
         await SeedDevConfig(db, applicationModel, dateTime, devCLMenuModel);
         await SeedDevMenu(db, applicationModel, dateTime, devCLMenuModel);

@@ -61,9 +61,7 @@ public class CaptchaService : ICaptchaService, ISingletonDependency
     /// <inheritdoc />
     public async Task<(string captchaKey, string captchaImage)> GetImageCaptcha()
     {
-        string captchaKey = Guid
-            .NewGuid()
-            .ToString("N");
+        string captchaKey = Guid.NewGuid().ToString("N");
 
         // 生成验证码
         const string codeCharacters = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
@@ -117,126 +115,111 @@ public class CaptchaService : ICaptchaService, ISingletonDependency
         ];
         // 生成图片验证码
         using Image<Rgba32> image = ImageUtil.GenImage((canvas, font, _, _, width, height) =>
+        {
+            // 背景、纹理和后置干扰
+            canvas.Mutate(context =>
             {
-                // 背景、纹理和后置干扰
-                canvas.Mutate(context =>
+                // 设置背景
+                context.BackgroundColor(backgroundColor);
+                // 背景随机纹理
+                for (int index = 0; index < 18; index++)
                 {
-                    // 设置背景
-                    context.BackgroundColor(backgroundColor);
-                    // 背景随机纹理
-                    for (int index = 0; index < 18; index++)
-                    {
-                        Color color = backgroundPatternColors[RandomNumberGenerator.GetInt32(backgroundPatternColors.Length)];
-                        int radius = RandomNumberGenerator.GetInt32(4, 15);
-                        context.Fill(color,
-                            new EllipsePolygon(RandomNumberGenerator.GetInt32(width),
-                                RandomNumberGenerator.GetInt32(height),
-                                radius));
-                    }
+                    Color color = backgroundPatternColors[RandomNumberGenerator.GetInt32(backgroundPatternColors.Length)];
+                    int radius = RandomNumberGenerator.GetInt32(4, 15);
+                    context.Fill(color,
+                        new EllipsePolygon(RandomNumberGenerator.GetInt32(width), RandomNumberGenerator.GetInt32(height),
+                            radius));
+                }
 
-                    // 背景噪点
-                    for (int index = 0; index < 45; index++)
-                    {
-                        Color color = noiseColors[RandomNumberGenerator.GetInt32(noiseColors.Length)];
-                        int radius = RandomNumberGenerator.GetInt32(1, 3);
-                        context.Fill(color,
-                            new EllipsePolygon(RandomNumberGenerator.GetInt32(width),
-                                RandomNumberGenerator.GetInt32(height),
-                                radius));
-                    }
+                // 背景噪点
+                for (int index = 0; index < 45; index++)
+                {
+                    Color color = noiseColors[RandomNumberGenerator.GetInt32(noiseColors.Length)];
+                    int radius = RandomNumberGenerator.GetInt32(1, 3);
+                    context.Fill(color,
+                        new EllipsePolygon(RandomNumberGenerator.GetInt32(width), RandomNumberGenerator.GetInt32(height),
+                            radius));
+                }
 
-                    // 字符后面的直线干扰
-                    for (int index = 0; index < 6; index++)
-                    {
-                        Color color = lineColors[RandomNumberGenerator.GetInt32(lineColors.Length)];
-                        float thickness = RandomNumberGenerator.GetInt32(8, 16) / 10F;
-                        context.DrawLine(color,
-                            thickness,
-                            new PointF(RandomNumberGenerator.GetInt32(width), RandomNumberGenerator.GetInt32(height)),
-                            new PointF(RandomNumberGenerator.GetInt32(width), RandomNumberGenerator.GetInt32(height)));
-                    }
+                // 字符后面的直线干扰
+                for (int index = 0; index < 6; index++)
+                {
+                    Color color = lineColors[RandomNumberGenerator.GetInt32(lineColors.Length)];
+                    float thickness = RandomNumberGenerator.GetInt32(8, 16) / 10F;
+                    context.DrawLine(color, thickness,
+                        new PointF(RandomNumberGenerator.GetInt32(width), RandomNumberGenerator.GetInt32(height)),
+                        new PointF(RandomNumberGenerator.GetInt32(width), RandomNumberGenerator.GetInt32(height)));
+                }
 
-                    // 字符后面的Bezier曲线
-                    for (int index = 0; index < 2; index++)
-                    {
-                        Color color = lineColors[RandomNumberGenerator.GetInt32(lineColors.Length)];
-                        context.DrawBeziers(color,
-                            RandomNumberGenerator.GetInt32(10, 18) / 10F,
-                            new PointF(0, RandomNumberGenerator.GetInt32(height)),
-                            new PointF(RandomNumberGenerator.GetInt32(width / 4, width / 2),
-                                RandomNumberGenerator.GetInt32(height)),
-                            new PointF(RandomNumberGenerator.GetInt32(width / 2, width * 3 / 4),
-                                RandomNumberGenerator.GetInt32(height)),
-                            new PointF(width, RandomNumberGenerator.GetInt32(height)));
-                    }
+                // 字符后面的Bezier曲线
+                for (int index = 0; index < 2; index++)
+                {
+                    Color color = lineColors[RandomNumberGenerator.GetInt32(lineColors.Length)];
+                    context.DrawBeziers(color, RandomNumberGenerator.GetInt32(10, 18) / 10F,
+                        new PointF(0, RandomNumberGenerator.GetInt32(height)),
+                        new PointF(RandomNumberGenerator.GetInt32(width / 4, width / 2), RandomNumberGenerator.GetInt32(height)),
+                        new PointF(RandomNumberGenerator.GetInt32(width / 2, width * 3 / 4),
+                            RandomNumberGenerator.GetInt32(height)), new PointF(width, RandomNumberGenerator.GetInt32(height)));
+                }
 
-                    // 每个字符单独绘制、旋转后合成到主画布
-                    for (int index = 0; index < dto.VerificationCode.Length; index++)
+                // 每个字符单独绘制、旋转后合成到主画布
+                for (int index = 0; index < dto.VerificationCode.Length; index++)
+                {
+                    // 提前保存当前字符，避免Lambda捕获循环变量
+                    char character = dto.VerificationCode[index];
+                    Color textColor = textColors[RandomNumberGenerator.GetInt32(textColors.Length)];
+                    int fontSize = RandomNumberGenerator.GetInt32(25, 31);
+                    var characterFont = new Font(font, fontSize);
+                    // 创建单字符透明画布
+                    using var characterImage = new Image<Rgba32>(42, 48, new Rgba32(0, 0, 0, 0));
+                    characterImage.Mutate(characterContext =>
                     {
-                        // 提前保存当前字符，避免Lambda捕获循环变量
-                        char character = dto.VerificationCode[index];
-                        Color textColor = textColors[RandomNumberGenerator.GetInt32(textColors.Length)];
-                        int fontSize = RandomNumberGenerator.GetInt32(25, 31);
-                        var characterFont = new Font(font, fontSize);
-                        // 创建单字符透明画布
-                        using var characterImage = new Image<Rgba32>(42, 48, new Rgba32(0, 0, 0, 0));
-                        characterImage.Mutate(characterContext =>
-                        {
-                            characterContext.DrawText(character.ToString(),
-                                characterFont,
-                                textColor,
-                                new PointF(RandomNumberGenerator.GetInt32(5, 9), RandomNumberGenerator.GetInt32(2, 7)));
-                        });
-                        // 单字符随机旋转 -18° ~ 18°
-                        int angle = RandomNumberGenerator.GetInt32(-18, 19);
-                        characterImage.Mutate(characterContext => { characterContext.Rotate(angle); });
-                        // 根据旋转后尺寸修正坐标，避免整体向右下偏移
-                        int x = 1 + index * 31 + RandomNumberGenerator.GetInt32(-2, 4) - (characterImage.Width - 42) / 2;
-                        int y = -2 + RandomNumberGenerator.GetInt32(-2, 5) - (characterImage.Height - 48) / 2;
-                        // 直接绘制，不再通过Lambda捕获characterImage
-                        context.DrawImage(characterImage, new Point(x, y), 1F);
-                    }
+                        characterContext.DrawText(character.ToString(), characterFont, textColor,
+                            new PointF(RandomNumberGenerator.GetInt32(5, 9), RandomNumberGenerator.GetInt32(2, 7)));
+                    });
+                    // 单字符随机旋转 -18° ~ 18°
+                    int angle = RandomNumberGenerator.GetInt32(-18, 19);
+                    characterImage.Mutate(characterContext => { characterContext.Rotate(angle); });
+                    // 根据旋转后尺寸修正坐标，避免整体向右下偏移
+                    int x = 1 + index * 31 + RandomNumberGenerator.GetInt32(-2, 4) - (characterImage.Width - 42) / 2;
+                    int y = -2 + RandomNumberGenerator.GetInt32(-2, 5) - (characterImage.Height - 48) / 2;
+                    // 直接绘制，不再通过Lambda捕获characterImage
+                    context.DrawImage(characterImage, new Point(x, y), 1F);
+                }
 
-                    // 绘制字符前面的干扰层
-                    for (int index = 0; index < 5; index++)
-                    {
-                        Color color = lineColors[RandomNumberGenerator.GetInt32(lineColors.Length)];
-                        float thickness = RandomNumberGenerator.GetInt32(7, 14) / 10F;
-                        context.DrawLine(color,
-                            thickness,
-                            new PointF(RandomNumberGenerator.GetInt32(width), RandomNumberGenerator.GetInt32(height)),
-                            new PointF(RandomNumberGenerator.GetInt32(width), RandomNumberGenerator.GetInt32(height)));
-                    }
+                // 绘制字符前面的干扰层
+                for (int index = 0; index < 5; index++)
+                {
+                    Color color = lineColors[RandomNumberGenerator.GetInt32(lineColors.Length)];
+                    float thickness = RandomNumberGenerator.GetInt32(7, 14) / 10F;
+                    context.DrawLine(color, thickness,
+                        new PointF(RandomNumberGenerator.GetInt32(width), RandomNumberGenerator.GetInt32(height)),
+                        new PointF(RandomNumberGenerator.GetInt32(width), RandomNumberGenerator.GetInt32(height)));
+                }
 
-                    // 穿过字符的Bezier曲线
-                    for (int index = 0; index < 2; index++)
-                    {
-                        Color color = lineColors[RandomNumberGenerator.GetInt32(lineColors.Length)];
-                        context.DrawBeziers(color,
-                            RandomNumberGenerator.GetInt32(10, 17) / 10F,
-                            new PointF(0, RandomNumberGenerator.GetInt32(8, height - 8)),
-                            new PointF(RandomNumberGenerator.GetInt32(width / 5, width / 2),
-                                RandomNumberGenerator.GetInt32(height)),
-                            new PointF(RandomNumberGenerator.GetInt32(width / 2, width * 4 / 5),
-                                RandomNumberGenerator.GetInt32(height)),
-                            new PointF(width, RandomNumberGenerator.GetInt32(8, height - 8)));
-                    }
+                // 穿过字符的Bezier曲线
+                for (int index = 0; index < 2; index++)
+                {
+                    Color color = lineColors[RandomNumberGenerator.GetInt32(lineColors.Length)];
+                    context.DrawBeziers(color, RandomNumberGenerator.GetInt32(10, 17) / 10F,
+                        new PointF(0, RandomNumberGenerator.GetInt32(8, height - 8)),
+                        new PointF(RandomNumberGenerator.GetInt32(width / 5, width / 2), RandomNumberGenerator.GetInt32(height)),
+                        new PointF(RandomNumberGenerator.GetInt32(width / 2, width * 4 / 5),
+                            RandomNumberGenerator.GetInt32(height)),
+                        new PointF(width, RandomNumberGenerator.GetInt32(8, height - 8)));
+                }
 
-                    // 前景噪点，让部分噪点直接覆盖字符
-                    for (int index = 0; index < 40; index++)
-                    {
-                        Color color = noiseColors[RandomNumberGenerator.GetInt32(noiseColors.Length)];
-                        int radius = RandomNumberGenerator.GetInt32(1, 3);
-                        context.Fill(color,
-                            new EllipsePolygon(RandomNumberGenerator.GetInt32(width),
-                                RandomNumberGenerator.GetInt32(height),
-                                radius));
-                    }
-                });
-            },
-            132,
-            46,
-            28);
+                // 前景噪点，让部分噪点直接覆盖字符
+                for (int index = 0; index < 40; index++)
+                {
+                    Color color = noiseColors[RandomNumberGenerator.GetInt32(noiseColors.Length)];
+                    int radius = RandomNumberGenerator.GetInt32(1, 3);
+                    context.Fill(color,
+                        new EllipsePolygon(RandomNumberGenerator.GetInt32(width), RandomNumberGenerator.GetInt32(height),
+                            radius));
+                }
+            });
+        }, 132, 46, 28);
 
         return (captchaKey, $"data:image/png;base64,{await ImageUtil.ConvertToBase64Image(image)}");
     }

@@ -29,9 +29,8 @@ public static class DataScopeExtension
     /// <returns>应用数据权限过滤后的查询对象</returns>
     public static ISugarQueryable<TEntity> DataScope<TEntity>(this ISugarQueryable<TEntity> queryable,
         Expression<Func<TEntity, long?>> departmentIdFieldSelector = null,
-        Expression<Func<TEntity, long?>> userIdFieldSelector = null,
-        string menuCode = null,
-        bool allowPublicData = true) where TEntity : class, new()
+        Expression<Func<TEntity, long?>> userIdFieldSelector = null, string menuCode = null, bool allowPublicData = true)
+        where TEntity : class, new()
     {
         IUser _user = FastContext.GetService<IUser>();
 
@@ -60,9 +59,7 @@ public static class DataScopeExtension
         }
 
         // 多个自定义部门角色取部门Id并集，供其他数据范围分支合并使用
-        var departmentIds = (_user.DataScopeDepartmentIdList ?? [])
-            .Distinct()
-            .ToList();
+        var departmentIds = (_user.DataScopeDepartmentIdList ?? []).Distinct().ToList();
 
         Type entityType = typeof(TEntity);
         if (departmentIdFieldSelector == null)
@@ -111,11 +108,7 @@ public static class DataScopeExtension
             Expression<Func<TEntity, bool>> departmentExpression =
                 BuildContainsExpression(departmentIdFieldSelector, departmentIds);
             // 本人范围与各角色配置的自定义部门范围取并集
-            return queryable.Where(Expressionable
-                .Create<TEntity>()
-                .Or(expression)
-                .Or(departmentExpression)
-                .ToExpression());
+            return queryable.Where(Expressionable.Create<TEntity>().Or(expression).Or(departmentExpression).ToExpression());
         }
 
         // 本部门数据
@@ -127,25 +120,18 @@ public static class DataScopeExtension
             Expression<Func<TEntity, bool>> departmentExpression =
                 BuildContainsExpression(departmentIdFieldSelector, departmentIds);
             // 当前部门范围与各角色配置的自定义部门范围取并集
-            return queryable.Where(Expressionable
-                .Create<TEntity>()
-                .Or(expression)
-                .Or(departmentExpression)
-                .ToExpression());
+            return queryable.Where(Expressionable.Create<TEntity>().Or(expression).Or(departmentExpression).ToExpression());
         }
 
         // 本机构及以下数据
         if (_user.DataScopeType == DataScopeTypeEnum.OrgWithChild)
         {
             // 公开部门、当前职员主机构下部门及自定义部门共同组成可访问部门范围
-            ISugarQueryable<DepartmentModel> dataScopeQueryable = queryable
-                .Context.Queryable<DepartmentModel>()
-                .Where(Expressionable
-                    .Create<DepartmentModel>()
+            ISugarQueryable<DepartmentModel> dataScopeQueryable = queryable.Context.Queryable<DepartmentModel>()
+                .Where(Expressionable.Create<DepartmentModel>()
                     .OrIF(allowPublicData, e => e.DataPublic)
                     .Or(wh => wh.OrgId
-                              == SqlFunc
-                                  .Subqueryable<EmployeeOrgModel>()
+                              == SqlFunc.Subqueryable<EmployeeOrgModel>()
                                   // 主部门
                                   .Where(e => e.EmployeeId == employeeId && e.IsPrimary)
                                   .Where(e => e.OrgId == wh.OrgId)
@@ -161,10 +147,8 @@ public static class DataScopeExtension
         if (_user.DataScopeType == DataScopeTypeEnum.DeptWithChild)
         {
             // 公开部门、当前部门及其子部门、自定义部门共同组成可访问部门范围
-            ISugarQueryable<DepartmentModel> dataScopeQueryable = queryable
-                .Context.Queryable<DepartmentModel>()
-                .Where(Expressionable
-                    .Create<DepartmentModel>()
+            ISugarQueryable<DepartmentModel> dataScopeQueryable = queryable.Context.Queryable<DepartmentModel>()
+                .Where(Expressionable.Create<DepartmentModel>()
                     .OrIF(allowPublicData, e => e.DataPublic)
                     .Or(wh => wh.DepartmentId == departmentId)
                     .Or(wh => SqlFunc.JsonArrayAny(wh.ParentIds, departmentId))
@@ -206,21 +190,15 @@ public static class DataScopeExtension
     /// 构造字段 IN 指定Id集合的条件
     /// </summary>
     private static Expression<Func<TEntity, bool>> BuildContainsExpression<TEntity>(
-        Expression<Func<TEntity, long?>> fieldSelector,
-        IEnumerable<long> ids)
+        Expression<Func<TEntity, long?>> fieldSelector, IEnumerable<long> ids)
     {
         ParameterExpression parameter = fieldSelector.Parameters[0];
         Expression operand = fieldSelector.Body is UnaryExpression unary ? unary.Operand : fieldSelector.Body;
 
-        var nullableIds = ids
-            .Select(id => (long?)id)
-            .ToList();
+        var nullableIds = ids.Select(id => (long?)id).ToList();
 
-        MethodCallExpression contains = Expression.Call(typeof(Enumerable),
-            nameof(Enumerable.Contains),
-            [typeof(long?)],
-            Expression.Constant(nullableIds),
-            Expression.Convert(operand, typeof(long?)));
+        MethodCallExpression contains = Expression.Call(typeof(Enumerable), nameof(Enumerable.Contains), [typeof(long?)],
+            Expression.Constant(nullableIds), Expression.Convert(operand, typeof(long?)));
 
         return Expression.Lambda<Func<TEntity, bool>>(contains, parameter);
     }
@@ -229,8 +207,8 @@ public static class DataScopeExtension
     /// 构建 InnerJoin 表达式
     /// </summary>
     private static ISugarQueryable<TEntity> BuildInnerJoin<TEntity>(ISugarQueryable<TEntity> queryable,
-        Expression<Func<TEntity, long?>> departmentIdFieldSelector,
-        ISugarQueryable<DepartmentModel> dataScopeQueryable) where TEntity : class, new()
+        Expression<Func<TEntity, long?>> departmentIdFieldSelector, ISugarQueryable<DepartmentModel> dataScopeQueryable)
+        where TEntity : class, new()
     {
         // 获取业务实体的部门Id字段表达式
         ParameterExpression leftParameter = departmentIdFieldSelector.Parameters[0];

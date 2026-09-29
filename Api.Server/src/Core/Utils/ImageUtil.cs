@@ -56,11 +56,8 @@ public static class ImageUtil
     /// <param name="fontSize">文字大小</param>
     /// <param name="lineHeight">行高</param>
     /// <returns>生成的图片</returns>
-    public static Image<Rgba32> GenImage(Action<Image<Rgba32>, Font, Color, int, int, int> drawAction,
-        int width = 450,
-        int height = 750,
-        float fontSize = 16f,
-        int? lineHeight = null)
+    public static Image<Rgba32> GenImage(Action<Image<Rgba32>, Font, Color, int, int, int> drawAction, int width = 450,
+        int height = 750, float fontSize = 16f, int? lineHeight = null)
     {
         lineHeight ??= DefaultLineHeight;
 
@@ -132,8 +129,7 @@ public static class ImageUtil
     public static float GetFontWidthByContent(string content, Font font)
     {
         // 获取要渲染的文字宽度
-        return TextMeasurer.MeasureSize(content, new TextOptions(font))
-            .Width;
+        return TextMeasurer.MeasureSize(content, new TextOptions(font)).Width;
     }
 
     /// <summary>
@@ -147,13 +143,8 @@ public static class ImageUtil
     /// <param name="fontSize">文字大小</param>
     /// <param name="drawAction">操作 drawAction(image, font, color, lineHeight, width, height)</param>
     /// <returns>生成的 Code 128 条形码</returns>
-    public static Image GenBarCode_128(string content,
-        int width = 200,
-        int height = 200,
-        int dWidth = 300,
-        bool showContent = true,
-        float fontSize = 16f,
-        Action<Image<Rgba32>, Font, Color, int, int, int> drawAction = null)
+    public static Image GenBarCode_128(string content, int width = 200, int height = 200, int dWidth = 300,
+        bool showContent = true, float fontSize = 16f, Action<Image<Rgba32>, Font, Color, int, int, int> drawAction = null)
     {
         return GenQrOrBarCode(BarcodeFormat.CODE_128, content, width, height, dWidth, showContent, fontSize, drawAction);
     }
@@ -166,9 +157,7 @@ public static class ImageUtil
     /// <param name="height">二维码高度</param>
     /// <param name="drawAction">操作 drawAction(image, font, color, lineHeight, width, height)</param>
     /// <returns>生成的 QR Code 二维码</returns>
-    public static Image GenQrCode(string content,
-        int width = 200,
-        int height = 200,
+    public static Image GenQrCode(string content, int width = 200, int height = 200,
         Action<Image<Rgba32>, Font, Color, int, int, int> drawAction = null)
     {
         return GenQrOrBarCode(BarcodeFormat.QR_CODE, content, width, height, width, false, 16f, drawAction);
@@ -178,13 +167,8 @@ public static class ImageUtil
     /// 生成条码或二维码
     /// </summary>
     /// <returns>生成的条码或二维码</returns>
-    private static Image GenQrOrBarCode(BarcodeFormat barcodeFormat,
-        string content,
-        int width = 100,
-        int height = 100,
-        int dWidth = 100,
-        bool showContent = true,
-        float fontSize = 16f,
+    private static Image GenQrOrBarCode(BarcodeFormat barcodeFormat, string content, int width = 100, int height = 100,
+        int dWidth = 100, bool showContent = true, float fontSize = 16f,
         Action<Image<Rgba32>, Font, Color, int, int, int> drawAction = null)
     {
         var barcodeWriterPixelData = new BarcodeWriter<PixelData>
@@ -241,29 +225,24 @@ public static class ImageUtil
 
             // 写入详情文本，居中
             using Image<Rgba32> loadPixelData = GenImage((image, _, _, _, _, _) =>
+            {
+                // 获取条形码图片
+                var barcodeImage = Image.LoadPixelData<Rgba32>(pixelData.Pixels, pixelData.Width, pixelData.Height);
+
+                // 绘制条形码
+                image.Mutate(ctx =>
                 {
-                    // 获取条形码图片
-                    var barcodeImage = Image.LoadPixelData<Rgba32>(pixelData.Pixels, pixelData.Width, pixelData.Height);
-
                     // 绘制条形码
-                    image.Mutate(ctx =>
-                    {
-                        // 绘制条形码
-                        ctx.DrawImage(barcodeImage, new Point((dWidth - pixelData.Width) / 2, 0), 1f);
+                    ctx.DrawImage(barcodeImage, new Point((dWidth - pixelData.Width) / 2, 0), 1f);
 
-                        // 将文字写入底图中，文字居中显示
-                        ctx.DrawText(content,
-                            textFont,
-                            color,
-                            new PointF((dWidth - GetFontWidthByContent(content, textFont)) / 2, textY));
-                    });
+                    // 将文字写入底图中，文字居中显示
+                    ctx.DrawText(content, textFont, color,
+                        new PointF((dWidth - GetFontWidthByContent(content, textFont)) / 2, textY));
+                });
 
-                    // 其余操作
-                    drawAction?.Invoke(image, textFont, color, DefaultLineHeight, dWidth, dHeight);
-                },
-                dWidth,
-                dHeight,
-                fontSize);
+                // 其余操作
+                drawAction?.Invoke(image, textFont, color, DefaultLineHeight, dWidth, dHeight);
+            }, dWidth, dHeight, fontSize);
 
             // 这里克隆一份，避免被提前释放
             return loadPixelData.Clone();
@@ -271,23 +250,20 @@ public static class ImageUtil
         else
         {
             using Image<Rgba32> loadPixelData = GenImage((image, _, _, _, _, _) =>
+            {
+                // 获取条形码图片
+                var barcodeImage = Image.LoadPixelData<Rgba32>(pixelData.Pixels, pixelData.Width, pixelData.Height);
+
+                // 绘制条形码
+                image.Mutate(ctx =>
                 {
-                    // 获取条形码图片
-                    var barcodeImage = Image.LoadPixelData<Rgba32>(pixelData.Pixels, pixelData.Width, pixelData.Height);
-
                     // 绘制条形码
-                    image.Mutate(ctx =>
-                    {
-                        // 绘制条形码
-                        ctx.DrawImage(barcodeImage, new Point((dWidth - pixelData.Width) / 2, 0), 1f);
-                    });
+                    ctx.DrawImage(barcodeImage, new Point((dWidth - pixelData.Width) / 2, 0), 1f);
+                });
 
-                    // 其余操作
-                    drawAction?.Invoke(image, textFont, color, DefaultLineHeight, dWidth, height);
-                },
-                dWidth,
-                height,
-                fontSize);
+                // 其余操作
+                drawAction?.Invoke(image, textFont, color, DefaultLineHeight, dWidth, height);
+            }, dWidth, height, fontSize);
 
             // 这里克隆一份，避免被提前释放
             return loadPixelData.Clone();

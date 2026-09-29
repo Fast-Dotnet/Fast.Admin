@@ -45,9 +45,7 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        apiCLMenuModel = await db
-            .Insertable(apiCLMenuModel)
-            .ExecuteReturnEntityAsync();
+        apiCLMenuModel = await db.Insertable(apiCLMenuModel).ExecuteReturnEntityAsync();
 
         #region Api
 
@@ -80,11 +78,8 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        apiMenuModel = await db
-            .Insertable(apiMenuModel)
-            .ExecuteReturnEntityAsync();
-        await db
-            .Insertable(new ButtonModel
+        apiMenuModel = await db.Insertable(apiMenuModel).ExecuteReturnEntityAsync();
+        await db.Insertable(new ButtonModel
             {
                 ButtonId = YitIdHelper.NextId(),
                 Edition = EditionEnum.Internal,
@@ -102,8 +97,7 @@ internal static partial class MenuSeedData
             })
             .ExecuteCommandAsync();
 
-        await db
-            .Insertable(new List<MenuModel>
+        await db.Insertable(new List<MenuModel>
             {
                 new()
                 {

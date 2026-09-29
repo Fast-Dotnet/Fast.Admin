@@ -33,12 +33,12 @@ public class ExcelImportResult<T> where T : class, new()
     public override string ToString()
     {
         if (Errors == null || Errors.Count == 0)
+        {
             return string.Empty;
+        }
 
         return string.Join(Environment.NewLine,
-            Errors
-                .OrderBy(e => e.RowIndex)
-                .Select(e => $"第 {e.RowIndex} 行，{e.ErrorMessage}"));
+            Errors.OrderBy(e => e.RowIndex).Select(e => $"第 {e.RowIndex} 行，{e.ErrorMessage}"));
     }
 
     /// <summary>
@@ -47,7 +47,9 @@ public class ExcelImportResult<T> where T : class, new()
     public void ThrowIfError()
     {
         if (!HasError)
+        {
             return;
+        }
 
         throw new UserFriendlyException(ToString());
     }

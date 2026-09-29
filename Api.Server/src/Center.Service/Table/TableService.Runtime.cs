@@ -22,16 +22,12 @@ public partial class TableService
     {
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.TableConfig, tableKey);
 
-        return await _centerCache.GetAndSetAsync(cacheKey,
-            async () =>
-            {
-                return await _tableRepository
-                    .Entities.Includes(e => e
-                        .TableColumnConfigList.OrderBy(ob => ob.Order)
-                        .ToList())
-                    .Where(wh => wh.TableKey == tableKey)
-                    .SingleAsync();
-            });
+        return await _centerCache.GetAndSetAsync(cacheKey, async () =>
+        {
+            return await _tableRepository.Entities.Includes(e => e.TableColumnConfigList.OrderBy(ob => ob.Order).ToList())
+                .Where(wh => wh.TableKey == tableKey)
+                .SingleAsync();
+        });
     }
 
     /// <summary>
@@ -42,14 +38,13 @@ public partial class TableService
     {
         string cacheKey =
             CacheConst.GetCacheKey(CacheConst.Center.UserTableConfigCache, tableKey, _user.TenantNo, _user.EmployeeNo);
-        return await _centerCache.GetAndSetAsync(cacheKey,
-                   async () =>
-                   {
-                       return await _columnCacheRepository
-                           .Entities.Where(wh => wh.UserId == _user.EmployeeId && wh.TableId == tableId)
-                           .OrderBy(ob => ob.Order)
-                           .ToListAsync();
-                   })
+        return await _centerCache.GetAndSetAsync(cacheKey, async () =>
+               {
+                   return await _columnCacheRepository.Entities
+                       .Where(wh => wh.UserId == _user.EmployeeId && wh.TableId == tableId)
+                       .OrderBy(ob => ob.Order)
+                       .ToListAsync();
+               })
                ?? [];
     }
 
@@ -79,8 +74,8 @@ public partial class TableService
         // 权限判断
         if (!_user.IsSuperAdmin)
         {
-            tableConfigModel.TableColumnConfigList = tableConfigModel
-                .TableColumnConfigList.Where(wh => !wh.AuthTag.Any() || wh.AuthTag.Any(a => _user.ButtonCodeList.Contains(a)))
+            tableConfigModel.TableColumnConfigList = tableConfigModel.TableColumnConfigList
+                .Where(wh => !wh.AuthTag.Any() || wh.AuthTag.Any(a => _user.ButtonCodeList.Contains(a)))
                 .ToList();
         }
 
@@ -221,8 +216,7 @@ public partial class TableService
             result.Change = tableConfigModel.UpdatedTime > result.UpdatedTime;
 
             // 深拷贝一份
-            result.CacheColumns = result
-                .Columns.Select(IDictionary<string, object> (sl) => new Dictionary<string, object>(sl))
+            result.CacheColumns = result.Columns.Select(IDictionary<string, object> (sl) => new Dictionary<string, object>(sl))
                 .ToList();
 
             // 循环缓存数据
@@ -231,33 +225,23 @@ public partial class TableService
                 int columnIdx = result.CacheColumns.FindIndex(f => $"{f["columnId"]}" == item.ColumnId.ToString());
 
                 if (columnIdx == -1)
-                    continue;
-
-                result
-                    .CacheColumns[columnIdx]["label"] = string.IsNullOrWhiteSpace(item.Label) ? null : item.Label;
-                result
-                    .CacheColumns[columnIdx]["fixed"] = string.IsNullOrWhiteSpace(item.Fixed) ? false : item.Fixed;
-                result
-                    .CacheColumns[columnIdx]["autoWidth"] = item.AutoWidth;
-                result
-                    .CacheColumns[columnIdx]["width"] = item.Width;
-                result
-                    .CacheColumns[columnIdx]["smallWidth"] = item.SmallWidth;
-                result
-                    .CacheColumns[columnIdx]["order"] = item.Order;
-                result
-                    .CacheColumns[columnIdx]["show"] = item.Show;
-                result
-                    .CacheColumns[columnIdx]["copy"] = item.Copy;
-                result
-                    .CacheColumns[columnIdx]["sortable"] = item.Sortable;
-
-                if (result
-                    .CacheColumns[columnIdx]
-                    .ContainsKey("search"))
                 {
-                    if (result
-                            .CacheColumns[columnIdx]["search"] is JObject searchJObject)
+                    continue;
+                }
+
+                result.CacheColumns[columnIdx]["label"] = string.IsNullOrWhiteSpace(item.Label) ? null : item.Label;
+                result.CacheColumns[columnIdx]["fixed"] = string.IsNullOrWhiteSpace(item.Fixed) ? false : item.Fixed;
+                result.CacheColumns[columnIdx]["autoWidth"] = item.AutoWidth;
+                result.CacheColumns[columnIdx]["width"] = item.Width;
+                result.CacheColumns[columnIdx]["smallWidth"] = item.SmallWidth;
+                result.CacheColumns[columnIdx]["order"] = item.Order;
+                result.CacheColumns[columnIdx]["show"] = item.Show;
+                result.CacheColumns[columnIdx]["copy"] = item.Copy;
+                result.CacheColumns[columnIdx]["sortable"] = item.Sortable;
+
+                if (result.CacheColumns[columnIdx].ContainsKey("search"))
+                {
+                    if (result.CacheColumns[columnIdx]["search"] is JObject searchJObject)
                     {
                         var newSearchDic = new Dictionary<string, object>();
                         foreach (JProperty property in searchJObject.Properties())
@@ -268,15 +252,12 @@ public partial class TableService
                         newSearchDic["label"] = string.IsNullOrWhiteSpace(item.SearchLabel) ? null : item.SearchLabel;
                         newSearchDic["order"] = item.SearchOrder;
 
-                        result
-                            .CacheColumns[columnIdx]["search"] = JObject.FromObject(newSearchDic);
+                        result.CacheColumns[columnIdx]["search"] = JObject.FromObject(newSearchDic);
                     }
                 }
             }
 
-            result.CacheColumns = result
-                .CacheColumns.OrderBy(ob => ob["order"])
-                .ToList();
+            result.CacheColumns = result.CacheColumns.OrderBy(ob => ob["order"]).ToList();
         }
 
         return result;

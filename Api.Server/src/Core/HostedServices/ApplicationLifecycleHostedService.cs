@@ -37,9 +37,7 @@ public class ApplicationLifecycleHostedService : IHostedLifecycleService
     /// <summary>
     /// 应用程序生命周期托管服务
     /// </summary>
-    public ApplicationLifecycleHostedService(IMailService mailService,
-        IHostEnvironment hostEnvironment,
-        IServer server,
+    public ApplicationLifecycleHostedService(IMailService mailService, IHostEnvironment hostEnvironment, IServer server,
         ILogger<ApplicationLifecycleHostedService> logger)
     {
         _mailService = mailService;
@@ -65,20 +63,27 @@ public class ApplicationLifecycleHostedService : IHostedLifecycleService
     {
         _started = true;
 
-        ICollection<string> addresses = _server.Features.Get<IServerAddressesFeature>()
-            ?.Addresses;
+        ICollection<string> addresses = _server.Features.Get<IServerAddressesFeature>()?.Addresses;
         string address = addresses is {Count: > 0}
-            ? string.Join("，",
-                addresses.Select(item =>
+            ? string.Join("，", addresses.Select(item =>
+            {
+                if (item.Contains("://[::]", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (item.Contains("://[::]", StringComparison.OrdinalIgnoreCase))
-                        return item.Replace("://[::]", "://127.0.0.1", StringComparison.OrdinalIgnoreCase);
-                    if (item.Contains("://0.0.0.0", StringComparison.OrdinalIgnoreCase))
-                        return item.Replace("://0.0.0.0", "://127.0.0.1", StringComparison.OrdinalIgnoreCase);
-                    if (item.Contains("://*", StringComparison.OrdinalIgnoreCase))
-                        return item.Replace("://*", "://127.0.0.1", StringComparison.OrdinalIgnoreCase);
-                    return item;
-                }))
+                    return item.Replace("://[::]", "://127.0.0.1", StringComparison.OrdinalIgnoreCase);
+                }
+
+                if (item.Contains("://0.0.0.0", StringComparison.OrdinalIgnoreCase))
+                {
+                    return item.Replace("://0.0.0.0", "://127.0.0.1", StringComparison.OrdinalIgnoreCase);
+                }
+
+                if (item.Contains("://*", StringComparison.OrdinalIgnoreCase))
+                {
+                    return item.Replace("://*", "://127.0.0.1", StringComparison.OrdinalIgnoreCase);
+                }
+
+                return item;
+            }))
             : "未知";
         await SendNotification("程序启动通知", $"{_hostEnvironment.ApplicationName} 已启动", address);
     }
@@ -129,16 +134,11 @@ public class ApplicationLifecycleHostedService : IHostedLifecycleService
                 .Where(wh => configCodes.Contains(wh.ConfigCode))
                 .ToListAsync();
 
-            string smtp = configList.SingleOrDefault(s => s.ConfigCode == ConfigConst.MailSmtp)
-                ?.ConfigValue;
-            string portValue = configList.SingleOrDefault(s => s.ConfigCode == ConfigConst.MailPort)
-                ?.ConfigValue;
-            string email = configList.SingleOrDefault(s => s.ConfigCode == ConfigConst.MailEmail)
-                ?.ConfigValue;
-            string authCode = configList.SingleOrDefault(s => s.ConfigCode == ConfigConst.MailAuthCode)
-                ?.ConfigValue;
-            string displayName = configList.SingleOrDefault(s => s.ConfigCode == ConfigConst.MailDisplayName)
-                                     ?.ConfigValue
+            string smtp = configList.SingleOrDefault(s => s.ConfigCode == ConfigConst.MailSmtp)?.ConfigValue;
+            string portValue = configList.SingleOrDefault(s => s.ConfigCode == ConfigConst.MailPort)?.ConfigValue;
+            string email = configList.SingleOrDefault(s => s.ConfigCode == ConfigConst.MailEmail)?.ConfigValue;
+            string authCode = configList.SingleOrDefault(s => s.ConfigCode == ConfigConst.MailAuthCode)?.ConfigValue;
+            string displayName = configList.SingleOrDefault(s => s.ConfigCode == ConfigConst.MailDisplayName)?.ConfigValue
                                  ?? "FastDotnet";
             // 配置为空直接退出，避免报错
             if (string.IsNullOrWhiteSpace(smtp)
@@ -157,14 +157,8 @@ public class ApplicationLifecycleHostedService : IHostedLifecycleService
                               {(address != null ? $"<p>地址：{address}</p>" : string.Empty)}
                               <p>时间：{DateTime.Now:yyyy-MM-dd HH:mm:ss zzz}</p>
                               """;
-            await _mailService.SendEmail(title,
-                await _mailService.GetEmailTemplate(title, content, displayName: displayName),
-                [ReceiveEmail],
-                smtp,
-                port,
-                email,
-                authCode,
-                displayName);
+            await _mailService.SendEmail(title, await _mailService.GetEmailTemplate(title, content, displayName: displayName),
+                [ReceiveEmail], smtp, port, email, authCode, displayName);
         }
         catch (Exception ex)
         {

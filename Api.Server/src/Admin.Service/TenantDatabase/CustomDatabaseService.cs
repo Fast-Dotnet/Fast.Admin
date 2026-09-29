@@ -19,9 +19,7 @@ public partial class TenantDatabaseService
     /// 初始化数据库（自定义）
     /// </summary>
     [NonAction]
-    public async Task InitCustomDatabase(TenantModel tenantModel,
-        DatabaseTypeEnum databaseType,
-        ISqlSugarClient db,
+    public async Task InitCustomDatabase(TenantModel tenantModel, DatabaseTypeEnum databaseType, ISqlSugarClient db,
         ISqlSugarClient newDb)
     {
         switch (databaseType)

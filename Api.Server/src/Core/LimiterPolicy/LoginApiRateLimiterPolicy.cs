@@ -18,8 +18,7 @@ internal sealed class LoginApiRateLimiterPolicy : ApiRateLimiterPolicy
     /// 登录 API 限流规则
     /// </summary>
     public LoginApiRateLimiterPolicy(IOptions<ApiRateLimitSettingsOptions> options) : base("login-client",
-        options.Value.LoginPermitLimit.GetValueOrDefault(10),
-        options.Value.WindowSeconds.GetValueOrDefault(60))
+        options.Value.LoginPermitLimit.GetValueOrDefault(10), options.Value.WindowSeconds.GetValueOrDefault(60))
     {
     }
 }

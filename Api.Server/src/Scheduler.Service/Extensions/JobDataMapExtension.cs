@@ -151,8 +151,7 @@ public static class JobDataMapExtension
             return null;
         }
 
-        return DateTime.Parse(jobData[key]
-            .ToString());
+        return DateTime.Parse(jobData[key].ToString());
     }
 
     /// <summary>
@@ -173,7 +172,6 @@ public static class JobDataMapExtension
             return null;
         }
 
-        return Convert.ToBoolean(jobData[key]
-            .ToString());
+        return Convert.ToBoolean(jobData[key].ToString());
     }
 }

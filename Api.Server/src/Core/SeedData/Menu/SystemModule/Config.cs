@@ -45,9 +45,7 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        configCLMenuModel = await db
-            .Insertable(configCLMenuModel)
-            .ExecuteReturnEntityAsync();
+        configCLMenuModel = await db.Insertable(configCLMenuModel).ExecuteReturnEntityAsync();
 
         #region 单号配置
 
@@ -79,11 +77,8 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        serialMenuModel = await db
-            .Insertable(serialMenuModel)
-            .ExecuteReturnEntityAsync();
-        await db
-            .Insertable(new List<ButtonModel>
+        serialMenuModel = await db.Insertable(serialMenuModel).ExecuteReturnEntityAsync();
+        await db.Insertable(new List<ButtonModel>
             {
                 new()
                 {

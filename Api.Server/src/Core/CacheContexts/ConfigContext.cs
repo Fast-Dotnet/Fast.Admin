@@ -41,33 +41,30 @@ public class ConfigContext
 
         HttpContext httpContext = FastContext.HttpContext;
         // 优先从 HttpContext.Items 中获取
-        string configValue = httpContext
-            ?.Items[$"{nameof(Fast)}.{nameof(ConfigModel.ConfigCode)}.{configCode}"]
-            ?.ToString();
+        string configValue = httpContext?.Items[$"{nameof(Fast)}.{nameof(ConfigModel.ConfigCode)}.{configCode}"]?.ToString();
 
         if (!string.IsNullOrWhiteSpace(configValue))
+        {
             return configValue;
+        }
 
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.Config, configCode);
 
-        ConfigModel configModel = centerCache.GetAndSet(cacheKey,
-            () =>
+        ConfigModel configModel = centerCache.GetAndSet(cacheKey, () =>
+        {
+            ISqlSugarRepository<ConfigModel> repository = FastContext.GetService<ISqlSugarRepository<ConfigModel>>();
+
+            ConfigModel result = repository.Entities.Where(wh => wh.ConfigCode == configCode).Single();
+
+            if (result == null)
             {
-                ISqlSugarRepository<ConfigModel> repository = FastContext.GetService<ISqlSugarRepository<ConfigModel>>();
+                string message = $"未能找到对应配置【{configCode}】信息！";
+                logger.LogError($"ConfigCode：{configCode}；{message}");
+                throw new UserFriendlyException(message);
+            }
 
-                ConfigModel result = repository
-                    .Entities.Where(wh => wh.ConfigCode == configCode)
-                    .Single();
-
-                if (result == null)
-                {
-                    string message = $"未能找到对应配置【{configCode}】信息！";
-                    logger.LogError($"ConfigCode：{configCode}；{message}");
-                    throw new UserFriendlyException(message);
-                }
-
-                return result;
-            });
+            return result;
+        });
 
         if (httpContext != null)
         {
@@ -98,33 +95,30 @@ public class ConfigContext
 
         HttpContext httpContext = FastContext.HttpContext;
         // 优先从 HttpContext.Items 中获取
-        string configValue = httpContext
-            ?.Items[$"{nameof(Fast)}.{nameof(ConfigModel.ConfigCode)}.{configCode}"]
-            ?.ToString();
+        string configValue = httpContext?.Items[$"{nameof(Fast)}.{nameof(ConfigModel.ConfigCode)}.{configCode}"]?.ToString();
 
         if (!string.IsNullOrWhiteSpace(configValue))
+        {
             return configValue;
+        }
 
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.Config, configCode);
 
-        ConfigModel configModel = await centerCache.GetAndSetAsync(cacheKey,
-            async () =>
+        ConfigModel configModel = await centerCache.GetAndSetAsync(cacheKey, async () =>
+        {
+            ISqlSugarRepository<ConfigModel> repository = FastContext.GetService<ISqlSugarRepository<ConfigModel>>();
+
+            ConfigModel result = await repository.Entities.Where(wh => wh.ConfigCode == configCode).SingleAsync();
+
+            if (result == null)
             {
-                ISqlSugarRepository<ConfigModel> repository = FastContext.GetService<ISqlSugarRepository<ConfigModel>>();
+                string message = $"未能找到对应配置【{configCode}】信息！";
+                logger.LogError($"ConfigCode：{configCode}；{message}");
+                throw new UserFriendlyException(message);
+            }
 
-                ConfigModel result = await repository
-                    .Entities.Where(wh => wh.ConfigCode == configCode)
-                    .SingleAsync();
-
-                if (result == null)
-                {
-                    string message = $"未能找到对应配置【{configCode}】信息！";
-                    logger.LogError($"ConfigCode：{configCode}；{message}");
-                    throw new UserFriendlyException(message);
-                }
-
-                return result;
-            });
+            return result;
+        });
 
         if (httpContext != null)
         {
@@ -176,8 +170,8 @@ public class ConfigContext
         if (httpContext != null)
         {
             // 清空 HttpContext.Items 中的
-            var keys = httpContext
-                .Items.Keys.Where(wh => wh is string key && key.StartsWith($"{nameof(Fast)}.{nameof(ConfigModel.ConfigCode)}."))
+            var keys = httpContext.Items.Keys
+                .Where(wh => wh is string key && key.StartsWith($"{nameof(Fast)}.{nameof(ConfigModel.ConfigCode)}."))
                 .ToList();
             foreach (object key in keys)
             {

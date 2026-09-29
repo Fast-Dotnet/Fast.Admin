@@ -35,20 +35,14 @@ public partial class RoleService : IDynamicApplication
     /// <returns>去重并验证后的可分配角色Id集合</returns>
     private async Task<List<long>> NormalizeAssignableRoleIds(long roleId, List<long> roleIds)
     {
-        var result = (roleIds ?? [])
-            .Distinct()
-            .ToList();
+        var result = (roleIds ?? []).Distinct().ToList();
         if (result.Contains(roleId))
         {
             throw new UserFriendlyException("可分配角色不能包含角色自身！");
         }
 
         if (result.Count > 0
-            && await _repository
-                .Queryable<RoleModel>()
-                .Where(wh => result.Contains(wh.RoleId))
-                .CountAsync()
-            != result.Count)
+            && await _repository.Queryable<RoleModel>().Where(wh => result.Contains(wh.RoleId)).CountAsync() != result.Count)
         {
             throw new UserFriendlyException("可分配角色数据不存在！");
         }
@@ -67,14 +61,9 @@ public partial class RoleService : IDynamicApplication
             return [];
         }
 
-        var result = (departmentIds ?? [])
-            .Distinct()
-            .ToList();
+        var result = (departmentIds ?? []).Distinct().ToList();
         if (result.Count > 0
-            && await _repository
-                .Queryable<DepartmentModel>()
-                .Where(wh => result.Contains(wh.DepartmentId))
-                .CountAsync()
+            && await _repository.Queryable<DepartmentModel>().Where(wh => result.Contains(wh.DepartmentId)).CountAsync()
             != result.Count)
         {
             throw new UserFriendlyException("自定义数据范围部门不存在！");
@@ -104,8 +93,7 @@ public partial class RoleService : IDynamicApplication
     /// </summary>
     private async Task RevokeRoleEmployees(long roleId)
     {
-        List<long> employeeIds = await _repository
-            .Queryable<EmployeeRoleModel>()
+        List<long> employeeIds = await _repository.Queryable<EmployeeRoleModel>()
             .Where(wh => wh.RoleId == roleId)
             .Select(sl => sl.EmployeeId)
             .Distinct()
@@ -115,8 +103,7 @@ public partial class RoleService : IDynamicApplication
             return;
         }
 
-        List<string> employeeNos = await _repository
-            .Queryable<EmployeeModel>()
+        List<string> employeeNos = await _repository.Queryable<EmployeeModel>()
             .Where(wh => employeeIds.Contains(wh.EmployeeId))
             .Select(sl => sl.EmployeeNo)
             .ToListAsync();

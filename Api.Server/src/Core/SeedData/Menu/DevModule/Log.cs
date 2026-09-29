@@ -45,9 +45,7 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        logCLMenuModel = await db
-            .Insertable(logCLMenuModel)
-            .ExecuteReturnEntityAsync();
+        logCLMenuModel = await db.Insertable(logCLMenuModel).ExecuteReturnEntityAsync();
 
         #region 异常日志
 
@@ -79,11 +77,8 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        exceptionLogMenuModel = await db
-            .Insertable(exceptionLogMenuModel)
-            .ExecuteReturnEntityAsync();
-        await db
-            .Insertable(new List<ButtonModel>
+        exceptionLogMenuModel = await db.Insertable(exceptionLogMenuModel).ExecuteReturnEntityAsync();
+        await db.Insertable(new List<ButtonModel>
             {
                 new()
                 {
@@ -136,11 +131,8 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        sqlExceptionLogMenuModel = await db
-            .Insertable(sqlExceptionLogMenuModel)
-            .ExecuteReturnEntityAsync();
-        await db
-            .Insertable(new List<ButtonModel>
+        sqlExceptionLogMenuModel = await db.Insertable(sqlExceptionLogMenuModel).ExecuteReturnEntityAsync();
+        await db.Insertable(new List<ButtonModel>
             {
                 new()
                 {
@@ -193,11 +185,8 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        sqlTimeoutLogMenuModel = await db
-            .Insertable(sqlTimeoutLogMenuModel)
-            .ExecuteReturnEntityAsync();
-        await db
-            .Insertable(new List<ButtonModel>
+        sqlTimeoutLogMenuModel = await db.Insertable(sqlTimeoutLogMenuModel).ExecuteReturnEntityAsync();
+        await db.Insertable(new List<ButtonModel>
             {
                 new()
                 {
@@ -250,11 +239,8 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        sqlExecutionLogMenuModel = await db
-            .Insertable(sqlExecutionLogMenuModel)
-            .ExecuteReturnEntityAsync();
-        await db
-            .Insertable(new List<ButtonModel>
+        sqlExecutionLogMenuModel = await db.Insertable(sqlExecutionLogMenuModel).ExecuteReturnEntityAsync();
+        await db.Insertable(new List<ButtonModel>
             {
                 new()
                 {
@@ -307,11 +293,8 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        sqlDiffLogMenuModel = await db
-            .Insertable(sqlDiffLogMenuModel)
-            .ExecuteReturnEntityAsync();
-        await db
-            .Insertable(new List<ButtonModel>
+        sqlDiffLogMenuModel = await db.Insertable(sqlDiffLogMenuModel).ExecuteReturnEntityAsync();
+        await db.Insertable(new List<ButtonModel>
             {
                 new()
                 {

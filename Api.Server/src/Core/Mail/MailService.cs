@@ -47,18 +47,18 @@ public class MailService : IMailService, ISingletonDependency
     /// <inheritdoc />
     public async Task<string> GetEmailTemplate(string title, string msg, string type = null, string displayName = null)
     {
-        (string accentColor, string badgeBackgroundColor, string badgeText) = type
-                ?.Trim()
-                .ToLowerInvariant() switch
-            {
-                "warn" => ("#d97706", "#fff7ed", "重要提醒"),
-                "error" => ("#dc2626", "#fef2f2", "异常通知"),
-                _ => ("#2563eb", "#eff6ff", "系统通知")
-            };
+        (string accentColor, string badgeBackgroundColor, string badgeText) = type?.Trim().ToLowerInvariant() switch
+        {
+            "warn" => ("#d97706", "#fff7ed", "重要提醒"),
+            "error" => ("#dc2626", "#fef2f2", "异常通知"),
+            _ => ("#2563eb", "#eff6ff", "系统通知")
+        };
 
         displayName ??= await ConfigContext.GetConfig(ConfigConst.MailDisplayName);
         if (string.IsNullOrWhiteSpace(displayName))
+        {
             displayName = "FastDotnet";
+        }
 
         string encodedTitle = WebUtility.HtmlEncode(title);
         string encodedDisplayName = WebUtility.HtmlEncode(displayName);
@@ -211,11 +211,7 @@ public class MailService : IMailService, ISingletonDependency
     /// <inheritdoc />
     public async Task<int> GetVerificationCodeRetryAfterSeconds(MailTypeEnum mailType, string email)
     {
-        string cacheKey = CacheConst.GetCacheKey(CacheConst.Mail,
-            mailType.ToString(),
-            email
-                .Trim()
-                .ToLowerInvariant());
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.Mail, mailType.ToString(), email.Trim().ToLowerInvariant());
         return (int)Math.Max(0, await _cache.Client.TtlAsync($"{cacheKey}:SendCooldown"));
     }
 
@@ -227,9 +223,7 @@ public class MailService : IMailService, ISingletonDependency
             throw new UserFriendlyException("邮箱地址不正确！");
         }
 
-        email = email
-            .Trim()
-            .ToLowerInvariant();
+        email = email.Trim().ToLowerInvariant();
 
         // 获取缓存Key
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Mail, mailType.ToString(), email);
@@ -246,7 +240,9 @@ public class MailService : IMailService, ISingletonDependency
 
         int retryAfterSeconds = await GetVerificationCodeRetryAfterSeconds(mailType, email);
         if (retryAfterSeconds > 0)
+        {
             throw new UserFriendlyException($"操作过于频繁，请在 {TimeSpan.FromSeconds(retryAfterSeconds).ToDescription()} 后重试！");
+        }
 
         // 发送前占用冷却，失败时保留重试限制，成功后重新计时。
         await _cache.Client.SetAsync($"{cacheKey}:SendCooldown", "1", 60);
@@ -254,9 +250,7 @@ public class MailService : IMailService, ISingletonDependency
 
         // 生成验证码
         dto ??= new VerificationCodeCacheDto();
-        dto.VerificationCode = RandomNumberGenerator
-            .GetInt32(1000000)
-            .ToString("D6");
+        dto.VerificationCode = RandomNumberGenerator.GetInt32(1000000).ToString("D6");
         dto.ClientIdentity = GlobalContext.ClientIdentity;
         dto.SendTime = DateTime.Now;
         dto.ErrorCount = 0;
@@ -291,9 +285,7 @@ public class MailService : IMailService, ISingletonDependency
             throw new UserFriendlyException("邮箱地址不正确！");
         }
 
-        email = email
-            .Trim()
-            .ToLowerInvariant();
+        email = email.Trim().ToLowerInvariant();
 
         // 获取缓存Key
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Mail, mailType.ToString(), email);
@@ -332,27 +324,15 @@ public class MailService : IMailService, ISingletonDependency
     }
 
     /// <inheritdoc />
-    public async Task SendEmail(string title,
-        string content,
-        List<string> receiveEmails = null,
-        string smtp = null,
-        int? port = null,
-        string email = null,
-        string authCode = null,
-        string displayName = null)
+    public async Task SendEmail(string title, string content, List<string> receiveEmails = null, string smtp = null,
+        int? port = null, string email = null, string authCode = null, string displayName = null)
     {
         await SendEmail(title, new BodyBuilder {HtmlBody = content}, receiveEmails, smtp, port, email, authCode, displayName);
     }
 
     /// <inheritdoc />
-    public async Task SendEmail(string title,
-        BodyBuilder content,
-        List<string> receiveEmails = null,
-        string smtp = null,
-        int? port = null,
-        string email = null,
-        string authCode = null,
-        string displayName = null)
+    public async Task SendEmail(string title, BodyBuilder content, List<string> receiveEmails = null, string smtp = null,
+        int? port = null, string email = null, string authCode = null, string displayName = null)
     {
         ArgumentNullException.ThrowIfNull(content);
 
@@ -363,7 +343,9 @@ public class MailService : IMailService, ISingletonDependency
         }
 
         if (receiveEmails is not {Count: > 0})
+        {
             return;
+        }
 
         DateTime sendTime = DateTime.Now;
         bool isSuccess = false;
@@ -375,24 +357,35 @@ public class MailService : IMailService, ISingletonDependency
             displayName ??= await ConfigContext.GetConfig(ConfigConst.MailDisplayName);
 
             if (string.IsNullOrWhiteSpace(smtp))
+            {
                 throw new UserFriendlyException("发件服务器地址为空！");
+            }
 
             if (port is null or <= 0)
             {
                 string portValue = await ConfigContext.GetConfig(ConfigConst.MailPort);
                 if (!int.TryParse(portValue, out int _port) || _port <= 0)
+                {
                     throw new ArgumentException("发件服务器端口不正确！");
+                }
+
                 port = _port;
             }
 
             if (string.IsNullOrWhiteSpace(email))
+            {
                 throw new ArgumentException("发件邮箱为空！");
+            }
 
             if (string.IsNullOrWhiteSpace(authCode))
+            {
                 throw new ArgumentException("发件邮箱授权码为空！");
+            }
 
             if (string.IsNullOrWhiteSpace(displayName))
+            {
                 displayName = "FastDotnet";
+            }
 
             // 创建邮件内容
             var message = new MimeMessage();
@@ -402,7 +395,9 @@ public class MailService : IMailService, ISingletonDependency
 
             // 收件人
             foreach (string receiveEmail in receiveEmails)
+            {
                 message.To.Add(new MailboxAddress(null, receiveEmail));
+            }
 
             // 标题
             message.Subject = title;
@@ -447,8 +442,7 @@ public class MailService : IMailService, ISingletonDependency
             {
                 // 独立客户端不加载 AOP，避免记录写入再次触发 SQL 审计
                 using var db = new SqlSugarClient(SqlSugarContext.GetConnectionConfig(SqlSugarContext.ConnectionSettings));
-                var messageSendRecordList = receiveEmails
-                    .Select(receiver => new MessageSendRecordModel
+                var messageSendRecordList = receiveEmails.Select(receiver => new MessageSendRecordModel
                     {
                         Channel = MessageSendChannelEnum.Email,
                         Receiver = receiver,
@@ -464,9 +458,7 @@ public class MailService : IMailService, ISingletonDependency
                     item.RecordCreate(httpContext);
                 }
 
-                await db
-                    .Insertable(messageSendRecordList)
-                    .ExecuteCommandAsync();
+                await db.Insertable(messageSendRecordList).ExecuteCommandAsync();
             }
             catch (Exception ex)
             {

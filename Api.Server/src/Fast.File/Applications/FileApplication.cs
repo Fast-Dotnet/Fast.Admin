@@ -61,11 +61,8 @@ public class FileApplication : IDynamicApplication
     /// <param name="repository">数据仓储</param>
     /// <param name="uploadFileSettingsOptions">文件上传配置</param>
     /// <param name="httpContextAccessor">HTTP 请求上下文访问器</param>
-    public FileApplication(IWebHostEnvironment hostEnvironment,
-        IUser user,
-        ISqlSugarRepository<FileModel> repository,
-        IOptions<UploadFileSettingsOptions> uploadFileSettingsOptions,
-        IHttpContextAccessor httpContextAccessor)
+    public FileApplication(IWebHostEnvironment hostEnvironment, IUser user, ISqlSugarRepository<FileModel> repository,
+        IOptions<UploadFileSettingsOptions> uploadFileSettingsOptions, IHttpContextAccessor httpContextAccessor)
     {
         _rootPath = hostEnvironment.ContentRootPath;
         _user = user;
@@ -89,8 +86,7 @@ public class FileApplication : IDynamicApplication
 
         if (tenantModel.TenantType == TenantTypeEnum.System)
         {
-            queryable = queryable
-                .ClearFilter<IBaseTEntity>()
+            queryable = queryable.ClearFilter<IBaseTEntity>()
                 .WhereIF(input.TenantId != null, t1 => t1.TenantId == input.TenantId);
         }
         else if (!_user.IsAdmin)
@@ -98,8 +94,7 @@ public class FileApplication : IDynamicApplication
             queryable = queryable.Where(t1 => t1.CreatedUserId == _user.EmployeeId);
         }
 
-        return await queryable
-            .SelectMergeTable((t1, t2) => new QueryFilePagedOutput
+        return await queryable.SelectMergeTable((t1, t2) => new QueryFilePagedOutput
             {
                 FileId = t1.FileId,
                 FileObjectName = t1.FileObjectName,
@@ -130,8 +125,10 @@ public class FileApplication : IDynamicApplication
     [ApiDescriptionSettings(false)]
     [HttpGet("/file/{fileName}")]
     [ApiInfo("预览图片", HttpRequestActionEnum.Download)]
-    [AllowAnonymous, DisabledRequestLog, DisableRateLimiting]
-    public async Task<IActionResult> Preview([FromRoute, Required(ErrorMessage = "文件名称不能为空")] string fileName)
+    [AllowAnonymous]
+    [DisabledRequestLog]
+    [DisableRateLimiting]
+    public async Task<IActionResult> Preview([FromRoute] [Required(ErrorMessage = "文件名称不能为空")] string fileName)
     {
         return await LocalPreview(fileName);
     }
@@ -149,9 +146,11 @@ public class FileApplication : IDynamicApplication
     [ApiDescriptionSettings(false)]
     [HttpGet("/file/{fileName}@!{size}")]
     [ApiInfo("预览图片", HttpRequestActionEnum.Download)]
-    [AllowAnonymous, DisabledRequestLog, DisableRateLimiting]
-    public async Task<IActionResult> Preview([FromRoute, Required(ErrorMessage = "文件名称不能为空")] string fileName,
-        [FromRoute, Required(ErrorMessage = "文件大小不能为空")] string size)
+    [AllowAnonymous]
+    [DisabledRequestLog]
+    [DisableRateLimiting]
+    public async Task<IActionResult> Preview([FromRoute] [Required(ErrorMessage = "文件名称不能为空")] string fileName,
+        [FromRoute] [Required(ErrorMessage = "文件大小不能为空")] string size)
     {
         return await LocalPreview(fileName, size);
     }
@@ -200,9 +199,7 @@ public class FileApplication : IDynamicApplication
 
         // 这里作为预览文件，必须禁用 AOP，所以直接使用 NEW 的方式
         using var db = new SqlSugarClient(SqlSugarContext.GetConnectionConfig(SqlSugarContext.ConnectionSettings));
-        FileModel fileInfoModel = await db
-            .Queryable<FileModel>()
-            .InSingleAsync(fileId);
+        FileModel fileInfoModel = await db.Queryable<FileModel>().InSingleAsync(fileId);
         if (fileInfoModel == null)
         {
             // 文件不存在
@@ -239,8 +236,10 @@ public class FileApplication : IDynamicApplication
     [ApiDescriptionSettings(false)]
     [HttpGet("/file/media/{token}")]
     [ApiInfo("播放媒体资源", HttpRequestActionEnum.Download)]
-    [AllowAnonymous, DisabledRequestLog, DisableRateLimiting]
-    public async Task<IActionResult> PreviewMedia([FromRoute, Required(ErrorMessage = "Token不能为空")] string token)
+    [AllowAnonymous]
+    [DisabledRequestLog]
+    [DisableRateLimiting]
+    public async Task<IActionResult> PreviewMedia([FromRoute] [Required(ErrorMessage = "Token不能为空")] string token)
     {
         if (!FileContext.TryValidateMediaAssetToken(token, out MediaAssetTokenPayload tokenPayload))
         {
@@ -249,12 +248,8 @@ public class FileApplication : IDynamicApplication
         }
 
         ICache<AuthCCL> _authCache = _httpContext.RequestServices.GetService<ICache<AuthCCL>>();
-        string sessionCacheKey = CacheConst.GetCacheKey(CacheConst.AuthUser,
-            tokenPayload.AppNo,
-            tokenPayload.TenantNo,
-            tokenPayload.DeviceType.ToString(),
-            tokenPayload.EmployeeNo,
-            tokenPayload.SessionId);
+        string sessionCacheKey = CacheConst.GetCacheKey(CacheConst.AuthUser, tokenPayload.AppNo, tokenPayload.TenantNo,
+            tokenPayload.DeviceType.ToString(), tokenPayload.EmployeeNo, tokenPayload.SessionId);
         if (!await _authCache.ExistsAsync(sessionCacheKey))
         {
             // 这里是401
@@ -263,9 +258,7 @@ public class FileApplication : IDynamicApplication
 
         // 这里作为预览文件，必须禁用 AOP，所以直接使用 NEW 的方式
         using var db = new SqlSugarClient(SqlSugarContext.GetConnectionConfig(SqlSugarContext.ConnectionSettings));
-        FileModel fileInfoModel = await db
-            .Queryable<FileModel>()
-            .InSingleAsync(tokenPayload.FileId);
+        FileModel fileInfoModel = await db.Queryable<FileModel>().InSingleAsync(tokenPayload.FileId);
         if (fileInfoModel == null)
         {
             // 文件不存在
@@ -290,11 +283,7 @@ public class FileApplication : IDynamicApplication
             return new NotFoundResult();
         }
 
-        var stream = new FileStream(localFilePath,
-            FileMode.Open,
-            FileAccess.Read,
-            FileShare.Read,
-            81920,
+        var stream = new FileStream(localFilePath, FileMode.Open, FileAccess.Read, FileShare.Read, 81920,
             FileOptions.Asynchronous);
         return new FileStreamResult(stream, fileInfoModel.FileMimeType) {EnableRangeProcessing = true};
     }
@@ -308,11 +297,15 @@ public class FileApplication : IDynamicApplication
     {
         FileModel fileInfoModel = await _repository.Entities.InSingleAsync(input.FileId);
         if (fileInfoModel == null)
+        {
             throw new UserFriendlyException("文件不存在！");
+        }
 
         string filePath = FileContext.GetLocalPath(_rootPath, fileInfoModel.FilePath, fileInfoModel.FileObjectName);
         if (!System.IO.File.Exists(filePath))
+        {
             throw new UserFriendlyException("文件丢失或已被删除！");
+        }
 
         var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
         _httpContext.Response.Headers.XContentTypeOptions = "nosniff";
@@ -381,7 +374,9 @@ public class FileApplication : IDynamicApplication
     private async Task<string> LocalUploadFile(IFormFile file, UploadFileInfoSettings fileInfoSettings = null)
     {
         if (file == null || file.Length == 0)
+        {
             throw new UserFriendlyException("上传文件不能为空！");
+        }
 
         fileInfoSettings ??= _uploadFileSettingsOptions.Default;
 
@@ -390,28 +385,35 @@ public class FileApplication : IDynamicApplication
         // 文件大小
         long fileSizeKb = (file.Length + 1023L) / 1024L;
         if (fileInfoSettings.MaxSize > 0 && fileSizeKb > fileInfoSettings.MaxSize)
+        {
             throw new UserFriendlyException($"文件大小超出限制，最大允许{fileInfoSettings.MaxSize / 1024}MB。");
+        }
 
         // 浏览器可能提交带 Windows 或 Unix 路径的文件名，存储前只保留最后一段名称
         string fileOriginName = Path.GetFileName(file.FileName.Replace('\\', '/'));
-        string fileSuffix = Path
-            .GetExtension(fileOriginName)
-            .ToLowerInvariant();
+        string fileSuffix = Path.GetExtension(fileOriginName).ToLowerInvariant();
         if (string.IsNullOrWhiteSpace(fileSuffix))
+        {
             throw new UserFriendlyException("文件没有有效后缀名!");
-        if (fileSuffix.Length > 17)
-            throw new UserFriendlyException("文件后缀名过长！");
+        }
 
-        string normalizedContentType = file
-            .ContentType?.Trim()
-            .ToLowerInvariant();
+        if (fileSuffix.Length > 17)
+        {
+            throw new UserFriendlyException("文件后缀名过长！");
+        }
+
+        string normalizedContentType = file.ContentType?.Trim().ToLowerInvariant();
         if (string.IsNullOrWhiteSpace(normalizedContentType))
+        {
             throw new UserFriendlyException("文件内容类型不能为空！");
+        }
 
         if (fileInfoSettings.ContentType?.Any() == true)
         {
             if (!fileInfoSettings.ContentType.Contains(normalizedContentType, StringComparer.OrdinalIgnoreCase))
+            {
                 throw new UserFriendlyException($"文件类型不支持，当前类型：{normalizedContentType}");
+            }
         }
 
         // 根据当前已支持的 MIME 类型校验文件后缀，防止客户端声明的类型与文件名不一致
@@ -451,7 +453,9 @@ public class FileApplication : IDynamicApplication
             _ => false
         };
         if (!isFileExtensionCompatible)
+        {
             throw new UserFriendlyException("文件后缀与声明的文件类型不一致！");
+        }
 
         if (FileContext.Images.Contains(normalizedContentType))
         {
@@ -469,7 +473,9 @@ public class FileApplication : IDynamicApplication
                 await using Stream identifyStream = file.OpenReadStream();
                 ImageInfo imageInfo = await Image.IdentifyAsync(identifyStream);
                 if (imageInfo == null || (long)imageInfo.Width * imageInfo.Height > MaxImagePixels)
+                {
                     throw new UserFriendlyException("图片像素尺寸超出限制！");
+                }
             }
             catch (UnknownImageFormatException)
             {
@@ -492,7 +498,10 @@ public class FileApplication : IDynamicApplication
         {
             if (!System.IO.File.Exists(
                     FileContext.GetLocalPath(_rootPath, existFileModel.FilePath, existFileModel.FileObjectName)))
+            {
                 throw new UserFriendlyException("相同文件的存储记录存在，但物理文件已丢失，请联系管理员处理！");
+            }
+
             return existFileModel.FileLocation;
         }
 
@@ -512,19 +521,33 @@ public class FileApplication : IDynamicApplication
         if (fileInfoSettings.UseTypeFolder)
         {
             if (FileContext.Images.Contains(normalizedContentType))
+            {
                 filePath = Path.Combine(filePath, "image");
+            }
             else if (FileContext.Videos.Contains(normalizedContentType))
+            {
                 filePath = Path.Combine(filePath, "video");
+            }
             else if (FileContext.Audios.Contains(normalizedContentType))
+            {
                 filePath = Path.Combine(filePath, "audio");
+            }
             else if (FileContext.Texts.Contains(normalizedContentType))
+            {
                 filePath = Path.Combine(filePath, "text");
+            }
             else if (FileContext.Documents.Contains(normalizedContentType))
+            {
                 filePath = Path.Combine(filePath, "document");
+            }
             else if (FileContext.Archives.Contains(normalizedContentType))
+            {
                 filePath = Path.Combine(filePath, "archive");
+            }
             else
+            {
                 filePath = Path.Combine(filePath, "other");
+            }
         }
 
         // 判断是否启用时间文件夹
@@ -573,11 +596,7 @@ public class FileApplication : IDynamicApplication
         string localFilePath = FileContext.GetLocalPath(_rootPath, filePath);
         Directory.CreateDirectory(localFilePath);
         string localFullPath = Path.Combine(localFilePath, fileObjectName);
-        await using (var fileStream = new FileStream(localFullPath,
-                         FileMode.CreateNew,
-                         FileAccess.Write,
-                         FileShare.None,
-                         81920,
+        await using (var fileStream = new FileStream(localFullPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 81920,
                          FileOptions.Asynchronous | FileOptions.SequentialScan))
         {
             await file.CopyToAsync(fileStream, _httpContext.RequestAborted);

@@ -16,9 +16,7 @@ namespace Fast.Core;
 /// </summary>
 internal static partial class MenuSeedData
 {
-    private static async Task SeedDevPasswordRecord(ISqlSugarClient db,
-        ApplicationModel applicationModel,
-        DateTime dateTime,
+    private static async Task SeedDevPasswordRecord(ISqlSugarClient db, ApplicationModel applicationModel, DateTime dateTime,
         MenuModel devCLMenuModel)
     {
         var passwordRecordModel = new MenuModel
@@ -49,11 +47,8 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        passwordRecordModel = await db
-            .Insertable(passwordRecordModel)
-            .ExecuteReturnEntityAsync();
-        await db
-            .Insertable(new ButtonModel
+        passwordRecordModel = await db.Insertable(passwordRecordModel).ExecuteReturnEntityAsync();
+        await db.Insertable(new ButtonModel
             {
                 ButtonId = YitIdHelper.NextId(),
                 Edition = EditionEnum.Internal,

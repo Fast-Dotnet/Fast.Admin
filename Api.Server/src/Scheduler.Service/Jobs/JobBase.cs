@@ -79,11 +79,8 @@ internal abstract class JobBase<T> : IJob where T : SchedulerJobLogInfo, new()
     /// </summary>
     protected MailMessageEnum MailMessage { get; private set; }
 
-    protected JobBase(IServiceProvider serviceProvider,
-        IMailService mailService,
-        IOptions<MvcNewtonsoftJsonOptions> jsonOptions,
-        ILogger<IJob> logger,
-        T logInfo)
+    protected JobBase(IServiceProvider serviceProvider, IMailService mailService, IOptions<MvcNewtonsoftJsonOptions> jsonOptions,
+        ILogger<IJob> logger, T logInfo)
     {
         _serviceProvider = serviceProvider;
         _jsonSerializerSettings = jsonOptions.Value.SerializerSettings;
@@ -219,22 +216,20 @@ internal abstract class JobBase<T> : IJob where T : SchedulerJobLogInfo, new()
 
             // 获取机器人信息
             string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.Rabot, tenantNo);
-            TenantUserModel robotInfo = await centerCache.GetAndSetAsync(cacheKey,
-                async () =>
+            TenantUserModel robotInfo = await centerCache.GetAndSetAsync(cacheKey, async () =>
+            {
+                TenantUserModel result = await db.Queryable<TenantUserModel>()
+                    .Where(wh => wh.TenantId == _logInfo.TenantId.Value)
+                    .Where(wh => wh.UserType == UserTypeEnum.Robot)
+                    .SingleAsync();
+
+                if (result == null)
                 {
-                    TenantUserModel result = await db
-                        .Queryable<TenantUserModel>()
-                        .Where(wh => wh.TenantId == _logInfo.TenantId.Value)
-                        .Where(wh => wh.UserType == UserTypeEnum.Robot)
-                        .SingleAsync();
+                    await ErrorLog(_logInfo.JobName, null, $"<pre class='error'>未能找到对应租户【{tenantNo}】机器人信息！</pre>");
+                }
 
-                    if (result == null)
-                    {
-                        await ErrorLog(_logInfo.JobName, null, $"<pre class='error'>未能找到对应租户【{tenantNo}】机器人信息！</pre>");
-                    }
-
-                    return result;
-                });
+                return result;
+            });
             _logInfo.RobotInfo = robotInfo;
 
             // 注入 IUser
@@ -244,9 +239,7 @@ internal abstract class JobBase<T> : IJob where T : SchedulerJobLogInfo, new()
             {
                 DeviceType = AppEnvironmentEnum.Api,
                 DeviceId = deviceId,
-                SessionId = Guid
-                    .NewGuid()
-                    .ToString("D"),
+                SessionId = Guid.NewGuid().ToString("D"),
                 AppNo = "Scheduler",
                 AppName = "调度程序",
                 NickName = robotInfo.EmployeeName,
@@ -320,11 +313,8 @@ internal abstract class JobBase<T> : IJob where T : SchedulerJobLogInfo, new()
         try
         {
             // 重试策略
-            await RetryUtil.InvokeAsync(async () => await JobExecute(scope.ServiceProvider, db, context),
-                retryTimes,
-                retryMillisecond,
-                exceptionTypes: [typeof(UserFriendlyException)],
-                retryAction: async (total, times) =>
+            await RetryUtil.InvokeAsync(async () => await JobExecute(scope.ServiceProvider, db, context), retryTimes,
+                retryMillisecond, exceptionTypes: [typeof(UserFriendlyException)], retryAction: async (total, times) =>
                 {
                     // 输出重试警告日志
                     await WarnLog(_logInfo.JobName,
@@ -354,8 +344,7 @@ internal abstract class JobBase<T> : IJob where T : SchedulerJobLogInfo, new()
             }
             else
             {
-                await ErrorLog(_logInfo.JobName,
-                    ex,
+                await ErrorLog(_logInfo.JobName, ex,
                     $"<pre class='error'>{JsonConvert.SerializeObject(_logInfo, _jsonSerializerSettings)}</pre>");
             }
         }

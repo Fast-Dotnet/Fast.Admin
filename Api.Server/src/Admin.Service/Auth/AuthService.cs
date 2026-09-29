@@ -35,7 +35,8 @@ public class AuthService : IDynamicApplication
     /// </summary>
     [HttpGet("/getLoginUserInfo")]
     [ApiInfo("获取登录用户信息", HttpRequestActionEnum.Auth)]
-    [AllowForbidden, DisabledRequestLog]
+    [AllowForbidden]
+    [DisabledRequestLog]
     public async Task<GetLoginUserInfoOutput> GetLoginUserInfo()
     {
         // 查询应用信息
@@ -88,8 +89,7 @@ public class AuthService : IDynamicApplication
         };
 
         // 查询角色
-        var roleList = await _empRepository
-            .Queryable<EmployeeRoleModel>()
+        var roleList = await _empRepository.Queryable<EmployeeRoleModel>()
             .LeftJoin<RoleModel>((t1, t2) => t1.RoleId == t2.RoleId)
             .Where(t1 => t1.EmployeeId == _user.EmployeeId)
             .Select((t1, t2) => new
@@ -103,21 +103,14 @@ public class AuthService : IDynamicApplication
             })
             .ToListAsync();
         // 系统菜单角色类型
-        RoleTypeEnum systemMenuRoleType = roleList
-            .Where(wh => wh.IsSystemMenu)
+        RoleTypeEnum systemMenuRoleType = roleList.Where(wh => wh.IsSystemMenu)
             .Select(sl => sl.RoleType)
             .Aggregate(default(RoleTypeEnum), (acc, item) => acc | item);
         // 自定义菜单角色
-        var customMenuRoleIds = roleList
-            .Where(wh => !wh.IsSystemMenu)
-            .Select(sl => sl.RoleId)
-            .ToList();
-        result.RoleNameList = roleList
-            .Select(sl => sl.RoleName)
-            .ToList();
+        var customMenuRoleIds = roleList.Where(wh => !wh.IsSystemMenu).Select(sl => sl.RoleId).ToList();
+        result.RoleNameList = roleList.Select(sl => sl.RoleName).ToList();
 
-        ISugarQueryable<MenuModel> menuQueryable = _repository
-            .Queryable<MenuModel>()
+        ISugarQueryable<MenuModel> menuQueryable = _repository.Queryable<MenuModel>()
             .Where(wh => wh.AppId == applicationModel.AppId)
             .Where(wh => wh.Status == CommonStatusEnum.Enable)
             .Where(wh => wh.MenuType != MenuTypeEnum.Catalog)
@@ -133,21 +126,16 @@ public class AuthService : IDynamicApplication
         }
         else
         {
-            result.RoleType = roleList
-                .Select(sl => sl.RoleType)
-                .DefaultIfEmpty()
-                .Aggregate((a, b) => a | b);
+            result.RoleType = roleList.Select(sl => sl.RoleType).DefaultIfEmpty().Aggregate((a, b) => a | b);
             result.DataScopeType = roleList.Any()
-                ? roleList
-                    .Where(wh => wh.DataScopeType != DataScopeTypeEnum.CustomDept)
+                ? roleList.Where(wh => wh.DataScopeType != DataScopeTypeEnum.CustomDept)
                     .Select(sl => sl.DataScopeType)
                     .DefaultIfEmpty(DataScopeTypeEnum.CustomDept)
                     .Min()
                 : DataScopeTypeEnum.Self;
 
             // 查询当前用户角色对应的菜单Id
-            List<long> roleMenuIds = await _empRepository
-                .Queryable<RoleMenuModel>()
+            List<long> roleMenuIds = await _empRepository.Queryable<RoleMenuModel>()
                 .Where(wh => customMenuRoleIds.Contains(wh.RoleId))
                 .Select(sl => sl.MenuId)
                 .ToListAsync();
@@ -155,8 +143,7 @@ public class AuthService : IDynamicApplication
         }
 
         // 查询所有菜单
-        List<AuthMenuInfoDto> menuList = await menuQueryable
-            .Clone()
+        List<AuthMenuInfoDto> menuList = await menuQueryable.Clone()
             .OrderBy(ob => ob.Sort)
             .Select(sl => new AuthMenuInfoDto
             {
@@ -184,13 +171,9 @@ public class AuthService : IDynamicApplication
             .ToListAsync();
 
         // 查询所有父级
-        var parentMenuIds = menuList
-            .Select(sl => sl.ParentId)
-            .Distinct()
-            .ToList();
+        var parentMenuIds = menuList.Select(sl => sl.ParentId).Distinct().ToList();
 
-        List<AuthMenuInfoDto> parentMenuList = await _repository
-            .Queryable<MenuModel>()
+        List<AuthMenuInfoDto> parentMenuList = await _repository.Queryable<MenuModel>()
             .Where(wh => wh.AppId == applicationModel.AppId)
             .Where(wh => wh.Status == CommonStatusEnum.Enable)
             .Where(wh => tenantModel.Edition >= wh.Edition)
@@ -226,14 +209,11 @@ public class AuthService : IDynamicApplication
         menuList.AddRange(parentMenuList);
 
         // 组建菜单树形
-        result.MenuList = new TreeBuildUtil<AuthMenuInfoDto, long>().Build(menuList
-            .Distinct()
-            .ToList());
+        result.MenuList = new TreeBuildUtil<AuthMenuInfoDto, long>().Build(menuList.Distinct().ToList());
 
         if (!_user.IsSuperAdmin)
         {
-            ISugarQueryable<ButtonModel> buttonQueryable = _repository
-                .Queryable<ButtonModel>()
+            ISugarQueryable<ButtonModel> buttonQueryable = _repository.Queryable<ButtonModel>()
                 .Where(wh => wh.AppId == applicationModel.AppId)
                 .Where(wh => wh.Status == CommonStatusEnum.Enable)
                 .Where(wh => tenantModel.Edition >= wh.Edition)
@@ -243,8 +223,7 @@ public class AuthService : IDynamicApplication
             if (!_user.IsAdmin)
             {
                 // 查询当前用户角色对应的按钮Id
-                List<long> roleButtonIds = await _empRepository
-                    .Queryable<RoleButtonModel>()
+                List<long> roleButtonIds = await _empRepository.Queryable<RoleButtonModel>()
                     .Where(wh => customMenuRoleIds.Contains(wh.RoleId))
                     .Select(sl => sl.ButtonId)
                     .ToListAsync();
@@ -252,10 +231,7 @@ public class AuthService : IDynamicApplication
                     (wh.RoleType & systemMenuRoleType) != 0 || roleButtonIds.Contains(wh.ButtonId));
             }
 
-            result.ButtonCodeList = await buttonQueryable
-                .OrderBy(ob => ob.Sort)
-                .Select(sl => sl.ButtonCode)
-                .ToListAsync();
+            result.ButtonCodeList = await buttonQueryable.OrderBy(ob => ob.Sort).Select(sl => sl.ButtonCode).ToListAsync();
         }
 
         // 刷新缓存
@@ -265,23 +241,17 @@ public class AuthService : IDynamicApplication
             AppNo = _user.AppNo,
             TenantNo = _user.TenantNo,
             EmployeeNo = _user.EmployeeNo,
-            RoleIdList = roleList
-                .Select(sl => sl.RoleId)
-                .ToList(),
+            RoleIdList = roleList.Select(sl => sl.RoleId).ToList(),
             RoleNameList = result.RoleNameList,
             RoleType = result.RoleType,
             DataScopeType = result.DataScopeType,
-            DataScopeDepartmentIdList = roleList
-                .Where(wh => wh.DataScopeType == DataScopeTypeEnum.CustomDept)
-                .Where(wh => wh.DataScopeDepartmentIds != null)
-                .SelectMany(sl => sl.DataScopeDepartmentIds)
-                .Distinct()
-                .ToList(),
-            MenuCodeList = _user.IsSuperAdmin
-                ? []
-                : menuList
-                    .Select(sl => sl.MenuCode)
+            DataScopeDepartmentIdList =
+                roleList.Where(wh => wh.DataScopeType == DataScopeTypeEnum.CustomDept)
+                    .Where(wh => wh.DataScopeDepartmentIds != null)
+                    .SelectMany(sl => sl.DataScopeDepartmentIds)
+                    .Distinct()
                     .ToList(),
+            MenuCodeList = _user.IsSuperAdmin ? [] : menuList.Select(sl => sl.MenuCode).ToList(),
             ButtonCodeList = result.ButtonCodeList
         });
 

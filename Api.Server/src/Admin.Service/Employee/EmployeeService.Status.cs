@@ -86,9 +86,7 @@ public partial class EmployeeService
             if (tenantUserModel != null)
             {
                 tenantUserModel.Status = CommonStatusEnum.Disable;
-                await _centerRepository
-                    .Updateable(tenantUserModel)
-                    .ExecuteCommandAsync();
+                await _centerRepository.Updateable(tenantUserModel).ExecuteCommandAsync();
             }
 
             employeeModel.Status = EmployeeStatusEnum.Resigned;
@@ -144,15 +142,12 @@ public partial class EmployeeService
             throw new UserFriendlyException("禁止为已离职的职员绑定登录账号！");
         }
 
-        if (await _centerRepository
-                .Queryable<TenantUserModel>()
-                .AnyAsync(a => a.EmployeeId == employeeModel.EmployeeId))
+        if (await _centerRepository.Queryable<TenantUserModel>().AnyAsync(a => a.EmployeeId == employeeModel.EmployeeId))
         {
             throw new UserFriendlyException("已存在登录账号！");
         }
 
-        EmployeeOrgModel employeeOrgModel = await _repository
-            .Queryable<EmployeeOrgModel>()
+        EmployeeOrgModel employeeOrgModel = await _repository.Queryable<EmployeeOrgModel>()
             .SingleAsync(s => s.EmployeeId == employeeModel.EmployeeId && s.IsPrimary);
 
         if (string.IsNullOrWhiteSpace(employeeModel.Email))
@@ -167,15 +162,12 @@ public partial class EmployeeService
         await _centerRepository.Ado.BeginTranAsync();
         try
         {
-            AccountModel accountModel = await _centerRepository
-                .Queryable<AccountModel>()
+            AccountModel accountModel = await _centerRepository.Queryable<AccountModel>()
                 .Where(wh => wh.Mobile == input.Mobile)
                 .SingleAsync();
             if (accountModel == null)
             {
-                if (await _centerRepository
-                        .Queryable<AccountModel>()
-                        .AnyAsync(a => a.Email == input.Email))
+                if (await _centerRepository.Queryable<AccountModel>().AnyAsync(a => a.Email == input.Email))
                 {
                     throw new UserFriendlyException("邮箱已存在账号信息！");
                 }
@@ -193,15 +185,12 @@ public partial class EmployeeService
                     NickName = employeeModel.EmployeeName,
                     Avatar = employeeModel.IdPhoto
                 };
-                await _centerRepository
-                    .Insertable(accountModel)
-                    .ExecuteCommandAsync();
+                await _centerRepository.Insertable(accountModel).ExecuteCommandAsync();
 
                 #region PasswordRecordModel
 
                 // 初始化密码记录表
-                await _centerRepository
-                    .Insertable(new List<PasswordRecordModel>
+                await _centerRepository.Insertable(new List<PasswordRecordModel>
                     {
                         new()
                         {
@@ -229,9 +218,7 @@ public partial class EmployeeService
                 UserType = UserTypeEnum.None,
                 Status = CommonStatusEnum.Enable
             };
-            await _centerRepository
-                .Insertable(tenantUserModel)
-                .ExecuteCommandAsync();
+            await _centerRepository.Insertable(tenantUserModel).ExecuteCommandAsync();
 
             await _repository.UpdateAsync(employeeModel);
 
@@ -303,9 +290,7 @@ public partial class EmployeeService
             _ => tenantUserModel.Status
         };
 
-        await _centerRepository
-            .Updateable(tenantUserModel)
-            .ExecuteCommandAsync();
+        await _centerRepository.Updateable(tenantUserModel).ExecuteCommandAsync();
 
         if (tenantUserModel.Status == CommonStatusEnum.Disable)
         {
@@ -329,18 +314,18 @@ public partial class EmployeeService
     /// </summary>
     private async Task ForceEmployeeOffline(long employeeId, string message)
     {
-        List<string> connectionIds = await _centerRepository
-            .Queryable<TenantOnlineUserModel>()
+        List<string> connectionIds = await _centerRepository.Queryable<TenantOnlineUserModel>()
             .Where(wh => wh.IsOnline)
             .Where(wh => wh.TenantId == _user.TenantId)
             .Where(wh => wh.EmployeeId == employeeId)
             .Select(sl => sl.ConnectionId)
             .ToListAsync();
         if (connectionIds.Count == 0)
+        {
             return;
+        }
 
-        await _hubContext
-            .Clients.Clients(connectionIds)
+        await _hubContext.Clients.Clients(connectionIds)
             .ForceOffline(new ForceOfflineOutput
             {
                 IsAdmin = _user.IsSuperAdmin || _user.IsAdmin,

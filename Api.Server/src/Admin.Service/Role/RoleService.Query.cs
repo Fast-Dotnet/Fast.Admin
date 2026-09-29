@@ -25,13 +25,11 @@ public partial class RoleService
         if (!_user.IsSuperAdmin && !_user.IsAdmin)
         {
             List<long> roleIds = _user.RoleIdList ?? [];
-            var roleList = await _repository
-                .Queryable<RoleModel>()
+            var roleList = await _repository.Queryable<RoleModel>()
                 .Where(wh => roleIds.Contains(wh.RoleId))
                 .Select(sl => new {sl.AssignableRoleIds})
                 .ToListAsync();
-            var assignableRoleIds = roleList
-                .Where(wh => wh.AssignableRoleIds?.Count > 0)
+            var assignableRoleIds = roleList.Where(wh => wh.AssignableRoleIds?.Count > 0)
                 .SelectMany(sl => sl.AssignableRoleIds)
                 .Except(roleIds)
                 .Distinct()
@@ -45,13 +43,9 @@ public partial class RoleService
             queryable = queryable.Where(wh => assignableRoleIds.Contains(wh.RoleId));
         }
 
-        var data = await queryable
-            .OrderBy(ob => ob.Sort)
-            .Select(sl => new {sl.RoleId, sl.RoleName, sl.RoleCode})
-            .ToListAsync();
+        var data = await queryable.OrderBy(ob => ob.Sort).Select(sl => new {sl.RoleId, sl.RoleName, sl.RoleCode}).ToListAsync();
 
-        return data
-            .Select(sl => new ElSelectorOutput<long> {Value = sl.RoleId, Label = sl.RoleName, Data = new {sl.RoleCode}})
+        return data.Select(sl => new ElSelectorOutput<long> {Value = sl.RoleId, Label = sl.RoleName, Data = new {sl.RoleCode}})
             .ToList();
     }
 
@@ -63,8 +57,7 @@ public partial class RoleService
     [Permission(PermissionConst.Role.Paged)]
     public async Task<PagedResult<QueryRolePagedOutput>> QueryRolePaged(QueryRolePagedInput input)
     {
-        return await _repository
-            .Entities.WhereIF(input.RoleType != null, wh => wh.RoleType == input.RoleType)
+        return await _repository.Entities.WhereIF(input.RoleType != null, wh => wh.RoleType == input.RoleType)
             .WhereIF(input.DataScopeType != null, wh => wh.DataScopeType == input.DataScopeType)
             .OrderByIF(input.IsOrderBy, ob => ob.Sort)
             .Select(sl => new QueryRolePagedOutput
@@ -95,8 +88,7 @@ public partial class RoleService
     [Permission(PermissionConst.Role.Detail)]
     public async Task<QueryRoleDetailOutput> QueryRoleDetail([Required(ErrorMessage = "角色Id不能为空")] long? roleId)
     {
-        QueryRoleDetailOutput result = await _repository
-            .Entities.Where(wh => wh.RoleId == roleId)
+        QueryRoleDetailOutput result = await _repository.Entities.Where(wh => wh.RoleId == roleId)
             .Select(sl => new QueryRoleDetailOutput
             {
                 RoleId = sl.RoleId,

@@ -33,11 +33,8 @@ internal static class ApplicationSeedData
             ThemeColor = "#409EFF",
             CreatedTime = dateTime
         };
-        applicationModel = await db
-            .Insertable(applicationModel)
-            .ExecuteReturnEntityAsync();
-        await db
-            .Insertable(new List<ApplicationOpenIdModel>
+        applicationModel = await db.Insertable(applicationModel).ExecuteReturnEntityAsync();
+        await db.Insertable(new List<ApplicationOpenIdModel>
             {
                 new()
                 {

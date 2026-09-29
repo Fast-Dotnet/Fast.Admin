@@ -16,9 +16,7 @@ namespace Fast.Core;
 /// </summary>
 internal static partial class MenuSeedData
 {
-    private static async Task SeedEmployees(ISqlSugarClient db,
-        ApplicationModel applicationModel,
-        DateTime dateTime,
+    private static async Task SeedEmployees(ISqlSugarClient db, ApplicationModel applicationModel, DateTime dateTime,
         MenuModel orgCLMenuModel)
     {
         var employeeMenuModel = new MenuModel
@@ -49,11 +47,8 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        employeeMenuModel = await db
-            .Insertable(employeeMenuModel)
-            .ExecuteReturnEntityAsync();
-        await db
-            .Insertable(new List<ButtonModel>
+        employeeMenuModel = await db.Insertable(employeeMenuModel).ExecuteReturnEntityAsync();
+        await db.Insertable(new List<ButtonModel>
             {
                 new()
                 {
@@ -64,11 +59,7 @@ internal static partial class MenuSeedData
                     ButtonCode = PermissionConst.Employee.Paged,
                     ButtonName = "列表",
                     RoleType =
-                        RoleTypeEnum.Admin
-                        | RoleTypeEnum.Default
-                        | RoleTypeEnum.IT
-                        | RoleTypeEnum.HR
-                        | RoleTypeEnum.Finance,
+                        RoleTypeEnum.Admin | RoleTypeEnum.Default | RoleTypeEnum.IT | RoleTypeEnum.HR | RoleTypeEnum.Finance,
                     HasDesktop = true,
                     HasWeb = true,
                     HasMobile = true,
@@ -85,11 +76,7 @@ internal static partial class MenuSeedData
                     ButtonCode = PermissionConst.Employee.Detail,
                     ButtonName = "详情",
                     RoleType =
-                        RoleTypeEnum.Admin
-                        | RoleTypeEnum.Default
-                        | RoleTypeEnum.IT
-                        | RoleTypeEnum.HR
-                        | RoleTypeEnum.Finance,
+                        RoleTypeEnum.Admin | RoleTypeEnum.Default | RoleTypeEnum.IT | RoleTypeEnum.HR | RoleTypeEnum.Finance,
                     HasDesktop = true,
                     HasWeb = true,
                     HasMobile = true,

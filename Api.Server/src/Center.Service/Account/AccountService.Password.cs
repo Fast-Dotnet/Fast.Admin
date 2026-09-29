@@ -28,7 +28,10 @@ public partial class AccountService
     private async Task SendPasswordChangedNotification(AccountModel account, string operation)
     {
         if (string.IsNullOrWhiteSpace(account.Email))
+        {
             return;
+        }
+
         try
         {
             const string title = "账号密码变更通知";
@@ -51,15 +54,16 @@ public partial class AccountService
     private async Task EnsurePasswordNotReused(long accountId, string newPassword)
     {
         // 查询最近3次密码修改记录
-        List<string> passwordRecordList = await _repository
-            .Queryable<PasswordRecordModel>()
+        List<string> passwordRecordList = await _repository.Queryable<PasswordRecordModel>()
             .Where(wh => wh.AccountId == accountId)
             .OrderByDescending(ob => ob.CreatedTime)
             .Take(3)
             .Select(sl => sl.Password)
             .ToListAsync();
         if (passwordRecordList.Any(history => CryptoUtil.VerifyPasswordPBKDF2SHA256(newPassword, history)))
+        {
             throw new UserFriendlyException("新密码不能与最近3次使用的密码相同！");
+        }
     }
 
     /// <summary>
@@ -197,20 +201,18 @@ public partial class AccountService
         visitLogModel.RecordCreate(httpContext);
 
         await _repository.Ado.UseTranAsync(async () =>
-            {
-                await _repository.UpdateAsync(accountModel);
-                await _repository
-                    .Insertable(new PasswordRecordModel
-                    {
-                        AccountId = accountModel.AccountId,
-                        OperationType = PasswordOperationTypeEnum.Change,
-                        Type = PasswordTypeEnum.PBKDF2_SHA256,
-                        Password = accountModel.Password
-                    })
-                    .ExecuteCommandAsync();
-                await _visitLogRepository.InsertAsync(visitLogModel);
-            },
-            ex => throw ex);
+        {
+            await _repository.UpdateAsync(accountModel);
+            await _repository.Insertable(new PasswordRecordModel
+                {
+                    AccountId = accountModel.AccountId,
+                    OperationType = PasswordOperationTypeEnum.Change,
+                    Type = PasswordTypeEnum.PBKDF2_SHA256,
+                    Password = accountModel.Password
+                })
+                .ExecuteCommandAsync();
+            await _visitLogRepository.InsertAsync(visitLogModel);
+        }, ex => throw ex);
 
         // 退出登录
         await _user.Logout();
@@ -246,19 +248,17 @@ public partial class AccountService
         accountModel.RowVersion = input.RowVersion;
 
         await _repository.Ado.UseTranAsync(async () =>
-            {
-                await _repository.UpdateAsync(accountModel);
-                await _repository
-                    .Insertable(new PasswordRecordModel
-                    {
-                        AccountId = accountModel.AccountId,
-                        OperationType = PasswordOperationTypeEnum.Reset,
-                        Type = PasswordTypeEnum.PBKDF2_SHA256,
-                        Password = accountModel.Password
-                    })
-                    .ExecuteCommandAsync();
-            },
-            ex => throw ex);
+        {
+            await _repository.UpdateAsync(accountModel);
+            await _repository.Insertable(new PasswordRecordModel
+                {
+                    AccountId = accountModel.AccountId,
+                    OperationType = PasswordOperationTypeEnum.Reset,
+                    Type = PasswordTypeEnum.PBKDF2_SHA256,
+                    Password = accountModel.Password
+                })
+                .ExecuteCommandAsync();
+        }, ex => throw ex);
 
         await _user.RevokeAccount(accountModel.AccountId);
         await AccountForceOffline(accountModel.AccountId, "密码已重置，请重新登录");
@@ -314,9 +314,7 @@ public partial class AccountService
         await EnsureApplication();
         await _captchaService.VerifyImageCaptcha(input.CaptchaKey, input.CaptchaCode);
 
-        string account = input
-            .Account.Trim()
-            .ToLowerInvariant();
+        string account = input.Account.Trim().ToLowerInvariant();
 
         MessageSendChannelEnum sendChannel;
         if (Regex.IsMatch(account, RegexConst.Mobile))
@@ -335,8 +333,7 @@ public partial class AccountService
         // 同一个IP地址，1小时内最多允许20次
         await EnforceSendQuota($"Ip:{FastContext.HttpContext.Connection.RemoteIpAddress?.MapToIPv6()
                                          .ToString()
-                                     ?? "unknown"}",
-            (20, 3600));
+                                     ?? "unknown"}", (20, 3600));
 
         // 冷却和公开配额只依赖输入目标，账号不存在、被禁用或发送失败时也执行相同限制。
         string recipient = $"PasswordResetRecipient:{sendChannel}:{account}";
@@ -344,9 +341,7 @@ public partial class AccountService
         await EnforceSendQuota(recipient, (1, 60), (5, 3600), (10, 86400));
 
         // 生成验证Key
-        string verificationKey = Guid
-            .NewGuid()
-            .ToString("N");
+        string verificationKey = Guid.NewGuid().ToString("N");
 
         // 获取缓存Key
         string cacheKey = CacheConst.GetCacheKey(CacheConst.PasswordReset, verificationKey);
@@ -359,8 +354,7 @@ public partial class AccountService
             VerificationKey = verificationKey, Message = "如账号存在且验证通道可用，验证码将发送至账号绑定的联系方式。"
         };
 
-        AccountModel accountModel = await _repository
-            .Queryable<AccountModel>()
+        AccountModel accountModel = await _repository.Queryable<AccountModel>()
             .WhereIF(sendChannel == MessageSendChannelEnum.Sms, wh => wh.Mobile == account)
             .WhereIF(sendChannel == MessageSendChannelEnum.Email, wh => wh.Email == account)
             .SingleAsync();
@@ -442,8 +436,7 @@ public partial class AccountService
         switch (dto.Channel)
         {
             case MessageSendChannelEnum.Email:
-                await _mailService.VerifyVerificationCode(MailTypeEnum.ChangePassword,
-                    accountModel.Email,
+                await _mailService.VerifyVerificationCode(MailTypeEnum.ChangePassword, accountModel.Email,
                     input.VerificationCode);
                 break;
             case MessageSendChannelEnum.Sms:
@@ -486,23 +479,20 @@ public partial class AccountService
         accountModel.LockEndTime = null;
 
         await _repository.Ado.UseTranAsync(async () =>
-            {
-                await _repository
-                    .Updateable(accountModel)
-                    .UpdateColumns(e => new {e.Password, e.PasswordErrorTime, e.LockStartTime, e.LockEndTime})
-                    .ExecuteCommandWithOptLockAsync(true);
-                await _repository
-                    .Insertable(new PasswordRecordModel
-                    {
-                        AccountId = accountModel.AccountId,
-                        OperationType = PasswordOperationTypeEnum.Change,
-                        Type = PasswordTypeEnum.PBKDF2_SHA256,
-                        Password = accountModel.Password
-                    })
-                    .ExecuteCommandAsync();
-                await _visitLogRepository.InsertAsync(visitLogModel);
-            },
-            ex => throw ex);
+        {
+            await _repository.Updateable(accountModel)
+                .UpdateColumns(e => new {e.Password, e.PasswordErrorTime, e.LockStartTime, e.LockEndTime})
+                .ExecuteCommandWithOptLockAsync(true);
+            await _repository.Insertable(new PasswordRecordModel
+                {
+                    AccountId = accountModel.AccountId,
+                    OperationType = PasswordOperationTypeEnum.Change,
+                    Type = PasswordTypeEnum.PBKDF2_SHA256,
+                    Password = accountModel.Password
+                })
+                .ExecuteCommandAsync();
+            await _visitLogRepository.InsertAsync(visitLogModel);
+        }, ex => throw ex);
 
         await _user.RevokeAccount(accountModel.AccountId);
         await AccountForceOffline(accountModel.AccountId, "密码已重置，请重新登录");

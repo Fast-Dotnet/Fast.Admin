@@ -98,9 +98,7 @@ public partial class AccountService
             throw new UserFriendlyException("账号已校验完成，请刷新用户信息！");
         }
 
-        string account = input
-            .Account.Trim()
-            .ToLowerInvariant();
+        string account = input.Account.Trim().ToLowerInvariant();
 
         MessageSendChannelEnum sendChannel;
         if (Regex.IsMatch(account, RegexConst.Mobile))
@@ -127,8 +125,7 @@ public partial class AccountService
         // 同一个IP地址，1小时内最多允许20次
         await EnforceSendQuota($"Ip:{FastContext.HttpContext.Connection.RemoteIpAddress?.MapToIPv6()
                                          .ToString()
-                                     ?? "unknown"}",
-            (20, 3600));
+                                     ?? "unknown"}", (20, 3600));
         string recipient = $"Recipient:{sendChannel}:{accountModel.AccountKey}";
         // 1小时5次，24小时10次
         await EnforceSendQuota(recipient, (5, 3600), (10, 86400));
@@ -186,9 +183,7 @@ public partial class AccountService
         await EnsureApplication();
 
         string mobile = input.Mobile.Trim();
-        string email = input
-            .Email.Trim()
-            .ToLowerInvariant();
+        string email = input.Email.Trim().ToLowerInvariant();
         AccountModel accountModel = await _repository.SingleOrDefaultAsync(_user.AccountId);
         if (accountModel == null)
         {
@@ -218,8 +213,7 @@ public partial class AccountService
         }
 
         // 获取缓存Key
-        string cacheKey = CacheConst.GetCacheKey(CacheConst.AccountIdentityVerification,
-            accountModel.AccountKey,
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.AccountIdentityVerification, accountModel.AccountKey,
             GlobalContext.ClientIdentity);
         using CSRedisClientLock codeLock = _cache.Client.TryLock($"{cacheKey}:Lock", 120);
         if (codeLock == null)
@@ -266,8 +260,7 @@ public partial class AccountService
         accountModel.Email = email;
         accountModel.IdentityVerification = true;
 
-        await _repository
-            .Updateable(accountModel)
+        await _repository.Updateable(accountModel)
             .UpdateColumns(e => new {e.Mobile, e.Email, e.IdentityVerification})
             .ExecuteCommandWithOptLockAsync(true);
 
@@ -301,9 +294,7 @@ public partial class AccountService
             throw new UserFriendlyException("账号已被平台禁用！");
         }
 
-        string account = input
-            .Account.Trim()
-            .ToLowerInvariant();
+        string account = input.Account.Trim().ToLowerInvariant();
         MessageSendChannelEnum sendChannel;
         if (Regex.IsMatch(account, RegexConst.Mobile))
         {
@@ -339,8 +330,7 @@ public partial class AccountService
         // 同一个IP地址，1小时内最多允许20次
         await EnforceSendQuota($"Ip:{FastContext.HttpContext.Connection.RemoteIpAddress?.MapToIPv6()
                                          .ToString()
-                                     ?? "unknown"}",
-            (20, 3600));
+                                     ?? "unknown"}", (20, 3600));
         string recipient = $"EditAccount:{sendChannel}:{accountModel.AccountKey}";
         // 1小时5次，24小时10次
         await EnforceSendQuota(recipient, (5, 3600), (10, 86400));

@@ -33,13 +33,12 @@ public class JobLevelService : IDynamicApplication
     [ApiInfo("职级选择器", HttpRequestActionEnum.Query)]
     public async Task<List<ElSelectorOutput<long>>> JobLevelSelector()
     {
-        var data = await _repository
-            .Entities.OrderByDescending(ob => ob.Level)
+        var data = await _repository.Entities.OrderByDescending(ob => ob.Level)
             .Select(sl => new {sl.JobLevelId, sl.JobLevelName, sl.Level})
             .ToListAsync();
 
-        return data
-            .Select(sl => new ElSelectorOutput<long> {Value = sl.JobLevelId, Label = sl.JobLevelName, Data = new {sl.Level}})
+        return data.Select(sl =>
+                new ElSelectorOutput<long> {Value = sl.JobLevelId, Label = sl.JobLevelName, Data = new {sl.Level}})
             .ToList();
     }
 
@@ -51,8 +50,7 @@ public class JobLevelService : IDynamicApplication
     [Permission(PermissionConst.JobLevel.Paged)]
     public async Task<PagedResult<QueryJobLevelPagedOutput>> QueryJobLevelPaged(PagedInput input)
     {
-        return await _repository
-            .Entities.OrderByIF(input.IsOrderBy, ob => ob.Level, OrderByType.Desc)
+        return await _repository.Entities.OrderByIF(input.IsOrderBy, ob => ob.Level, OrderByType.Desc)
             .Select(sl => new QueryJobLevelPagedOutput
             {
                 JobLevelId = sl.JobLevelId,
@@ -77,8 +75,7 @@ public class JobLevelService : IDynamicApplication
     [Permission(PermissionConst.JobLevel.Detail)]
     public async Task<QueryJobLevelDetailOutput> QueryJobLevelDetail([Required(ErrorMessage = "职级Id不能为空")] long? jobLevelId)
     {
-        QueryJobLevelDetailOutput result = await _repository
-            .Entities.Where(wh => wh.JobLevelId == jobLevelId)
+        QueryJobLevelDetailOutput result = await _repository.Entities.Where(wh => wh.JobLevelId == jobLevelId)
             .Select(sl => new QueryJobLevelDetailOutput
             {
                 JobLevelId = sl.JobLevelId,
@@ -156,8 +153,7 @@ public class JobLevelService : IDynamicApplication
 
         await _repository.UpdateAsync(jobLevelModel);
 
-        await _repository
-            .Updateable<EmployeeOrgModel>()
+        await _repository.Updateable<EmployeeOrgModel>()
             .SetColumns(_ => new EmployeeOrgModel {JobLevelName = jobLevelModel.JobLevelName})
             .Where(wh => wh.JobLevelId == jobLevelModel.JobLevelId)
             .ExecuteCommandAsync();
@@ -182,9 +178,7 @@ public class JobLevelService : IDynamicApplication
     public async Task DeleteJobLevel(JobLevelIdInput input)
     {
         // 检查是否有职员关联
-        if (await _repository
-                .Queryable<EmployeeOrgModel>()
-                .AnyAsync(a => a.JobLevelId == input.JobLevelId))
+        if (await _repository.Queryable<EmployeeOrgModel>().AnyAsync(a => a.JobLevelId == input.JobLevelId))
         {
             throw new UserFriendlyException("职级存在职员关联，无法删除！");
         }

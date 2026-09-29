@@ -22,9 +22,7 @@ public partial class TableService : IDynamicApplication
     private readonly ISqlSugarRepository<TableColumnConfigModel> _columnRepository;
     private readonly ISqlSugarRepository<TableColumnConfigCacheModel> _columnCacheRepository;
 
-    public TableService(IUser user,
-        ICache<CenterCCL> center,
-        ISqlSugarRepository<TableConfigModel> tableRepository,
+    public TableService(IUser user, ICache<CenterCCL> center, ISqlSugarRepository<TableConfigModel> tableRepository,
         ISqlSugarRepository<TableColumnConfigModel> columnRepository,
         ISqlSugarRepository<TableColumnConfigCacheModel> columnCacheRepository)
     {

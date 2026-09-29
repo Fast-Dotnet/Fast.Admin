@@ -32,8 +32,7 @@ public class RefundRecordService : IDynamicApplication
     [Permission(PermissionConst.RefundRecordPaged)]
     public async Task<PagedResult<RefundRecordModel>> QueryRefundRecordPaged(PagedInput input)
     {
-        return await _repository
-            .Entities.OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
+        return await _repository.Entities.OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
             .ToPagedListAsync(input);
     }
 }

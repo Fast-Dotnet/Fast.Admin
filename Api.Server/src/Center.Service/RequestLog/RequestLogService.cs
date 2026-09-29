@@ -32,7 +32,8 @@ public class RequestLogService : IDynamicApplication
     /// </summary>
     [HttpPost]
     [ApiInfo("获取请求日志分页列表", HttpRequestActionEnum.Paged)]
-    [Permission(PermissionConst.RequestLogPaged), DisabledRequestLog]
+    [Permission(PermissionConst.RequestLogPaged)]
+    [DisabledRequestLog]
     public async Task<PagedResult<RequestLogModel>> QueryRequestLogPaged(QueryRequestLogPagedInput input)
     {
         if (input.SearchTimeList is not {Count: > 1})
@@ -40,8 +41,8 @@ public class RequestLogService : IDynamicApplication
             throw new UserFriendlyException("请选择具体的时间范围！");
         }
 
-        ISugarQueryable<RequestLogModel> queryable = _repository
-            .Entities.WhereIF(input.AccountId != null, wh => wh.AccountId == input.AccountId)
+        ISugarQueryable<RequestLogModel> queryable = _repository.Entities
+            .WhereIF(input.AccountId != null, wh => wh.AccountId == input.AccountId)
             .WhereIF(input.IsSuccess != null, wh => wh.IsSuccess == input.IsSuccess)
             .WhereIF(input.OperationAction != null, wh => wh.OperationAction == input.OperationAction)
             .WhereIF(input.RequestMethod != null, wh => wh.RequestMethod == input.RequestMethod);
@@ -59,8 +60,7 @@ public class RequestLogService : IDynamicApplication
             queryable = queryable.Where(wh => wh.AccountId == _user.AccountId);
         }
 
-        return await queryable
-            .SplitTable()
+        return await queryable.SplitTable()
             .OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
             .ToPagedListAsync(input);
     }

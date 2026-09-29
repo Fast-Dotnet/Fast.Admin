@@ -15,7 +15,8 @@ public class TenantLoginInput
     /// <summary>
     /// 用户Key
     /// </summary>
-    [StringRequired(ErrorMessage = "用户Key不能为空"), MaxLength(50, ErrorMessage = "用户Key不能超过50位字符")]
+    [StringRequired(ErrorMessage = "用户Key不能为空")]
+    [MaxLength(50, ErrorMessage = "用户Key不能超过50位字符")]
     public string UserKey { get; set; }
 
     /// <summary>

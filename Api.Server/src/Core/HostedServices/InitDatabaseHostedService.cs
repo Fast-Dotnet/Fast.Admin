@@ -45,7 +45,9 @@ public class InitDatabaseHostedService : IHostedService
 
             // 查询核心表是否存在
             if (db.DbMaintenance.IsAnyTable<AccountModel>())
+            {
                 return;
+            }
 
             // 加载Aop
             SugarEntityFilter.LoadSugarAop(FastContext.HostEnvironment.IsDevelopment(), db);
@@ -63,23 +65,19 @@ public class InitDatabaseHostedService : IHostedService
             });
 
             // 获取所有不分表的Model类型
-            Type[] tableTypes = SqlSugarContext
-                .SqlSugarEntityList.Where(wh => !wh.IsSplitTable)
+            Type[] tableTypes = SqlSugarContext.SqlSugarEntityList.Where(wh => !wh.IsSplitTable)
                 .Where(wh => wh.SugarDbType == null || (DatabaseTypeEnum)wh.SugarDbType == DatabaseTypeEnum.Center)
                 .Select(sl => sl.EntityType)
                 .ToArray();
             // 获取所有分表的Model类型
-            Type[] splitTableTypes = SqlSugarContext
-                .SqlSugarEntityList.Where(wh => wh.IsSplitTable)
+            Type[] splitTableTypes = SqlSugarContext.SqlSugarEntityList.Where(wh => wh.IsSplitTable)
                 .Where(wh => wh.SugarDbType == null || (DatabaseTypeEnum)wh.SugarDbType == DatabaseTypeEnum.Center)
                 .Select(sl => sl.EntityType)
                 .ToArray();
 
             // 创建表
             db.CodeFirst.InitTables(tableTypes);
-            db
-                .CodeFirst.SplitTables()
-                .InitTables(splitTableTypes);
+            db.CodeFirst.SplitTables().InitTables(splitTableTypes);
 
             var dateTime = new DateTime(2025, 01, 01);
             string initialAdminPassword = CryptoUtil.HashPasswordPBKDF2SHA256(CommonConst.Default.AdminPassword);
@@ -110,9 +108,7 @@ public class InitDatabaseHostedService : IHostedService
                     AllowDeleteData = true,
                     CreatedTime = dateTime
                 };
-                systemTenantModel = await db
-                    .Insertable(systemTenantModel)
-                    .ExecuteReturnEntityAsync();
+                systemTenantModel = await db.Insertable(systemTenantModel).ExecuteReturnEntityAsync();
 
                 #region 超级管理员
 
@@ -128,14 +124,11 @@ public class InitDatabaseHostedService : IHostedService
                     Status = CommonStatusEnum.Enable,
                     CreatedTime = dateTime
                 };
-                superAdminAccountModel = await db
-                    .Insertable(superAdminAccountModel)
-                    .ExecuteReturnEntityAsync();
+                superAdminAccountModel = await db.Insertable(superAdminAccountModel).ExecuteReturnEntityAsync();
 
                 long superAdminUserId = YitIdHelper.NextId();
                 long robotUserId = YitIdHelper.NextId();
-                await db
-                    .Insertable(new List<TenantUserModel>
+                await db.Insertable(new List<TenantUserModel>
                     {
                         new()
                         {
@@ -172,8 +165,7 @@ public class InitDatabaseHostedService : IHostedService
                 #region PasswordRecordModel
 
                 // 初始化密码记录表
-                await db
-                    .Insertable(new List<PasswordRecordModel>
+                await db.Insertable(new List<PasswordRecordModel>
                     {
                         new()
                         {
@@ -189,9 +181,7 @@ public class InitDatabaseHostedService : IHostedService
                 #endregion
 
                 // 系统数据库
-                await DatabaseSeedData.SystemDatabaseSeedData(db,
-                    systemTenantModel.TenantId,
-                    systemTenantModel.TenantCode,
+                await DatabaseSeedData.SystemDatabaseSeedData(db, systemTenantModel.TenantId, systemTenantModel.TenantCode,
                     dateTime);
 
                 // 配置

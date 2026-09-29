@@ -90,7 +90,8 @@ public class SqlDiffLogModel : BaseRecordEntity
     /// </summary>
     [SplitField]
     [SugarSearchTime]
-    [Required, SugarColumn(ColumnDescription = "差异时间", CreateTableFieldSort = 993)]
+    [Required]
+    [SugarColumn(ColumnDescription = "差异时间", CreateTableFieldSort = 993)]
     public override DateTime? CreatedTime { get; set; }
 
     /// <summary>

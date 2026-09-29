@@ -15,7 +15,8 @@ public class AddTenantInput
     /// <summary>
     /// 租户编码
     /// </summary>
-    [StringRequired(ErrorMessage = "租户编码不能为空"), MaxLength(5, ErrorMessage = "租户编码不能超过5个字符")]
+    [StringRequired(ErrorMessage = "租户编码不能为空")]
+    [MaxLength(5, ErrorMessage = "租户编码不能超过5个字符")]
     public string TenantCode { get; set; }
 
     /// <summary>

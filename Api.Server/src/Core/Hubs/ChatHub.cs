@@ -57,15 +57,14 @@ public class ChatHub : Hub<IChatClient>
         try
         {
             if (Context.User?.Identity?.IsAuthenticated != true)
+            {
                 return null;
+            }
 
             // API 宿主会提取 SignalR 的 access_token 查询参数；只有 JWT 认证完整验证通过后
             // 签名可信的 Data Claim 才会进入这里，禁止在 Hub 中自行解析未经验证的 JWT
-            string data = Context.User.FindFirst("Data")
-                ?.Value;
-            Dictionary<string, string> payload = data
-                ?.Base64ToString()
-                .ToObject<Dictionary<string, string>>();
+            string data = Context.User.FindFirst("Data")?.Value;
+            Dictionary<string, string> payload = data?.Base64ToString().ToObject<Dictionary<string, string>>();
             // 从 payload 中读取 DeviceType,SessionId,AppNo,TenantNo,EmployeeNo
             if (payload != null
                 && payload.TryGetValue(nameof(AuthUserInfo.DeviceType), out string deviceType)
@@ -107,9 +106,7 @@ public class ChatHub : Hub<IChatClient>
         IHubContext<ChatHub, IChatClient> _hubContext = Context
             .GetHttpContext()
             ?.RequestServices.GetService<IHubContext<ChatHub, IChatClient>>();
-        _hubContext
-            ?.Clients.Client(Context.ConnectionId)
-            .ConnectSuccess();
+        _hubContext?.Clients.Client(Context.ConnectionId).ConnectSuccess();
     }
 
     /// <inheritdoc />
@@ -130,8 +127,7 @@ public class ChatHub : Hub<IChatClient>
         }
 
         // 获取在线用户信息
-        TenantOnlineUserModel tenantOnlineUserModel = await _repository
-            .Queryable<TenantOnlineUserModel>()
+        TenantOnlineUserModel tenantOnlineUserModel = await _repository.Queryable<TenantOnlineUserModel>()
             .ClearFilter<IBaseTEntity>()
             .Where(wh => wh.ConnectionId == Context.ConnectionId)
             .SingleAsync();
@@ -141,9 +137,7 @@ public class ChatHub : Hub<IChatClient>
             // 断开连接，修改在线状态
             tenantOnlineUserModel.IsOnline = false;
             tenantOnlineUserModel.OfflineTime = DateTime.Now;
-            await _repository
-                .Updateable(tenantOnlineUserModel)
-                .ExecuteCommandAsync();
+            await _repository.Updateable(tenantOnlineUserModel).ExecuteCommandAsync();
         }
 
         await base.OnDisconnectedAsync(exception);
@@ -168,18 +162,14 @@ public class ChatHub : Hub<IChatClient>
 
         if (authUserInfo == null)
         {
-            _hubContext
-                ?.Clients.Client(Context.ConnectionId)
-                .LoginFail("连接失败，登录信息过期，请重新登录！");
+            _hubContext?.Clients.Client(Context.ConnectionId).LoginFail("连接失败，登录信息过期，请重新登录！");
             return;
         }
 
         // 判断设备信息是否和缓存中的一致
         if (GlobalContext.DeviceId != authUserInfo.DeviceId || GlobalContext.DeviceType != authUserInfo.DeviceType)
         {
-            _hubContext
-                ?.Clients.Client(Context.ConnectionId)
-                .LoginFail("连接失败，登录信息异常，请重新登录！");
+            _hubContext?.Clients.Client(Context.ConnectionId).LoginFail("连接失败，登录信息异常，请重新登录！");
             return;
         }
 
@@ -200,18 +190,13 @@ public class ChatHub : Hub<IChatClient>
         authUserInfo.LastLoginIp = wanNetIpInfo.Ip;
         authUserInfo.LastLoginTime = dateTime;
         // 获取缓存Key
-        string cacheKey = CacheConst.GetCacheKey(CacheConst.AuthUser,
-            authUserInfo.AppNo,
-            authUserInfo.TenantNo,
-            authUserInfo.DeviceType,
-            authUserInfo.EmployeeNo,
-            authUserInfo.SessionId);
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.AuthUser, authUserInfo.AppNo, authUserInfo.TenantNo,
+            authUserInfo.DeviceType, authUserInfo.EmployeeNo, authUserInfo.SessionId);
         // 设置缓存信息
         await _authCache.SetAsync(cacheKey, authUserInfo);
 
         // 获取在线用户信息
-        TenantOnlineUserModel tenantOnlineUserModel = await _repository
-            .Queryable<TenantOnlineUserModel>()
+        TenantOnlineUserModel tenantOnlineUserModel = await _repository.Queryable<TenantOnlineUserModel>()
             .ClearFilter<IBaseTEntity>()
             .Where(wh => wh.ConnectionId == Context.ConnectionId)
             .Where(wh => wh.TenantId == authUserInfo.TenantId)
@@ -249,9 +234,7 @@ public class ChatHub : Hub<IChatClient>
                 OfflineTime = null,
                 TenantId = authUserInfo.TenantId
             };
-            tenantOnlineUserModel = await _repository
-                .Insertable(tenantOnlineUserModel)
-                .ExecuteReturnEntityAsync();
+            tenantOnlineUserModel = await _repository.Insertable(tenantOnlineUserModel).ExecuteReturnEntityAsync();
         }
         else
         {
@@ -265,9 +248,7 @@ public class ChatHub : Hub<IChatClient>
             tenantOnlineUserModel.LastLoginTime = authUserInfo.LastLoginTime;
             tenantOnlineUserModel.IsOnline = true;
             tenantOnlineUserModel.OfflineTime = null;
-            await _repository
-                .Updateable(tenantOnlineUserModel)
-                .ExecuteCommandAsync();
+            await _repository.Updateable(tenantOnlineUserModel).ExecuteCommandAsync();
         }
 
         // 单点登录
@@ -275,8 +256,7 @@ public class ChatHub : Hub<IChatClient>
 
         if (singleLogin)
         {
-            List<string> connectionIdList = await _repository
-                .Queryable<TenantOnlineUserModel>()
+            List<string> connectionIdList = await _repository.Queryable<TenantOnlineUserModel>()
                 .ClearFilter<IBaseTEntity>()
                 .Where(wh => wh.AppNo == authUserInfo.AppNo)
                 .Where(wh => wh.EmployeeId == authUserInfo.EmployeeId)
@@ -287,13 +267,10 @@ public class ChatHub : Hub<IChatClient>
             if (connectionIdList.Any())
             {
                 // 踢下线
-                await _hubContext
-                    ?.Clients?.Clients(connectionIdList)
-                    .ElsewhereLogin(tenantOnlineUserModel);
+                await _hubContext?.Clients?.Clients(connectionIdList).ElsewhereLogin(tenantOnlineUserModel);
 
                 // 删除所有的死连接
-                await _repository
-                    .Deleteable<TenantOnlineUserModel>()
+                await _repository.Deleteable<TenantOnlineUserModel>()
                     .Where(wh => connectionIdList.Contains(wh.ConnectionId))
                     .ExecuteCommandAsync();
             }
@@ -311,8 +288,7 @@ public class ChatHub : Hub<IChatClient>
         }
 
         // 删除当前连接所在的在线信息。退出接口可能已先清理授权缓存，不能再依赖缓存判断。
-        await _repository
-            .Deleteable<TenantOnlineUserModel>()
+        await _repository.Deleteable<TenantOnlineUserModel>()
             .Where(wh => wh.ConnectionId == Context.ConnectionId)
             .ExecuteCommandAsync();
     }

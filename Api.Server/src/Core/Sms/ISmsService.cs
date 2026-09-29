@@ -43,10 +43,6 @@ public interface ISmsService
     /// <param name="accessKeyId">访问密钥Id，为null时读取配置</param>
     /// <param name="accessKeySecret">访问密钥Secret，为null时读取配置</param>
     /// <param name="signName">短信签名，为null时读取配置</param>
-    Task SendSms(string mobile,
-        string templateCode,
-        object templateParam,
-        string accessKeyId = null,
-        string accessKeySecret = null,
-        string signName = null);
+    Task SendSms(string mobile, string templateCode, object templateParam, string accessKeyId = null,
+        string accessKeySecret = null, string signName = null);
 }

@@ -50,26 +50,24 @@ public class ApplicationContext
 
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.App, openId);
 
-        applicationOpenIdModel = centerCache.GetAndSet(cacheKey,
-            () =>
+        applicationOpenIdModel = centerCache.GetAndSet(cacheKey, () =>
+        {
+            ISqlSugarClient repository = FastContext.GetService<ISqlSugarClient>();
+
+            ApplicationOpenIdModel result = repository.Queryable<ApplicationOpenIdModel>()
+                .Includes(e => e.Application)
+                .Where(wh => wh.OpenId == openId)
+                .Single();
+
+            if (result == null && throwError)
             {
-                ISqlSugarClient repository = FastContext.GetService<ISqlSugarClient>();
+                string message = $"未能找到对应应用【{openId}】信息！";
+                logger.LogError($"OpenId：{openId}；{message}");
+                throw new UserFriendlyException(message);
+            }
 
-                ApplicationOpenIdModel result = repository
-                    .Queryable<ApplicationOpenIdModel>()
-                    .Includes(e => e.Application)
-                    .Where(wh => wh.OpenId == openId)
-                    .Single();
-
-                if (result == null && throwError)
-                {
-                    string message = $"未能找到对应应用【{openId}】信息！";
-                    logger.LogError($"OpenId：{openId}；{message}");
-                    throw new UserFriendlyException(message);
-                }
-
-                return result;
-            });
+            return result;
+        });
 
         if (httpContext != null)
         {
@@ -102,26 +100,24 @@ public class ApplicationContext
 
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.App, openId);
 
-        applicationOpenIdModel = await centerCache.GetAndSetAsync(cacheKey,
-            async () =>
+        applicationOpenIdModel = await centerCache.GetAndSetAsync(cacheKey, async () =>
+        {
+            ISqlSugarClient repository = FastContext.GetService<ISqlSugarClient>();
+
+            ApplicationOpenIdModel result = await repository.Queryable<ApplicationOpenIdModel>()
+                .Includes(e => e.Application)
+                .Where(wh => wh.OpenId == openId)
+                .SingleAsync();
+
+            if (result == null && throwError)
             {
-                ISqlSugarClient repository = FastContext.GetService<ISqlSugarClient>();
+                string message = $"未能找到对应应用【{openId}】信息！";
+                logger.LogError($"OpenId：{openId}；{message}");
+                throw new UserFriendlyException(message);
+            }
 
-                ApplicationOpenIdModel result = await repository
-                    .Queryable<ApplicationOpenIdModel>()
-                    .Includes(e => e.Application)
-                    .Where(wh => wh.OpenId == openId)
-                    .SingleAsync();
-
-                if (result == null && throwError)
-                {
-                    string message = $"未能找到对应应用【{openId}】信息！";
-                    logger.LogError($"OpenId：{openId}；{message}");
-                    throw new UserFriendlyException(message);
-                }
-
-                return result;
-            });
+            return result;
+        });
 
         if (httpContext != null)
         {
@@ -166,8 +162,7 @@ public class ApplicationContext
         if (httpContext != null)
         {
             // 清空 HttpContext.Items 中的
-            var keys = httpContext
-                .Items.Keys.Where(wh =>
+            var keys = httpContext.Items.Keys.Where(wh =>
                     wh is string key && key.StartsWith($"{nameof(Fast)}.{nameof(ApplicationOpenIdModel.OpenId)}."))
                 .ToList();
             foreach (object key in keys)

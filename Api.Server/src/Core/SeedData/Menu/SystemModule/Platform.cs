@@ -45,9 +45,7 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        platformCLMenuModel = await db
-            .Insertable(platformCLMenuModel)
-            .ExecuteReturnEntityAsync();
+        platformCLMenuModel = await db.Insertable(platformCLMenuModel).ExecuteReturnEntityAsync();
 
         #region 客户端用户
 
@@ -79,11 +77,8 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        clientUserMenuModel = await db
-            .Insertable(clientUserMenuModel)
-            .ExecuteReturnEntityAsync();
-        await db
-            .Insertable(new List<ButtonModel>
+        clientUserMenuModel = await db.Insertable(clientUserMenuModel).ExecuteReturnEntityAsync();
+        await db.Insertable(new List<ButtonModel>
             {
                 new()
                 {
@@ -136,11 +131,8 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        complaintMenuModel = await db
-            .Insertable(complaintMenuModel)
-            .ExecuteReturnEntityAsync();
-        await db
-            .Insertable(new List<ButtonModel>
+        complaintMenuModel = await db.Insertable(complaintMenuModel).ExecuteReturnEntityAsync();
+        await db.Insertable(new List<ButtonModel>
             {
                 new()
                 {
@@ -225,11 +217,8 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        tenantComplaintMenuModel = await db
-            .Insertable(tenantComplaintMenuModel)
-            .ExecuteReturnEntityAsync();
-        await db
-            .Insertable(new List<ButtonModel>
+        tenantComplaintMenuModel = await db.Insertable(tenantComplaintMenuModel).ExecuteReturnEntityAsync();
+        await db.Insertable(new List<ButtonModel>
             {
                 new()
                 {

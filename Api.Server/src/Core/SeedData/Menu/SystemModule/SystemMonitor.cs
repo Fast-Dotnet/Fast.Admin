@@ -18,8 +18,7 @@ internal static partial class MenuSeedData
 {
     private static async Task SeedSystemMonitor(ISqlSugarClient db, ApplicationModel applicationModel, DateTime dateTime)
     {
-        await db
-            .Insertable(new MenuModel
+        await db.Insertable(new MenuModel
             {
                 MenuId = YitIdHelper.NextId(),
                 Edition = EditionEnum.Custom,

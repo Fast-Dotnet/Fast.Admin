@@ -32,8 +32,7 @@ public class PayRecordService : IDynamicApplication
     [Permission(PermissionConst.PayRecordPaged)]
     public async Task<PagedResult<PayRecordModel>> QueryPayRecordPaged(PagedInput input)
     {
-        return await _repository
-            .Entities.OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
+        return await _repository.Entities.OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
             .ToPagedListAsync(input);
     }
 }

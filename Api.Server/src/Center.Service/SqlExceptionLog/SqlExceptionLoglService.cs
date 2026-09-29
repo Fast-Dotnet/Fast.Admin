@@ -52,8 +52,6 @@ public class SqlExceptionLogModelService : IDynamicApplication
             queryable = queryable.Where(wh => wh.TenantId == _user.TenantId);
         }
 
-        return await queryable
-            .OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
-            .ToPagedListAsync(input);
+        return await queryable.OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc).ToPagedListAsync(input);
     }
 }

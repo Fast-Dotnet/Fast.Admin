@@ -85,12 +85,12 @@ public class FileContext
     public static string GetLocalPath(string rootPath, string filePath, string fileName = null)
     {
         if (string.IsNullOrWhiteSpace(filePath))
+        {
             throw new UserFriendlyException("文件存储路径不能为空！");
+        }
 
         rootPath = Path.GetFullPath(rootPath);
-        string localPath = filePath
-            .Replace('\\', Path.DirectorySeparatorChar)
-            .Replace('/', Path.DirectorySeparatorChar);
+        string localPath = filePath.Replace('\\', Path.DirectorySeparatorChar).Replace('/', Path.DirectorySeparatorChar);
         string fullPath = string.IsNullOrEmpty(fileName)
             ? Path.GetFullPath(Path.Combine(rootPath, localPath))
             : Path.GetFullPath(Path.Combine(rootPath, localPath, fileName));
@@ -149,9 +149,7 @@ public class FileContext
             DeviceType = _user.DeviceType,
             EmployeeNo = _user.EmployeeNo,
             SessionId = _user.SessionId,
-            ExpiresAt = DateTimeOffset
-                .UtcNow.AddMinutes(lifetimeMinutes)
-                .ToUnixTimeSeconds()
+            ExpiresAt = DateTimeOffset.UtcNow.AddMinutes(lifetimeMinutes).ToUnixTimeSeconds()
         };
         string token = EncryptMediaAssetToken(payload);
 

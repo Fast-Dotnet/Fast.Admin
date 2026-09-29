@@ -46,11 +46,8 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        fileMenuModel = await db
-            .Insertable(fileMenuModel)
-            .ExecuteReturnEntityAsync();
-        await db
-            .Insertable(new List<ButtonModel>
+        fileMenuModel = await db.Insertable(fileMenuModel).ExecuteReturnEntityAsync();
+        await db.Insertable(new List<ButtonModel>
             {
                 new()
                 {
@@ -61,11 +58,7 @@ internal static partial class MenuSeedData
                     ButtonCode = PermissionConst.FilePaged,
                     ButtonName = "列表",
                     RoleType =
-                        RoleTypeEnum.Admin
-                        | RoleTypeEnum.Default
-                        | RoleTypeEnum.IT
-                        | RoleTypeEnum.HR
-                        | RoleTypeEnum.Finance,
+                        RoleTypeEnum.Admin | RoleTypeEnum.Default | RoleTypeEnum.IT | RoleTypeEnum.HR | RoleTypeEnum.Finance,
                     HasDesktop = true,
                     HasWeb = true,
                     HasMobile = true,

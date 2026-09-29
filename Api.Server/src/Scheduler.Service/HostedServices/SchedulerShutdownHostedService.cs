@@ -69,22 +69,18 @@ internal sealed class SchedulerShutdownHostedService : IHostedService
                 // Quartz 正常关闭不会删除集群心跳，执行宿主需要主动移除当前实例状态
                 using var cleanupCancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
 
-                await db
-                    .Deleteable<QuartzSchedulerStateModel>()
+                await db.Deleteable<QuartzSchedulerStateModel>()
                     .Where(wh => wh.SchedName == schedulerName && wh.InstanceName == schedulerInstanceId)
                     .ExecuteCommandAsync(cleanupCancellationTokenSource.Token);
 
                 _logger.LogInformation("Remove scheduler {SchedulerName} instance {SchedulerInstanceId} state on shutdown.",
-                    schedulerName,
-                    schedulerInstanceId);
+                    schedulerName, schedulerInstanceId);
             }
             catch (Exception ex)
             {
                 // 清理失败时保留 Quartz 原有的心跳超时机制，避免影响宿主正常退出
-                _logger.LogError(ex,
-                    "Remove scheduler {SchedulerName} instance {SchedulerInstanceId} state on shutdown failed.",
-                    schedulerName,
-                    schedulerInstanceId);
+                _logger.LogError(ex, "Remove scheduler {SchedulerName} instance {SchedulerInstanceId} state on shutdown failed.",
+                    schedulerName, schedulerInstanceId);
             }
         }
     }

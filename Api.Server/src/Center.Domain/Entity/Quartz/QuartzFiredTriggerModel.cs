@@ -12,26 +12,11 @@ namespace Fast.Center.Domain;
 /// </summary>
 [SugarTable("QRTZ_FIRED_TRIGGERS", "Quartz 触发器快照表")]
 [SugarDbType(DatabaseTypeEnum.Center)]
-[SugarIndex("IDX_QRTZ_FT_INST_JOB_REQ_RCVRY",
-    nameof(SchedName),
-    OrderByType.Asc,
-    nameof(InstanceName),
-    OrderByType.Asc,
-    nameof(RequestsRecovery),
+[SugarIndex("IDX_QRTZ_FT_INST_JOB_REQ_RCVRY", nameof(SchedName), OrderByType.Asc, nameof(InstanceName), OrderByType.Asc,
+    nameof(RequestsRecovery), OrderByType.Asc)]
+[SugarIndex("IDX_QRTZ_FT_G_J", nameof(SchedName), OrderByType.Asc, nameof(JobGroup), OrderByType.Asc, nameof(JobName),
     OrderByType.Asc)]
-[SugarIndex("IDX_QRTZ_FT_G_J",
-    nameof(SchedName),
-    OrderByType.Asc,
-    nameof(JobGroup),
-    OrderByType.Asc,
-    nameof(JobName),
-    OrderByType.Asc)]
-[SugarIndex("IDX_QRTZ_FT_G_T",
-    nameof(SchedName),
-    OrderByType.Asc,
-    nameof(TriggerGroup),
-    OrderByType.Asc,
-    nameof(TriggerName),
+[SugarIndex("IDX_QRTZ_FT_G_T", nameof(SchedName), OrderByType.Asc, nameof(TriggerGroup), OrderByType.Asc, nameof(TriggerName),
     OrderByType.Asc)]
 public class QuartzFiredTriggerModel : IDatabaseEntity
 {

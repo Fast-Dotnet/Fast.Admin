@@ -35,8 +35,7 @@ public class MessageSendRecordService : IDynamicApplication
     public async Task<PagedResult<QueryMessageSendRecordPagedOutput>> QueryMessageSendRecordPaged(
         QueryMessageSendRecordPagedInput input)
     {
-        return await _repository
-            .Entities.WhereIF(input.Channel != null, wh => wh.Channel == input.Channel)
+        return await _repository.Entities.WhereIF(input.Channel != null, wh => wh.Channel == input.Channel)
             .WhereIF(input.IsSuccess != null, wh => wh.IsSuccess == input.IsSuccess)
             .Select(sl => new QueryMessageSendRecordPagedOutput
             {
@@ -66,8 +65,7 @@ public class MessageSendRecordService : IDynamicApplication
     public async Task<QueryMessageSendRecordDetailOutput> QueryMessageSendRecordDetail(
         [Required(ErrorMessage = "记录Id不能为空")] long? recordId)
     {
-        QueryMessageSendRecordDetailOutput result = await _repository
-            .Entities.Where(wh => wh.RecordId == recordId)
+        QueryMessageSendRecordDetailOutput result = await _repository.Entities.Where(wh => wh.RecordId == recordId)
             .Select(sl => new QueryMessageSendRecordDetailOutput
             {
                 RecordId = sl.RecordId,

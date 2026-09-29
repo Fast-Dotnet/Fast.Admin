@@ -40,8 +40,8 @@ public class SqlDiffLogService : IDynamicApplication
             throw new UserFriendlyException("请选择具体的时间范围！");
         }
 
-        ISugarQueryable<SqlDiffLogModel> queryable = _repository
-            .Entities.WhereIF(input.AccountId != null, wh => wh.AccountId == input.AccountId)
+        ISugarQueryable<SqlDiffLogModel> queryable = _repository.Entities
+            .WhereIF(input.AccountId != null, wh => wh.AccountId == input.AccountId)
             .WhereIF(input.DiffType != null, wh => wh.DiffType == input.DiffType);
 
         if (_user.IsSuperAdmin)
@@ -53,8 +53,7 @@ public class SqlDiffLogService : IDynamicApplication
             queryable = queryable.Where(wh => wh.TenantId == _user.TenantId);
         }
 
-        return await queryable
-            .SplitTable()
+        return await queryable.SplitTable()
             .OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
             .ToPagedListAsync(input);
     }

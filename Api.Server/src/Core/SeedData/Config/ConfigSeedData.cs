@@ -21,8 +21,7 @@ internal static class ConfigSeedData
     /// </summary>
     public static async Task SystemConfigSeedData(ISqlSugarClient db, DateTime dateTime)
     {
-        await db
-            .Insertable(new List<ConfigModel>
+        await db.Insertable(new List<ConfigModel>
             {
                 new()
                 {

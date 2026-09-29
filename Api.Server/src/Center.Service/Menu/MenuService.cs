@@ -35,17 +35,15 @@ public class MenuService : IDynamicApplication
     [Permission(PermissionConst.Menu.Paged)]
     public async Task<List<ElSelectorOutput<long>>> MenuSelector()
     {
-        var data = await _repository
-            .Entities.OrderBy(ob => ob.Sort)
+        var data = await _repository.Entities.OrderBy(ob => ob.Sort)
             .Select(sl => new {sl.MenuId, sl.MenuName, sl.MenuCode, sl.ParentId})
             .ToListAsync();
 
-        return data
-            .Select(sl =>
+        return data.Select(sl =>
                 new ElSelectorOutput<long>
-                {
-                    Value = sl.MenuId, Label = sl.MenuName, ParentId = sl.ParentId, Data = new {sl.MenuCode}
-                })
+                    {
+                        Value = sl.MenuId, Label = sl.MenuName, ParentId = sl.ParentId, Data = new {sl.MenuCode}
+                    })
             .ToList()
             .Build();
     }
@@ -58,8 +56,7 @@ public class MenuService : IDynamicApplication
     [Permission(PermissionConst.Menu.Paged)]
     public async Task<List<QueryMenuPagedOutput>> QueryMenuPaged(QueryMenuPagedInput input)
     {
-        List<QueryMenuPagedOutput> data = await _repository
-            .Entities.LeftJoin<ApplicationModel>((t1, t2) => t1.AppId == t2.AppId)
+        List<QueryMenuPagedOutput> data = await _repository.Entities.LeftJoin<ApplicationModel>((t1, t2) => t1.AppId == t2.AppId)
             .WhereIF(input.Edition != null, t1 => t1.Edition == input.Edition)
             .WhereIF(input.AppId != null, t1 => t1.AppId == input.AppId)
             .WhereIF(input.MenuType != null, t1 => t1.MenuType == input.MenuType)
@@ -118,8 +115,7 @@ public class MenuService : IDynamicApplication
     [Permission(PermissionConst.Menu.Detail)]
     public async Task<QueryMenuDetailOutput> QueryMenuDetail([Required(ErrorMessage = "菜单Id不能为为空")] long? menuId)
     {
-        QueryMenuDetailOutput result = await _repository
-            .Entities.LeftJoin<ApplicationModel>((t1, t2) => t1.AppId == t2.AppId)
+        QueryMenuDetailOutput result = await _repository.Entities.LeftJoin<ApplicationModel>((t1, t2) => t1.AppId == t2.AppId)
             .Where(t1 => t1.MenuId == menuId)
             .Select((t1, t2) => new QueryMenuDetailOutput
             {
@@ -163,8 +159,7 @@ public class MenuService : IDynamicApplication
             throw new UserFriendlyException("数据不存在！");
         }
 
-        result.ButtonList = await _repository
-            .Queryable<ButtonModel>()
+        result.ButtonList = await _repository.Queryable<ButtonModel>()
             .Where(wh => wh.MenuId == menuId)
             .OrderBy(ob => ob.Sort)
             .Select(sl => new EditMenuButtonInput
@@ -251,8 +246,7 @@ public class MenuService : IDynamicApplication
             menuModel.ParentIds = [0];
         }
 
-        var addButtonList = input
-            .ButtonList.Select(item => new ButtonModel
+        var addButtonList = input.ButtonList.Select(item => new ButtonModel
             {
                 Edition = item.Edition,
                 AppId = applicationModel.AppId,
@@ -269,13 +263,10 @@ public class MenuService : IDynamicApplication
             .ToList();
 
         await _repository.Ado.UseTranAsync(async () =>
-            {
-                await _repository.InsertAsync(menuModel);
-                await _repository
-                    .Insertable(addButtonList)
-                    .ExecuteCommandAsync();
-            },
-            ex => throw ex);
+        {
+            await _repository.InsertAsync(menuModel);
+            await _repository.Insertable(addButtonList).ExecuteCommandAsync();
+        }, ex => throw ex);
     }
 
     /// <summary>
@@ -286,10 +277,7 @@ public class MenuService : IDynamicApplication
     [Permission(PermissionConst.Menu.Edit)]
     public async Task EditMenu(EditMenuInput input)
     {
-        var buttonCodes = input
-            .ButtonList.Select(sl => sl.ButtonCode)
-            .Distinct()
-            .ToList();
+        var buttonCodes = input.ButtonList.Select(sl => sl.ButtonCode).Distinct().ToList();
         if (buttonCodes.Count != input.ButtonList.Count)
         {
             throw new UserFriendlyException("按钮重复！");
@@ -411,24 +399,15 @@ public class MenuService : IDynamicApplication
         }
 
         // 删除的
-        var deleteButtonList = buttonList
-            .Where(wh => input.ButtonList.All(a => a.ButtonId != wh.ButtonId))
-            .ToList();
+        var deleteButtonList = buttonList.Where(wh => input.ButtonList.All(a => a.ButtonId != wh.ButtonId)).ToList();
 
         await _repository.Ado.UseTranAsync(async () =>
-            {
-                await _repository.UpdateAsync(menuModel);
-                await _repository
-                    .Deleteable(deleteButtonList)
-                    .ExecuteCommandAsync();
-                await _repository
-                    .Updateable(updateButtonList)
-                    .ExecuteCommandAsync();
-                await _repository
-                    .Insertable(addButtonList)
-                    .ExecuteCommandAsync();
-            },
-            ex => throw ex);
+        {
+            await _repository.UpdateAsync(menuModel);
+            await _repository.Deleteable(deleteButtonList).ExecuteCommandAsync();
+            await _repository.Updateable(updateButtonList).ExecuteCommandAsync();
+            await _repository.Insertable(addButtonList).ExecuteCommandAsync();
+        }, ex => throw ex);
     }
 
     /// <summary>
@@ -444,9 +423,7 @@ public class MenuService : IDynamicApplication
             throw new UserFriendlyException("菜单存在子菜单，无法删除！");
         }
 
-        if (await _repository
-                .Queryable<ButtonModel>()
-                .AnyAsync(a => a.MenuId == input.MenuId))
+        if (await _repository.Queryable<ButtonModel>().AnyAsync(a => a.MenuId == input.MenuId))
         {
             throw new UserFriendlyException("菜单存在按钮信息，无法删除！");
         }

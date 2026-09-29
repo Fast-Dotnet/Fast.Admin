@@ -45,9 +45,7 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        logCLMenuModel = await db
-            .Insertable(logCLMenuModel)
-            .ExecuteReturnEntityAsync();
+        logCLMenuModel = await db.Insertable(logCLMenuModel).ExecuteReturnEntityAsync();
 
         #region 访问日志
 
@@ -79,11 +77,8 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        visitLogMenuModel = await db
-            .Insertable(visitLogMenuModel)
-            .ExecuteReturnEntityAsync();
-        await db
-            .Insertable(new List<ButtonModel>
+        visitLogMenuModel = await db.Insertable(visitLogMenuModel).ExecuteReturnEntityAsync();
+        await db.Insertable(new List<ButtonModel>
             {
                 new()
                 {
@@ -136,11 +131,8 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        operateLogMenuModel = await db
-            .Insertable(operateLogMenuModel)
-            .ExecuteReturnEntityAsync();
-        await db
-            .Insertable(new List<ButtonModel>
+        operateLogMenuModel = await db.Insertable(operateLogMenuModel).ExecuteReturnEntityAsync();
+        await db.Insertable(new List<ButtonModel>
             {
                 new()
                 {
@@ -151,11 +143,7 @@ internal static partial class MenuSeedData
                     ButtonCode = PermissionConst.OperateLogPaged,
                     ButtonName = "列表",
                     RoleType =
-                        RoleTypeEnum.Admin
-                        | RoleTypeEnum.Default
-                        | RoleTypeEnum.IT
-                        | RoleTypeEnum.HR
-                        | RoleTypeEnum.Finance,
+                        RoleTypeEnum.Admin | RoleTypeEnum.Default | RoleTypeEnum.IT | RoleTypeEnum.HR | RoleTypeEnum.Finance,
                     HasDesktop = true,
                     HasWeb = true,
                     HasMobile = true,
@@ -198,11 +186,8 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        requestLogMenuModel = await db
-            .Insertable(requestLogMenuModel)
-            .ExecuteReturnEntityAsync();
-        await db
-            .Insertable(new List<ButtonModel>
+        requestLogMenuModel = await db.Insertable(requestLogMenuModel).ExecuteReturnEntityAsync();
+        await db.Insertable(new List<ButtonModel>
             {
                 new()
                 {

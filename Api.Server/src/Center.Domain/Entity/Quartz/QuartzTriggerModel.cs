@@ -12,59 +12,21 @@ namespace Fast.Center.Domain;
 /// </summary>
 [SugarTable("QRTZ_TRIGGERS", "Quartz 触发器表")]
 [SugarDbType(DatabaseTypeEnum.Center)]
-[SugarIndex("IDX_QRTZ_T_G_J",
-    nameof(SchedName),
-    OrderByType.Asc,
-    nameof(JobGroup),
-    OrderByType.Asc,
-    nameof(JobName),
+[SugarIndex("IDX_QRTZ_T_G_J", nameof(SchedName), OrderByType.Asc, nameof(JobGroup), OrderByType.Asc, nameof(JobName),
     OrderByType.Asc)]
 [SugarIndex("IDX_QRTZ_T_C", nameof(SchedName), OrderByType.Asc, nameof(CalendarName), OrderByType.Asc)]
-[SugarIndex("IDX_QRTZ_T_N_G_STATE",
-    nameof(SchedName),
-    OrderByType.Asc,
-    nameof(TriggerGroup),
-    OrderByType.Asc,
-    nameof(TriggerState),
-    OrderByType.Asc)]
+[SugarIndex("IDX_QRTZ_T_N_G_STATE", nameof(SchedName), OrderByType.Asc, nameof(TriggerGroup), OrderByType.Asc,
+    nameof(TriggerState), OrderByType.Asc)]
 [SugarIndex("IDX_QRTZ_T_STATE", nameof(SchedName), OrderByType.Asc, nameof(TriggerState), OrderByType.Asc)]
-[SugarIndex("IDX_QRTZ_T_N_STATE",
-    nameof(SchedName),
-    OrderByType.Asc,
-    nameof(TriggerName),
-    OrderByType.Asc,
-    nameof(TriggerGroup),
-    OrderByType.Asc,
-    nameof(TriggerState),
-    OrderByType.Asc)]
+[SugarIndex("IDX_QRTZ_T_N_STATE", nameof(SchedName), OrderByType.Asc, nameof(TriggerName), OrderByType.Asc, nameof(TriggerGroup),
+    OrderByType.Asc, nameof(TriggerState), OrderByType.Asc)]
 [SugarIndex("IDX_QRTZ_T_NEXT_FIRE_TIME", nameof(SchedName), OrderByType.Asc, nameof(NextFireTime), OrderByType.Asc)]
-[SugarIndex("IDX_QRTZ_T_NFT_ST",
-    nameof(SchedName),
-    OrderByType.Asc,
-    nameof(TriggerState),
-    OrderByType.Asc,
-    nameof(NextFireTime),
+[SugarIndex("IDX_QRTZ_T_NFT_ST", nameof(SchedName), OrderByType.Asc, nameof(TriggerState), OrderByType.Asc, nameof(NextFireTime),
     OrderByType.Asc)]
-[SugarIndex("IDX_QRTZ_T_NFT_ST_MISFIRE",
-    nameof(SchedName),
-    OrderByType.Asc,
-    nameof(MisfireInstr),
-    OrderByType.Asc,
-    nameof(NextFireTime),
-    OrderByType.Asc,
-    nameof(TriggerState),
-    OrderByType.Asc)]
-[SugarIndex("IDX_QRTZ_T_NFT_ST_MISFIRE_GRP",
-    nameof(SchedName),
-    OrderByType.Asc,
-    nameof(MisfireInstr),
-    OrderByType.Asc,
-    nameof(NextFireTime),
-    OrderByType.Asc,
-    nameof(TriggerGroup),
-    OrderByType.Asc,
-    nameof(TriggerState),
-    OrderByType.Asc)]
+[SugarIndex("IDX_QRTZ_T_NFT_ST_MISFIRE", nameof(SchedName), OrderByType.Asc, nameof(MisfireInstr), OrderByType.Asc,
+    nameof(NextFireTime), OrderByType.Asc, nameof(TriggerState), OrderByType.Asc)]
+[SugarIndex("IDX_QRTZ_T_NFT_ST_MISFIRE_GRP", nameof(SchedName), OrderByType.Asc, nameof(MisfireInstr), OrderByType.Asc,
+    nameof(NextFireTime), OrderByType.Asc, nameof(TriggerGroup), OrderByType.Asc, nameof(TriggerState), OrderByType.Asc)]
 public class QuartzTriggerModel : IDatabaseEntity
 {
     /// <summary>

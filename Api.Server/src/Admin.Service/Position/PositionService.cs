@@ -33,14 +33,11 @@ public class PositionService : IDynamicApplication
     [ApiInfo("职位选择器", HttpRequestActionEnum.Query)]
     public async Task<List<ElSelectorOutput<long>>> PositionSelector()
     {
-        var data = await _repository
-            .Entities.OrderBy(ob => ob.Sort)
+        var data = await _repository.Entities.OrderBy(ob => ob.Sort)
             .Select(sl => new {sl.PositionId, sl.PositionName})
             .ToListAsync();
 
-        return data
-            .Select(sl => new ElSelectorOutput<long> {Value = sl.PositionId, Label = sl.PositionName})
-            .ToList();
+        return data.Select(sl => new ElSelectorOutput<long> {Value = sl.PositionId, Label = sl.PositionName}).ToList();
     }
 
     /// <summary>
@@ -51,8 +48,7 @@ public class PositionService : IDynamicApplication
     [Permission(PermissionConst.Position.Paged)]
     public async Task<PagedResult<QueryPositionPagedOutput>> QueryPositionPaged(PagedInput input)
     {
-        return await _repository
-            .Entities.OrderByIF(input.IsOrderBy, ob => ob.Sort)
+        return await _repository.Entities.OrderByIF(input.IsOrderBy, ob => ob.Sort)
             .Select(sl => new QueryPositionPagedOutput
             {
                 PositionId = sl.PositionId,
@@ -77,8 +73,7 @@ public class PositionService : IDynamicApplication
     [Permission(PermissionConst.Position.Detail)]
     public async Task<QueryPositionDetailOutput> QueryPositionDetail([Required(ErrorMessage = "职位Id不能为空")] long? positionId)
     {
-        QueryPositionDetailOutput result = await _repository
-            .Entities.Where(t1 => t1.PositionId == positionId)
+        QueryPositionDetailOutput result = await _repository.Entities.Where(t1 => t1.PositionId == positionId)
             .Select(sl => new QueryPositionDetailOutput
             {
                 PositionId = sl.PositionId,
@@ -156,8 +151,7 @@ public class PositionService : IDynamicApplication
 
         await _repository.UpdateAsync(positionModel);
 
-        await _repository
-            .Updateable<EmployeeOrgModel>()
+        await _repository.Updateable<EmployeeOrgModel>()
             .SetColumns(_ => new EmployeeOrgModel {PositionName = positionModel.PositionName})
             .Where(wh => wh.PositionId == positionModel.PositionId)
             .ExecuteCommandAsync();
@@ -182,9 +176,7 @@ public class PositionService : IDynamicApplication
     public async Task DeletePosition(PositionIdInput input)
     {
         // 检查是否有员工关联
-        if (await _repository
-                .Queryable<EmployeeOrgModel>()
-                .AnyAsync(a => a.PositionId == input.PositionId))
+        if (await _repository.Queryable<EmployeeOrgModel>().AnyAsync(a => a.PositionId == input.PositionId))
         {
             throw new UserFriendlyException("职位存在员工关联，无法删除！");
         }

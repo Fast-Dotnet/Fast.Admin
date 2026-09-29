@@ -33,46 +33,43 @@ public class RegionService : IDynamicApplication
     [ApiInfo("地区选择器", HttpRequestActionEnum.Query)]
     public async Task<List<ElSelectorOutput<long>>> RegionSelector()
     {
-        return await _cache.GetAndSetAsync(CacheConst.Center.Region,
-            async () =>
-            {
-                var data = await _repository
-                    .Entities.Where(wh =>
-                        (wh.RegionLevel & (RegionLevelEnum.Province | RegionLevelEnum.City | RegionLevelEnum.District)) != 0)
-                    .OrderBy(ob => ob.RegionName)
-                    .Select(sl => new
+        return await _cache.GetAndSetAsync(CacheConst.Center.Region, async () =>
+        {
+            var data = await _repository.Entities
+                .Where(wh => (wh.RegionLevel & (RegionLevelEnum.Province | RegionLevelEnum.City | RegionLevelEnum.District)) != 0)
+                .OrderBy(ob => ob.RegionName)
+                .Select(sl => new
+                {
+                    sl.RegionId,
+                    sl.ParentId,
+                    sl.RegionCode,
+                    sl.RegionName,
+                    sl.AreaCode,
+                    sl.PostalCode,
+                    sl.Latitude,
+                    sl.Longitude,
+                    sl.FullRegionName
+                })
+                .ToListAsync();
+
+            return data.Select(sl => new ElSelectorOutput<long>
+                {
+                    Value = sl.RegionId,
+                    Label = sl.RegionName,
+                    ParentId = sl.ParentId,
+                    Data = new
                     {
-                        sl.RegionId,
-                        sl.ParentId,
                         sl.RegionCode,
-                        sl.RegionName,
                         sl.AreaCode,
                         sl.PostalCode,
                         sl.Latitude,
                         sl.Longitude,
                         sl.FullRegionName
-                    })
-                    .ToListAsync();
-
-                return data
-                    .Select(sl => new ElSelectorOutput<long>
-                    {
-                        Value = sl.RegionId,
-                        Label = sl.RegionName,
-                        ParentId = sl.ParentId,
-                        Data = new
-                        {
-                            sl.RegionCode,
-                            sl.AreaCode,
-                            sl.PostalCode,
-                            sl.Latitude,
-                            sl.Longitude,
-                            sl.FullRegionName
-                        }
-                    })
-                    .ToList()
-                    .Build();
-            });
+                    }
+                })
+                .ToList()
+                .Build();
+        });
     }
 
     /// <summary>
@@ -82,35 +79,32 @@ public class RegionService : IDynamicApplication
     [ApiInfo("省份选择器", HttpRequestActionEnum.Query)]
     public async Task<List<ElSelectorOutput<long>>> ProvinceSelector()
     {
-        return await _cache.GetAndSetAsync(CacheConst.Center.Province,
-            async () =>
-            {
-                var data = await _repository
-                    .Entities.Where(wh => wh.RegionLevel == RegionLevelEnum.Province)
-                    .OrderBy(ob => ob.RegionName)
-                    .Select(sl => new
-                    {
-                        sl.RegionId,
-                        sl.ParentId,
-                        sl.RegionCode,
-                        sl.RegionName,
-                        sl.Latitude,
-                        sl.Longitude,
-                        sl.FullRegionName
-                    })
-                    .ToListAsync();
+        return await _cache.GetAndSetAsync(CacheConst.Center.Province, async () =>
+        {
+            var data = await _repository.Entities.Where(wh => wh.RegionLevel == RegionLevelEnum.Province)
+                .OrderBy(ob => ob.RegionName)
+                .Select(sl => new
+                {
+                    sl.RegionId,
+                    sl.ParentId,
+                    sl.RegionCode,
+                    sl.RegionName,
+                    sl.Latitude,
+                    sl.Longitude,
+                    sl.FullRegionName
+                })
+                .ToListAsync();
 
-                return data
-                    .Select(sl => new ElSelectorOutput<long>
-                    {
-                        Value = sl.RegionId,
-                        Label = sl.RegionName,
-                        ParentId = sl.ParentId,
-                        Data = new {sl.RegionCode, sl.Latitude, sl.Longitude, sl.FullRegionName}
-                    })
-                    .ToList()
-                    .Build();
-            });
+            return data.Select(sl => new ElSelectorOutput<long>
+                {
+                    Value = sl.RegionId,
+                    Label = sl.RegionName,
+                    ParentId = sl.ParentId,
+                    Data = new {sl.RegionCode, sl.Latitude, sl.Longitude, sl.FullRegionName}
+                })
+                .ToList()
+                .Build();
+        });
     }
 
     /// <summary>
@@ -120,44 +114,42 @@ public class RegionService : IDynamicApplication
     [ApiInfo("城市选择器", HttpRequestActionEnum.Query)]
     public async Task<List<ElSelectorOutput<long>>> CitySelector()
     {
-        return await _cache.GetAndSetAsync(CacheConst.Center.City,
-            async () =>
-            {
-                var data = await _repository
-                    .Entities.Where(wh => (wh.RegionLevel & (RegionLevelEnum.Province | RegionLevelEnum.City)) != 0)
-                    .OrderBy(ob => ob.RegionName)
-                    .Select(sl => new
+        return await _cache.GetAndSetAsync(CacheConst.Center.City, async () =>
+        {
+            var data = await _repository.Entities
+                .Where(wh => (wh.RegionLevel & (RegionLevelEnum.Province | RegionLevelEnum.City)) != 0)
+                .OrderBy(ob => ob.RegionName)
+                .Select(sl => new
+                {
+                    sl.RegionId,
+                    sl.ParentId,
+                    sl.RegionCode,
+                    sl.RegionName,
+                    sl.AreaCode,
+                    sl.PostalCode,
+                    sl.Latitude,
+                    sl.Longitude,
+                    sl.FullRegionName
+                })
+                .ToListAsync();
+
+            return data.Select(sl => new ElSelectorOutput<long>
+                {
+                    Value = sl.RegionId,
+                    Label = sl.RegionName,
+                    ParentId = sl.ParentId,
+                    Data = new
                     {
-                        sl.RegionId,
-                        sl.ParentId,
                         sl.RegionCode,
-                        sl.RegionName,
                         sl.AreaCode,
                         sl.PostalCode,
                         sl.Latitude,
                         sl.Longitude,
                         sl.FullRegionName
-                    })
-                    .ToListAsync();
-
-                return data
-                    .Select(sl => new ElSelectorOutput<long>
-                    {
-                        Value = sl.RegionId,
-                        Label = sl.RegionName,
-                        ParentId = sl.ParentId,
-                        Data = new
-                        {
-                            sl.RegionCode,
-                            sl.AreaCode,
-                            sl.PostalCode,
-                            sl.Latitude,
-                            sl.Longitude,
-                            sl.FullRegionName
-                        }
-                    })
-                    .ToList()
-                    .Build();
-            });
+                    }
+                })
+                .ToList()
+                .Build();
+        });
     }
 }

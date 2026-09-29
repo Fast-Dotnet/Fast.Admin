@@ -21,7 +21,8 @@ public class ProgramApplication : IDynamicApplication
     /// <summary>
     /// 程序信息
     /// </summary>
-    [HttpGet("/program"), HttpGet("/program/index")]
+    [HttpGet("/program")]
+    [HttpGet("/program/index")]
     [ApiInfo("程序信息", HttpRequestActionEnum.Other)]
     [PlatformOnly]
     [ResponseEncipher]
@@ -47,11 +48,9 @@ public class ProgramApplication : IDynamicApplication
             // 运行时间
             RunTimes = MachineUtil.GetProgramRunTimes(),
             // 程序名称
-            ProgramName = entryAssembly?.GetName()
-                .Name,
+            ProgramName = entryAssembly?.GetName().Name,
             // 程序版本
-            ProgramVersion = entryAssembly?.GetName()
-                .Version,
+            ProgramVersion = entryAssembly?.GetName().Version,
             // 框架版本
             FrameworkVersion = $"{nameof(Fast)}.{nameof(NET)} {typeof(MAppContext).Assembly.GetName().Version}",
             // 运行时版本
@@ -89,8 +88,7 @@ public class ProgramApplication : IDynamicApplication
             // 最大虚拟内存(GB)
             PeakVirtualMemoryMemoryGB = $"{peakVirtualMemory / relation:F2} GB",
             // 主要程序集
-            Assemblys = MAppContext
-                .RuntimeLibraries.Where(wh => wh.Type == "package")
+            Assemblys = MAppContext.RuntimeLibraries.Where(wh => wh.Type == "package")
                 .Select(sl => new {sl.Name, sl.Version})
                 .ToList()
         });

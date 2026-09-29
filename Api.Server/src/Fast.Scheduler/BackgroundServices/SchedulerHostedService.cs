@@ -30,8 +30,7 @@ public class SchedulerHostedService : BackgroundService
     /// <summary>
     /// 调度后台托管服务
     /// </summary>
-    public SchedulerHostedService(IHostApplicationLifetime hostApplicationLifetime,
-        ISchedulerCenter schedulerCenter,
+    public SchedulerHostedService(IHostApplicationLifetime hostApplicationLifetime, ISchedulerCenter schedulerCenter,
         ILogger<SchedulerHostedService> logger)
     {
         _hostApplicationLifetime = hostApplicationLifetime;
@@ -104,14 +103,12 @@ public class SchedulerHostedService : BackgroundService
             await SyncSchedulerAsync();
 
             DateTime dateTime = DateTime.Now;
-            var nextExecTime = new DateTime(dateTime.Year,
-                dateTime.Month,
-                dateTime.Day,
-                dateTime.Hour,
-                dateTime.Minute < 30 ? 30 : 0,
-                0);
+            var nextExecTime = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour,
+                dateTime.Minute < 30 ? 30 : 0, 0);
             if (nextExecTime <= dateTime)
+            {
                 nextExecTime = nextExecTime.AddHours(1);
+            }
 
             _logger.LogInformation("Next execute sync scheduler time {NextExecuteTime:yyyy-MM-dd HH:mm:ss}", nextExecTime);
 

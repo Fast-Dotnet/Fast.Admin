@@ -30,7 +30,8 @@ public class AppService : IDynamicApplication
     /// </summary>
     [HttpPost("/launch")]
     [ApiInfo("Launch", HttpRequestActionEnum.Auth)]
-    [AllowAnonymous, DisabledRequestLog]
+    [AllowAnonymous]
+    [DisabledRequestLog]
     [ResponseEncipher]
     public async Task<LaunchOutput> Launch()
     {

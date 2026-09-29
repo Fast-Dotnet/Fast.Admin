@@ -159,7 +159,8 @@ public class RefundRecordModel : IBaseTEntity, IUpdateVersion
     /// 创建时间
     /// </summary>
     [SugarSearchTime]
-    [Required, SugarColumn(ColumnDescription = "创建时间", CreateTableFieldSort = 993)]
+    [Required]
+    [SugarColumn(ColumnDescription = "创建时间", CreateTableFieldSort = 993)]
     public DateTime? CreatedTime { get; set; }
 
     /// <summary>

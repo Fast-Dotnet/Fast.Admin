@@ -23,8 +23,7 @@ public class MetadataContext
     {
         get
         {
-            field ??= GetServerMetadata()
-                .Result;
+            field ??= GetServerMetadata().Result;
 
             return field;
         }
@@ -125,8 +124,8 @@ public class MetadataContext
             InstanceName = Environment.MachineName,
             Region = "Local",
             Zone = "Local",
-            InnerIp = (await Dns.GetHostEntryAsync(Dns.GetHostName()))
-                      .AddressList.FirstOrDefault(f => f.AddressFamily == AddressFamily.InterNetwork)
+            InnerIp = (await Dns.GetHostEntryAsync(Dns.GetHostName())).AddressList
+                      .FirstOrDefault(f => f.AddressFamily == AddressFamily.InterNetwork)
                       ?.ToString()
                       ?? "127.0.0.1"
         };

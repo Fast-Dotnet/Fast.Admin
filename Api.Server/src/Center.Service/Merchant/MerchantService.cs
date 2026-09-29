@@ -34,17 +34,16 @@ public class MerchantService : IDynamicApplication
     [Permission(PermissionConst.Merchant.Paged)]
     public async Task<List<ElSelectorOutput<long>>> MerchantSelector(PaymentChannelEnum? merchantType)
     {
-        var data = await _repository
-            .Entities.WhereIF(merchantType != null, wh => wh.MerchantType == merchantType)
+        var data = await _repository.Entities.WhereIF(merchantType != null, wh => wh.MerchantType == merchantType)
             .OrderBy(ob => ob.MerchantNo)
             .Select(sl => new {sl.MerchantId, sl.MerchantName, sl.MerchantNo, sl.MerchantType})
             .ToListAsync();
 
-        return data
-            .Select(sl => new ElSelectorOutput<long>
-            {
-                Value = sl.MerchantId, Label = sl.MerchantNo, Data = new {sl.MerchantName, sl.MerchantType}
-            })
+        return data.Select(sl =>
+                new ElSelectorOutput<long>
+                {
+                    Value = sl.MerchantId, Label = sl.MerchantNo, Data = new {sl.MerchantName, sl.MerchantType}
+                })
             .ToList();
     }
 
@@ -56,8 +55,7 @@ public class MerchantService : IDynamicApplication
     [Permission(PermissionConst.Merchant.Paged)]
     public async Task<PagedResult<QueryMerchantPagedOutput>> QueryMerchantPaged(QueryMerchantPagedInput input)
     {
-        return await _repository
-            .Entities.WhereIF(input.MerchantType != null, wh => wh.MerchantType == input.MerchantType)
+        return await _repository.Entities.WhereIF(input.MerchantType != null, wh => wh.MerchantType == input.MerchantType)
             .OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
             .Select(sl => new QueryMerchantPagedOutput
             {
@@ -84,8 +82,7 @@ public class MerchantService : IDynamicApplication
     [Permission(PermissionConst.Merchant.Detail)]
     public async Task<QueryMerchantDetailOutput> QueryMerchantDetail([Required(ErrorMessage = "商户号Id不能为空")] long? merchantId)
     {
-        QueryMerchantDetailOutput result = await _repository
-            .Entities.Where(wh => wh.MerchantId == merchantId)
+        QueryMerchantDetailOutput result = await _repository.Entities.Where(wh => wh.MerchantId == merchantId)
             .Select(sl => new QueryMerchantDetailOutput
             {
                 MerchantId = sl.MerchantId,
@@ -178,20 +175,17 @@ public class MerchantService : IDynamicApplication
         merchantModel.RowVersion = input.RowVersion;
 
         await _repository.Ado.UseTranAsync(async () =>
-            {
-                await _repository.UpdateAsync(merchantModel);
-                await _repository
-                    .Updateable<ApplicationOpenIdModel>()
-                    .SetColumns(_ => new ApplicationOpenIdModel {WeChatMerchantNo = merchantModel.MerchantNo})
-                    .Where(wh => wh.WeChatMerchantId == merchantModel.MerchantId)
-                    .ExecuteCommandAsync();
-                await _repository
-                    .Updateable<ApplicationOpenIdModel>()
-                    .SetColumns(_ => new ApplicationOpenIdModel {AlipayMerchantNo = merchantModel.MerchantNo})
-                    .Where(wh => wh.AlipayMerchantId == merchantModel.MerchantId)
-                    .ExecuteCommandAsync();
-            },
-            ex => throw ex);
+        {
+            await _repository.UpdateAsync(merchantModel);
+            await _repository.Updateable<ApplicationOpenIdModel>()
+                .SetColumns(_ => new ApplicationOpenIdModel {WeChatMerchantNo = merchantModel.MerchantNo})
+                .Where(wh => wh.WeChatMerchantId == merchantModel.MerchantId)
+                .ExecuteCommandAsync();
+            await _repository.Updateable<ApplicationOpenIdModel>()
+                .SetColumns(_ => new ApplicationOpenIdModel {AlipayMerchantNo = merchantModel.MerchantNo})
+                .Where(wh => wh.AlipayMerchantId == merchantModel.MerchantId)
+                .ExecuteCommandAsync();
+        }, ex => throw ex);
 
         // 删除缓存
         await MerchantContext.DeleteMerchant(merchantModel.MerchantNo);
@@ -205,8 +199,7 @@ public class MerchantService : IDynamicApplication
     [Permission(PermissionConst.Merchant.Delete)]
     public async Task DeleteMerchant(MerchantIdInput input)
     {
-        if (await _repository
-                .Queryable<ApplicationOpenIdModel>()
+        if (await _repository.Queryable<ApplicationOpenIdModel>()
                 .AnyAsync(a => a.WeChatMerchantId == input.MerchantId || a.AlipayMerchantId == input.MerchantId))
         {
             throw new UserFriendlyException("商户号存在绑定应用，无法删除！");

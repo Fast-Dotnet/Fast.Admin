@@ -35,8 +35,7 @@ public class ComplaintService : IDynamicApplication
     [Permission(PermissionConst.Complaint.Paged)]
     public async Task<PagedResult<QueryComplaintPagedOutput>> QueryComplaintPaged(QueryComplaintPagedInput input)
     {
-        return await _repository
-            .Entities.WhereIF(input.ComplaintType != null, wh => wh.ComplaintType == input.ComplaintType)
+        return await _repository.Entities.WhereIF(input.ComplaintType != null, wh => wh.ComplaintType == input.ComplaintType)
             .OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
             .Select(sl => new QueryComplaintPagedOutput
             {
@@ -68,8 +67,7 @@ public class ComplaintService : IDynamicApplication
     [Permission(PermissionConst.Complaint.TenantPaged)]
     public async Task<PagedResult<QueryComplaintPagedOutput>> QueryTenantComplaintPaged(QueryComplaintPagedInput input)
     {
-        return await _repository
-            .Entities.Where(wh => wh.TenantId == _user.TenantId)
+        return await _repository.Entities.Where(wh => wh.TenantId == _user.TenantId)
             .WhereIF(input.ComplaintType != null, wh => wh.ComplaintType == input.ComplaintType)
             .OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
             .Select(sl => new QueryComplaintPagedOutput
@@ -102,8 +100,7 @@ public class ComplaintService : IDynamicApplication
     [Permission(PermissionConst.Complaint.Detail, PermissionConst.Complaint.TenantDetail)]
     public async Task<QueryComplaintPagedOutput> QueryComplaintDetail([Required(ErrorMessage = "投诉Id不能为空")] long? complaintId)
     {
-        QueryComplaintPagedOutput result = await _repository
-            .Entities.Where(wh => wh.ComplaintId == complaintId)
+        QueryComplaintPagedOutput result = await _repository.Entities.Where(wh => wh.ComplaintId == complaintId)
             .Select(sl => new QueryComplaintPagedOutput
             {
                 ComplaintId = sl.ComplaintId,

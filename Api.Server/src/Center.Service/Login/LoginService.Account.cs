@@ -44,15 +44,11 @@ public partial class LoginService
         if (isMobile)
         {
             // 根据手机号，查询账号
-            accountModel = await _repository
-                .Queryable<AccountModel>()
-                .Where(wh => wh.Mobile == input.Account)
-                .SingleAsync();
+            accountModel = await _repository.Queryable<AccountModel>().Where(wh => wh.Mobile == input.Account).SingleAsync();
 
             if (accountModel != null)
             {
-                tenantUserList = await _repository
-                    .Queryable<TenantUserModel>()
+                tenantUserList = await _repository.Queryable<TenantUserModel>()
                     .InnerJoin<TenantModel>((t1, t2) => t1.TenantId == t2.TenantId)
                     .ClearFilter<IBaseTEntity>()
                     .Where(t1 => t1.AccountId == accountModel.AccountId)
@@ -63,8 +59,7 @@ public partial class LoginService
         else
         {
             // 根据账号或登录工号查询租户用户信息
-            TenantUserModel tenantUserModel = await _repository
-                .Queryable<TenantUserModel>()
+            TenantUserModel tenantUserModel = await _repository.Queryable<TenantUserModel>()
                 .InnerJoin<TenantModel>((t1, t2) => t1.TenantId == t2.TenantId)
                 .ClearFilter<IBaseTEntity>()
                 .Where(t1 => t1.EmployeeNo == input.Account)
@@ -74,8 +69,7 @@ public partial class LoginService
             if (tenantUserModel != null)
             {
                 // 查询账号
-                accountModel = await _repository
-                    .Queryable<AccountModel>()
+                accountModel = await _repository.Queryable<AccountModel>()
                     .Where(wh => wh.AccountId == tenantUserModel.AccountId)
                     .SingleAsync();
                 tenantUserList.Add(tenantUserModel);
@@ -107,10 +101,7 @@ public partial class LoginService
             return await HandleLogin(applicationModel.Application, accountModel, tenantUserList.Single(), dateTime);
         }
 
-        var tenantIds = tenantUserList
-            .Select(sl => sl.TenantId)
-            .Distinct()
-            .ToList();
+        var tenantIds = tenantUserList.Select(sl => sl.TenantId).Distinct().ToList();
         List<TenantModel> tenantList = await _repository
             .Queryable<TenantModel>()
             .Where(wh => tenantIds.Contains(wh.TenantId))
@@ -161,8 +152,7 @@ public partial class LoginService
     [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
     public async Task<List<LoginTenantOutput>> QueryLoginUser()
     {
-        return await _repository
-            .Queryable<AccountModel>()
+        return await _repository.Queryable<AccountModel>()
             .InnerJoin<TenantUserModel>((t1, t2) => t1.AccountId == t2.AccountId)
             .InnerJoin<TenantModel>((t1, t2, t3) => t2.TenantId == t3.TenantId)
             .ClearFilter<IBaseTEntity>()
@@ -198,7 +188,9 @@ public partial class LoginService
     public async Task<LoginOutput> TenantLogin(TenantLoginInput input)
     {
         if (string.IsNullOrWhiteSpace(input.Password) && string.IsNullOrWhiteSpace(input.LoginTicket))
+        {
             throw new UserFriendlyException("密码不能为空！");
+        }
 
         // 查询应用信息
         ApplicationOpenIdModel applicationModel = await EnsureApplication();
@@ -210,8 +202,7 @@ public partial class LoginService
         }
 
         // 查询租户用户
-        TenantUserModel tenantUserModel = await _repository
-            .Queryable<TenantUserModel>()
+        TenantUserModel tenantUserModel = await _repository.Queryable<TenantUserModel>()
             .InnerJoin<TenantModel>((t1, t2) => t1.TenantId == t2.TenantId)
             .ClearFilter<IBaseTEntity>()
             .Where(t1 => t1.UserKey == input.UserKey)
@@ -224,8 +215,7 @@ public partial class LoginService
         }
 
         // 查询账号
-        AccountModel accountModel = await _repository
-            .Queryable<AccountModel>()
+        AccountModel accountModel = await _repository.Queryable<AccountModel>()
             .Where(wh => wh.AccountId == tenantUserModel.AccountId)
             .SingleAsync();
 

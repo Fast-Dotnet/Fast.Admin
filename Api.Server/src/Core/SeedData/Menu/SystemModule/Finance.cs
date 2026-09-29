@@ -45,9 +45,7 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        financeCLMenuModel = await db
-            .Insertable(financeCLMenuModel)
-            .ExecuteReturnEntityAsync();
+        financeCLMenuModel = await db.Insertable(financeCLMenuModel).ExecuteReturnEntityAsync();
 
         #region 商户号
 
@@ -79,11 +77,8 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        merchantMenuModel = await db
-            .Insertable(merchantMenuModel)
-            .ExecuteReturnEntityAsync();
-        await db
-            .Insertable(new List<ButtonModel>
+        merchantMenuModel = await db.Insertable(merchantMenuModel).ExecuteReturnEntityAsync();
+        await db.Insertable(new List<ButtonModel>
             {
                 new()
                 {
@@ -200,11 +195,8 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        payRecordMenuModel = await db
-            .Insertable(payRecordMenuModel)
-            .ExecuteReturnEntityAsync();
-        await db
-            .Insertable(new ButtonModel
+        payRecordMenuModel = await db.Insertable(payRecordMenuModel).ExecuteReturnEntityAsync();
+        await db.Insertable(new ButtonModel
             {
                 ButtonId = YitIdHelper.NextId(),
                 Edition = EditionEnum.Professional,
@@ -254,11 +246,8 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        refundRecordMenuModel = await db
-            .Insertable(refundRecordMenuModel)
-            .ExecuteReturnEntityAsync();
-        await db
-            .Insertable(new ButtonModel
+        refundRecordMenuModel = await db.Insertable(refundRecordMenuModel).ExecuteReturnEntityAsync();
+        await db.Insertable(new ButtonModel
             {
                 ButtonId = YitIdHelper.NextId(),
                 Edition = EditionEnum.Professional,

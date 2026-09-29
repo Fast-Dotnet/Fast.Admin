@@ -50,25 +50,21 @@ public class MerchantContext
 
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.Merchant, merchantNo);
 
-        merchantModel = centerCache.GetAndSet(cacheKey,
-            () =>
+        merchantModel = centerCache.GetAndSet(cacheKey, () =>
+        {
+            ISqlSugarClient repository = FastContext.GetService<ISqlSugarClient>();
+
+            MerchantModel result = repository.Queryable<MerchantModel>().Where(wh => wh.MerchantNo == merchantNo).Single();
+
+            if (result == null && throwError)
             {
-                ISqlSugarClient repository = FastContext.GetService<ISqlSugarClient>();
+                string message = $"未能找到对应商户号【{merchantNo}】信息！";
+                logger.LogError($"MerchantNo：{merchantNo}；{message}");
+                throw new UserFriendlyException(message);
+            }
 
-                MerchantModel result = repository
-                    .Queryable<MerchantModel>()
-                    .Where(wh => wh.MerchantNo == merchantNo)
-                    .Single();
-
-                if (result == null && throwError)
-                {
-                    string message = $"未能找到对应商户号【{merchantNo}】信息！";
-                    logger.LogError($"MerchantNo：{merchantNo}；{message}");
-                    throw new UserFriendlyException(message);
-                }
-
-                return result;
-            });
+            return result;
+        });
 
         if (httpContext != null)
         {
@@ -101,25 +97,24 @@ public class MerchantContext
 
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.Merchant, merchantNo);
 
-        merchantModel = await centerCache.GetAndSetAsync(cacheKey,
-            async () =>
+        merchantModel = await centerCache.GetAndSetAsync(cacheKey, async () =>
+        {
+            ISqlSugarClient repository = FastContext.GetService<ISqlSugarClient>();
+
+            MerchantModel result = await repository
+                .Queryable<MerchantModel>()
+                .Where(wh => wh.MerchantNo == merchantNo)
+                .SingleAsync();
+
+            if (result == null && throwError)
             {
-                ISqlSugarClient repository = FastContext.GetService<ISqlSugarClient>();
+                string message = $"未能找到对应商户号【{merchantNo}】信息！";
+                logger.LogError($"MerchantNo：{merchantNo}；{message}");
+                throw new UserFriendlyException(message);
+            }
 
-                MerchantModel result = await repository
-                    .Queryable<MerchantModel>()
-                    .Where(wh => wh.MerchantNo == merchantNo)
-                    .SingleAsync();
-
-                if (result == null && throwError)
-                {
-                    string message = $"未能找到对应商户号【{merchantNo}】信息！";
-                    logger.LogError($"MerchantNo：{merchantNo}；{message}");
-                    throw new UserFriendlyException(message);
-                }
-
-                return result;
-            });
+            return result;
+        });
 
         if (httpContext != null)
         {
@@ -164,8 +159,8 @@ public class MerchantContext
         if (httpContext != null)
         {
             // 清空 HttpContext.Items 中的
-            var keys = httpContext
-                .Items.Keys.Where(wh => wh is string key && key.StartsWith($"{nameof(Fast)}.{nameof(MerchantModel.MerchantNo)}."))
+            var keys = httpContext.Items.Keys
+                .Where(wh => wh is string key && key.StartsWith($"{nameof(Fast)}.{nameof(MerchantModel.MerchantNo)}."))
                 .ToList();
             foreach (object key in keys)
             {

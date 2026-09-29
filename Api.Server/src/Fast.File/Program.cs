@@ -48,9 +48,7 @@ builder.Services.AddConfigurableOptions<UploadFileSettingsOptions>();
 // 添加缓存服务
 builder.Services.AddCache();
 
-RedisSettingsOptions redisOptions = builder
-    .Configuration.GetSection("RedisSettings")
-    .Get<RedisSettingsOptions>();
+RedisSettingsOptions redisOptions = builder.Configuration.GetSection("RedisSettings").Get<RedisSettingsOptions>();
 if (redisOptions != null)
 {
     // 添加分布式缓存
@@ -82,8 +80,7 @@ builder.Services.AddApiRateLimit();
 builder.Services.AddJwtBearer(builder.Configuration);
 
 // Add Controllers
-builder
-    .Services.AddControllers()
+builder.Services.AddControllers()
     // 平台控制面租户边界
     .AddMvcFilter<PlatformAccessFilter>()
     // 请求日志拦截
@@ -160,8 +157,6 @@ app.UseKnife4UI(options =>
     }
 });
 
-app
-    .MapControllers()
-    .RequireRateLimiting(CommonConst.GlobalApiRateLimit);
+app.MapControllers().RequireRateLimiting(CommonConst.GlobalApiRateLimit);
 
 app.Run();

@@ -45,8 +45,7 @@ public class SyncDictionaryHostedService : IHostedService
     {
         DateTime dateTime = DateTime.Now;
 
-        string serviceName = Assembly.GetEntryAssembly()!.GetName()
-            .Name;
+        string serviceName = Assembly.GetEntryAssembly()!.GetName().Name;
         var addDictionaryTypeList = new List<DictionaryTypeModel>();
         var addDictionaryItemList = new List<DictionaryItemModel>();
         var updateDictionaryTypeList = new List<DictionaryTypeModel>();
@@ -77,8 +76,7 @@ public class SyncDictionaryHostedService : IHostedService
                 .ToListAsync(cancellationToken);
 
             // 获取所有带 FastEnumAttribute 特性的枚举
-            var enumTypes = MAppContext
-                .EffectiveTypes.Where(wh => wh.IsEnum)
+            var enumTypes = MAppContext.EffectiveTypes.Where(wh => wh.IsEnum)
                 .Select(sl => new
                 {
                     Type = sl,
@@ -263,39 +261,23 @@ public class SyncDictionaryHostedService : IHostedService
 
             if (deleteDictionaryItemList.Count > 0)
             {
-                await db
-                    .Deleteable(deleteDictionaryItemList)
-                    .ExecuteCommandAsync(cancellationToken);
+                await db.Deleteable(deleteDictionaryItemList).ExecuteCommandAsync(cancellationToken);
             }
 
             // 只删除当前服务的
-            var deleteDictionaryTypeList = dictionaryTypeList
-                .Where(wh => wh.ServiceName == serviceName)
-                .Where(wh => !enumTypes
-                                 .Select(sl => sl.Type.Name)
-                                 .ToHashSet()
-                                 .Contains(wh.DictionaryKey)
+            var deleteDictionaryTypeList = dictionaryTypeList.Where(wh => wh.ServiceName == serviceName)
+                .Where(wh => !enumTypes.Select(sl => sl.Type.Name).ToHashSet().Contains(wh.DictionaryKey)
                              && wh.DictionaryKey != "BooleanEnum")
                 .ToList();
             if (deleteDictionaryTypeList.Count > 0)
             {
-                await db
-                    .Deleteable(deleteDictionaryTypeList)
-                    .ExecuteCommandAsync(cancellationToken);
+                await db.Deleteable(deleteDictionaryTypeList).ExecuteCommandAsync(cancellationToken);
             }
 
-            await db
-                .Updateable(updateDictionaryTypeList)
-                .ExecuteCommandAsync(cancellationToken);
-            await db
-                .Updateable(updateDictionaryItemList)
-                .ExecuteCommandAsync(cancellationToken);
-            await db
-                .Insertable(addDictionaryTypeList)
-                .ExecuteCommandAsync(cancellationToken);
-            await db
-                .Insertable(addDictionaryItemList)
-                .ExecuteCommandAsync(cancellationToken);
+            await db.Updateable(updateDictionaryTypeList).ExecuteCommandAsync(cancellationToken);
+            await db.Updateable(updateDictionaryItemList).ExecuteCommandAsync(cancellationToken);
+            await db.Insertable(addDictionaryTypeList).ExecuteCommandAsync(cancellationToken);
+            await db.Insertable(addDictionaryItemList).ExecuteCommandAsync(cancellationToken);
 
             // 删除缓存
             await _centerCache.DelAsync(CacheConst.Center.Dictionary);

@@ -22,8 +22,8 @@ public partial class EmployeeService
     [ApiInfo("职员选择器", HttpRequestActionEnum.Query)]
     public async Task<PagedResult<ElSelectorOutput<long>>> EmployeeSelector(PagedInput input)
     {
-        PagedResult<QueryEmployeeSelectorDto> data = await _repository
-            .Entities.LeftJoin<EmployeeOrgModel>((t1, t2) => t1.EmployeeId == t2.EmployeeId && t2.IsPrimary)
+        PagedResult<QueryEmployeeSelectorDto> data = await _repository.Entities
+            .LeftJoin<EmployeeOrgModel>((t1, t2) => t1.EmployeeId == t2.EmployeeId && t2.IsPrimary)
             .WhereIF(!string.IsNullOrWhiteSpace(input.SearchValue),
                 t1 => t1.EmployeeNo.Contains(input.SearchValue)
                       || t1.EmployeeName.Contains(input.SearchValue)
@@ -56,8 +56,8 @@ public partial class EmployeeService
     [Permission(PermissionConst.Employee.Paged)]
     public async Task<PagedResult<QueryEmployeePagedOutput>> QueryEmployeePaged(QueryEmployeePagedInput input)
     {
-        PagedResult<QueryEmployeePagedOutput> result = await _repository
-            .Entities.LeftJoin<EmployeeOrgModel>((t1, t2) => t1.EmployeeId == t2.EmployeeId && t2.IsPrimary)
+        PagedResult<QueryEmployeePagedOutput> result = await _repository.Entities
+            .LeftJoin<EmployeeOrgModel>((t1, t2) => t1.EmployeeId == t2.EmployeeId && t2.IsPrimary)
             .WhereIF(input.Status != null, t1 => t1.Status == input.Status)
             .WhereIF(input.Sex != null, t1 => t1.Sex == input.Sex)
             .WhereIF(input.DepartmentId != null, (t1, t2) => t2.DepartmentId == input.DepartmentId)
@@ -95,12 +95,9 @@ public partial class EmployeeService
             .DataScope(e => e.DepartmentId, e => e.EmployeeId, allowPublicData: false)
             .ToPagedListAsync(input);
 
-        var employeeIds = result
-            .Rows.Select(sl => sl.EmployeeId)
-            .ToList();
+        var employeeIds = result.Rows.Select(sl => sl.EmployeeId).ToList();
 
-        var userList = await _centerRepository
-            .Queryable<TenantUserModel>()
+        var userList = await _centerRepository.Queryable<TenantUserModel>()
             .LeftJoin<AccountModel>((t1, t2) => t1.AccountId == t2.AccountId)
             .Where(t1 => employeeIds.Contains(t1.EmployeeId))
             .Select((t1, t2) => new
@@ -114,8 +111,7 @@ public partial class EmployeeService
             })
             .ToListAsync();
 
-        List<EmployeeRoleModel> roleList = await _repository
-            .Queryable<EmployeeRoleModel>()
+        List<EmployeeRoleModel> roleList = await _repository.Queryable<EmployeeRoleModel>()
             .Where(wh => employeeIds.Contains(wh.EmployeeId))
             .ToListAsync();
 
@@ -132,8 +128,7 @@ public partial class EmployeeService
             }
 
             item.RoleNames = string.Join(",",
-                roleList
-                    .Where(wh => wh.EmployeeId == item.EmployeeId)
+                roleList.Where(wh => wh.EmployeeId == item.EmployeeId)
                     .OrderBy(ob => ob.RoleName)
                     .Select(sl => sl.RoleName)
                     .ToList());
@@ -152,8 +147,7 @@ public partial class EmployeeService
     {
         await GetEmployeeWithinDataScope(employeeId!.Value);
 
-        QueryEmployeeDetailOutput result = await _repository
-            .Entities.Where(wh => wh.EmployeeId == employeeId)
+        QueryEmployeeDetailOutput result = await _repository.Entities.Where(wh => wh.EmployeeId == employeeId)
             .Select(sl => new QueryEmployeeDetailOutput
             {
                 EmployeeId = sl.EmployeeId,
@@ -181,15 +175,9 @@ public partial class EmployeeService
             throw new UserFriendlyException("数据不存在或无权操作！");
         }
 
-        result.OrgList = await _repository
-            .Queryable<EmployeeOrgModel>()
-            .Where(wh => wh.EmployeeId == employeeId)
-            .ToListAsync();
+        result.OrgList = await _repository.Queryable<EmployeeOrgModel>().Where(wh => wh.EmployeeId == employeeId).ToListAsync();
 
-        result.RoleList = await _repository
-            .Queryable<EmployeeRoleModel>()
-            .Where(wh => wh.EmployeeId == employeeId)
-            .ToListAsync();
+        result.RoleList = await _repository.Queryable<EmployeeRoleModel>().Where(wh => wh.EmployeeId == employeeId).ToListAsync();
 
         return result;
     }

@@ -27,8 +27,7 @@ public partial class LoginService
         // 查询应用信息
         ApplicationOpenIdModel applicationModel = await EnsureApplication();
 
-        TenantUserModel tenantUserModel = await _repository
-            .Queryable<TenantUserModel>()
+        TenantUserModel tenantUserModel = await _repository.Queryable<TenantUserModel>()
             .InnerJoin<TenantModel>((t1, t2) => t1.TenantId == t2.TenantId)
             .ClearFilter<IBaseTEntity>()
             .Where(t1 => t1.UserKey == input.UserKey)
@@ -41,10 +40,11 @@ public partial class LoginService
         }
 
         if (tenantUserModel.AccountId != _user.AccountId)
+        {
             throw new UserFriendlyException("禁止切换到其他账号的租户！");
+        }
 
-        AccountModel accountModel = await _repository
-            .Queryable<AccountModel>()
+        AccountModel accountModel = await _repository.Queryable<AccountModel>()
             .Where(wh => wh.AccountId == tenantUserModel.AccountId)
             .SingleAsync();
 

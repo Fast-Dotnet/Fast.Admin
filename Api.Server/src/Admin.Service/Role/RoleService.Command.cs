@@ -55,8 +55,7 @@ public partial class RoleService
         if (roleModel.IsSystemMenu)
         {
             (ApplicationOpenIdModel applicationModel, TenantModel tenantModel) = await GetAuthorizationContext();
-            templateMenuIds = await _centerRepository
-                .Queryable<MenuModel>()
+            templateMenuIds = await _centerRepository.Queryable<MenuModel>()
                 .Where(wh => wh.AppId == applicationModel.AppId)
                 .Where(wh => wh.Status == CommonStatusEnum.Enable)
                 .Where(wh => tenantModel.Edition >= wh.Edition)
@@ -64,8 +63,7 @@ public partial class RoleService
                 .Where(wh => (wh.RoleType & roleModel.RoleType) != 0)
                 .Select(sl => sl.MenuId)
                 .ToListAsync();
-            templateButtonIds = await _centerRepository
-                .Queryable<ButtonModel>()
+            templateButtonIds = await _centerRepository.Queryable<ButtonModel>()
                 .Where(wh => wh.AppId == applicationModel.AppId)
                 .Where(wh => wh.Status == CommonStatusEnum.Enable)
                 .Where(wh => tenantModel.Edition >= wh.Edition)
@@ -76,27 +74,25 @@ public partial class RoleService
         }
 
         await _repository.Ado.UseTranAsync(async () =>
+        {
+            await _repository.InsertAsync(roleModel);
+            if (templateMenuIds.Count > 0)
             {
-                await _repository.InsertAsync(roleModel);
-                if (templateMenuIds.Count > 0)
-                {
-                    await _repository
-                        .Insertable(templateMenuIds
-                            .Select(menuId => new RoleMenuModel {RoleId = roleModel.RoleId, MenuId = menuId})
-                            .ToList())
-                        .ExecuteCommandAsync();
-                }
+                await _repository
+                    .Insertable(templateMenuIds.Select(menuId => new RoleMenuModel {RoleId = roleModel.RoleId, MenuId = menuId})
+                        .ToList())
+                    .ExecuteCommandAsync();
+            }
 
-                if (templateButtonIds.Count > 0)
-                {
-                    await _repository
-                        .Insertable(templateButtonIds
-                            .Select(buttonId => new RoleButtonModel {RoleId = roleModel.RoleId, ButtonId = buttonId})
-                            .ToList())
-                        .ExecuteCommandAsync();
-                }
-            },
-            ex => throw ex);
+            if (templateButtonIds.Count > 0)
+            {
+                await _repository
+                    .Insertable(templateButtonIds
+                        .Select(buttonId => new RoleButtonModel {RoleId = roleModel.RoleId, ButtonId = buttonId})
+                        .ToList())
+                    .ExecuteCommandAsync();
+            }
+        }, ex => throw ex);
 
         // 操作日志
         await LogContext.OperateLog(new OperateLogDto
@@ -147,8 +143,7 @@ public partial class RoleService
 
         await _repository.UpdateAsync(roleModel);
 
-        await _repository
-            .Updateable<EmployeeRoleModel>()
+        await _repository.Updateable<EmployeeRoleModel>()
             .SetColumns(_ => new EmployeeRoleModel {RoleName = roleModel.RoleName})
             .Where(wh => wh.RoleId == roleModel.RoleId)
             .ExecuteCommandAsync();
@@ -181,31 +176,22 @@ public partial class RoleService
         }
 
         // 检查是否有职员关联
-        if (await _repository
-                .Queryable<EmployeeRoleModel>()
-                .AnyAsync(a => a.RoleId == input.RoleId))
+        if (await _repository.Queryable<EmployeeRoleModel>().AnyAsync(a => a.RoleId == input.RoleId))
         {
             throw new UserFriendlyException("角色存在职员关联，无法删除！");
         }
 
         await _repository.Ado.UseTranAsync(async () =>
-            {
-                // 删除角色菜单关联
-                await _repository
-                    .Deleteable<RoleMenuModel>()
-                    .Where(wh => wh.RoleId == input.RoleId)
-                    .ExecuteCommandAsync();
+        {
+            // 删除角色菜单关联
+            await _repository.Deleteable<RoleMenuModel>().Where(wh => wh.RoleId == input.RoleId).ExecuteCommandAsync();
 
-                // 删除角色按钮关联
-                await _repository
-                    .Deleteable<RoleButtonModel>()
-                    .Where(wh => wh.RoleId == input.RoleId)
-                    .ExecuteCommandAsync();
+            // 删除角色按钮关联
+            await _repository.Deleteable<RoleButtonModel>().Where(wh => wh.RoleId == input.RoleId).ExecuteCommandAsync();
 
-                // 删除角色
-                await _repository.DeleteAsync(roleModel);
-            },
-            ex => throw ex);
+            // 删除角色
+            await _repository.DeleteAsync(roleModel);
+        }, ex => throw ex);
 
         // 操作日志
         await LogContext.OperateLog(new OperateLogDto

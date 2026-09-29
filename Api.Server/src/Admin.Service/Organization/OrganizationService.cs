@@ -39,8 +39,7 @@ public class OrganizationService : IDynamicApplication
         List<long> customDepartmentIds = _user.DataScopeDepartmentIdList ?? [];
         List<long> customOrgIds = customDepartmentIds.Count == 0
             ? []
-            : await _repository
-                .Queryable<DepartmentModel>()
+            : await _repository.Queryable<DepartmentModel>()
                 .Where(wh => customDepartmentIds.Contains(wh.DepartmentId))
                 .Select(sl => sl.OrgId)
                 .Distinct()
@@ -63,16 +62,14 @@ public class OrganizationService : IDynamicApplication
         {
             queryable = queryable.Where(wh => customOrgIds.Contains(wh.OrgId)
                                               || wh.OrgId
-                                              == SqlFunc
-                                                  .Subqueryable<EmployeeOrgModel>()
+                                              == SqlFunc.Subqueryable<EmployeeOrgModel>()
                                                   // 主部门
                                                   .Where(e => e.EmployeeId == _user.EmployeeId && e.IsPrimary)
                                                   .Where(e => e.OrgId == wh.OrgId)
                                                   .Select(e => e.OrgId));
         }
 
-        var data = await queryable
-            .OrderBy(ob => ob.Sort)
+        var data = await queryable.OrderBy(ob => ob.Sort)
             .Select(sl => new
             {
                 sl.OrgId,
@@ -87,8 +84,7 @@ public class OrganizationService : IDynamicApplication
             })
             .ToListAsync();
 
-        return data
-            .Select(sl => new ElSelectorOutput<long>
+        return data.Select(sl => new ElSelectorOutput<long>
             {
                 Value = sl.OrgId,
                 Label = sl.OrgName,
@@ -115,8 +111,7 @@ public class OrganizationService : IDynamicApplication
     [Permission(PermissionConst.Department.Detail)]
     public async Task<QueryOrganizationDetailOutput> QueryOrganizationDetail([Required(ErrorMessage = "机构Id不能为空")] long? orgId)
     {
-        QueryOrganizationDetailOutput result = await _repository
-            .Entities.Where(wh => wh.OrgId == orgId)
+        QueryOrganizationDetailOutput result = await _repository.Entities.Where(wh => wh.OrgId == orgId)
             .Select(sl => new QueryOrganizationDetailOutput
             {
                 OrgId = sl.OrgId,
@@ -288,8 +283,8 @@ public class OrganizationService : IDynamicApplication
         await _repository.UpdateAsync(organizationModel);
 
         // 更新所有子级
-        List<OrganizationModel> childrenList = await _repository
-            .Entities.Where(wh => SqlFunc.JsonArrayAny(wh.ParentIds, organizationModel.OrgId))
+        List<OrganizationModel> childrenList = await _repository.Entities
+            .Where(wh => SqlFunc.JsonArrayAny(wh.ParentIds, organizationModel.OrgId))
             .ToListAsync();
 
         void updateChildrenName(long parentId)
@@ -313,19 +308,16 @@ public class OrganizationService : IDynamicApplication
             updateChildrenName(item.OrgId);
         }
 
-        await _repository
-            .Updateable(childrenList)
+        await _repository.Updateable(childrenList)
             .UpdateColumns(e => new {e.ParentName, e.ParentIds, e.ParentNames})
             .ExecuteCommandAsync();
 
-        await _repository
-            .Updateable<DepartmentModel>()
+        await _repository.Updateable<DepartmentModel>()
             .SetColumns(_ => new DepartmentModel {OrgName = organizationModel.OrgName})
             .Where(wh => wh.OrgId == organizationModel.OrgId)
             .ExecuteCommandAsync();
 
-        await _repository
-            .Updateable<EmployeeOrgModel>()
+        await _repository.Updateable<EmployeeOrgModel>()
             .SetColumns(_ => new EmployeeOrgModel
             {
                 OrgName = organizationModel.OrgName,
@@ -359,17 +351,13 @@ public class OrganizationService : IDynamicApplication
         }
 
         // 检查是否有部门关联
-        if (await _repository
-                .Queryable<DepartmentModel>()
-                .AnyAsync(a => a.OrgId == input.OrgId))
+        if (await _repository.Queryable<DepartmentModel>().AnyAsync(a => a.OrgId == input.OrgId))
         {
             throw new UserFriendlyException("机构存在部门关联，无法删除！");
         }
 
         // 检查是否有员工关联
-        if (await _repository
-                .Queryable<EmployeeOrgModel>()
-                .AnyAsync(a => a.OrgId == input.OrgId))
+        if (await _repository.Queryable<EmployeeOrgModel>().AnyAsync(a => a.OrgId == input.OrgId))
         {
             throw new UserFriendlyException("机构存在员工关联，无法删除！");
         }

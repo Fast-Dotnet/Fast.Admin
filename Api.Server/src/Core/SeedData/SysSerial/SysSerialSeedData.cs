@@ -21,8 +21,7 @@ internal static class SysSerialSeedData
     /// </summary>
     public static async Task SeedData(ISqlSugarClient db)
     {
-        await db
-            .Insertable(new List<SysSerialRuleModel>
+        await db.Insertable(new List<SysSerialRuleModel>
             {
                 new()
                 {

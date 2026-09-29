@@ -31,12 +31,8 @@ public partial class AccountService : IDynamicApplication
     private readonly IMailService _mailService;
     private readonly ISmsService _smsService;
 
-    public AccountService(IUser user,
-        ICache cache,
-        ISqlSugarRepository<AccountModel> repository,
-        IHubContext<ChatHub, IChatClient> hubContext,
-        ICaptchaService captchaService,
-        IMailService mailService,
+    public AccountService(IUser user, ICache cache, ISqlSugarRepository<AccountModel> repository,
+        IHubContext<ChatHub, IChatClient> hubContext, ICaptchaService captchaService, IMailService mailService,
         ISmsService smsService)
     {
         _user = user;
@@ -89,11 +85,8 @@ public partial class AccountService : IDynamicApplication
         foreach ((int limit, int windowSeconds) in quotas)
         {
             // 已被前一个窗口拒绝时，后续窗口只检查等待时间，不再扣除配额。
-            object result = await _cache.Client.EvalAsync(script,
-                $"Login:SendQuota:{identityHash}:{windowSeconds}",
-                windowSeconds,
-                limit,
-                retryAfterSeconds == 0 ? 1 : 0);
+            object result = await _cache.Client.EvalAsync(script, $"Login:SendQuota:{identityHash}:{windowSeconds}",
+                windowSeconds, limit, retryAfterSeconds == 0 ? 1 : 0);
             retryAfterSeconds = Math.Max(retryAfterSeconds, Convert.ToInt32(result));
         }
 
@@ -114,8 +107,8 @@ public partial class AccountService : IDynamicApplication
         TenantModel tenantModel = await TenantContext.GetTenant(_user.TenantNo);
         if (tenantModel.TenantType == TenantTypeEnum.System)
         {
-            PagedResult<AccountModel> data = await _repository
-                .Entities.WhereIF(!string.IsNullOrWhiteSpace(input.SearchValue),
+            PagedResult<AccountModel> data = await _repository.Entities
+                .WhereIF(!string.IsNullOrWhiteSpace(input.SearchValue),
                     wh => wh.Mobile.Contains(input.SearchValue)
                           || wh.Email.Contains(input.SearchValue)
                           || wh.NickName.Contains(input.SearchValue))
@@ -139,8 +132,7 @@ public partial class AccountService : IDynamicApplication
         }
         else
         {
-            PagedResult<AccountModel> data = await _repository
-                .Queryable<TenantUserModel>()
+            PagedResult<AccountModel> data = await _repository.Queryable<TenantUserModel>()
                 .InnerJoin<AccountModel>((t1, t2) => t1.AccountId == t2.AccountId)
                 .WhereIF(!string.IsNullOrWhiteSpace(input.SearchValue),
                     (t1, t2) => t2.Mobile.Contains(input.SearchValue)
@@ -177,8 +169,7 @@ public partial class AccountService : IDynamicApplication
     {
         DateTime dateTime = DateTime.Now;
 
-        ISugarQueryable<AccountModel, TenantModel, TenantModel> queryable = _repository
-            .Queryable<AccountModel>()
+        ISugarQueryable<AccountModel, TenantModel, TenantModel> queryable = _repository.Queryable<AccountModel>()
             .LeftJoin<TenantModel>((t1, t2) => t1.FirstLoginTenantId == t2.TenantId)
             .LeftJoin<TenantModel>((t1, t2, t3) => t1.LastLoginTenantId == t3.TenantId)
             .WhereIF(!string.IsNullOrWhiteSpace(input.Mobile), t1 => t1.Mobile.Contains(input.Mobile))
@@ -191,8 +182,7 @@ public partial class AccountService : IDynamicApplication
             .WhereIF(input.IsLock == true, t1 => t1.LockEndTime != null && t1.LockEndTime >= dateTime)
             .WhereIF(input.IsLock == false, t1 => t1.LockEndTime == null || t1.LockEndTime < dateTime);
 
-        return await queryable
-            .SelectMergeTable((t1, t2, t3) => new QueryAccountPagedOutput
+        return await queryable.SelectMergeTable((t1, t2, t3) => new QueryAccountPagedOutput
             {
                 AccountId = t1.AccountId,
                 Mobile = t1.Mobile,
@@ -220,10 +210,7 @@ public partial class AccountService : IDynamicApplication
                 PasswordErrorTime = t1.PasswordErrorTime,
                 LockStartTime = t1.LockStartTime,
                 LockEndTime = t1.LockEndTime,
-                IsLock = SqlFunc
-                    .IF(t1.LockEndTime != null && t1.LockEndTime >= dateTime)
-                    .Return(true)
-                    .End(false),
+                IsLock = SqlFunc.IF(t1.LockEndTime != null && t1.LockEndTime >= dateTime).Return(true).End(false),
                 CreatedTime = t1.CreatedTime,
                 UpdatedTime = t1.UpdatedTime,
                 RowVersion = t1.RowVersion
@@ -241,8 +228,7 @@ public partial class AccountService : IDynamicApplication
     [PlatformOnly]
     public async Task<QueryAccountDetailOutput> QueryAccountDetail([Required(ErrorMessage = "账号Id不能为空")] long? accountId)
     {
-        QueryAccountDetailOutput result = await _repository
-            .Queryable<AccountModel>()
+        QueryAccountDetailOutput result = await _repository.Queryable<AccountModel>()
             .LeftJoin<TenantModel>((t1, t2) => t1.FirstLoginTenantId == t2.TenantId)
             .LeftJoin<TenantModel>((t1, t2, t3) => t1.LastLoginTenantId == t3.TenantId)
             .Where(t1 => t1.AccountId == accountId)
@@ -295,8 +281,7 @@ public partial class AccountService : IDynamicApplication
     [ApiInfo("获取编辑账号详情", HttpRequestActionEnum.Query)]
     public async Task<EditAccountInput> QueryEditAccountDetail()
     {
-        EditAccountInput result = await _repository
-            .Queryable<AccountModel>()
+        EditAccountInput result = await _repository.Queryable<AccountModel>()
             .Where(wh => wh.AccountId == _user.AccountId)
             .Select(sl => new EditAccountInput
             {
@@ -326,9 +311,7 @@ public partial class AccountService : IDynamicApplication
         await EnsureApplication();
 
         string mobile = input.Mobile.Trim();
-        string email = input
-            .Email.Trim()
-            .ToLowerInvariant();
+        string email = input.Email.Trim().ToLowerInvariant();
         AccountModel accountModel = await _repository.SingleOrDefaultAsync(_user.AccountId);
         if (accountModel == null)
         {
@@ -354,8 +337,7 @@ public partial class AccountService : IDynamicApplication
         bool mobileChange = accountModel.Mobile != mobile;
         bool emailChange = !string.Equals(accountModel.Email, email, StringComparison.OrdinalIgnoreCase);
         // 获取缓存Key
-        string cacheKey = CacheConst.GetCacheKey(CacheConst.EditAccountVerification,
-            accountModel.AccountKey,
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.EditAccountVerification, accountModel.AccountKey,
             GlobalContext.ClientIdentity);
 
         // 只有手机号或邮箱发生变化的时候才判断
@@ -432,9 +414,7 @@ public partial class AccountService : IDynamicApplication
         ClientUserModel clientUserModel = null;
         if (accountModel.ClientUserId != null)
         {
-            clientUserModel = await _repository
-                .Queryable<ClientUserModel>()
-                .InSingleAsync(accountModel.ClientUserId);
+            clientUserModel = await _repository.Queryable<ClientUserModel>().InSingleAsync(accountModel.ClientUserId);
 
             if (clientUserModel == null)
             {
@@ -449,17 +429,14 @@ public partial class AccountService : IDynamicApplication
         }
 
         await _repository.Ado.UseTranAsync(async () =>
+        {
+            if (clientUserModel != null)
             {
-                if (clientUserModel != null)
-                {
-                    await _repository
-                        .Updateable(clientUserModel)
-                        .ExecuteCommandAsync();
-                }
+                await _repository.Updateable(clientUserModel).ExecuteCommandAsync();
+            }
 
-                await _repository.UpdateAsync(accountModel);
-            },
-            ex => throw ex);
+            await _repository.UpdateAsync(accountModel);
+        }, ex => throw ex);
 
         await _cache.DelAsync(cacheKey);
 
@@ -490,19 +467,19 @@ public partial class AccountService : IDynamicApplication
     /// </summary>
     private async Task AccountForceOffline(long accountId, string message)
     {
-        List<string> connectionIds = await _repository
-            .Queryable<TenantOnlineUserModel>()
+        List<string> connectionIds = await _repository.Queryable<TenantOnlineUserModel>()
             .ClearFilter<IBaseTEntity>()
             .Where(wh => wh.IsOnline)
             .Where(wh => wh.AccountId == accountId)
             .Select(sl => sl.ConnectionId)
             .ToListAsync();
         if (connectionIds.Count == 0)
+        {
             return;
+        }
 
         // 强制下线当前账号所有在线用户
-        await _hubContext
-            .Clients.Clients(connectionIds)
+        await _hubContext.Clients.Clients(connectionIds)
             .ForceOffline(new ForceOfflineOutput
             {
                 IsAdmin = _user.IsSuperAdmin || _user.IsAdmin,

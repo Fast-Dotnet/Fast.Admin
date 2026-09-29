@@ -84,10 +84,7 @@ public static class WeekEnumExtension
     /// <returns>转换后的星期集合</returns>
     public static List<DayOfWeek> ToDayOfWeeks(this WeekEnum week)
     {
-        return WeekMap
-            .Where(wh => (week & wh.weekEnum) != 0)
-            .Select(sl => sl.dayOfWeek)
-            .ToList();
+        return WeekMap.Where(wh => (week & wh.weekEnum) != 0).Select(sl => sl.dayOfWeek).ToList();
     }
 
     /// <summary>
@@ -96,9 +93,7 @@ public static class WeekEnumExtension
     /// <returns>转换后的星期</returns>
     public static DayOfWeek ToDayOfWeek(this WeekEnum week)
     {
-        return week
-            .ToDayOfWeeks()
-            .FirstOrDefault();
+        return week.ToDayOfWeeks().FirstOrDefault();
     }
 
     /// <summary>
@@ -110,7 +105,9 @@ public static class WeekEnumExtension
         foreach ((WeekEnum weekEnum, DayOfWeek dayOfWeek) item in WeekMap)
         {
             if (item.dayOfWeek == daysOfWeek)
+            {
                 return item.weekEnum;
+            }
         }
 
         return null;
@@ -127,7 +124,9 @@ public static class WeekEnumExtension
         foreach ((WeekEnum weekEnum, DayOfWeek dayOfWeek) item in WeekMap)
         {
             if (daysOfWeek.Contains(item.dayOfWeek))
+            {
                 week |= item.weekEnum;
+            }
         }
 
         return week == WeekEnum.None ? null : week;

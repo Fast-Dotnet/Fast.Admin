@@ -62,7 +62,9 @@ public class SqlSugarEntityHandler : ISqlSugarEntityHandler
     {
         string databaseTypeStr = sugarDbType.Type?.ToString();
         if (string.IsNullOrWhiteSpace(databaseTypeStr))
+        {
             return null;
+        }
 
         DatabaseTypeEnum databaseType = Enum.Parse<DatabaseTypeEnum>(databaseTypeStr, true);
 
@@ -77,7 +79,8 @@ public class SqlSugarEntityHandler : ISqlSugarEntityHandler
                     CommonConst.Default.TenantNo, databaseType);
             case DatabaseTypeEnum.Admin:
             case DatabaseTypeEnum.AdminLog:
-                return await _sqlSugarEntityService.GetConnectionSetting(_tenant.TenantId.GetValueOrDefault(), _tenant.TenantNo, databaseType);
+                return await _sqlSugarEntityService.GetConnectionSetting(_tenant.TenantId.GetValueOrDefault(), _tenant.TenantNo,
+                    databaseType);
             default:
                 throw new SqlSugarException("未知的 Database 类型！");
         }

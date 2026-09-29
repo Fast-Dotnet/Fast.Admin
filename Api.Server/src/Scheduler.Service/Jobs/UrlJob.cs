@@ -22,9 +22,7 @@ namespace Fast.Scheduler;
 /// </summary>
 internal sealed class UrlJob : JobBase<SchedulerJobUrlLogInfo>
 {
-    public UrlJob(IServiceProvider serviceProvider,
-        IMailService mailService,
-        IOptions<MvcNewtonsoftJsonOptions> jsonOptions,
+    public UrlJob(IServiceProvider serviceProvider, IMailService mailService, IOptions<MvcNewtonsoftJsonOptions> jsonOptions,
         ILogger<IJob> logger) : base(serviceProvider, mailService, jsonOptions, logger, new SchedulerJobUrlLogInfo())
     {
     }

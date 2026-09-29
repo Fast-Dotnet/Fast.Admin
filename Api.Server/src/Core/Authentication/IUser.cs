@@ -242,10 +242,7 @@ public interface IUser
     /// 从缓存中获取授权用户信息
     /// </summary>
     /// <returns>缓存中的授权用户信息</returns>
-    Task<AuthUserInfo> GetAuthUserInfo(AppEnvironmentEnum deviceType,
-        string appNo,
-        string tenantNo,
-        string employeeNo,
+    Task<AuthUserInfo> GetAuthUserInfo(AppEnvironmentEnum deviceType, string appNo, string tenantNo, string employeeNo,
         string sessionId);
 
     /// <summary>

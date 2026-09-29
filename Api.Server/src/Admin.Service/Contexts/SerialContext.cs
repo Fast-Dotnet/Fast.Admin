@@ -83,31 +83,23 @@ public class SerialContext
         tenantCode ??= "";
 
         // 获取序号规则配置
-        SerialRuleModel serialRuleModel = SerialRuleList.GetOrAdd(ruleType,
-            key =>
+        SerialRuleModel serialRuleModel = SerialRuleList.GetOrAdd(ruleType, key =>
+        {
+            SerialRuleModel result = db.Queryable<SerialRuleModel>().Where(wh => wh.RuleType == key).Single();
+
+            if (result == null)
             {
-                SerialRuleModel result = db
-                    .Queryable<SerialRuleModel>()
-                    .Where(wh => wh.RuleType == key)
-                    .Single();
+                throw new UserFriendlyException($"未能找到【{key.GetDescription()}】规则配置！");
+            }
 
-                if (result == null)
-                {
-                    throw new UserFriendlyException($"未能找到【{key.GetDescription()}】规则配置！");
-                }
-
-                return result;
-            });
+            return result;
+        });
 
         // 获取序号配置
-        SerialSettingModel serialSettingModel = SerialSettingList.GetOrAdd(ruleType,
-            key =>
-            {
-                return db
-                    .Queryable<SerialSettingModel>()
-                    .Where(wh => wh.RuleType == key)
-                    .Single();
-            });
+        SerialSettingModel serialSettingModel = SerialSettingList.GetOrAdd(ruleType, key =>
+        {
+            return db.Queryable<SerialSettingModel>().Where(wh => wh.RuleType == key).Single();
+        });
 
         lock (_lock)
         {
@@ -121,9 +113,7 @@ public class SerialContext
                     LastSerialNo = null,
                     LastTime = null
                 };
-                serialSettingModel = db
-                    .Insertable(serialSettingModel)
-                    .ExecuteReturnEntity();
+                serialSettingModel = db.Insertable(serialSettingModel).ExecuteReturnEntity();
             }
 
             // 分隔符
@@ -198,8 +188,7 @@ public class SerialContext
             serialSettingModel.LastTime = dateTime;
 
 
-            serialSettingModel = db
-                .Updateable(serialSettingModel)
+            serialSettingModel = db.Updateable(serialSettingModel)
                 .UpdateColumns(e => new {e.LastSerial, e.LastSerialNo, e.LastTime})
                 .ExecuteReturnEntity();
             SerialSettingList.AddOrUpdate(ruleType, serialSettingModel, (_, _) => serialSettingModel);

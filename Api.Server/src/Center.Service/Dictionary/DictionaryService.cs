@@ -24,8 +24,7 @@ public class DictionaryService : IDynamicApplication
     private readonly ISqlSugarRepository<DictionaryTypeModel> _typeRepository;
     private readonly ISqlSugarRepository<DictionaryItemModel> _itemRepository;
 
-    public DictionaryService(ICache<CenterCCL> centerCache,
-        ISqlSugarRepository<DictionaryTypeModel> typeRepository,
+    public DictionaryService(ICache<CenterCCL> centerCache, ISqlSugarRepository<DictionaryTypeModel> typeRepository,
         ISqlSugarRepository<DictionaryItemModel> itemRepository)
     {
         _centerCache = centerCache;
@@ -38,59 +37,56 @@ public class DictionaryService : IDynamicApplication
     /// </summary>
     [HttpGet]
     [ApiInfo("获取字典", HttpRequestActionEnum.Query)]
-    [AllowAnonymous, DisabledRequestLog]
+    [AllowAnonymous]
+    [DisabledRequestLog]
     public async Task<Dictionary<string, List<FaTableEnumColumnCtx>>> QueryDictionary()
     {
-        var dictionaryTypeList = await _centerCache.GetAndSetAsync(CacheConst.Center.Dictionary,
-            async () =>
-            {
-                return await _typeRepository
-                    .Entities.Includes(e => e.DictionaryItemList)
-                    .Where(wh => wh.Status == CommonStatusEnum.Enable)
-                    .Select(sl => new
-                    {
-                        sl.DictionaryKey,
-                        sl.ValueType,
-                        DictionaryItemList = sl
-                            .DictionaryItemList.OrderBy(ob => ob.Order)
-                            .Select(iSl => new
-                            {
-                                iSl.Label,
-                                iSl.Value,
-                                iSl.Type,
-                                iSl.Order,
-                                iSl.Tips,
-                                iSl.Visible,
-                                iSl.Status
-                            })
-                            .ToList()
-                    })
-                    .ToListAsync();
-            });
-
-        return dictionaryTypeList.ToDictionary(sl => sl.DictionaryKey,
-            sl => sl
-                .DictionaryItemList.Select(iSl =>
+        var dictionaryTypeList = await _centerCache.GetAndSetAsync(CacheConst.Center.Dictionary, async () =>
+        {
+            return await _typeRepository.Entities.Includes(e => e.DictionaryItemList)
+                .Where(wh => wh.Status == CommonStatusEnum.Enable)
+                .Select(sl => new
                 {
-                    object localValue = sl.ValueType switch
-                    {
-                        DictionaryValueTypeEnum.Int => int.Parse(iSl.Value),
-                        DictionaryValueTypeEnum.Long => long.Parse(iSl.Value),
-                        DictionaryValueTypeEnum.Boolean => iSl.Value.Equals("true", StringComparison.OrdinalIgnoreCase),
-                        _ => iSl.Value
-                    };
-
-                    return new FaTableEnumColumnCtx
-                    {
-                        Label = iSl.Label,
-                        Value = localValue,
-                        Show = iSl.Visible,
-                        Disabled = iSl.Status == CommonStatusEnum.Disable,
-                        Tips = iSl.Tips,
-                        Type = iSl.Type.GetDescription()
-                    };
+                    sl.DictionaryKey,
+                    sl.ValueType,
+                    DictionaryItemList = sl
+                        .DictionaryItemList.OrderBy(ob => ob.Order)
+                        .Select(iSl => new
+                        {
+                            iSl.Label,
+                            iSl.Value,
+                            iSl.Type,
+                            iSl.Order,
+                            iSl.Tips,
+                            iSl.Visible,
+                            iSl.Status
+                        })
+                        .ToList()
                 })
-                .ToList());
+                .ToListAsync();
+        });
+
+        return dictionaryTypeList.ToDictionary(sl => sl.DictionaryKey, sl => sl.DictionaryItemList.Select(iSl =>
+            {
+                object localValue = sl.ValueType switch
+                {
+                    DictionaryValueTypeEnum.Int => int.Parse(iSl.Value),
+                    DictionaryValueTypeEnum.Long => long.Parse(iSl.Value),
+                    DictionaryValueTypeEnum.Boolean => iSl.Value.Equals("true", StringComparison.OrdinalIgnoreCase),
+                    _ => iSl.Value
+                };
+
+                return new FaTableEnumColumnCtx
+                {
+                    Label = iSl.Label,
+                    Value = localValue,
+                    Show = iSl.Visible,
+                    Disabled = iSl.Status == CommonStatusEnum.Disable,
+                    Tips = iSl.Tips,
+                    Type = iSl.Type.GetDescription()
+                };
+            })
+            .ToList());
     }
 
     /// <summary>
@@ -102,8 +98,8 @@ public class DictionaryService : IDynamicApplication
     [PlatformOnly]
     public async Task<PagedResult<ElSelectorOutput<long>>> SelectorPaged(PagedInput input)
     {
-        var pagedData = await _typeRepository
-            .Entities.WhereIF(!string.IsNullOrWhiteSpace(input.SearchValue), wh => wh.DictionaryName.Contains(input.SearchValue))
+        var pagedData = await _typeRepository.Entities
+            .WhereIF(!string.IsNullOrWhiteSpace(input.SearchValue), wh => wh.DictionaryName.Contains(input.SearchValue))
             .OrderBy(ob => ob.DictionaryName)
             .Select(sl => new {sl.DictionaryName, sl.DictionaryId, sl.ValueType})
             .ToPagedListAsync(input);
@@ -123,8 +119,7 @@ public class DictionaryService : IDynamicApplication
     [PlatformOnly]
     public async Task<PagedResult<QueryDictionaryPagedOutput>> QueryDictionaryPaged(PagedInput input)
     {
-        return await _typeRepository
-            .Entities.OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
+        return await _typeRepository.Entities.OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
             .Select(sl => new QueryDictionaryPagedOutput
             {
                 DictionaryId = sl.DictionaryId,
@@ -153,8 +148,7 @@ public class DictionaryService : IDynamicApplication
     [PlatformOnly]
     public async Task<QueryDictionaryDetailOutput> QueryDictionaryDetail([Required(ErrorMessage = "字典Id不能为空")] long? dictionaryId)
     {
-        QueryDictionaryDetailOutput result = await _typeRepository
-            .Entities.Includes(e => e.DictionaryItemList)
+        QueryDictionaryDetailOutput result = await _typeRepository.Entities.Includes(e => e.DictionaryItemList)
             .Where(wh => wh.DictionaryId == dictionaryId)
             .Select(sl => new QueryDictionaryDetailOutput
             {
@@ -171,8 +165,7 @@ public class DictionaryService : IDynamicApplication
                 UpdatedUserName = sl.UpdatedUserName,
                 UpdatedTime = sl.UpdatedTime,
                 RowVersion = sl.RowVersion,
-                DictionaryItemList = sl
-                    .DictionaryItemList.OrderBy(ob => ob.Order)
+                DictionaryItemList = sl.DictionaryItemList.OrderBy(ob => ob.Order)
                     .Select(iSl => new EditDictionaryItemInput
                     {
                         DictionaryItemId = iSl.DictionaryItemId,
@@ -239,11 +232,10 @@ public class DictionaryService : IDynamicApplication
         }
 
         await _typeRepository.Ado.UseTranAsync(async () =>
-            {
-                await _typeRepository.InsertAsync(dictionaryTypeModel);
-                await _itemRepository.InsertAsync(dictionaryItemList);
-            },
-            ex => throw ex);
+        {
+            await _typeRepository.InsertAsync(dictionaryTypeModel);
+            await _itemRepository.InsertAsync(dictionaryItemList);
+        }, ex => throw ex);
 
         // 删除缓存
         await _centerCache.DelAsync(CacheConst.Center.Dictionary);
@@ -276,8 +268,7 @@ public class DictionaryService : IDynamicApplication
         List<EditDictionaryItemInput> newDictionaryItemList = input.DictionaryItemList ?? [];
 
         // 新增的项
-        var addDictionaryItemList = newDictionaryItemList
-            .Where(wh => wh.DictionaryItemId == null)
+        var addDictionaryItemList = newDictionaryItemList.Where(wh => wh.DictionaryItemId == null)
             .Select(sl => new DictionaryItemModel
             {
                 DictionaryId = dictionaryTypeModel.DictionaryId,
@@ -315,13 +306,12 @@ public class DictionaryService : IDynamicApplication
             .ToList();
 
         await _typeRepository.Ado.UseTranAsync(async () =>
-            {
-                await _typeRepository.UpdateAsync(dictionaryTypeModel);
-                await _itemRepository.DeleteAsync(deleteDictionaryItemList);
-                await _itemRepository.UpdateAsync(updateDictionaryItemList);
-                await _itemRepository.InsertAsync(addDictionaryItemList);
-            },
-            ex => throw ex);
+        {
+            await _typeRepository.UpdateAsync(dictionaryTypeModel);
+            await _itemRepository.DeleteAsync(deleteDictionaryItemList);
+            await _itemRepository.UpdateAsync(updateDictionaryItemList);
+            await _itemRepository.InsertAsync(addDictionaryItemList);
+        }, ex => throw ex);
 
         // 删除缓存
         await _centerCache.DelAsync(CacheConst.Center.Dictionary);
@@ -345,11 +335,10 @@ public class DictionaryService : IDynamicApplication
         }
 
         await _typeRepository.Ado.UseTranAsync(async () =>
-            {
-                await _itemRepository.DeleteAsync(dictionaryTypeModel.DictionaryItemList);
-                await _typeRepository.DeleteAsync(dictionaryTypeModel);
-            },
-            ex => throw ex);
+        {
+            await _itemRepository.DeleteAsync(dictionaryTypeModel.DictionaryItemList);
+            await _typeRepository.DeleteAsync(dictionaryTypeModel);
+        }, ex => throw ex);
 
         // 删除缓存
         await _centerCache.DelAsync(CacheConst.Center.Dictionary);

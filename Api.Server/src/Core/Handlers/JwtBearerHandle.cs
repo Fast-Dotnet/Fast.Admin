@@ -23,12 +23,16 @@ public class JwtBearerHandle : IJwtBearerHandle
     {
         ArgumentNullException.ThrowIfNull(httpContext);
         if (httpContext.User.Identity?.IsAuthenticated != true)
+        {
             return false;
+        }
 
         // 从 AccessToken 中读取 Data
         string data = httpContext.User.FindFirst("Data")?.Value;
         if (string.IsNullOrWhiteSpace(data))
+        {
             return false;
+        }
 
         Dictionary<string, string> payload;
         try
@@ -41,7 +45,9 @@ public class JwtBearerHandle : IJwtBearerHandle
         }
 
         if (payload == null)
+        {
             return false;
+        }
 
         if (!payload.TryGetValue(nameof(AuthUserInfo.DeviceType), out string deviceTypeValue)
             || !Enum.TryParse(deviceTypeValue, true, out AppEnvironmentEnum deviceType)
@@ -49,13 +55,17 @@ public class JwtBearerHandle : IJwtBearerHandle
             || !payload.TryGetValue(nameof(AuthUserInfo.AppNo), out string appNo)
             || !payload.TryGetValue(nameof(AuthUserInfo.TenantNo), out string tenantNo)
             || !payload.TryGetValue(nameof(AuthUserInfo.EmployeeNo), out string employeeNo))
+        {
             return false;
+        }
 
         if (string.IsNullOrWhiteSpace(sessionId)
             || string.IsNullOrWhiteSpace(appNo)
             || string.IsNullOrWhiteSpace(tenantNo)
             || string.IsNullOrWhiteSpace(employeeNo))
+        {
             return false;
+        }
 
         // 请求已取消时终止后续处理
         httpContext.RequestAborted.ThrowIfCancellationRequested();
@@ -65,7 +75,9 @@ public class JwtBearerHandle : IJwtBearerHandle
         // 获取授权用户信息
         AuthUserInfo authUserInfo = await _user.GetAuthUserInfo(deviceType, appNo, tenantNo, employeeNo, sessionId);
         if (authUserInfo == null)
+        {
             return false;
+        }
 
         if (authUserInfo.TenantId <= 0
             || authUserInfo.SessionId != sessionId
@@ -73,14 +85,18 @@ public class JwtBearerHandle : IJwtBearerHandle
             || authUserInfo.TenantNo != tenantNo
             || authUserInfo.EmployeeNo != employeeNo
             || authUserInfo.DeviceType != deviceType)
+        {
             return false;
+        }
 
 
         try
         {
             // 判断设备信息是否和缓存中的一致
             if (GlobalContext.DeviceId != authUserInfo.DeviceId || GlobalContext.DeviceType != authUserInfo.DeviceType)
+            {
                 return false;
+            }
         }
         catch (UserFriendlyException)
         {
@@ -115,23 +131,31 @@ public class JwtBearerHandle : IJwtBearerHandle
 
         // 超级管理员有所有的权限
         if (_user.IsSuperAdmin)
+        {
             return true;
+        }
 
         // 获取权限标识
         PermissionAttribute permissionAttribute = httpContext.GetEndpoint()?.Metadata.GetMetadata<PermissionAttribute>();
 
         if (permissionAttribute?.TagList == null || permissionAttribute.TagList.Count == 0)
+        {
             return true;
+        }
 
         // 输出权限标识
         httpContext.Response.Headers.TryAdd("Auth-Permission", string.Join(",", permissionAttribute.TagList));
 
         if (_user.ButtonCodeList == null || _user.ButtonCodeList.Count == 0)
+        {
             return false;
+        }
 
         // 满足一个即可
         if (_user.ButtonCodeList.Intersect(permissionAttribute.TagList).Any())
+        {
             return true;
+        }
 
         return await Task.FromResult(false);
     }

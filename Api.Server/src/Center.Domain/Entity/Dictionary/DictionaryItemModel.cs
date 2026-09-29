@@ -83,7 +83,9 @@ public class DictionaryItemModel : BaseEntity
     public override bool Equals(object obj)
     {
         if (obj is not DictionaryItemModel oldDictionaryItemModel)
+        {
             return false;
+        }
 
         return DictionaryItemId == oldDictionaryItemModel.DictionaryItemId
                && DictionaryId == oldDictionaryItemModel.DictionaryId

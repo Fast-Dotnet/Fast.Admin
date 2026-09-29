@@ -23,8 +23,7 @@ public partial class TableService
     [PlatformOnly]
     public async Task<List<FaTableColumnCtx>> QueryTableColumnConfigDetail([Required(ErrorMessage = "表格Id不能为空")] long? tableId)
     {
-        return await _columnRepository
-            .Entities.Where(wh => wh.TableId == tableId)
+        return await _columnRepository.Entities.Where(wh => wh.TableId == tableId)
             .OrderBy(ob => ob.Order)
             .Select(sl => new FaTableColumnCtx
             {
@@ -71,11 +70,7 @@ public partial class TableService
     [PlatformOnly]
     public async Task EditTableColumnConfig(EditTableColumnConfigInput input)
     {
-        var columnIds = input
-            .Columns.Where(wh => wh.ColumnId != null)
-            .Select(sl => sl.ColumnId)
-            .Distinct()
-            .ToList();
+        var columnIds = input.Columns.Where(wh => wh.ColumnId != null).Select(sl => sl.ColumnId).Distinct().ToList();
 
         if (columnIds.Count != input.Columns.Count(c => c.ColumnId != null))
         {
@@ -94,8 +89,7 @@ public partial class TableService
             .ToListAsync();
 
         // 更新的
-        var updateTableColumnList = input
-            .Columns.Where(wh => wh.ColumnId != null)
+        var updateTableColumnList = input.Columns.Where(wh => wh.ColumnId != null)
             .Select(item =>
             {
                 TableColumnConfigModel tableColumnModel = tableColumnList.SingleOrDefault(s => s.ColumnId == item.ColumnId);
@@ -139,8 +133,7 @@ public partial class TableService
             .ToList();
 
         // 添加的
-        var addTableColumnList = input
-            .Columns.Where(wh => wh.ColumnId == null)
+        var addTableColumnList = input.Columns.Where(wh => wh.ColumnId == null)
             .Select(sl => new TableColumnConfigModel
             {
                 TableId = tableConfigModel.TableId,
@@ -176,22 +169,17 @@ public partial class TableService
             })
             .ToList();
 
-        var deleteTableColumnList = tableColumnList
-            .Where(wh => !columnIds.Contains(wh.ColumnId))
-            .ToList();
+        var deleteTableColumnList = tableColumnList.Where(wh => !columnIds.Contains(wh.ColumnId)).ToList();
 
         tableConfigModel.RowVersion = input.RowVersion;
 
         await _tableRepository.Ado.UseTranAsync(async () =>
-            {
-                await _tableRepository
-                    .Updateable(tableConfigModel)
-                    .ExecuteCommandAsync();
-                await _columnRepository.DeleteAsync(deleteTableColumnList);
-                await _columnRepository.UpdateAsync(updateTableColumnList);
-                await _columnRepository.InsertAsync(addTableColumnList);
-            },
-            ex => throw ex);
+        {
+            await _tableRepository.Updateable(tableConfigModel).ExecuteCommandAsync();
+            await _columnRepository.DeleteAsync(deleteTableColumnList);
+            await _columnRepository.UpdateAsync(updateTableColumnList);
+            await _columnRepository.InsertAsync(addTableColumnList);
+        }, ex => throw ex);
 
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.TableConfig, tableConfigModel.TableKey);
         await _centerCache.DelAsync(cacheKey);

@@ -19,8 +19,7 @@ internal sealed class GlobalApiRateLimiterPolicy : ApiRateLimiterPolicy
     /// 全局 API 限流规则
     /// </summary>
     public GlobalApiRateLimiterPolicy(IOptions<ApiRateLimitSettingsOptions> options) : base("global-client",
-        options.Value.PermitLimit.GetValueOrDefault(120),
-        options.Value.WindowSeconds.GetValueOrDefault(60))
+        options.Value.PermitLimit.GetValueOrDefault(120), options.Value.WindowSeconds.GetValueOrDefault(60))
     {
     }
 
@@ -43,18 +42,19 @@ internal sealed class GlobalApiRateLimiterPolicy : ApiRateLimiterPolicy
     private static string GetSessionId(HttpContext httpContext)
     {
         if (httpContext.User.Identity?.IsAuthenticated != true)
+        {
             return null;
+        }
 
-        string data = httpContext.User.FindFirst("Data")
-            ?.Value;
+        string data = httpContext.User.FindFirst("Data")?.Value;
         if (string.IsNullOrWhiteSpace(data))
+        {
             return null;
+        }
 
         try
         {
-            Dictionary<string, string> payload = data
-                .Base64ToString()
-                .ToObject<Dictionary<string, string>>();
+            Dictionary<string, string> payload = data.Base64ToString().ToObject<Dictionary<string, string>>();
             return payload != null && payload.TryGetValue(nameof(AuthUserInfo.SessionId), out string sessionId)
                 ? sessionId?.Trim()
                 : null;

@@ -41,8 +41,7 @@ public class ApplicationService : IDynamicApplication
             queryable = queryable.Where(wh => wh.TenantId == _user.TenantId);
         }
 
-        var data = await queryable
-            .OrderBy(ob => ob.AppName)
+        var data = await queryable.OrderBy(ob => ob.AppName)
             .Select(sl => new
             {
                 sl.AppId,
@@ -53,8 +52,7 @@ public class ApplicationService : IDynamicApplication
             })
             .ToListAsync();
 
-        return data
-            .Select(sl =>
+        return data.Select(sl =>
                 new ElSelectorOutput<long> {Value = sl.AppId, Label = sl.AppName, Data = new {sl.AppNo, sl.Edition, sl.LogoUrl}})
             .ToList();
     }
@@ -75,8 +73,7 @@ public class ApplicationService : IDynamicApplication
             queryable = queryable.Where(wh => wh.TenantId == _user.TenantId);
         }
 
-        return await queryable
-            .WhereIF(input.Edition != null, wh => wh.Edition == input.Edition)
+        return await queryable.WhereIF(input.Edition != null, wh => wh.Edition == input.Edition)
             .OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
             .Select(sl => new QueryApplicationPagedOutput
             {
@@ -107,8 +104,7 @@ public class ApplicationService : IDynamicApplication
     [PlatformOnly]
     public async Task<QueryApplicationDetailOutput> QueryApplicationDetail([Required(ErrorMessage = "应用Id不能为空")] long? appId)
     {
-        QueryApplicationDetailOutput result = await _repository
-            .Entities.Where(wh => wh.AppId == appId)
+        QueryApplicationDetailOutput result = await _repository.Entities.Where(wh => wh.AppId == appId)
             .Select(sl => new QueryApplicationDetailOutput
             {
                 AppId = sl.AppId,
@@ -163,12 +159,11 @@ public class ApplicationService : IDynamicApplication
         };
 
         await _repository.Ado.UseTranAsync(async () =>
-            {
-                applicationModel.AppNo = SysSerialContext.GenAppNo(_repository);
+        {
+            applicationModel.AppNo = SysSerialContext.GenAppNo(_repository);
 
-                await _repository.InsertAsync(applicationModel);
-            },
-            ex => throw ex);
+            await _repository.InsertAsync(applicationModel);
+        }, ex => throw ex);
     }
 
     /// <summary>
@@ -202,10 +197,7 @@ public class ApplicationService : IDynamicApplication
 
         await _repository.UpdateAsync(applicationModel);
 
-        foreach (string openId in await _repository
-                     .Queryable<ApplicationOpenIdModel>()
-                     .Select(sl => sl.OpenId)
-                     .ToListAsync())
+        foreach (string openId in await _repository.Queryable<ApplicationOpenIdModel>().Select(sl => sl.OpenId).ToListAsync())
         {
             // 删除缓存
             await ApplicationContext.DeleteApplication(openId);
@@ -227,9 +219,7 @@ public class ApplicationService : IDynamicApplication
             throw new UserFriendlyException("数据不存在！");
         }
 
-        if (await _repository
-                .Queryable<ApplicationOpenIdModel>()
-                .AnyAsync(a => a.AppId == input.AppId))
+        if (await _repository.Queryable<ApplicationOpenIdModel>().AnyAsync(a => a.AppId == input.AppId))
         {
             throw new UserFriendlyException("应用存在OpenId信息，无法删除！");
         }

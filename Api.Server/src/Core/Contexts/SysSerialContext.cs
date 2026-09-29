@@ -91,31 +91,23 @@ public class SysSerialContext
         DateTime dateTime = DateTime.Now;
 
         // 获取序号规则配置
-        SysSerialRuleModel sysSerialRuleModel = SysSerialRuleList.GetOrAdd(ruleType,
-            key =>
+        SysSerialRuleModel sysSerialRuleModel = SysSerialRuleList.GetOrAdd(ruleType, key =>
+        {
+            SysSerialRuleModel result = db.Queryable<SysSerialRuleModel>().Where(wh => wh.RuleType == key).Single();
+
+            if (result == null)
             {
-                SysSerialRuleModel result = db
-                    .Queryable<SysSerialRuleModel>()
-                    .Where(wh => wh.RuleType == key)
-                    .Single();
+                throw new UserFriendlyException($"未能找到【{key.GetDescription()}】规则配置！");
+            }
 
-                if (result == null)
-                {
-                    throw new UserFriendlyException($"未能找到【{key.GetDescription()}】规则配置！");
-                }
-
-                return result;
-            });
+            return result;
+        });
 
         // 获取序号配置
-        SysSerialSettingModel sysSerialSettingModel = SysSerialSettingList.GetOrAdd(ruleType,
-            key =>
-            {
-                return db
-                    .Queryable<SysSerialSettingModel>()
-                    .Where(wh => wh.RuleType == key)
-                    .Single();
-            });
+        SysSerialSettingModel sysSerialSettingModel = SysSerialSettingList.GetOrAdd(ruleType, key =>
+        {
+            return db.Queryable<SysSerialSettingModel>().Where(wh => wh.RuleType == key).Single();
+        });
 
         lock (_lock)
         {
@@ -129,9 +121,7 @@ public class SysSerialContext
                     LastSerialNo = null,
                     LastTime = null
                 };
-                sysSerialSettingModel = db
-                    .Insertable(sysSerialSettingModel)
-                    .ExecuteReturnEntity();
+                sysSerialSettingModel = db.Insertable(sysSerialSettingModel).ExecuteReturnEntity();
             }
 
             // 分隔符
@@ -205,8 +195,7 @@ public class SysSerialContext
             sysSerialSettingModel.LastTime = dateTime;
 
 
-            sysSerialSettingModel = db
-                .Updateable(sysSerialSettingModel)
+            sysSerialSettingModel = db.Updateable(sysSerialSettingModel)
                 .UpdateColumns(e => new {e.LastSerial, e.LastSerialNo, e.LastTime})
                 .ExecuteReturnEntity();
             SysSerialSettingList.AddOrUpdate(ruleType, sysSerialSettingModel, (_, _) => sysSerialSettingModel);

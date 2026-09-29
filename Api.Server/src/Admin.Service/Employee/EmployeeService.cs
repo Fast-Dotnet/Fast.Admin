@@ -22,9 +22,7 @@ public partial class EmployeeService : IDynamicApplication
     private readonly ISqlSugarClient _centerRepository;
     private readonly IHubContext<ChatHub, IChatClient> _hubContext;
 
-    public EmployeeService(IUser user,
-        ISqlSugarRepository<EmployeeModel> repository,
-        ISqlSugarClient centerRepository,
+    public EmployeeService(IUser user, ISqlSugarRepository<EmployeeModel> repository, ISqlSugarClient centerRepository,
         IHubContext<ChatHub, IChatClient> hubContext)
     {
         _user = user;
@@ -39,8 +37,8 @@ public partial class EmployeeService : IDynamicApplication
     /// <returns>当前用户数据权限范围内的职员</returns>
     private async Task<EmployeeModel> GetEmployeeWithinDataScope(long employeeId)
     {
-        bool hasAccess = await _repository
-            .Entities.LeftJoin<EmployeeOrgModel>((t1, t2) => t1.EmployeeId == t2.EmployeeId && t2.IsPrimary)
+        bool hasAccess = await _repository.Entities
+            .LeftJoin<EmployeeOrgModel>((t1, t2) => t1.EmployeeId == t2.EmployeeId && t2.IsPrimary)
             .SelectMergeTable((t1, t2) => new QueryEmployeeSelectorDto
             {
                 EmployeeId = t1.EmployeeId, DepartmentId = t2.DepartmentId
@@ -74,25 +72,19 @@ public partial class EmployeeService : IDynamicApplication
         }
 
         List<long> currentRoleIds = _user.RoleIdList ?? [];
-        var roleList = await _repository
-            .Queryable<RoleModel>()
+        var roleList = await _repository.Queryable<RoleModel>()
             .Where(wh => currentRoleIds.Contains(wh.RoleId))
             .Select(sl => new {sl.AssignableRoleIds})
             .ToListAsync();
-        var assignableRoleIds = roleList
-            .Where(wh => wh.AssignableRoleIds?.Count > 0)
+        var assignableRoleIds = roleList.Where(wh => wh.AssignableRoleIds?.Count > 0)
             .SelectMany(sl => sl.AssignableRoleIds)
             .Except(currentRoleIds)
             .Distinct()
             .ToList();
         IEnumerable<long> changedRoleIds = existingRoleIds == null
             ? requestedRoleIds
-            : requestedRoleIds
-                .Except(existingRoleIds)
-                .Concat(existingRoleIds.Except(requestedRoleIds));
-        if (changedRoleIds
-            .Except(assignableRoleIds)
-            .Any())
+            : requestedRoleIds.Except(existingRoleIds).Concat(existingRoleIds.Except(requestedRoleIds));
+        if (changedRoleIds.Except(assignableRoleIds).Any())
         {
             throw new UserFriendlyException("无权分配超出自身权限范围的角色！");
         }

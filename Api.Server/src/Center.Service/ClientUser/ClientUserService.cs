@@ -35,8 +35,7 @@ public class ClientUserService : IDynamicApplication
     public async Task<PagedResult<ElSelectorOutput<long>>> ClientUserSelector(PagedInput input)
     {
         ApplicationOpenIdModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
-        PagedResult<ClientUserModel> data = await _repository
-            .Entities.Where(wh => wh.AppId == applicationModel.AppId)
+        PagedResult<ClientUserModel> data = await _repository.Entities.Where(wh => wh.AppId == applicationModel.AppId)
             .WhereIF(!string.IsNullOrWhiteSpace(input.SearchValue),
                 wh => wh.Mobile.Contains(input.SearchValue)
                       || wh.OpenId.Contains(input.SearchValue)
@@ -68,8 +67,7 @@ public class ClientUserService : IDynamicApplication
     [Permission(PermissionConst.ClientUser.Paged)]
     public async Task<PagedResult<QueryClientUserPagedOutput>> QueryClientUserPaged(QueryClientUserPagedInput input)
     {
-        return await _repository
-            .Entities.WhereIF(input.AppId != null, wh => wh.AppId == input.AppId)
+        return await _repository.Entities.WhereIF(input.AppId != null, wh => wh.AppId == input.AppId)
             .WhereIF(input.UserType != null, wh => wh.UserType == input.UserType)
             .WhereIF(input.Sex != null, wh => wh.Sex == input.Sex)
             .OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
@@ -115,8 +113,7 @@ public class ClientUserService : IDynamicApplication
         }
 
         // 获取当前客户端用户信息
-        QueryClientUserDetailOutput result = await _repository
-            .Entities.Where(wh => wh.AppId == applicationModel.AppId)
+        QueryClientUserDetailOutput result = await _repository.Entities.Where(wh => wh.AppId == applicationModel.AppId)
             .Where(wh => wh.UserId == _user.ClientUserId)
             .Select(sl => new QueryClientUserDetailOutput
             {
@@ -167,8 +164,7 @@ public class ClientUserService : IDynamicApplication
             throw new UserFriendlyException("应用类型不匹配！");
         }
 
-        ClientUserModel userModel = await _repository
-            .Entities.Where(wh => wh.AppId == applicationModel.AppId)
+        ClientUserModel userModel = await _repository.Entities.Where(wh => wh.AppId == applicationModel.AppId)
             .Where(wh => wh.UserId == _user.ClientUserId)
             .SingleAsync();
 

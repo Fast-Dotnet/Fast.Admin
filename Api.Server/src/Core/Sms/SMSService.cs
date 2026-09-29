@@ -71,11 +71,7 @@ public class SMSService : ISmsService, ISingletonDependency
     /// <inheritdoc/>
     public async Task<int> GetVerificationCodeRetryAfterSeconds(SmsTypeEnum smsType, string mobile)
     {
-        string cacheKey = CacheConst.GetCacheKey(CacheConst.Sms,
-            smsType.ToString(),
-            mobile
-                .Trim()
-                .ToLowerInvariant());
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.Sms, smsType.ToString(), mobile.Trim().ToLowerInvariant());
         return (int)Math.Max(0, await _cache.Client.TtlAsync($"{cacheKey}:SendCooldown"));
     }
 
@@ -104,16 +100,17 @@ public class SMSService : ISmsService, ISingletonDependency
 
         int retryAfterSeconds = await GetVerificationCodeRetryAfterSeconds(smsType, mobile);
         if (retryAfterSeconds > 0)
+        {
             throw new UserFriendlyException($"操作过于频繁，请在 {TimeSpan.FromSeconds(retryAfterSeconds).ToDescription()} 后重试！");
+        }
+
         // 发送前占用冷却，失败时保留重试限制，成功后重新计时。
         await _cache.Client.SetAsync($"{cacheKey}:SendCooldown", "1", 60);
         VerificationCodeCacheDto dto = await _cache.GetAsync<VerificationCodeCacheDto>(cacheKey);
 
         // 生成验证码
         dto ??= new VerificationCodeCacheDto();
-        dto.VerificationCode = RandomNumberGenerator
-            .GetInt32(1000000)
-            .ToString("D6");
+        dto.VerificationCode = RandomNumberGenerator.GetInt32(1000000).ToString("D6");
         dto.ClientIdentity = GlobalContext.ClientIdentity;
         dto.SendTime = DateTime.Now;
         dto.ErrorCount = 0;
@@ -174,12 +171,8 @@ public class SMSService : ISmsService, ISingletonDependency
     }
 
     /// <inheritdoc />
-    public async Task SendSms(string mobile,
-        string templateCode,
-        object templateParam,
-        string accessKeyId = null,
-        string accessKeySecret = null,
-        string signName = null)
+    public async Task SendSms(string mobile, string templateCode, object templateParam, string accessKeyId = null,
+        string accessKeySecret = null, string signName = null)
     {
         ArgumentNullException.ThrowIfNull(templateCode);
 
@@ -258,9 +251,7 @@ public class SMSService : ISmsService, ISingletonDependency
                 };
                 messageSendRecordModel.RecordCreate(FastContext.HttpContext);
 
-                await db
-                    .Insertable(messageSendRecordModel)
-                    .ExecuteCommandAsync();
+                await db.Insertable(messageSendRecordModel).ExecuteCommandAsync();
             }
             catch (Exception ex)
             {

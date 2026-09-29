@@ -67,14 +67,15 @@ public class WeChatService : IDynamicApplication
 
         // 这里的 IV 和 EncryptedData 在没有授权的情况下是为空的
         if (string.IsNullOrWhiteSpace(input.IV) != string.IsNullOrWhiteSpace(input.EncryptedData))
+        {
             throw new UserFriendlyException("IV 和加密用户数据必须同时提供！");
+        }
 
         if (!string.IsNullOrWhiteSpace(input.IV) && !string.IsNullOrWhiteSpace(input.EncryptedData))
         {
             // 尝试解析加密数据
             byte[] decryptBytes = AESUtility.DecryptWithCBC(Convert.FromBase64String(response.SessionKey),
-                Convert.FromBase64String(input.IV),
-                Convert.FromBase64String(input.EncryptedData));
+                Convert.FromBase64String(input.IV), Convert.FromBase64String(input.EncryptedData));
             string decryptStr = Encoding.UTF8.GetString(decryptBytes);
             DecryptWeChatUserInfo decryptData = decryptStr.ToObject<DecryptWeChatUserInfo>();
             if (decryptData == null)

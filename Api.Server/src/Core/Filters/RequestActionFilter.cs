@@ -81,7 +81,9 @@ public class RequestActionFilter : IAsyncActionFilter
 
             // 判断是否存在禁用请求日志特性，支持 Controller 和 Action
             if (endpointMetadata.OfType<DisabledRequestLogAttribute>().Any())
+            {
                 return;
+            }
 
             // 获取 ApiInfo 特性，Controller 和 Action 同时存在时优先使用 Action
             ApiInfoAttribute apiInfoAttribute = endpointMetadata.OfType<ApiInfoAttribute>().LastOrDefault();

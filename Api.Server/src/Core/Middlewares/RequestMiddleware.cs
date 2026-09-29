@@ -102,8 +102,7 @@ public class RequestMiddleware
                 if (!isReadBody && queryParamDic?.Count > 0)
                 {
                     // 解密数据
-                    decryptedData = CryptoUtil.AESDecrypt(queryParamDic["data"],
-                        queryParamDic["timestamp"],
+                    decryptedData = CryptoUtil.AESDecrypt(queryParamDic["data"], queryParamDic["timestamp"],
                         $"FIV{queryParamDic["timestamp"]}");
 
                     // 反序列化成键值对
@@ -118,8 +117,7 @@ public class RequestMiddleware
                     RestfulResult<string> encryptedData = bodyParam.ToObject<RestfulResult<string>>();
 
                     // 解密数据
-                    decryptedData = CryptoUtil.AESDecrypt(encryptedData.Data,
-                        encryptedData.Timestamp.ToString(),
+                    decryptedData = CryptoUtil.AESDecrypt(encryptedData.Data, encryptedData.Timestamp.ToString(),
                         $"FIV{encryptedData.Timestamp}");
 
                     // 写入 Body

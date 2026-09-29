@@ -25,9 +25,7 @@ public class TenantOnlineUserService : IDynamicApplication
     private readonly ISqlSugarRepository<TenantOnlineUserModel> _repository;
     private readonly IHubContext<ChatHub, IChatClient> _hubContext;
 
-    public TenantOnlineUserService(IUser user,
-        ICache<AuthCCL> authCache,
-        ISqlSugarRepository<TenantOnlineUserModel> repository,
+    public TenantOnlineUserService(IUser user, ICache<AuthCCL> authCache, ISqlSugarRepository<TenantOnlineUserModel> repository,
         IHubContext<ChatHub, IChatClient> hubContext)
     {
         _user = user;
@@ -44,8 +42,7 @@ public class TenantOnlineUserService : IDynamicApplication
     [Permission(PermissionConst.TenantOnlineUser.Paged)]
     public async Task<PagedResult<TenantOnlineUserModel>> QueryTenantOnlineUserPaged(QueryTenantOnlineUserPagedInput input)
     {
-        return await _repository
-            .Entities.WhereIF(input.DeviceType != null, wh => wh.DeviceType == input.DeviceType)
+        return await _repository.Entities.WhereIF(input.DeviceType != null, wh => wh.DeviceType == input.DeviceType)
             .WhereIF(input.AccountId != null, wh => wh.AccountId == input.AccountId)
             .WhereIF(input.EmployeeId != null, wh => wh.EmployeeId == input.EmployeeId)
             .OrderByIF(input.IsOrderBy, ob => ob.IsOnline, OrderByType.Desc)
@@ -65,24 +62,23 @@ public class TenantOnlineUserService : IDynamicApplication
             .Entities.Where(wh => wh.ConnectionId == input.ConnectionId)
             .SingleAsync();
         if (onlineUser == null)
+        {
             throw new UserFriendlyException("在线会话不存在或已下线！");
+        }
 
         // 同一次登录可能建立多个 SignalR 连接，按会话统一下线，不影响关闭单点登录后的其他独立会话。
-        List<TenantOnlineUserModel> onlineUsers = await _repository
-            .Entities.Where(wh => wh.IsOnline)
+        List<TenantOnlineUserModel> onlineUsers = await _repository.Entities.Where(wh => wh.IsOnline)
             .WhereIF(!string.IsNullOrWhiteSpace(onlineUser.SessionId), wh => wh.SessionId == onlineUser.SessionId)
             .WhereIF(string.IsNullOrWhiteSpace(onlineUser.SessionId), wh => wh.ConnectionId == input.ConnectionId)
             .ToListAsync();
         if (onlineUsers.Count == 0)
+        {
             throw new UserFriendlyException("在线会话不存在或已下线！");
+        }
 
         DateTime offlineTime = DateTime.Now;
-        var connectionIds = onlineUsers
-            .Select(sl => sl.ConnectionId)
-            .Distinct()
-            .ToList();
-        await _hubContext
-            .Clients.Clients(connectionIds)
+        var connectionIds = onlineUsers.Select(sl => sl.ConnectionId).Distinct().ToList();
+        await _hubContext.Clients.Clients(connectionIds)
             .ForceOffline(new ForceOfflineOutput
             {
                 IsAdmin = _user.IsSuperAdmin || _user.IsAdmin,
@@ -93,12 +89,8 @@ public class TenantOnlineUserService : IDynamicApplication
 
         if (!string.IsNullOrWhiteSpace(onlineUser.SessionId))
         {
-            string cacheKey = CacheConst.GetCacheKey(CacheConst.AuthUser,
-                onlineUser.AppNo,
-                _user.TenantNo,
-                onlineUser.DeviceType,
-                onlineUser.EmployeeNo,
-                onlineUser.SessionId);
+            string cacheKey = CacheConst.GetCacheKey(CacheConst.AuthUser, onlineUser.AppNo, _user.TenantNo, onlineUser.DeviceType,
+                onlineUser.EmployeeNo, onlineUser.SessionId);
             await _authCache.DelAsync(cacheKey);
         }
 
@@ -107,8 +99,6 @@ public class TenantOnlineUserService : IDynamicApplication
             item.IsOnline = false;
             item.OfflineTime = offlineTime;
         });
-        await _repository
-            .Updateable(onlineUsers)
-            .ExecuteCommandAsync();
+        await _repository.Updateable(onlineUsers).ExecuteCommandAsync();
     }
 }

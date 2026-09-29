@@ -40,8 +40,8 @@ public class VisitLogService : IDynamicApplication
             throw new UserFriendlyException("请选择具体的时间范围！");
         }
 
-        ISugarQueryable<VisitLogModel> queryable = _repository
-            .Entities.WhereIF(input.AccountId != null, wh => wh.AccountId == input.AccountId)
+        ISugarQueryable<VisitLogModel> queryable = _repository.Entities
+            .WhereIF(input.AccountId != null, wh => wh.AccountId == input.AccountId)
             .WhereIF(input.VisitType != null, wh => wh.VisitType == input.VisitType);
 
         if (_user.IsSuperAdmin)
@@ -57,8 +57,7 @@ public class VisitLogService : IDynamicApplication
             queryable = queryable.Where(wh => wh.AccountId == _user.AccountId);
         }
 
-        return await queryable
-            .SplitTable()
+        return await queryable.SplitTable()
             .OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
             .ToPagedListAsync(input);
     }

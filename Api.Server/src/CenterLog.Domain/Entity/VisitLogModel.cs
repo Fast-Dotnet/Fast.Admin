@@ -55,7 +55,8 @@ public class VisitLogModel : BaseRecordEntity, IBaseTEntity
     /// </summary>
     [SplitField]
     [SugarSearchTime]
-    [Required, SugarColumn(ColumnDescription = "访问时间", CreateTableFieldSort = 993)]
+    [Required]
+    [SugarColumn(ColumnDescription = "访问时间", CreateTableFieldSort = 993)]
     public override DateTime? CreatedTime { get; set; }
 
     /// <summary>

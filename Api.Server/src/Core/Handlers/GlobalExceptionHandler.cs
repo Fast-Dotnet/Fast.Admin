@@ -50,7 +50,9 @@ public class GlobalExceptionHandler : IGlobalExceptionHandler
     {
         // 行版本更新异常直接忽略
         if (context.Exception is VersionExceptions)
+        {
             return;
+        }
 
         HttpContext httpContext = context.HttpContext;
         var message = new StringBuilder();
@@ -61,15 +63,8 @@ public class GlobalExceptionHandler : IGlobalExceptionHandler
             message.AppendLine($"Host：{httpContext.Request.Scheme}://{httpContext.Request.Host}");
             message.AppendLine($"Url：{httpContext.Request.Method}, {httpContext.Request.Path}");
 
-            string deviceType = httpContext
-                .Request.Headers[HttpHeaderConst.DeviceType]
-                .ToString()
-                .UrlDecode();
-            string deviceId = httpContext
-                .Request.Headers[HttpHeaderConst.DeviceId]
-                .ToString()
-                .UrlDecode()
-                .Trim();
+            string deviceType = httpContext.Request.Headers[HttpHeaderConst.DeviceType].ToString().UrlDecode();
+            string deviceId = httpContext.Request.Headers[HttpHeaderConst.DeviceId].ToString().UrlDecode().Trim();
 
             message.AppendLine($"device: {deviceType}, {deviceId}");
             if (httpContext.Items.TryGetValue($"{nameof(Fast)}.RequestParams", out object requestParams))
@@ -125,8 +120,7 @@ public class GlobalExceptionHandler : IGlobalExceptionHandler
         if (isUserFriendlyException)
         {
             // 只写入最深的一条堆栈信息
-            string firstLine = context
-                .Exception.StackTrace?.Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries)
+            string firstLine = context.Exception.StackTrace?.Split([Environment.NewLine], StringSplitOptions.RemoveEmptyEntries)
                 .FirstOrDefault();
 
             // 如果有匹配的堆栈信息，选择第一条（最深的那一条）
@@ -152,17 +146,17 @@ public class GlobalExceptionHandler : IGlobalExceptionHandler
         {
             string className = context.Exception.TargetSite?.DeclaringType?.FullName;
             string methodName = "";
-            GroupCollection groupCollection = Regex.Match(className, "<(.*?)>")
-                .Groups;
+            GroupCollection groupCollection = Regex.Match(className, "<(.*?)>").Groups;
             if (groupCollection.Count > 1)
+            {
                 methodName = groupCollection[1].Value;
+            }
 
             try
             {
                 // 获取 CenterLog 库的连接字符串配置
                 ConnectionSettingsOptions connectionSetting =
-                    await _sqlSugarEntityService.GetConnectionSetting(CommonConst.Default.TenantId,
-                        CommonConst.Default.TenantNo,
+                    await _sqlSugarEntityService.GetConnectionSetting(CommonConst.Default.TenantId, CommonConst.Default.TenantNo,
                         DatabaseTypeEnum.CenterLog);
                 ConnectionConfig connectionConfig = SqlSugarContext.GetConnectionConfig(connectionSetting);
 
@@ -182,7 +176,9 @@ public class GlobalExceptionHandler : IGlobalExceptionHandler
                         .Exception.TargetSite?.GetParameters()
                         .Select(sl => new
                         {
-                            PropertyName = sl.Name, TypeName = sl.ParameterType.Name, TypeFullName = sl.ParameterType.FullName
+                            PropertyName = sl.Name,
+                            TypeName = sl.ParameterType.Name,
+                            TypeFullName = sl.ParameterType.FullName
                         })
                         .ToList()
                         .ToJsonString(),
@@ -198,9 +194,7 @@ public class GlobalExceptionHandler : IGlobalExceptionHandler
 
                 // 独立客户端不加载 AOP，避免异常审计失败后递归生成新异常审计；主异常返回前等待持久化完成
                 using var db = new SqlSugarClient(connectionConfig);
-                await db
-                    .Insertable(exceptionLogModel)
-                    .ExecuteCommandAsync();
+                await db.Insertable(exceptionLogModel).ExecuteCommandAsync();
             }
             catch (Exception ex)
             {

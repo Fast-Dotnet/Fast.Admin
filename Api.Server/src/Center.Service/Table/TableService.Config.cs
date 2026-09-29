@@ -24,8 +24,7 @@ public partial class TableService
     [PlatformOnly]
     public async Task<PagedResult<QueryTableConfigPagedOutput>> QueryTableConfigPaged(PagedInput input)
     {
-        return await _tableRepository
-            .Entities.OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
+        return await _tableRepository.Entities.OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
             .Select(sl => new QueryTableConfigPagedOutput
             {
                 TableId = sl.TableId,
@@ -51,8 +50,7 @@ public partial class TableService
     [PlatformOnly]
     public async Task<QueryTableConfigDetailOutput> QueryTableConfigDetail([Required(ErrorMessage = "表格Id不能为空")] long? tableId)
     {
-        QueryTableConfigDetailOutput result = await _tableRepository
-            .Entities.Where(wh => wh.TableId == tableId)
+        QueryTableConfigDetailOutput result = await _tableRepository.Entities.Where(wh => wh.TableId == tableId)
             .Select(sl => new QueryTableConfigDetailOutput
             {
                 TableId = sl.TableId,
@@ -128,8 +126,7 @@ public partial class TableService
         tableConfigModel.Remark = input.Remark;
         tableConfigModel.RowVersion = input.RowVersion;
 
-        await _tableRepository
-            .Updateable(tableConfigModel)
+        await _tableRepository.Updateable(tableConfigModel)
             // 避免表格同步循环问题，这里不更新时间
             .IgnoreColumns(it => new {it.UpdatedTime})
             .ExecuteCommandWithOptLockAsync(true);
@@ -151,12 +148,11 @@ public partial class TableService
         }
 
         await _tableRepository.Ado.UseTranAsync(async () =>
-            {
-                await _columnCacheRepository.DeleteAsync(wh => wh.TableId == tableConfigModel.TableId);
-                await _columnRepository.DeleteAsync(wh => wh.TableId == tableConfigModel.TableId);
-                await _tableRepository.DeleteAsync(tableConfigModel);
-            },
-            ex => throw ex);
+        {
+            await _columnCacheRepository.DeleteAsync(wh => wh.TableId == tableConfigModel.TableId);
+            await _columnRepository.DeleteAsync(wh => wh.TableId == tableConfigModel.TableId);
+            await _tableRepository.DeleteAsync(tableConfigModel);
+        }, ex => throw ex);
 
         // 清除缓存
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.UserTableConfigCache, tableConfigModel.TableKey, "*", "*");
@@ -193,8 +189,7 @@ public partial class TableService
         };
 
         // 查询表格所有列
-        List<TableColumnConfigModel> columnConfigList = await _columnRepository
-            .Entities.Where(wh => wh.TableId == input.TableId)
+        List<TableColumnConfigModel> columnConfigList = await _columnRepository.Entities.Where(wh => wh.TableId == input.TableId)
             .OrderBy(ob => ob.Order)
             .ToListAsync();
 
@@ -206,10 +201,9 @@ public partial class TableService
         });
 
         await _tableRepository.Ado.UseTranAsync(async () =>
-            {
-                await _tableRepository.InsertAsync(tableConfigModel);
-                await _columnRepository.InsertAsync(columnConfigList);
-            },
-            ex => throw ex);
+        {
+            await _tableRepository.InsertAsync(tableConfigModel);
+            await _columnRepository.InsertAsync(columnConfigList);
+        }, ex => throw ex);
     }
 }

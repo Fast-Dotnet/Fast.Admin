@@ -54,8 +54,7 @@ public class DeleteSqlLogLocalJob : ISchedulerJob
         ISqlSugarEntityService _sqlSugarEntityService = serviceProvider.GetService<ISqlSugarEntityService>();
         // 获取 CenterLog 库的连接字符串配置
         ConnectionSettingsOptions connectionSetting =
-            await _sqlSugarEntityService.GetConnectionSetting(CommonConst.Default.TenantId,
-                CommonConst.Default.TenantNo,
+            await _sqlSugarEntityService.GetConnectionSetting(CommonConst.Default.TenantId, CommonConst.Default.TenantNo,
                 DatabaseTypeEnum.CenterLog);
         ConnectionConfig connectionConfig = SqlSugarContext.GetConnectionConfig(connectionSetting);
 
@@ -69,27 +68,19 @@ public class DeleteSqlLogLocalJob : ISchedulerJob
 
         int deleteCount = 0;
 
-        var tableInfos = logDb
-            .SplitHelper<SqlExecutionLogModel>()
-            .GetTables()
-            .OrderBy(ob => ob.Date)
-            .ToList();
+        var tableInfos = logDb.SplitHelper<SqlExecutionLogModel>().GetTables().OrderBy(ob => ob.Date).ToList();
 
         // 删除90天前的Sql执行日志
         foreach (SplitTableInfo tableInfo in tableInfos)
         {
             // 删除数据
-            deleteCount += await logDb
-                .Deleteable<SqlExecutionLogModel>()
+            deleteCount += await logDb.Deleteable<SqlExecutionLogModel>()
                 .AS(tableInfo.TableName)
                 .Where(wh => wh.CreatedTime < expireDate)
                 .ExecuteCommandAsync();
 
             // 查询是否不存在数据
-            if (!await logDb
-                    .Queryable<SqlExecutionLogModel>()
-                    .AS(tableInfo.TableName)
-                    .AnyAsync())
+            if (!await logDb.Queryable<SqlExecutionLogModel>().AS(tableInfo.TableName).AnyAsync())
             {
                 logDb.DbMaintenance.DropTable(tableInfo.TableName);
             }

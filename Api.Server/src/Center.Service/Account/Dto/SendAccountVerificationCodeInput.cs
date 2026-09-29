@@ -16,19 +16,22 @@ public class SendAccountVerificationCodeInput
     /// 账号
     /// </summary>
     /// <remarks>手机号/邮箱</remarks>
-    [StringRequired(ErrorMessage = "账号不能为空"), MaxLength(50, ErrorMessage = "账号不能超过50位字符")]
+    [StringRequired(ErrorMessage = "账号不能为空")]
+    [MaxLength(50, ErrorMessage = "账号不能超过50位字符")]
     public string Account { get; set; }
 
     /// <summary>
     /// 图片验证码Key
     /// </summary>
-    [StringRequired(ErrorMessage = "图片验证码Key不能为空"), MaxLength(32, ErrorMessage = "图片验证码Key不能超过32位字符")]
+    [StringRequired(ErrorMessage = "图片验证码Key不能为空")]
+    [MaxLength(32, ErrorMessage = "图片验证码Key不能超过32位字符")]
     public string CaptchaKey { get; set; }
 
     /// <summary>
     /// 图片验证码
     /// </summary>
-    [StringRequired(ErrorMessage = "图片验证码不能为空"), MaxLength(4, ErrorMessage = "图片验证码不能超过4位字符")]
+    [StringRequired(ErrorMessage = "图片验证码不能为空")]
+    [MaxLength(4, ErrorMessage = "图片验证码不能超过4位字符")]
     [RegularExpression(RegexConst.ImageCaptchaCode, ErrorMessage = "图片验证码必须为4位字母或数字")]
     public string CaptchaCode { get; set; }
 }

@@ -16,13 +16,15 @@ public class LoginInput
     /// 账号
     /// </summary>
     /// <remarks>手机号/邮箱/工号</remarks>
-    [StringRequired(ErrorMessage = "账号不能为空"), MaxLength(50, ErrorMessage = "账号不能超过50位字符")]
+    [StringRequired(ErrorMessage = "账号不能为空")]
+    [MaxLength(50, ErrorMessage = "账号不能超过50位字符")]
     public string Account { get; set; }
 
     /// <summary>
     /// 密码
     /// </summary>
-    [StringRequired(ErrorMessage = "密码不能为空"), StringLength(20, MinimumLength = 6, ErrorMessage = "密码长度必须为 6~20 位字符")]
+    [StringRequired(ErrorMessage = "密码不能为空")]
+    [StringLength(20, MinimumLength = 6, ErrorMessage = "密码长度必须为 6~20 位字符")]
     public string Password { get; set; }
 
     /// <summary>

@@ -34,8 +34,7 @@ public class PasswordRecordService : IDynamicApplication
     [Permission(PermissionConst.PasswordRecordPaged)]
     public async Task<PagedResult<QueryPasswordRecordPagedOutput>> QueryPasswordRecordPaged(QueryPasswordRecordPagedInput input)
     {
-        return await _repository
-            .Entities.LeftJoin<AccountModel>((t1, t2) => t1.AccountId == t2.AccountId)
+        return await _repository.Entities.LeftJoin<AccountModel>((t1, t2) => t1.AccountId == t2.AccountId)
             .WhereIF(input.AccountId != null, t1 => t1.AccountId == input.AccountId)
             .WhereIF(input.OperationType != null, t1 => t1.OperationType == input.OperationType)
             .SelectMergeTable((t1, t2) => new QueryPasswordRecordPagedOutput

@@ -88,7 +88,9 @@ public class DictionaryTypeModel : BaseEntity, IUpdateVersion
     public override bool Equals(object obj)
     {
         if (obj is not DictionaryTypeModel oldDictionaryTypeModel)
+        {
             return false;
+        }
 
         return DictionaryId == oldDictionaryTypeModel.DictionaryId
                && DictionaryKey == oldDictionaryTypeModel.DictionaryKey

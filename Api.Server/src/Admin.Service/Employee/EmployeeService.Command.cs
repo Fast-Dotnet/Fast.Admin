@@ -62,10 +62,7 @@ public partial class EmployeeService
             throw new UserFriendlyException("数据不存在！");
         }
 
-        var roleIds = (input.RoleList ?? [])
-            .Select(sl => sl.RoleId)
-            .Distinct()
-            .ToList();
+        var roleIds = (input.RoleList ?? []).Select(sl => sl.RoleId).Distinct().ToList();
         List<RoleModel> roleList = await _repository
             .Queryable<RoleModel>()
             .Where(wh => roleIds.Contains(wh.RoleId))
@@ -123,35 +120,28 @@ public partial class EmployeeService
         TenantModel tenantModel = await TenantContext.GetTenant(_user.TenantNo);
 
         await _repository.Ado.UseTranAsync(async () =>
+        {
+            string employeeNo = SerialContext.GenEmployeeNo(_repository, tenantModel.TenantCode);
+            employeeModel.EmployeeNo = employeeNo;
+            await _repository.InsertAsync(employeeModel);
+
+            // 如果当前职员是负责人，则清除该部门原有负责人
+            if (employeeOrgModel.IsPrincipal)
             {
-                string employeeNo = SerialContext.GenEmployeeNo(_repository, tenantModel.TenantCode);
-                employeeModel.EmployeeNo = employeeNo;
-                await _repository.InsertAsync(employeeModel);
-
-                // 如果当前职员是负责人，则清除该部门原有负责人
-                if (employeeOrgModel.IsPrincipal)
-                {
-                    await _repository
-                        .Updateable<EmployeeOrgModel>()
-                        .SetColumns(_ => new EmployeeOrgModel {IsPrincipal = false})
-                        .Where(wh => wh.DepartmentId == employeeOrgModel.DepartmentId)
-                        .ExecuteCommandAsync();
-                }
-
-                await _repository
-                    .Insertable(employeeOrgModel)
+                await _repository.Updateable<EmployeeOrgModel>()
+                    .SetColumns(_ => new EmployeeOrgModel {IsPrincipal = false})
+                    .Where(wh => wh.DepartmentId == employeeOrgModel.DepartmentId)
                     .ExecuteCommandAsync();
+            }
 
-                // 删除旧的角色数据
-                await _repository
-                    .Deleteable<EmployeeRoleModel>()
-                    .Where(wh => wh.EmployeeId == employeeModel.EmployeeId)
-                    .ExecuteCommandAsync();
-                await _repository
-                    .Insertable(employeeRoleList)
-                    .ExecuteCommandAsync();
-            },
-            ex => throw ex);
+            await _repository.Insertable(employeeOrgModel).ExecuteCommandAsync();
+
+            // 删除旧的角色数据
+            await _repository.Deleteable<EmployeeRoleModel>()
+                .Where(wh => wh.EmployeeId == employeeModel.EmployeeId)
+                .ExecuteCommandAsync();
+            await _repository.Insertable(employeeRoleList).ExecuteCommandAsync();
+        }, ex => throw ex);
 
         // 操作日志
         await LogContext.OperateLog(new OperateLogDto
@@ -194,17 +184,14 @@ public partial class EmployeeService
         await _centerRepository.Ado.BeginTranAsync();
         try
         {
-            TenantUserModel tenantUserModel = await _centerRepository
-                .Queryable<TenantUserModel>()
+            TenantUserModel tenantUserModel = await _centerRepository.Queryable<TenantUserModel>()
                 .Where(wh => wh.EmployeeId == employeeModel.EmployeeId)
                 .SingleAsync();
             if (tenantUserModel != null)
             {
                 tenantUserModel.EmployeeName = employeeModel.EmployeeName;
                 tenantUserModel.IdPhoto = employeeModel.IdPhoto;
-                await _centerRepository
-                    .Updateable(tenantUserModel)
-                    .ExecuteCommandAsync();
+                await _centerRepository.Updateable(tenantUserModel).ExecuteCommandAsync();
             }
 
             await _repository.UpdateAsync(employeeModel);
@@ -257,11 +244,7 @@ public partial class EmployeeService
             throw new UserFriendlyException("只能存在一个主部门！");
         }
 
-        if ((input.RoleList ?? [])
-            .Select(sl => sl.RoleId)
-            .Distinct()
-            .Count()
-            != (input.RoleList?.Count ?? 0))
+        if ((input.RoleList ?? []).Select(sl => sl.RoleId).Distinct().Count() != (input.RoleList?.Count ?? 0))
         {
             throw new UserFriendlyException("角色重复！");
         }
@@ -271,10 +254,7 @@ public partial class EmployeeService
             throw new UserFriendlyException("禁止修改已离职的职员资料！");
         }
 
-        var orgIds = input
-            .OrgList.Select(sl => sl.OrgId)
-            .Distinct()
-            .ToList();
+        var orgIds = input.OrgList.Select(sl => sl.OrgId).Distinct().ToList();
         List<OrganizationModel> organizationList = await _repository
             .Queryable<OrganizationModel>()
             .Where(wh => orgIds.Contains(wh.OrgId))
@@ -284,12 +264,8 @@ public partial class EmployeeService
             throw new UserFriendlyException("数据不存在！");
         }
 
-        var departmentIds = input
-            .OrgList.Select(sl => sl.DepartmentId)
-            .Distinct()
-            .ToList();
-        List<DepartmentModel> departmentList = await _repository
-            .Queryable<DepartmentModel>()
+        var departmentIds = input.OrgList.Select(sl => sl.DepartmentId).Distinct().ToList();
+        List<DepartmentModel> departmentList = await _repository.Queryable<DepartmentModel>()
             .Where(wh => departmentIds.Contains(wh.DepartmentId))
             .ToListAsync();
         if (departmentList.Count != departmentIds.Count)
@@ -297,12 +273,8 @@ public partial class EmployeeService
             throw new UserFriendlyException("数据不存在！");
         }
 
-        var positionId = input
-            .OrgList.Select(sl => sl.PositionId)
-            .Distinct()
-            .ToList();
-        List<PositionModel> positionList = await _repository
-            .Queryable<PositionModel>()
+        var positionId = input.OrgList.Select(sl => sl.PositionId).Distinct().ToList();
+        List<PositionModel> positionList = await _repository.Queryable<PositionModel>()
             .Where(wh => positionId.Contains(wh.PositionId))
             .ToListAsync();
         if (positionList.Count != positionId.Count)
@@ -310,12 +282,8 @@ public partial class EmployeeService
             throw new UserFriendlyException("数据不存在！");
         }
 
-        var jobLevelId = input
-            .OrgList.Select(sl => sl.JobLevelId)
-            .Distinct()
-            .ToList();
-        List<JobLevelModel> jobLevelList = await _repository
-            .Queryable<JobLevelModel>()
+        var jobLevelId = input.OrgList.Select(sl => sl.JobLevelId).Distinct().ToList();
+        List<JobLevelModel> jobLevelList = await _repository.Queryable<JobLevelModel>()
             .Where(wh => jobLevelId.Contains(wh.JobLevelId))
             .ToListAsync();
         if (jobLevelList.Count != jobLevelId.Count)
@@ -323,9 +291,7 @@ public partial class EmployeeService
             throw new UserFriendlyException("数据不存在！");
         }
 
-        var roleIds = (input.RoleList ?? [])
-            .Select(sl => sl.RoleId)
-            .ToList();
+        var roleIds = (input.RoleList ?? []).Select(sl => sl.RoleId).ToList();
         List<RoleModel> roleList = await _repository
             .Queryable<RoleModel>()
             .Where(wh => roleIds.Contains(wh.RoleId))
@@ -335,8 +301,7 @@ public partial class EmployeeService
             throw new UserFriendlyException("数据不存在！");
         }
 
-        List<long> existingRoleIds = await _repository
-            .Queryable<EmployeeRoleModel>()
+        List<long> existingRoleIds = await _repository.Queryable<EmployeeRoleModel>()
             .Where(wh => wh.EmployeeId == employeeModel.EmployeeId)
             .Select(sl => sl.RoleId)
             .ToListAsync();
@@ -396,8 +361,7 @@ public partial class EmployeeService
         await _centerRepository.Ado.BeginTranAsync();
         try
         {
-            TenantUserModel tenantUserModel = await _centerRepository
-                .Queryable<TenantUserModel>()
+            TenantUserModel tenantUserModel = await _centerRepository.Queryable<TenantUserModel>()
                 .Where(wh => wh.EmployeeId == employeeModel.EmployeeId)
                 .SingleAsync();
             if (tenantUserModel != null)
@@ -409,51 +373,37 @@ public partial class EmployeeService
             if (employeeModel.EmployeeId != _user.EmployeeId)
             {
                 // 删除旧的部门数据
-                await _repository
-                    .Deleteable<EmployeeOrgModel>()
+                await _repository.Deleteable<EmployeeOrgModel>()
                     .Where(wh => wh.EmployeeId == employeeModel.EmployeeId)
                     .ExecuteCommandAsync();
                 // 删除旧的角色数据
-                await _repository
-                    .Deleteable<EmployeeRoleModel>()
+                await _repository.Deleteable<EmployeeRoleModel>()
                     .Where(wh => wh.EmployeeId == employeeModel.EmployeeId)
                     .ExecuteCommandAsync();
 
                 // 处理部门负责人
-                var principalDepartmentIds = employeeOrgList
-                    .Where(wh => wh.IsPrincipal)
-                    .Select(sl => sl.DepartmentId)
-                    .ToList();
+                var principalDepartmentIds = employeeOrgList.Where(wh => wh.IsPrincipal).Select(sl => sl.DepartmentId).ToList();
                 if (principalDepartmentIds.Any())
                 {
-                    await _repository
-                        .Updateable<EmployeeOrgModel>()
+                    await _repository.Updateable<EmployeeOrgModel>()
                         .SetColumns(_ => new EmployeeOrgModel {IsPrincipal = false})
                         .Where(wh => principalDepartmentIds.Contains(wh.DepartmentId))
                         .ExecuteCommandAsync();
                 }
 
-                await _repository
-                    .Insertable(employeeOrgList)
-                    .ExecuteCommandAsync();
-                await _repository
-                    .Insertable(employeeRoleList)
-                    .ExecuteCommandAsync();
+                await _repository.Insertable(employeeOrgList).ExecuteCommandAsync();
+                await _repository.Insertable(employeeRoleList).ExecuteCommandAsync();
 
                 if (tenantUserModel != null)
                 {
-                    tenantUserModel.DepartmentId = employeeOrgList.Single(s => s.IsPrimary)
-                        .DepartmentId;
-                    tenantUserModel.DepartmentName = employeeOrgList.Single(s => s.IsPrimary)
-                        .DepartmentName;
+                    tenantUserModel.DepartmentId = employeeOrgList.Single(s => s.IsPrimary).DepartmentId;
+                    tenantUserModel.DepartmentName = employeeOrgList.Single(s => s.IsPrimary).DepartmentName;
                 }
             }
 
             if (tenantUserModel != null)
             {
-                await _centerRepository
-                    .Updateable(tenantUserModel)
-                    .ExecuteCommandAsync();
+                await _centerRepository.Updateable(tenantUserModel).ExecuteCommandAsync();
             }
 
             await _repository.UpdateAsync(employeeModel);

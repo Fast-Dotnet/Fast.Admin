@@ -52,8 +52,7 @@ public class SqlExecutionLogService : IDynamicApplication
             queryable = queryable.Where(wh => wh.TenantId == _user.TenantId);
         }
 
-        return await queryable
-            .SplitTable()
+        return await queryable.SplitTable()
             .OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
             .ToPagedListAsync(input);
     }

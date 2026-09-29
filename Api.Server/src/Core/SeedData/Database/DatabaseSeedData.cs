@@ -41,8 +41,7 @@ public static class DatabaseSeedData
         SugarDbType dbType = SqlSugarContext.ConnectionSettings.DbType != null
             ? SqlSugarContext.ConnectionSettings.DbType.Value.ToSugarDbType()
             : SugarDbType.Sqlite;
-        await db
-            .Insertable(new List<MainDatabaseModel>
+        await db.Insertable(new List<MainDatabaseModel>
             {
                 // 初始化日志库
                 new()

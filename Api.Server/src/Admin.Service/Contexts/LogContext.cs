@@ -53,10 +53,7 @@ public class LogContext
 
         // 独立客户端不加载 AOP，避免操作日志写入再次触发 SQL 审计；返回业务响应前等待写入完成
         using var db = new SqlSugarClient(connectionConfig);
-        await db
-            .Insertable(operateLogModel)
-            .SplitTable()
-            .ExecuteCommandAsync();
+        await db.Insertable(operateLogModel).SplitTable().ExecuteCommandAsync();
     }
 }
 

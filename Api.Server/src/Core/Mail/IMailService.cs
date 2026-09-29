@@ -61,14 +61,8 @@ public interface IMailService
     /// <param name="email">发件邮箱，为null时读取配置</param>
     /// <param name="authCode">发件邮箱授权码，为null时读取配置</param>
     /// <param name="displayName">发件人显示名称，为null时读取配置</param>
-    Task SendEmail(string title,
-        string content,
-        List<string> receiveEmails = null,
-        string smtp = null,
-        int? port = null,
-        string email = null,
-        string authCode = null,
-        string displayName = null);
+    Task SendEmail(string title, string content, List<string> receiveEmails = null, string smtp = null, int? port = null,
+        string email = null, string authCode = null, string displayName = null);
 
 
     /// <summary>
@@ -82,12 +76,6 @@ public interface IMailService
     /// <param name="email">发件邮箱，为null时读取配置</param>
     /// <param name="authCode">发件邮箱授权码，为null时读取配置</param>
     /// <param name="displayName">发件人显示名称，为null时读取配置</param>
-    Task SendEmail(string title,
-        BodyBuilder content,
-        List<string> receiveEmails = null,
-        string smtp = null,
-        int? port = null,
-        string email = null,
-        string authCode = null,
-        string displayName = null);
+    Task SendEmail(string title, BodyBuilder content, List<string> receiveEmails = null, string smtp = null, int? port = null,
+        string email = null, string authCode = null, string displayName = null);
 }

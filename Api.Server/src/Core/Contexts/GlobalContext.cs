@@ -37,21 +37,17 @@ public class GlobalContext
             HttpContext httpContext = FastContext.HttpContext;
             if (httpContext.WebSockets.IsWebSocketRequest)
             {
-                result = httpContext
-                    .Request.Query[HttpHeaderConst.Origin]
-                    .ToString()
-                    .UrlDecode();
+                result = httpContext.Request.Query[HttpHeaderConst.Origin].ToString().UrlDecode();
             }
             else
             {
-                result = httpContext
-                    .Request.Headers[HttpHeaderConst.Origin]
-                    .ToString()
-                    .UrlDecode();
+                result = httpContext.Request.Headers[HttpHeaderConst.Origin].ToString().UrlDecode();
             }
 
             if (!string.IsNullOrWhiteSpace(result))
+            {
                 return result;
+            }
 
             throw new UserFriendlyException("未知的设备信息！");
         }
@@ -68,22 +64,17 @@ public class GlobalContext
             HttpContext httpContext = FastContext.HttpContext;
             if (httpContext.WebSockets.IsWebSocketRequest)
             {
-                result = httpContext
-                    .Request.Query[HttpHeaderConst.DeviceType]
-                    .ToString()
-                    .UrlDecode();
+                result = httpContext.Request.Query[HttpHeaderConst.DeviceType].ToString().UrlDecode();
             }
             else
             {
-                result = httpContext
-                    .Request.Headers[HttpHeaderConst.DeviceType]
-                    .ToString()
-                    .UrlDecode();
+                result = httpContext.Request.Headers[HttpHeaderConst.DeviceType].ToString().UrlDecode();
             }
 
-            if (!string.IsNullOrWhiteSpace(result)
-                && Enum.TryParse<AppEnvironmentEnum>(result, true, out AppEnvironmentEnum environment))
+            if (!string.IsNullOrWhiteSpace(result) && Enum.TryParse(result, true, out AppEnvironmentEnum environment))
+            {
                 return environment;
+            }
 
             throw new UserFriendlyException("未知的设备信息！");
         }
@@ -100,23 +91,17 @@ public class GlobalContext
             HttpContext httpContext = FastContext.HttpContext;
             if (httpContext.WebSockets.IsWebSocketRequest)
             {
-                result = httpContext
-                    .Request.Query[HttpHeaderConst.DeviceId]
-                    .ToString()
-                    .UrlDecode()
-                    .Trim();
+                result = httpContext.Request.Query[HttpHeaderConst.DeviceId].ToString().UrlDecode().Trim();
             }
             else
             {
-                result = httpContext
-                    .Request.Headers[HttpHeaderConst.DeviceId]
-                    .ToString()
-                    .UrlDecode()
-                    .Trim();
+                result = httpContext.Request.Headers[HttpHeaderConst.DeviceId].ToString().UrlDecode().Trim();
             }
 
             if (!string.IsNullOrWhiteSpace(result))
+            {
                 return result;
+            }
 
             throw new UserFriendlyException("未知的设备信息！");
         }

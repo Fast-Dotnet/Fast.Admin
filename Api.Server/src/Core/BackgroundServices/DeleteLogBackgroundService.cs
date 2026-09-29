@@ -57,9 +57,7 @@ public class DeleteLogBackgroundService : BackgroundService
             }
 
             // 检查目录是否为空
-            if (!directoryInfo
-                    .EnumerateFileSystemInfos()
-                    .Any())
+            if (!directoryInfo.EnumerateFileSystemInfos().Any())
             {
                 // 上级目录
                 DirectoryInfo parent = directoryInfo.Parent;

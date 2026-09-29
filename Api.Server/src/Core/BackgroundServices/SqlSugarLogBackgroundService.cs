@@ -54,40 +54,25 @@ public sealed class SqlSugarLogBackgroundService : BackgroundService
                     switch (workItem.LogModel)
                     {
                         case SqlExecutionLogModel sqlExecutionLogModel:
-                            await db
-                                .Insertable(sqlExecutionLogModel)
-                                .SplitTable()
-                                .ExecuteCommandAsync();
+                            await db.Insertable(sqlExecutionLogModel).SplitTable().ExecuteCommandAsync();
                             break;
                         case SqlTimeoutLogModel sqlTimeoutLogModel:
-                            await db
-                                .Insertable(sqlTimeoutLogModel)
-                                .ExecuteCommandAsync(stoppingToken);
+                            await db.Insertable(sqlTimeoutLogModel).ExecuteCommandAsync(stoppingToken);
                             break;
                         case SqlDiffLogModel sqlDiffLogModel:
-                            await db
-                                .Insertable(sqlDiffLogModel)
-                                .SplitTable()
-                                .ExecuteCommandAsync();
+                            await db.Insertable(sqlDiffLogModel).SplitTable().ExecuteCommandAsync();
                             break;
                         case SqlExceptionLogModel sqlExceptionLogModel:
-                            await db
-                                .Insertable(sqlExceptionLogModel)
-                                .ExecuteCommandAsync(stoppingToken);
+                            await db.Insertable(sqlExceptionLogModel).ExecuteCommandAsync(stoppingToken);
                             break;
                         default:
-                            _logger.LogError("不支持的 SQL 日志类型 {LogType}。",
-                                workItem.LogModel.GetType()
-                                    .FullName);
+                            _logger.LogError("不支持的 SQL 日志类型 {LogType}。", workItem.LogModel.GetType().FullName);
                             break;
                     }
                 }
                 catch (Exception ex) when (!stoppingToken.IsCancellationRequested)
                 {
-                    _logger.LogError(ex,
-                        "SQL 日志 {LogType} 写入失败。",
-                        workItem.LogModel.GetType()
-                            .Name);
+                    _logger.LogError(ex, "SQL 日志 {LogType} 写入失败。", workItem.LogModel.GetType().Name);
                 }
             }
         }
@@ -104,7 +89,9 @@ public sealed class SqlSugarLogBackgroundService : BackgroundService
         _sqlSugarLogChannel.Complete();
 
         if (ExecuteTask == null)
+        {
             return;
+        }
 
         try
         {

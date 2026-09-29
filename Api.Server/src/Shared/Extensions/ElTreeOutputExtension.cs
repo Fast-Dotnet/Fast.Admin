@@ -23,9 +23,7 @@ public static class ElTreeOutputExtension
         var valueSet = new HashSet<object>(list.Select(sl => (object)sl.Value));
 
         // 根节点条件：ParentId == 0 或者父节点不在当前列表中（被权限过滤掉了）
-        var result = list
-            .Where(wh => wh.ParentId.Equals(0) || !valueSet.Contains(wh.ParentId))
-            .ToList();
+        var result = list.Where(wh => wh.ParentId.Equals(0) || !valueSet.Contains(wh.ParentId)).ToList();
 
         result.ForEach(e => BuildChildNodes(list, e));
         return result;
@@ -38,9 +36,7 @@ public static class ElTreeOutputExtension
     /// <param name="node">当前节点序号</param>
     private static void BuildChildNodes<T>(List<ElTreeOutput<T>> totalNodes, ElTreeOutput<T> node)
     {
-        var nodeSubList = totalNodes
-            .Where(wh => wh.ParentId.Equals(node.Value))
-            .ToList();
+        var nodeSubList = totalNodes.Where(wh => wh.ParentId.Equals(node.Value)).ToList();
         nodeSubList.ForEach(e => BuildChildNodes(totalNodes, e));
         node.Children = nodeSubList;
     }

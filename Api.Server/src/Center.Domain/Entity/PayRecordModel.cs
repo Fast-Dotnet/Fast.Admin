@@ -15,11 +15,7 @@ namespace Fast.Center.Domain;
 /// </summary>
 [SugarTable("PayRecord", "支付记录表")]
 [SugarDbType(DatabaseTypeEnum.Center)]
-[SugarIndex($"UX_{{table}}_{nameof(BizOrderNo)}",
-    nameof(BizOrderId),
-    OrderByType.Desc,
-    nameof(BizOrderNo),
-    OrderByType.Desc,
+[SugarIndex($"UX_{{table}}_{nameof(BizOrderNo)}", nameof(BizOrderId), OrderByType.Desc, nameof(BizOrderNo), OrderByType.Desc,
     true)]
 [SugarIndex($"IX_{{table}}_{nameof(TransactionId)}", nameof(TransactionId), OrderByType.Desc)]
 public class PayRecordModel : IBaseTEntity, IUpdateVersion
@@ -176,7 +172,8 @@ public class PayRecordModel : IBaseTEntity, IUpdateVersion
     /// 创建时间
     /// </summary>
     [SugarSearchTime]
-    [Required, SugarColumn(ColumnDescription = "创建时间", CreateTableFieldSort = 993)]
+    [Required]
+    [SugarColumn(ColumnDescription = "创建时间", CreateTableFieldSort = 993)]
     public DateTime? CreatedTime { get; set; }
 
     /// <summary>

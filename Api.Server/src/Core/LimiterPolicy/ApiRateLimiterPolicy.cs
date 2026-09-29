@@ -61,15 +61,8 @@ internal abstract class ApiRateLimiterPolicy : IRateLimiterPolicy<string>
     protected virtual string GetPartitionKey(HttpContext httpContext)
     {
         // 转发头必须先经过可信代理中间件处理，不能直接用任意X-Forwarded-For绕过限流。
-        string ipAddress = httpContext
-                               .Connection.RemoteIpAddress?.MapToIPv6()
-                               .ToString()
-                           ?? "unknown";
-        string deviceId = httpContext
-            .Request.Headers[HttpHeaderConst.DeviceId]
-            .ToString()
-            .UrlDecode()
-            .Trim();
+        string ipAddress = httpContext.Connection.RemoteIpAddress?.MapToIPv6().ToString() ?? "unknown";
+        string deviceId = httpContext.Request.Headers[HttpHeaderConst.DeviceId].ToString().UrlDecode().Trim();
 
         // 未提供设备Id时空字符串会生成固定摘要，确保匿名请求仍受组合限流约束；
         // 请求头由客户端控制，使用固定长度摘要作为分区键，避免超长设备Id持续占用内存

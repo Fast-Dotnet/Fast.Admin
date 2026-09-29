@@ -33,9 +33,7 @@ builder.Services.AddDependencyInjection();
 // 添加缓存服务
 builder.Services.AddCache();
 
-RedisSettingsOptions redisOptions = builder
-    .Configuration.GetSection("RedisSettings")
-    .Get<RedisSettingsOptions>();
+RedisSettingsOptions redisOptions = builder.Configuration.GetSection("RedisSettings").Get<RedisSettingsOptions>();
 if (redisOptions != null)
 {
     // 添加分布式缓存

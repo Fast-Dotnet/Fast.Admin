@@ -35,8 +35,7 @@ public class UnifyResponseProvider : IUnifyResponseProvider
 
     /// <inheritdoc />
     public async Task<(int statusCode, string message)> ResponseExceptionAsync(ExceptionContext context,
-        ExceptionMetadata metadata,
-        HttpContext httpContext)
+        ExceptionMetadata metadata, HttpContext httpContext)
     {
         // 默认 500 错误
         int statusCode = StatusCodes.Status500InternalServerError;
@@ -51,15 +50,11 @@ public class UnifyResponseProvider : IUnifyResponseProvider
                     message = userFriendlyException.Message;
                     if (userFriendlyException.OriginErrorCode != null)
                     {
-                        statusCode = userFriendlyException
-                            .OriginErrorCode.ToString()
-                            .ParseToInt();
+                        statusCode = userFriendlyException.OriginErrorCode.ToString().ParseToInt();
                     }
                     else if (userFriendlyException.ErrorCode != null)
                     {
-                        statusCode = userFriendlyException
-                            .ErrorCode.ToString()
-                            .ParseToInt();
+                        statusCode = userFriendlyException.ErrorCode.ToString().ParseToInt();
                     }
                     else
                     {
@@ -94,8 +89,7 @@ public class UnifyResponseProvider : IUnifyResponseProvider
     }
 
     /// <inheritdoc />
-    public async Task ResponseValidationExceptionAsync(ActionExecutingContext context,
-        ValidationMetadata metadata,
+    public async Task ResponseValidationExceptionAsync(ActionExecutingContext context, ValidationMetadata metadata,
         HttpContext httpContext)
     {
         await Task.CompletedTask;
@@ -128,7 +122,9 @@ public class UnifyResponseProvider : IUnifyResponseProvider
 
         // 判断是否开启响应加密
         if (!responseEncipher)
+        {
             return await Task.FromResult(data);
+        }
 
         // 添加加密头部标识
         httpContext.Response.Headers.TryAdd($"{nameof(Fast)}-Response-Encipher", "True");

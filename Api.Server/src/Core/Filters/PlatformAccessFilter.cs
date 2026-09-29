@@ -21,19 +21,23 @@ public sealed class PlatformAccessFilter : IAsyncAuthorizationFilter
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
         // 获取 PlatformOnly 特性，Controller 和 Action 同时存在时优先使用 Action
-        if (!context
-                .ActionDescriptor.EndpointMetadata.OfType<PlatformOnlyAttribute>()
-                .Any())
+        if (!context.ActionDescriptor.EndpointMetadata.OfType<PlatformOnlyAttribute>().Any())
+        {
             return;
+        }
 
         HttpContext httpContext = context.HttpContext;
         IUser _user = httpContext.RequestServices.GetService<IUser>();
 
         if (_user.IsSuperAdmin)
+        {
             return;
+        }
 
         if (!_user.IsSystemTenant)
+        {
             throw new UserFriendlyException("该接口仅允许系统租户访问！", HttpStatusCode.Forbidden);
+        }
 
         await Task.CompletedTask;
     }

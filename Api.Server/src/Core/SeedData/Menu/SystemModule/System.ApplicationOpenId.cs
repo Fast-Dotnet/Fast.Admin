@@ -16,9 +16,7 @@ namespace Fast.Core;
 /// </summary>
 internal static partial class MenuSeedData
 {
-    private static async Task SeedApplicationOpenIds(ISqlSugarClient db,
-        ApplicationModel applicationModel,
-        DateTime dateTime,
+    private static async Task SeedApplicationOpenIds(ISqlSugarClient db, ApplicationModel applicationModel, DateTime dateTime,
         MenuModel systemCLMenuModel)
     {
         var appOpenIdMenuModel = new MenuModel
@@ -49,11 +47,8 @@ internal static partial class MenuSeedData
             Status = CommonStatusEnum.Enable,
             CreatedTime = dateTime
         };
-        appOpenIdMenuModel = await db
-            .Insertable(appOpenIdMenuModel)
-            .ExecuteReturnEntityAsync();
-        await db
-            .Insertable(new List<ButtonModel>
+        appOpenIdMenuModel = await db.Insertable(appOpenIdMenuModel).ExecuteReturnEntityAsync();
+        await db.Insertable(new List<ButtonModel>
             {
                 new()
                 {

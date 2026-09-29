@@ -40,8 +40,8 @@ public class TenantService : IDynamicApplication
     {
         TenantModel tenantModel = await TenantContext.GetTenant(_user.TenantNo);
 
-        PagedResult<TenantModel> data = await _repository
-            .Entities.WhereIF(tenantModel.TenantType == TenantTypeEnum.Common, wh => wh.TenantId == _user.TenantId)
+        PagedResult<TenantModel> data = await _repository.Entities
+            .WhereIF(tenantModel.TenantType == TenantTypeEnum.Common, wh => wh.TenantId == _user.TenantId)
             .OrderBy(ob => ob.TenantName)
             .Select(sl => new TenantModel
             {
@@ -79,8 +79,7 @@ public class TenantService : IDynamicApplication
     [PlatformOnly]
     public async Task<PagedResult<QueryTenantPagedOutput>> QueryTenantPaged(QueryTenantPagedInput input)
     {
-        return await _repository
-            .Entities.WhereIF(input.Status != null, wh => wh.Status == input.Status)
+        return await _repository.Entities.WhereIF(input.Status != null, wh => wh.Status == input.Status)
             .WhereIF(input.Edition != null, wh => (wh.Edition & input.Edition) != 0)
             .WhereIF(!string.IsNullOrWhiteSpace(input.AdminMobile), wh => wh.AdminMobile.Contains(input.AdminMobile))
             .WhereIF(!string.IsNullOrWhiteSpace(input.AdminEmail), wh => wh.AdminEmail.Contains(input.AdminEmail))
@@ -125,8 +124,7 @@ public class TenantService : IDynamicApplication
     [PlatformOnly]
     public async Task<QueryTenantDetailOutput> QueryTenantDetail([Required(ErrorMessage = "租户Id不能为空")] long? tenantId)
     {
-        QueryTenantDetailOutput result = await _repository
-            .Queryable<TenantModel>()
+        QueryTenantDetailOutput result = await _repository.Queryable<TenantModel>()
             .LeftJoin<AccountModel>((t1, t2) => t1.AdminAccountId == t2.AccountId)
             .Where(t1 => t1.TenantId == tenantId)
             .Select((t1, t2) => new QueryTenantDetailOutput
@@ -221,11 +219,10 @@ public class TenantService : IDynamicApplication
         };
 
         await _repository.Ado.UseTranAsync(async () =>
-            {
-                tenantModel.TenantNo = SysSerialContext.GenTenantNo(_repository);
-                await _repository.InsertAsync(tenantModel);
-            },
-            ex => throw ex);
+        {
+            tenantModel.TenantNo = SysSerialContext.GenTenantNo(_repository);
+            await _repository.InsertAsync(tenantModel);
+        }, ex => throw ex);
 
         // 删除缓存
         await TenantContext.DeleteTenant(tenantModel.TenantNo);
@@ -269,90 +266,79 @@ public class TenantService : IDynamicApplication
         tenantModel.RowVersion = input.RowVersion;
 
         await _repository.Ado.UseTranAsync(async () =>
+        {
+            // 只有手机号码不同才更换管理员
+            if (tenantModel.AdminMobile != input.AdminMobile)
             {
-                // 只有手机号码不同才更换管理员
-                if (tenantModel.AdminMobile != input.AdminMobile)
+                if (tenantModel.AdminAccountId != 0)
                 {
-                    if (tenantModel.AdminAccountId != 0)
-                    {
-                        AccountModel accountModel = await _repository
-                            .Queryable<AccountModel>()
-                            .Where(wh => wh.Mobile == input.AdminMobile)
-                            .SingleAsync();
-                        if (accountModel == null)
-                        {
-                            string passwordHash = CryptoUtil.HashPasswordPBKDF2SHA256(CommonConst.Default.Password);
-                            long accountId = YitIdHelper.NextId();
-                            accountModel = new AccountModel
-                            {
-                                AccountId = accountId,
-                                AccountKey = NumberUtil.IdToCodeByLong(accountId),
-                                Mobile = input.AdminMobile,
-                                Email = input.AdminEmail,
-                                Password = passwordHash,
-                                NickName = input.AdminName,
-                                Avatar = tenantModel.LogoUrl,
-                                Status = CommonStatusEnum.Enable
-                            };
-                            accountModel = await _repository
-                                .Insertable(accountModel)
-                                .ExecuteReturnEntityAsync();
-
-                            #region PasswordRecordModel
-
-                            // 初始化密码记录表
-                            await _repository
-                                .Insertable(new List<PasswordRecordModel>
-                                {
-                                    new()
-                                    {
-                                        AccountId = accountModel.AccountId,
-                                        OperationType = PasswordOperationTypeEnum.Create,
-                                        Type = PasswordTypeEnum.PBKDF2_SHA256,
-                                        Password = passwordHash
-                                    }
-                                })
-                                .ExecuteCommandAsync();
-
-                            #endregion
-                        }
-
-                        TenantUserModel tenantUserModel = await _repository
-                            .Queryable<TenantUserModel>()
-                            .Where(wh => wh.AccountId == tenantModel.AdminAccountId)
-                            .SingleAsync();
-                        tenantUserModel.AccountId = accountModel.AccountId;
-                        await _repository
-                            .Updateable(tenantUserModel)
-                            .ExecuteCommandAsync();
-
-                        // 回填管理员账号Id
-                        tenantModel.AdminAccountId = accountModel.AccountId;
-                    }
-
-                    tenantModel.AdminMobile = input.AdminMobile;
-                }
-
-                if (tenantModel.RobotName != input.RobotName)
-                {
-                    TenantUserModel tenantUserModel = await _repository
-                        .Queryable<TenantUserModel>()
-                        .Where(wh => wh.UserType == UserTypeEnum.Robot)
+                    AccountModel accountModel = await _repository.Queryable<AccountModel>()
+                        .Where(wh => wh.Mobile == input.AdminMobile)
                         .SingleAsync();
-                    if (tenantUserModel != null)
+                    if (accountModel == null)
                     {
-                        tenantUserModel.EmployeeName = input.RobotName;
-                        await _repository
-                            .Updateable(tenantUserModel)
+                        string passwordHash = CryptoUtil.HashPasswordPBKDF2SHA256(CommonConst.Default.Password);
+                        long accountId = YitIdHelper.NextId();
+                        accountModel = new AccountModel
+                        {
+                            AccountId = accountId,
+                            AccountKey = NumberUtil.IdToCodeByLong(accountId),
+                            Mobile = input.AdminMobile,
+                            Email = input.AdminEmail,
+                            Password = passwordHash,
+                            NickName = input.AdminName,
+                            Avatar = tenantModel.LogoUrl,
+                            Status = CommonStatusEnum.Enable
+                        };
+                        accountModel = await _repository.Insertable(accountModel).ExecuteReturnEntityAsync();
+
+                        #region PasswordRecordModel
+
+                        // 初始化密码记录表
+                        await _repository.Insertable(new List<PasswordRecordModel>
+                            {
+                                new()
+                                {
+                                    AccountId = accountModel.AccountId,
+                                    OperationType = PasswordOperationTypeEnum.Create,
+                                    Type = PasswordTypeEnum.PBKDF2_SHA256,
+                                    Password = passwordHash
+                                }
+                            })
                             .ExecuteCommandAsync();
+
+                        #endregion
                     }
 
-                    tenantModel.RobotName = input.RobotName;
+                    TenantUserModel tenantUserModel = await _repository.Queryable<TenantUserModel>()
+                        .Where(wh => wh.AccountId == tenantModel.AdminAccountId)
+                        .SingleAsync();
+                    tenantUserModel.AccountId = accountModel.AccountId;
+                    await _repository.Updateable(tenantUserModel).ExecuteCommandAsync();
+
+                    // 回填管理员账号Id
+                    tenantModel.AdminAccountId = accountModel.AccountId;
                 }
 
-                await _repository.UpdateAsync(tenantModel);
-            },
-            ex => throw ex);
+                tenantModel.AdminMobile = input.AdminMobile;
+            }
+
+            if (tenantModel.RobotName != input.RobotName)
+            {
+                TenantUserModel tenantUserModel = await _repository.Queryable<TenantUserModel>()
+                    .Where(wh => wh.UserType == UserTypeEnum.Robot)
+                    .SingleAsync();
+                if (tenantUserModel != null)
+                {
+                    tenantUserModel.EmployeeName = input.RobotName;
+                    await _repository.Updateable(tenantUserModel).ExecuteCommandAsync();
+                }
+
+                tenantModel.RobotName = input.RobotName;
+            }
+
+            await _repository.UpdateAsync(tenantModel);
+        }, ex => throw ex);
 
         if (tenantModel.Status == CommonStatusEnum.Disable)
         {
@@ -400,16 +386,14 @@ public class TenantService : IDynamicApplication
             await _user.RevokeTenant(tenantModel.TenantNo);
 
             // 强制下线当前租户所有在线用户
-            List<string> connectionIdList = await _repository
-                .Queryable<TenantOnlineUserModel>()
+            List<string> connectionIdList = await _repository.Queryable<TenantOnlineUserModel>()
                 .ClearFilter<IBaseTEntity>()
                 .Where(wh => wh.IsOnline)
                 .Where(wh => wh.TenantId == tenantModel.TenantId)
                 .Select(sl => sl.ConnectionId)
                 .ToListAsync();
 
-            await _hubContext
-                .Clients.Clients(connectionIdList)
+            await _hubContext.Clients.Clients(connectionIdList)
                 .ForceOffline(new ForceOfflineOutput
                 {
                     IsAdmin = true,

@@ -122,7 +122,8 @@ public class RequestLogModel : BaseRecordEntity
     /// </summary>
     [SplitField]
     [SugarSearchTime]
-    [Required, SugarColumn(ColumnDescription = "操作时间", CreateTableFieldSort = 993)]
+    [Required]
+    [SugarColumn(ColumnDescription = "操作时间", CreateTableFieldSort = 993)]
     public override DateTime? CreatedTime { get; set; }
 
     /// <summary>

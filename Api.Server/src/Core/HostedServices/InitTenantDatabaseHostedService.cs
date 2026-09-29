@@ -51,8 +51,7 @@ public class InitTenantDatabaseHostedService : IHostedService
             ITenantDatabaseService tenantDatabaseService = scope.ServiceProvider.GetService<ITenantDatabaseService>();
 
             // 初始化租户数据库
-            foreach (TenantModel tenantModel in await db
-                         .Queryable<TenantModel>()
+            foreach (TenantModel tenantModel in await db.Queryable<TenantModel>()
                          .Where(wh => wh.TenantType == TenantTypeEnum.System)
                          .ToListAsync(cancellationToken))
             {

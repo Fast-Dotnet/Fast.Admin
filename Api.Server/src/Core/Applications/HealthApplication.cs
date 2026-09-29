@@ -44,9 +44,11 @@ public class HealthApplication : IDynamicApplication
     /// <summary>
     /// 健康检查
     /// </summary>
-    [HttpGet("/health"), HttpGet("/health/index")]
+    [HttpGet("/health")]
+    [HttpGet("/health/index")]
     [ApiInfo("健康检查", HttpRequestActionEnum.Other)]
-    [AllowAnonymous, DisabledRequestLog]
+    [AllowAnonymous]
+    [DisabledRequestLog]
     [ResponseEncipher(false)]
     public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
@@ -72,15 +74,11 @@ public class HealthApplication : IDynamicApplication
         bool redisHealthy = false;
         string redisMessage = "分布式缓存读写失败";
         string cacheKey = $"Fast:Health:{Guid.NewGuid():N}";
-        byte[] cacheValue = Guid
-            .NewGuid()
-            .ToByteArray();
+        byte[] cacheValue = Guid.NewGuid().ToByteArray();
         try
         {
-            await _distributedCache.SetAsync(cacheKey,
-                cacheValue,
-                new DistributedCacheEntryOptions {AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)},
-                cancellationToken);
+            await _distributedCache.SetAsync(cacheKey, cacheValue,
+                new DistributedCacheEntryOptions {AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)}, cancellationToken);
             byte[] cachedValue = await _distributedCache.GetAsync(cacheKey, cancellationToken);
             redisHealthy = cachedValue != null && cachedValue.SequenceEqual(cacheValue);
             redisMessage = redisHealthy ? "分布式缓存读写正常" : "分布式缓存读写校验失败";

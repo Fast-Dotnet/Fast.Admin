@@ -25,8 +25,7 @@ public static class IServiceCollectionExtension
     /// <param name="configuration">应用配置</param>
     /// <param name="isExecutionHost">是否为调度执行宿主</param>
     /// <returns>用于继续链式配置的服务集合</returns>
-    public static IServiceCollection AddQuartzService(this IServiceCollection services,
-        IConfiguration configuration,
+    public static IServiceCollection AddQuartzService(this IServiceCollection services, IConfiguration configuration,
         bool isExecutionHost = true)
     {
         SchedulerContext.IsExecutionHost = isExecutionHost;
@@ -74,47 +73,42 @@ public static class IServiceCollectionExtension
                     case DbType.MySql:
                         // 使用 MySql 作为持久化存储的提供者
                         x.UseMySql(o =>
-                            {
-                                // 数据库连接字符串
-                                o.ConnectionString = connectionString;
-                            },
-                            SqlSugarContext.ConnectionSettings.DbName);
+                        {
+                            // 数据库连接字符串
+                            o.ConnectionString = connectionString;
+                        }, SqlSugarContext.ConnectionSettings.DbName);
                         break;
                     case DbType.SqlServer:
                         // 使用 Sql Server 作为持久化存储的提供者
                         x.UseSqlServer(o =>
-                            {
-                                // 数据库连接字符串
-                                o.ConnectionString = connectionString;
-                            },
-                            SqlSugarContext.ConnectionSettings.DbName);
+                        {
+                            // 数据库连接字符串
+                            o.ConnectionString = connectionString;
+                        }, SqlSugarContext.ConnectionSettings.DbName);
                         break;
                     case DbType.Sqlite:
                         // 使用 SqlLite 作为持久化存储的提供者
                         x.UseSQLite(o =>
-                            {
-                                // 数据库连接字符串
-                                o.ConnectionString = connectionString;
-                            },
-                            SqlSugarContext.ConnectionSettings.DbName);
+                        {
+                            // 数据库连接字符串
+                            o.ConnectionString = connectionString;
+                        }, SqlSugarContext.ConnectionSettings.DbName);
                         break;
                     case DbType.Oracle:
                         // 使用 Oracle 作为持久化存储的提供者
                         x.UseOracle(o =>
-                            {
-                                // 数据库连接字符串
-                                o.ConnectionString = connectionString;
-                            },
-                            SqlSugarContext.ConnectionSettings.DbName);
+                        {
+                            // 数据库连接字符串
+                            o.ConnectionString = connectionString;
+                        }, SqlSugarContext.ConnectionSettings.DbName);
                         break;
                     case DbType.PostgreSQL:
                         // 使用 Postgres SQL 作为持久化存储的提供者
                         x.UsePostgres(o =>
-                            {
-                                // 数据库连接字符串
-                                o.ConnectionString = connectionString;
-                            },
-                            SqlSugarContext.ConnectionSettings.DbName);
+                        {
+                            // 数据库连接字符串
+                            o.ConnectionString = connectionString;
+                        }, SqlSugarContext.ConnectionSettings.DbName);
                         break;
                 }
 
@@ -132,8 +126,7 @@ public static class IServiceCollectionExtension
         {
             // 本地作业服务
             Type ISchedulerJobType = typeof(ISchedulerJob);
-            var schedulerJobTypes = MAppContext
-                .EffectiveTypes.Where(wh =>
+            var schedulerJobTypes = MAppContext.EffectiveTypes.Where(wh =>
                     ISchedulerJobType.IsAssignableFrom(wh) && wh.IsClass && !wh.IsInterface && !wh.IsAbstract)
                 .ToList();
             foreach (Type type in schedulerJobTypes)

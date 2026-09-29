@@ -51,9 +51,7 @@ public class UploadFileSettingsOptions : IPostConfigure
         }
         else
         {
-            PublicDomain = PublicDomain
-                .Trim()
-                .TrimEnd('/');
+            PublicDomain = PublicDomain.Trim().TrimEnd('/');
         }
 
         Logo ??= new UploadFileInfoSettings

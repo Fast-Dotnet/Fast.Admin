@@ -47,8 +47,7 @@ public class SyncApiHostedService : IHostedService
     /// 同步 API 托管服务
     /// </summary>
     public SyncApiHostedService(IApiDescriptionGroupCollectionProvider apiDescriptionGroupCollectionProvider,
-        IOptions<SwaggerSettingsOptions> options,
-        ILogger<SyncApiHostedService> logger)
+        IOptions<SwaggerSettingsOptions> options, ILogger<SyncApiHostedService> logger)
     {
         _apiDescriptionGroupCollectionProvider = apiDescriptionGroupCollectionProvider;
         _swaggerSettings = options.Value;
@@ -60,8 +59,7 @@ public class SyncApiHostedService : IHostedService
     {
         DateTime dateTime = DateTime.Now;
 
-        string serviceName = Assembly.GetEntryAssembly()!.GetName()
-            .Name;
+        string serviceName = Assembly.GetEntryAssembly()!.GetName().Name;
         var addApiInfoList = new List<ApiInfoModel>();
         var updateApiInfoList = new List<ApiInfoModel>();
         var apiUrlList = new List<string>();
@@ -82,14 +80,13 @@ public class SyncApiHostedService : IHostedService
         {
             using var db = new SqlSugarClient(SqlSugarContext.GetConnectionConfig(SqlSugarContext.ConnectionSettings));
 
-            List<ApiInfoModel> apiInfoList = await db
-                .Queryable<ApiInfoModel>()
+            List<ApiInfoModel> apiInfoList = await db.Queryable<ApiInfoModel>()
                 .Where(wh => wh.ServiceName == serviceName)
                 .ToListAsync(cancellationToken);
 
             // 循环所有接口
-            foreach (ApiDescription apiDescriptionGroup in _apiDescriptionGroupCollectionProvider
-                         .ApiDescriptionGroups.Items.SelectMany(sl => sl.Items)
+            foreach (ApiDescription apiDescriptionGroup in _apiDescriptionGroupCollectionProvider.ApiDescriptionGroups.Items
+                         .SelectMany(sl => sl.Items)
                          .ToList())
             {
                 IList<object> endpointMetadata = apiDescriptionGroup.ActionDescriptor.EndpointMetadata;
@@ -99,23 +96,18 @@ public class SyncApiHostedService : IHostedService
                     .LastOrDefault();
                 // 判断是否忽略当前接口
                 if (apiDescriptionSettingsAttribute?.IgnoreApi == true)
+                {
                     continue;
+                }
+
                 // 判断是否允许匿名访问
-                bool allowAnonymous = endpointMetadata
-                    .OfType<IAllowAnonymous>()
-                    .Any();
+                bool allowAnonymous = endpointMetadata.OfType<IAllowAnonymous>().Any();
                 // 判断是否允许跳过权限验证
-                bool allowForbidden = endpointMetadata
-                    .OfType<AllowForbiddenAttribute>()
-                    .Any();
+                bool allowForbidden = endpointMetadata.OfType<AllowForbiddenAttribute>().Any();
                 // 获取权限特性，Action 配置优先于 Controller 配置
-                PermissionAttribute permissionAttribute = endpointMetadata
-                    .OfType<PermissionAttribute>()
-                    .LastOrDefault();
+                PermissionAttribute permissionAttribute = endpointMetadata.OfType<PermissionAttribute>().LastOrDefault();
                 // 获取接口信息特性，Action 配置优先于 Controller 配置
-                ApiInfoAttribute apiInfoAttribute = endpointMetadata
-                    .OfType<ApiInfoAttribute>()
-                    .LastOrDefault();
+                ApiInfoAttribute apiInfoAttribute = endpointMetadata.OfType<ApiInfoAttribute>().LastOrDefault();
 
                 // 获取分组名称
                 string groupName = apiDescriptionGroup.GroupName ?? "Default";
@@ -189,23 +181,15 @@ public class SyncApiHostedService : IHostedService
             // 加载Aop
             SugarEntityFilter.LoadSugarAop(FastContext.HostEnvironment.IsDevelopment(), db);
 
-            var deleteApiInfoList = apiInfoList
-                .Where(wh => !apiUrlList.Contains(wh.ApiUrl))
-                .ToList();
+            var deleteApiInfoList = apiInfoList.Where(wh => !apiUrlList.Contains(wh.ApiUrl)).ToList();
 
             if (deleteApiInfoList.Count > 0)
             {
-                await db
-                    .Deleteable(deleteApiInfoList)
-                    .ExecuteCommandAsync(cancellationToken);
+                await db.Deleteable(deleteApiInfoList).ExecuteCommandAsync(cancellationToken);
             }
 
-            await db
-                .Updateable(updateApiInfoList)
-                .ExecuteCommandAsync(cancellationToken);
-            await db
-                .Insertable(addApiInfoList)
-                .ExecuteCommandAsync(cancellationToken);
+            await db.Updateable(updateApiInfoList).ExecuteCommandAsync(cancellationToken);
+            await db.Insertable(addApiInfoList).ExecuteCommandAsync(cancellationToken);
 
             CacheContext.ApiInfoList = apiInfoList;
             CacheContext.ApiInfoList.AddRange(addApiInfoList);

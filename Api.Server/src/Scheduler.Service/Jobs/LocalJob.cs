@@ -19,11 +19,9 @@ namespace Fast.Scheduler;
 /// </summary>
 internal sealed class LocalJob : JobBase<SchedulerJobLogInfo>
 {
-    public LocalJob(IServiceProvider serviceProvider,
-        ISchedulerCenter schedulerCenter,
-        IMailService mailService,
-        IOptions<MvcNewtonsoftJsonOptions> jsonOptions,
-        ILogger<IJob> logger) : base(serviceProvider, mailService, jsonOptions, logger, new SchedulerJobUrlLogInfo())
+    public LocalJob(IServiceProvider serviceProvider, ISchedulerCenter schedulerCenter, IMailService mailService,
+        IOptions<MvcNewtonsoftJsonOptions> jsonOptions, ILogger<IJob> logger) : base(serviceProvider, mailService, jsonOptions,
+        logger, new SchedulerJobUrlLogInfo())
     {
     }
 
@@ -56,8 +54,7 @@ internal sealed class LocalJob : JobBase<SchedulerJobLogInfo>
         }
 
         // 执行本地调度作业
-        string result = await _schedulerJob.Execute(serviceProvider,
-            db,
+        string result = await _schedulerJob.Execute(serviceProvider, db,
             new SchedulerJobLocalLogInfo
             {
                 JobName = _logInfo.JobName,

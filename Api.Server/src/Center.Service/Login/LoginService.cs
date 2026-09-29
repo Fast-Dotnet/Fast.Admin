@@ -33,10 +33,7 @@ public partial class LoginService : IDynamicApplication
     private readonly HttpContext _httpContext;
     private readonly ISqlSugarClient _repository;
 
-    public LoginService(IUser user,
-        IHttpContextAccessor httpContextAccessor,
-        ICache cache,
-        ICaptchaService captchaService,
+    public LoginService(IUser user, IHttpContextAccessor httpContextAccessor, ICache cache, ICaptchaService captchaService,
         ISqlSugarClient repository)
     {
         _user = user;
@@ -98,9 +95,7 @@ public partial class LoginService : IDynamicApplication
     /// </summary>
     private async Task<string> GetTenantLoginTicket(AccountModel accountModel)
     {
-        string loginTicket = Guid
-            .NewGuid()
-            .ToString("N");
+        string loginTicket = Guid.NewGuid().ToString("N");
         string cacheKey = CacheConst.GetCacheKey(CacheConst.TenantLoginTicket, loginTicket);
         await _cache.SetAsync(cacheKey,
             new TenantLoginTicketCacheDto
@@ -110,8 +105,7 @@ public partial class LoginService : IDynamicApplication
                 Email = accountModel.Email,
                 ClientIdentity = GlobalContext.ClientIdentity,
                 PasswordHash = GenerateHashCode(accountModel.Password)
-            },
-            TimeSpan.FromMinutes(5));
+            }, TimeSpan.FromMinutes(5));
 
         return loginTicket;
     }
@@ -172,7 +166,9 @@ public partial class LoginService : IDynamicApplication
     private async Task VerifyPassword(AccountModel accountModel, string password, DateTime dateTime)
     {
         if (accountModel.Status == CommonStatusEnum.Disable)
+        {
             throw new UserFriendlyException("账号已被平台禁用！");
+        }
 
         if (string.IsNullOrWhiteSpace(accountModel.Password))
         {
@@ -217,8 +213,7 @@ public partial class LoginService : IDynamicApplication
             }
 
             // 采用条件更新，避免并发问题
-            await _repository
-                .Updateable(accountModel)
+            await _repository.Updateable(accountModel)
                 .UpdateColumns(e => new {e.PasswordErrorTime, e.LockStartTime, e.LockEndTime, e.Status})
                 .ExecuteCommandAsync();
             if (accountModel.Status == CommonStatusEnum.Disable)
@@ -237,8 +232,7 @@ public partial class LoginService : IDynamicApplication
             accountModel.LockStartTime = null;
             accountModel.LockEndTime = null;
             // 采用条件更新，避免并发问题
-            await _repository
-                .Updateable(accountModel)
+            await _repository.Updateable(accountModel)
                 .UpdateColumns(e => new {e.PasswordErrorTime, e.LockStartTime, e.LockEndTime})
                 .ExecuteCommandAsync();
         }
@@ -248,10 +242,8 @@ public partial class LoginService : IDynamicApplication
     /// 处理登录
     /// </summary>
     /// <returns>登录结果</returns>
-    private async Task<LoginOutput> HandleLogin(ApplicationModel applicationModel,
-        AccountModel accountModel,
-        TenantUserModel tenantUserModel,
-        DateTime dateTime)
+    private async Task<LoginOutput> HandleLogin(ApplicationModel applicationModel, AccountModel accountModel,
+        TenantUserModel tenantUserModel, DateTime dateTime)
     {
         // 验证账号状态
         if (accountModel.Status == CommonStatusEnum.Disable)
@@ -277,8 +269,7 @@ public partial class LoginService : IDynamicApplication
         }
 
         // 查询租户
-        TenantModel tenantModel = await _repository
-            .Queryable<TenantModel>()
+        TenantModel tenantModel = await _repository.Queryable<TenantModel>()
             .Where(wh => wh.TenantId == tenantUserModel.TenantId)
             .SingleAsync();
 
@@ -325,8 +316,7 @@ public partial class LoginService : IDynamicApplication
         accountModel.LastLoginIp = wanNetIpInfo.Ip;
         accountModel.LastLoginTime = dateTime;
         // 登录不更新错误密码信息，并且启用版本标识
-        await _repository
-            .Updateable(accountModel)
+        await _repository.Updateable(accountModel)
             .IgnoreColumns(it => new {it.PasswordErrorTime, it.LockStartTime, it.LockEndTime, it.Status})
             .ExecuteCommandWithOptLockAsync(true);
 
@@ -386,9 +376,7 @@ public partial class LoginService : IDynamicApplication
             TenantName = _user.TenantName
         };
         visitLogModel.RecordCreate(_httpContext);
-        await _httpContext
-            .RequestServices.GetService<ISqlSugarRepository<VisitLogModel>>()
-            .InsertAsync(visitLogModel);
+        await _httpContext.RequestServices.GetService<ISqlSugarRepository<VisitLogModel>>().InsertAsync(visitLogModel);
 
         return new LoginOutput
         {

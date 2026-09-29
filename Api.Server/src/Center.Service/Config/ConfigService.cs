@@ -36,8 +36,7 @@ public class ConfigService : IDynamicApplication
     [Permission(PermissionConst.Config.Paged)]
     public async Task<PagedResult<QueryConfigPagedOutput>> QueryConfigPaged(PagedInput input)
     {
-        return await _repository
-            .Entities.Select(sl => new QueryConfigPagedOutput
+        return await _repository.Entities.Select(sl => new QueryConfigPagedOutput
             {
                 ConfigId = sl.ConfigId,
                 ConfigCode = sl.ConfigCode,
@@ -62,8 +61,7 @@ public class ConfigService : IDynamicApplication
     [Permission(PermissionConst.Config.Detail)]
     public async Task<QueryConfigDetailOutput> QueryConfigDetail([Required(ErrorMessage = "配置Id不能为空")] long? configId)
     {
-        QueryConfigDetailOutput result = await _repository
-            .Entities.Where(wh => wh.ConfigId == configId)
+        QueryConfigDetailOutput result = await _repository.Entities.Where(wh => wh.ConfigId == configId)
             .Select(sl => new QueryConfigDetailOutput
             {
                 ConfigId = sl.ConfigId,
@@ -96,7 +94,9 @@ public class ConfigService : IDynamicApplication
     public async Task AddConfig(AddConfigInput input)
     {
         if (_user?.IsSuperAdmin == false)
+        {
             throw new UserFriendlyException("非超级管理员禁止操作！");
+        }
 
         if (await _repository.AnyAsync(a => a.ConfigCode == input.ConfigCode))
         {

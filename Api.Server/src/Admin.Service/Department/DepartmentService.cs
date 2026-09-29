@@ -24,8 +24,7 @@ public class DepartmentService : IDynamicApplication
     private readonly ISqlSugarRepository<DepartmentModel> _repository;
     private readonly ISqlSugarRepository<TenantUserModel> _tenantUserRepository;
 
-    public DepartmentService(IUser user,
-        ISqlSugarRepository<DepartmentModel> repository,
+    public DepartmentService(IUser user, ISqlSugarRepository<DepartmentModel> repository,
         ISqlSugarRepository<TenantUserModel> tenantUserRepository)
     {
         _user = user;
@@ -51,8 +50,7 @@ public class DepartmentService : IDynamicApplication
         else if (_user.DataScopeType == DataScopeTypeEnum.OrgWithChild)
         {
             queryable = queryable.Where(wh => wh.OrgId
-                                              == SqlFunc
-                                                  .Subqueryable<EmployeeOrgModel>()
+                                              == SqlFunc.Subqueryable<EmployeeOrgModel>()
                                                   // 主部门
                                                   .Where(e => e.EmployeeId == _user.EmployeeId && e.IsPrimary)
                                                   .Where(e => e.OrgId == wh.OrgId)
@@ -78,8 +76,7 @@ public class DepartmentService : IDynamicApplication
                                               || customDepartmentIds.Contains(wh.DepartmentId));
         }
 
-        var data = await queryable
-            .OrderBy(ob => ob.Sort)
+        var data = await queryable.OrderBy(ob => ob.Sort)
             .Select(sl => new
             {
                 sl.DepartmentId,
@@ -96,8 +93,7 @@ public class DepartmentService : IDynamicApplication
             })
             .ToListAsync();
 
-        return data
-            .Select(sl => new ElSelectorOutput<long>
+        return data.Select(sl => new ElSelectorOutput<long>
             {
                 Value = sl.DepartmentId,
                 Label = sl.DepartmentName,
@@ -126,8 +122,8 @@ public class DepartmentService : IDynamicApplication
     [Permission(PermissionConst.Department.Paged)]
     public async Task<List<QueryDepartmentPagedOutput>> QueryDepartmentPaged(QueryDepartmentPagedInput input)
     {
-        ISugarQueryable<DepartmentModel> queryable = _repository
-            .Entities.WhereIF(!string.IsNullOrWhiteSpace(input.SearchValue),
+        ISugarQueryable<DepartmentModel> queryable = _repository.Entities
+            .WhereIF(!string.IsNullOrWhiteSpace(input.SearchValue),
                 wh => wh.DepartmentName.Contains(input.SearchValue) || wh.DepartmentCode.Contains(input.SearchValue))
             .WhereIF(input.OrgId != null, wh => wh.OrgId == input.OrgId);
         List<long> customDepartmentIds = _user.DataScopeDepartmentIdList ?? [];
@@ -140,8 +136,7 @@ public class DepartmentService : IDynamicApplication
         else if (_user.DataScopeType == DataScopeTypeEnum.OrgWithChild)
         {
             queryable = queryable.Where(wh => wh.OrgId
-                                              == SqlFunc
-                                                  .Subqueryable<EmployeeOrgModel>()
+                                              == SqlFunc.Subqueryable<EmployeeOrgModel>()
                                                   // 主部门
                                                   .Where(e => e.EmployeeId == _user.EmployeeId && e.IsPrimary)
                                                   .Where(e => e.OrgId == wh.OrgId)
@@ -167,8 +162,7 @@ public class DepartmentService : IDynamicApplication
                                               || customDepartmentIds.Contains(wh.DepartmentId));
         }
 
-        List<QueryDepartmentPagedOutput> data = await queryable
-            .OrderByIF(input.IsOrderBy, ob => ob.Sort)
+        List<QueryDepartmentPagedOutput> data = await queryable.OrderByIF(input.IsOrderBy, ob => ob.Sort)
             .Select(sl => new QueryDepartmentPagedOutput
             {
                 DepartmentId = sl.DepartmentId,
@@ -206,8 +200,7 @@ public class DepartmentService : IDynamicApplication
     [Permission(PermissionConst.Department.Detail)]
     public async Task<QueryDepartmentDetailOutput> QueryDepartmentDetail([Required(ErrorMessage = "部门Id不能为空")] long? departmentId)
     {
-        QueryDepartmentDetailOutput result = await _repository
-            .Entities.Where(wh => wh.DepartmentId == departmentId)
+        QueryDepartmentDetailOutput result = await _repository.Entities.Where(wh => wh.DepartmentId == departmentId)
             .Select(sl => new QueryDepartmentDetailOutput
             {
                 DepartmentId = sl.DepartmentId,
@@ -402,8 +395,8 @@ public class DepartmentService : IDynamicApplication
         await _repository.UpdateAsync(departmentModel);
 
         // 更新所有子级
-        List<DepartmentModel> childrenList = await _repository
-            .Entities.Where(wh => SqlFunc.JsonArrayAny(wh.ParentIds, departmentModel.DepartmentId))
+        List<DepartmentModel> childrenList = await _repository.Entities
+            .Where(wh => SqlFunc.JsonArrayAny(wh.ParentIds, departmentModel.DepartmentId))
             .ToListAsync();
 
         void updateChildrenName(long parentId)
@@ -427,13 +420,11 @@ public class DepartmentService : IDynamicApplication
             updateChildrenName(item.DepartmentId);
         }
 
-        await _repository
-            .Updateable(childrenList)
+        await _repository.Updateable(childrenList)
             .UpdateColumns(e => new {e.ParentName, e.ParentIds, e.ParentNames})
             .ExecuteCommandAsync();
 
-        await _repository
-            .Updateable<EmployeeOrgModel>()
+        await _repository.Updateable<EmployeeOrgModel>()
             .SetColumns(_ => new EmployeeOrgModel
             {
                 DepartmentName = departmentModel.DepartmentName,
@@ -442,8 +433,7 @@ public class DepartmentService : IDynamicApplication
             .Where(wh => wh.DepartmentId == departmentModel.DepartmentId)
             .ExecuteCommandAsync();
 
-        await _tenantUserRepository
-            .Updateable<TenantUserModel>()
+        await _tenantUserRepository.Updateable<TenantUserModel>()
             .SetColumns(_ => new TenantUserModel {DepartmentName = departmentModel.DepartmentName})
             .Where(wh => wh.DepartmentId == departmentModel.DepartmentId)
             .ExecuteCommandAsync();
@@ -473,9 +463,7 @@ public class DepartmentService : IDynamicApplication
         }
 
         // 检查是否有员工关联
-        if (await _repository
-                .Queryable<EmployeeOrgModel>()
-                .AnyAsync(a => a.DepartmentId == input.DepartmentId))
+        if (await _repository.Queryable<EmployeeOrgModel>().AnyAsync(a => a.DepartmentId == input.DepartmentId))
         {
             throw new UserFriendlyException("部门存在员工关联，无法删除！");
         }

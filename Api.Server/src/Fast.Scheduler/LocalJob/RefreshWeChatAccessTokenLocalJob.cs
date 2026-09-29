@@ -52,8 +52,7 @@ public class RefreshWeChatAccessTokenLocalJob : ISchedulerJob
         int errorCount = 0;
 
         // 获取所有微信小程序信息
-        var applicationOpenIdList = await db
-            .Queryable<ApplicationOpenIdModel>()
+        var applicationOpenIdList = await db.Queryable<ApplicationOpenIdModel>()
             .Where(wh => (wh.AppType & (AppEnvironmentEnum.MiniProgram | AppEnvironmentEnum.WeChatServiceAccount)) != 0)
             .Where(wh => !string.IsNullOrWhiteSpace(wh.OpenSecret))
             .Select(sl => new {sl.RecordId, sl.AppType, sl.OpenId, sl.OpenSecret})
@@ -71,14 +70,12 @@ public class RefreshWeChatAccessTokenLocalJob : ISchedulerJob
                 if (!response.IsSuccessful())
                 {
                     errorCount++;
-                    await logInfo.ErrorLog(logInfo.JobName,
-                        null,
+                    await logInfo.ErrorLog(logInfo.JobName, null,
                         $"调用刷新AccessToken接口失败。ErrorCode：{response.ErrorCode}。ErrorMessage：{response.ErrorMessage}");
                     continue;
                 }
 
-                await db
-                    .Updateable<ApplicationOpenIdModel>()
+                await db.Updateable<ApplicationOpenIdModel>()
                     .SetColumns(_ => new ApplicationOpenIdModel
                     {
                         WeChatAccessToken = response.AccessToken,
@@ -99,14 +96,12 @@ public class RefreshWeChatAccessTokenLocalJob : ISchedulerJob
                     if (!ticketResponse.IsSuccessful())
                     {
                         errorCount++;
-                        await logInfo.ErrorLog(logInfo.JobName,
-                            null,
+                        await logInfo.ErrorLog(logInfo.JobName, null,
                             $"调用获取Ticket接口失败。ErrorCode：{ticketResponse.ErrorCode}。ErrorMessage：{ticketResponse.ErrorMessage}");
                         continue;
                     }
 
-                    await db
-                        .Updateable<ApplicationOpenIdModel>()
+                    await db.Updateable<ApplicationOpenIdModel>()
                         .SetColumns(_ => new ApplicationOpenIdModel
                         {
                             WeChatJsApiTicket = ticketResponse.Ticket,

@@ -47,10 +47,8 @@ internal sealed class DependencySchedulerFactory : StdSchedulerFactory, IDepende
     /// </summary>
     private static readonly SemaphoreSlim semaphoreSlim = new(1, 1);
 
-    public DependencySchedulerFactory(IServiceProvider serviceProvider,
-        ContainerConfigurationProcessor processor,
-        ISchedulerRepository schedulerRepository,
-        ILogger<IDependencySchedulerFactory> logger)
+    public DependencySchedulerFactory(IServiceProvider serviceProvider, ContainerConfigurationProcessor processor,
+        ISchedulerRepository schedulerRepository, ILogger<IDependencySchedulerFactory> logger)
     {
         _serviceProvider = serviceProvider;
         _processor = processor;
@@ -62,9 +60,7 @@ internal sealed class DependencySchedulerFactory : StdSchedulerFactory, IDepende
     public async Task<IScheduler> GetScheduler(long? tenantId = null, CancellationToken cancellationToken = new())
     {
         // 获取锁
-        await semaphoreSlim
-            .WaitAsync(cancellationToken)
-            .ConfigureAwait(false);
+        await semaphoreSlim.WaitAsync(cancellationToken).ConfigureAwait(false);
 
         try
         {
@@ -94,8 +90,7 @@ internal sealed class DependencySchedulerFactory : StdSchedulerFactory, IDepende
             Initialize(options.Value.ToNameValueCollection());
 
             // 获取调度器
-            scheduler = await GetScheduler(cancellationToken)
-                .ConfigureAwait(false);
+            scheduler = await GetScheduler(cancellationToken).ConfigureAwait(false);
 
             _logger.LogInformation(tenantId != null
                 ? $"Create tenant scheduler by {tenantId} success."
@@ -119,9 +114,7 @@ internal sealed class DependencySchedulerFactory : StdSchedulerFactory, IDepende
     public override async Task<IScheduler> GetScheduler(string schedulerName, CancellationToken cancellationToken = new())
     {
         // 获取锁
-        await semaphoreSlim
-            .WaitAsync(cancellationToken)
-            .ConfigureAwait(false);
+        await semaphoreSlim.WaitAsync(cancellationToken).ConfigureAwait(false);
 
         try
         {
@@ -148,8 +141,7 @@ internal sealed class DependencySchedulerFactory : StdSchedulerFactory, IDepende
             Initialize(options.Value.ToNameValueCollection());
 
             // 获取调度器
-            scheduler = await GetScheduler(cancellationToken)
-                .ConfigureAwait(false);
+            scheduler = await GetScheduler(cancellationToken).ConfigureAwait(false);
 
             _logger.LogInformation($"Create {schedulerName} scheduler success.");
 
@@ -183,13 +175,10 @@ internal sealed class DependencySchedulerFactory : StdSchedulerFactory, IDepende
     public override async Task<IScheduler> GetScheduler(CancellationToken cancellationToken = default)
     {
         // 获取调度器，这里需要注意的是：如果原来的调度器被停止了，则调用 GetScheduler 会返回一个新的调度器
-        IScheduler scheduler = await base
-            .GetScheduler(cancellationToken)
-            .ConfigureAwait(false);
+        IScheduler scheduler = await base.GetScheduler(cancellationToken).ConfigureAwait(false);
 
         // 初始化调度器
-        await InitializeScheduler(scheduler, cancellationToken)
-            .ConfigureAwait(false);
+        await InitializeScheduler(scheduler, cancellationToken).ConfigureAwait(false);
 
         return scheduler;
     }
@@ -207,9 +196,7 @@ internal sealed class DependencySchedulerFactory : StdSchedulerFactory, IDepende
         }
 
         IEnumerable<IJobListener> jobListeners = _serviceProvider.GetServices<IJobListener>();
-        JobListenerConfiguration[] jobListenerConfigurations = _serviceProvider
-            .GetServices<JobListenerConfiguration>()
-            .ToArray();
+        JobListenerConfiguration[] jobListenerConfigurations = _serviceProvider.GetServices<JobListenerConfiguration>().ToArray();
         foreach (IJobListener listener in jobListeners)
         {
             JobListenerConfiguration configuration =
@@ -231,18 +218,12 @@ internal sealed class DependencySchedulerFactory : StdSchedulerFactory, IDepende
         IEnumerable<CalendarConfiguration> calendars = _serviceProvider.GetServices<CalendarConfiguration>();
         foreach (CalendarConfiguration configuration in calendars)
         {
-            await scheduler
-                .AddCalendar(configuration.Name,
-                    configuration.Calendar,
-                    configuration.Replace,
-                    configuration.UpdateTriggers,
-                    cancellationToken)
+            await scheduler.AddCalendar(configuration.Name, configuration.Calendar, configuration.Replace,
+                    configuration.UpdateTriggers, cancellationToken)
                 .ConfigureAwait(false);
         }
 
-        await _processor
-            .ScheduleJobs(scheduler, cancellationToken)
-            .ConfigureAwait(false);
+        await _processor.ScheduleJobs(scheduler, cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc />

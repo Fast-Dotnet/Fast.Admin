@@ -123,7 +123,9 @@ public sealed class Tenant : ITenant, IScopedDependency
     private void ResolveRequired()
     {
         if (_hasTenantInfo)
+        {
             return;
+        }
 
         lock (_lock)
         {

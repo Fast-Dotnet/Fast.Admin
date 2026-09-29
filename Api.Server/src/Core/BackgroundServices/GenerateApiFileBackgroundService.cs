@@ -50,10 +50,8 @@ public class GenerateApiFileBackgroundService : BackgroundService
     /// <summary>
     /// 生成 API 文件托管服务
     /// </summary>
-    public GenerateApiFileBackgroundService(IHostApplicationLifetime hostApplicationLifetime,
-        IServer server,
-        IApiDescriptionGroupCollectionProvider apiDescriptionGroupCollectionProvider,
-        IOptions<SwaggerSettingsOptions> options,
+    public GenerateApiFileBackgroundService(IHostApplicationLifetime hostApplicationLifetime, IServer server,
+        IApiDescriptionGroupCollectionProvider apiDescriptionGroupCollectionProvider, IOptions<SwaggerSettingsOptions> options,
         ILogger<GenerateApiFileBackgroundService> logger)
     {
         _hostApplicationLifetime = hostApplicationLifetime;
@@ -68,11 +66,15 @@ public class GenerateApiFileBackgroundService : BackgroundService
     {
         // 只有开发环境才会生成
         if (!FastContext.HostEnvironment.IsDevelopment())
+        {
             return;
+        }
 
         // 只有启用了 Swagger 才会生成
         if (_swaggerSettings.Enable != true)
+        {
             return;
+        }
 
         try
         {
@@ -87,16 +89,14 @@ public class GenerateApiFileBackgroundService : BackgroundService
 
             IServerAddressesFeature feature = _server.Features.Get<IServerAddressesFeature>();
             // 默认获取第一个地址，并且处理 [::]
-            string address = feature
-                ?.Addresses.FirstOrDefault()
-                ?.Replace("[::]", "127.0.0.1");
+            string address = feature?.Addresses.FirstOrDefault()?.Replace("[::]", "127.0.0.1");
             if (string.IsNullOrWhiteSpace(address))
+            {
                 return;
+            }
 
             // 获取 Swagger 分组
-            var groupList = _swaggerSettings
-                .GroupOpenApiInfos?.Select(sl => sl.Group)
-                .ToList();
+            var groupList = _swaggerSettings.GroupOpenApiInfos?.Select(sl => sl.Group).ToList();
 
             // 直接等待 OpenAPI 文件生成完成，由托管服务统一观察异常和停止信号
             await OpenApiUtil.GenerateOpenApi(address, _apiDescriptionGroupCollectionProvider, groupList);

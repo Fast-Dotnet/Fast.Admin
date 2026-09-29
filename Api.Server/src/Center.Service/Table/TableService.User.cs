@@ -30,18 +30,13 @@ public partial class TableService
         List<TableColumnConfigCacheModel> tableColumnCacheList =
             await QueryUserTableColumnConfigCache(tableConfigModel.TableId, tableConfigModel.TableKey);
 
-        var columnIds = tableColumnCacheList
-            .Select(sl => sl.ColumnId)
-            .ToList();
-        var sourceColumnIds = tableConfigModel
-            .TableColumnConfigList.Select(sl => sl.ColumnId)
-            .ToList();
+        var columnIds = tableColumnCacheList.Select(sl => sl.ColumnId).ToList();
+        var sourceColumnIds = tableConfigModel.TableColumnConfigList.Select(sl => sl.ColumnId).ToList();
 
         DateTime dateTime = DateTime.Now;
 
         // 添加的
-        var addTableColumnCacheList = tableConfigModel
-            .TableColumnConfigList.Where(wh => !columnIds.Contains(wh.ColumnId))
+        var addTableColumnCacheList = tableConfigModel.TableColumnConfigList.Where(wh => !columnIds.Contains(wh.ColumnId))
             .Select(sl => new TableColumnConfigCacheModel
             {
                 UserId = _user.EmployeeId,
@@ -64,20 +59,18 @@ public partial class TableService
             .ToList();
 
         // 删除的
-        var deleteTableColumnCacheList = tableColumnCacheList
-            .Where(wh => !sourceColumnIds.Contains(wh.ColumnId))
-            .ToList();
+        var deleteTableColumnCacheList = tableColumnCacheList.Where(wh => !sourceColumnIds.Contains(wh.ColumnId)).ToList();
 
         // 更新的
         var sourceDict = tableConfigModel.TableColumnConfigList.ToDictionary(k => k.ColumnId);
-        var updateTableColumnCacheList = tableColumnCacheList
-            .Where(wh => sourceColumnIds.Contains(wh.ColumnId))
-            .ToList();
+        var updateTableColumnCacheList = tableColumnCacheList.Where(wh => sourceColumnIds.Contains(wh.ColumnId)).ToList();
 
         foreach (TableColumnConfigCacheModel item in updateTableColumnCacheList)
         {
             if (!sourceDict.TryGetValue(item.ColumnId, out TableColumnConfigModel sourceItem))
+            {
                 continue;
+            }
 
             item.Label = sourceItem.Label;
             item.Fixed = sourceItem.Fixed;
@@ -94,18 +87,15 @@ public partial class TableService
         }
 
         await _columnCacheRepository.Ado.UseTranAsync(async () =>
-            {
-                await _columnCacheRepository.DeleteAsync(deleteTableColumnCacheList);
-                await _columnCacheRepository.InsertAsync(addTableColumnCacheList);
-                await _columnCacheRepository.UpdateAsync(updateTableColumnCacheList);
-            },
-            ex => throw ex);
+        {
+            await _columnCacheRepository.DeleteAsync(deleteTableColumnCacheList);
+            await _columnCacheRepository.InsertAsync(addTableColumnCacheList);
+            await _columnCacheRepository.UpdateAsync(updateTableColumnCacheList);
+        }, ex => throw ex);
 
         // 删除缓存
-        string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.UserTableConfigCache,
-            tableConfigModel.TableKey,
-            _user.TenantNo,
-            _user.EmployeeNo);
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.UserTableConfigCache, tableConfigModel.TableKey,
+            _user.TenantNo, _user.EmployeeNo);
         await _centerCache.DelAsync(cacheKey);
     }
 
@@ -183,17 +173,14 @@ public partial class TableService
         }
 
         await _columnCacheRepository.Ado.UseTranAsync(async () =>
-            {
-                await _columnCacheRepository.UpdateAsync(tableColumnCacheList);
-                await _columnCacheRepository.InsertAsync(addTableColumnCacheList);
-            },
-            ex => throw ex);
+        {
+            await _columnCacheRepository.UpdateAsync(tableColumnCacheList);
+            await _columnCacheRepository.InsertAsync(addTableColumnCacheList);
+        }, ex => throw ex);
 
         // 删除缓存
-        string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.UserTableConfigCache,
-            tableConfigModel.TableKey,
-            _user.TenantNo,
-            _user.EmployeeNo);
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.UserTableConfigCache, tableConfigModel.TableKey,
+            _user.TenantNo, _user.EmployeeNo);
         await _centerCache.DelAsync(cacheKey);
     }
 
@@ -213,10 +200,8 @@ public partial class TableService
         await _columnCacheRepository.DeleteAsync(wh => wh.TableId == tableConfigModel.TableId);
 
         // 删除缓存
-        string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.UserTableConfigCache,
-            tableConfigModel.TableKey,
-            _user.TenantNo,
-            _user.EmployeeNo);
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.UserTableConfigCache, tableConfigModel.TableKey,
+            _user.TenantNo, _user.EmployeeNo);
         await _centerCache.DelAsync(cacheKey);
     }
 }

@@ -12,14 +12,8 @@ namespace Fast.Center.Domain;
 /// </summary>
 [SugarTable("ClientUser", "客户端用户表")]
 [SugarDbType(DatabaseTypeEnum.Center)]
-[SugarIndex("UX_{table}_Identity",
-    nameof(AppId),
-    OrderByType.Asc,
-    nameof(OpenId),
-    OrderByType.Asc,
-    nameof(Mobile),
-    OrderByType.Asc,
-    true)]
+[SugarIndex("UX_{table}_Identity", nameof(AppId), OrderByType.Asc, nameof(OpenId), OrderByType.Asc, nameof(Mobile),
+    OrderByType.Asc, true)]
 public class ClientUserModel : IUpdateVersion
 {
     /// <summary>
@@ -133,7 +127,8 @@ public class ClientUserModel : IUpdateVersion
     /// <summary>
     /// 创建时间
     /// </summary>
-    [Required, SugarColumn(ColumnDescription = "创建时间", CreateTableFieldSort = 993)]
+    [Required]
+    [SugarColumn(ColumnDescription = "创建时间", CreateTableFieldSort = 993)]
     public DateTime? CreatedTime { get; set; }
 
     /// <summary>

@@ -114,7 +114,8 @@ public class ApiInfoModel : IDatabaseEntity
     /// <summary>
     /// 创建时间
     /// </summary>
-    [Required, SugarColumn(ColumnDescription = "创建时间", CreateTableFieldSort = 993)]
+    [Required]
+    [SugarColumn(ColumnDescription = "创建时间", CreateTableFieldSort = 993)]
     public DateTime? CreatedTime { get; set; }
 
     /// <summary>
@@ -134,7 +135,9 @@ public class ApiInfoModel : IDatabaseEntity
     public override bool Equals(object obj)
     {
         if (obj is not ApiInfoModel oldApiModel)
+        {
             return false;
+        }
 
         return ApiId == oldApiModel.ApiId
                && ServiceName == oldApiModel.ServiceName
