@@ -17,8 +17,12 @@ namespace Fast.Core;
 /// <see cref="ITenant"/> 默认实现
 /// </summary>
 /// <remarks>
-/// <para>不代表操作人已经登录或具有管理权限</para>
-/// <para>作用域注册，保证当前请求管道中是唯一的，并且只会加载一次</para>
+/// <para>
+/// 按作用域注册，首次读取租户属性时按需解析，后续读取复用当前作用域的结果。
+/// </para>
+/// <para>
+/// 仅表示业务数据的租户归属，不代表操作人已经登录，也不授予角色或管理权限。
+/// </para>
 /// </remarks>
 public sealed class Tenant : ITenant, IScopedDependency
 {
@@ -38,7 +42,7 @@ public sealed class Tenant : ITenant, IScopedDependency
     private readonly HttpContext _httpContext;
 
     /// <summary>
-    /// 是否存在租户信息
+    /// 是否已完成租户解析，包含未匹配到应用的空结果
     /// </summary>
     private bool _hasTenantInfo { get; set; }
 
@@ -113,22 +117,38 @@ public sealed class Tenant : ITenant, IScopedDependency
     }
 
     /// <summary>
-    /// 在首次访问租户业务库前解析并固定当前租户
+    /// 首次访问时解析并缓存当前作用域的业务租户
     /// </summary>
-    /// <returns>本作用域唯一的租户结果</returns>
     /// <remarks>
-    /// 有效用户上下文优先；没有用户时，仅显式匿名端点可使用服务端应用绑定的租户。
-    /// 没有租户时明确失败，不回退系统租户。此方法不会填充或更改 IUser。
+    /// <para>
+    /// 优先使用已经初始化的 <see cref="IUser"/> 租户信息；
+    /// 没有用户租户时，根据当前 HTTP 请求的应用标识查询服务端绑定的租户。
+    /// </para>
+    /// <para>
+    /// 本方法不执行 JWT 认证、用户会话恢复或接口授权，也不会填充或修改 <see cref="IUser"/>。
+    /// 需要使用登录用户租户的流程，应在首次读取租户属性前完成有效用户会话的初始化。
+    /// </para>
+    /// <para>
+    /// 解析结果在当前作用域内固定，不随后续用户上下文变化重新选择租户。
+    /// </para>
+    /// <para>
+    /// 未匹配到应用时缓存空结果；应用未绑定有效租户，或客户端类型、租户状态、版本不满足要求时，
+    /// 抛出业务异常。访问租户业务库前，调用方必须确认租户 Id 和编号完整有效，不得回退到系统租户。
+    /// </para>
+    /// <para>
+    /// 应用绑定解析依赖有效的 HTTP 请求上下文。
+    /// 非 HTTP 场景应在访问前建立明确的用户租户上下文，不能依赖应用标识回退。
+    /// </para>
     /// </remarks>
     private void ResolveRequired()
     {
-        if (_hasTenantInfo)
-        {
-            return;
-        }
-
         lock (_lock)
         {
+            if (_hasTenantInfo)
+            {
+                return;
+            }
+
             // 存在授权用户信息，直接从授权用户信息中获取
             if (_hasUserTenant)
             {
