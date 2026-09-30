@@ -313,8 +313,9 @@ public class FileContext
         writer.Write((long)payload.DeviceType);
         writer.Write(payload.AppNo);
         writer.Write(payload.TenantNo);
-        writer.Write(payload.EmployeeNo);
-        writer.Write(payload.SessionId);
+        // 匿名票据没有用户与会话，使用空字符串保持既有二进制字段格式
+        writer.Write(payload.EmployeeNo ?? string.Empty);
+        writer.Write(payload.SessionId ?? string.Empty);
         writer.Flush();
         return stream.ToArray();
     }
@@ -342,8 +343,6 @@ public class FileContext
             || payload.FileId <= 0
             || string.IsNullOrWhiteSpace(payload.AppNo)
             || string.IsNullOrWhiteSpace(payload.TenantNo)
-            || string.IsNullOrWhiteSpace(payload.EmployeeNo)
-            || string.IsNullOrWhiteSpace(payload.SessionId)
             || payload.ExpiresAt <= DateTimeOffset.UtcNow.ToUnixTimeSeconds()
             || (!payload.IsAnonymous
                 && (string.IsNullOrWhiteSpace(payload.EmployeeNo) || string.IsNullOrWhiteSpace(payload.SessionId))))
