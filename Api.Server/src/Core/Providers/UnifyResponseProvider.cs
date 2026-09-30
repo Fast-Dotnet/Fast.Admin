@@ -54,7 +54,7 @@ public class UnifyResponseProvider : IUnifyResponseProvider
                     }
                     else if (userFriendlyException.ErrorCode != null)
                     {
-                        statusCode = userFriendlyException.ErrorCode.ToString().ParseToInt();
+                        statusCode = Convert.ToInt32(userFriendlyException.ErrorCode);
                     }
                     else
                     {

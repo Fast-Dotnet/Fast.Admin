@@ -250,7 +250,7 @@ public class FileApplication : IDynamicApplication
         ICache<AuthCCL> _authCache = _httpContext.RequestServices.GetService<ICache<AuthCCL>>();
         string sessionCacheKey = CacheConst.GetCacheKey(CacheConst.AuthUser, tokenPayload.AppNo, tokenPayload.TenantNo,
             tokenPayload.DeviceType.ToString(), tokenPayload.EmployeeNo, tokenPayload.SessionId);
-        if (!await _authCache.ExistsAsync(sessionCacheKey))
+        if (!tokenPayload.IsAnonymous && !await _authCache.ExistsAsync(sessionCacheKey))
         {
             // 这里是401
             return new UnauthorizedResult();

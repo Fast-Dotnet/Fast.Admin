@@ -99,6 +99,63 @@ public class FileContext
     }
 
     /// <summary>
+    /// 创建媒体资源匿名临时访问 Token
+    /// </summary>
+    /// <remarks>Token 有效期默认位15分钟</remarks>
+    /// <param name="fileUrl">媒体文件地址</param>
+    /// <param name="appNo">应用编号</param>
+    /// <param name="tenantNo">租户编号</param>
+    /// <returns>媒体资源临时访问地址</returns>
+    public static async Task<string> CreateAnonymousMediaAssetTicket(string fileUrl, string appNo, string tenantNo)
+    {
+        if (string.IsNullOrWhiteSpace(fileUrl))
+        {
+            throw new UserFriendlyException("文件地址不能为空！");
+        }
+
+        if (string.IsNullOrWhiteSpace(appNo) || string.IsNullOrWhiteSpace(tenantNo))
+        {
+            throw new UserFriendlyException("应用信息无效！");
+        }
+
+        // 提取文件路径，仅支持完整的地址
+        if (!Uri.TryCreate(fileUrl, UriKind.Absolute, out Uri uri))
+        {
+            throw new UserFriendlyException("文件地址格式不正确！");
+        }
+
+        // 获取文件Id
+        string fileName = Path.GetFileNameWithoutExtension(uri.AbsolutePath.TrimEnd('/'));
+        if (!long.TryParse(fileName, out long fileId))
+        {
+            throw new UserFriendlyException("文件地址不受支持！");
+        }
+
+        ISqlSugarRepository<FileModel> repository = FastContext.GetService<ISqlSugarRepository<FileModel>>();
+        bool fileExists = await repository.Entities.AnyAsync(wh =>
+            wh.FileId == fileId && (wh.FileMimeType.StartsWith("audio/") || wh.FileMimeType.StartsWith("video/")));
+        if (!fileExists)
+        {
+            throw new UserFriendlyException("文件不存在或存储地址不受支持！");
+        }
+
+        var payload = new MediaAssetTokenPayload
+        {
+            IsAnonymous = true,
+            FileId = fileId,
+            AppNo = appNo,
+            TenantNo = tenantNo,
+            DeviceType = AppEnvironmentEnum.Api,
+            EmployeeNo = null,
+            SessionId = null,
+            ExpiresAt = DateTimeOffset.UtcNow.AddMinutes(15).ToUnixTimeSeconds()
+        };
+        string token = EncryptMediaAssetToken(payload);
+
+        return $"{uri.GetLeftPart(UriPartial.Authority)}/file/media/{token}";
+    }
+
+    /// <summary>
     /// 创建媒体资源临时访问 Token
     /// </summary>
     /// <param name="fileUrl">媒体文件地址</param>
@@ -143,6 +200,7 @@ public class FileContext
         IUser _user = FastContext.GetService<IUser>();
         var payload = new MediaAssetTokenPayload
         {
+            IsAnonymous = false,
             FileId = fileId,
             AppNo = _user.AppNo,
             TenantNo = _user.TenantNo,
@@ -249,6 +307,7 @@ public class FileContext
     {
         using var stream = new MemoryStream();
         using var writer = new BinaryWriter(stream, Encoding.UTF8, true);
+        writer.Write(payload.IsAnonymous);
         writer.Write(payload.FileId);
         writer.Write(payload.ExpiresAt);
         writer.Write((long)payload.DeviceType);
@@ -269,6 +328,7 @@ public class FileContext
         using var reader = new BinaryReader(stream, Encoding.UTF8, true);
         payload = new MediaAssetTokenPayload
         {
+            IsAnonymous = reader.ReadBoolean(),
             FileId = reader.ReadInt64(),
             ExpiresAt = reader.ReadInt64(),
             DeviceType = (AppEnvironmentEnum)reader.ReadInt64(),
@@ -284,7 +344,9 @@ public class FileContext
             || string.IsNullOrWhiteSpace(payload.TenantNo)
             || string.IsNullOrWhiteSpace(payload.EmployeeNo)
             || string.IsNullOrWhiteSpace(payload.SessionId)
-            || payload.ExpiresAt <= DateTimeOffset.UtcNow.ToUnixTimeSeconds())
+            || payload.ExpiresAt <= DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+            || (!payload.IsAnonymous
+                && (string.IsNullOrWhiteSpace(payload.EmployeeNo) || string.IsNullOrWhiteSpace(payload.SessionId))))
         {
             payload = null;
             return false;
