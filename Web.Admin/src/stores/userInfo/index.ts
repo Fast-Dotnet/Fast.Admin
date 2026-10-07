@@ -70,11 +70,11 @@ export const useUserInfo = defineStore(
 
 		// 设置 Token
 		const setToken = (axiosResponse: AxiosResponse) => {
-			if (!axiosResponse) return;
+			if (typeof axiosResponse?.headers?.get !== "function") return;
 			// 从请求头部中获取 Token
-			const token = (axiosResponse.headers.get as (headerName: string) => string)("access-token");
+			const token = axiosResponse.headers.get("access-token")?.toString();
 			// 从请求头部中获取 Refresh Token
-			const refreshToken = (axiosResponse.headers.get as (headerName: string) => string)("x-access-token");
+			const refreshToken = axiosResponse.headers.get("x-access-token")?.toString();
 			// 判断是否为无效 Token
 			if (token === "invalid_token") {
 				// 删除 Token
