@@ -292,7 +292,7 @@ export default defineConfig(({ command, mode }): UserConfig => {
 			isBuild &&
 				visualizer({
 					filename: `${viteEnv.BUILD_OUT_DIR}/analysis.html`,
-					open: true,
+					open: false,
 				}),
 		],
 	};
