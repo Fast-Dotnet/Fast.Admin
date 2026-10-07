@@ -62,7 +62,7 @@ defineOptions({
 const appStore = useApp();
 const roleTypeEnum = appStore.getDictionary("RoleTypeEnum");
 
-/** @description v-model绑定值 */
+// v-model绑定值
 const modelValue = defineModel<EditMenuButtonInput[]>({ required: true });
 
 const faDialogRef = useTemplateRef<FaDialogInstance>("faDialogRef");

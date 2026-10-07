@@ -49,18 +49,18 @@ export const useUserInfo = defineStore(
 			menuList: [],
 		});
 
-		/** 动态生成路由 */
+		// 动态生成路由
 		const asyncRouterGen = ref(false);
 
-		/** WebSocket 是否连接 */
+		// WebSocket 是否连接
 		const hasWebSocket = ref(false);
 
-		/** 设置用户信息 */
+		// 设置用户信息
 		const setUserInfo = (uInfo: GetLoginUserInfoOutput) => {
 			Object.assign(state, uInfo);
 		};
 
-		/** 删除 Token */
+		// 删除 Token
 		const removeToken = () => {
 			state.token = "";
 			state.refreshToken = "";
@@ -68,7 +68,7 @@ export const useUserInfo = defineStore(
 			state.identityVerification = false;
 		};
 
-		/** 设置 Token */
+		// 设置 Token
 		const setToken = (axiosResponse: AxiosResponse) => {
 			if (!axiosResponse) return;
 			// 从请求头部中获取 Token
@@ -87,18 +87,17 @@ export const useUserInfo = defineStore(
 		};
 
 		/**
-		 * 获取 Token
-		 * @description 从缓存中获取
+		 * 获取当前 Pinia 状态中的 Token。
 		 */
 		const getToken = () => {
 			return { token: state.token, refreshToken: state.refreshToken };
 		};
 
 		/**
-		 * 解析Token
-		 * @description 如果Token过期，会解析不出来
-		 * @param token 可以传入，也可以直接获取 pinia 中的
-		 * @param refreshToken 可以传入，也可以直接获取 pinia 中的
+		 * 解析 Token 载荷；访问 Token 过期时同时返回刷新 Token。
+		 * @remarks 此处仅解码载荷，不校验签名；格式错误会抛出异常。
+		 * @param token - 访问 Token；为空时使用 Pinia 中的值。
+		 * @param refreshToken - 刷新 Token；为空时使用 Pinia 中的值。
 		 */
 		const resolveToken = (
 			token: string = null,
@@ -123,7 +122,7 @@ export const useUserInfo = defineStore(
 			return { token: null, refreshToken: null, tokenData: null };
 		};
 
-		/** 登录 */
+		// 登录
 		const login = () => {
 			ElMessage.success("登录成功");
 			// 确保 getLoginUser 获取用户信息
@@ -144,7 +143,7 @@ export const useUserInfo = defineStore(
 			}
 		};
 
-		/** 退出登录 */
+		// 退出登录
 		const logout = async (
 			data: {
 				/**
@@ -188,7 +187,7 @@ export const useUserInfo = defineStore(
 			}
 		};
 
-		/** 刷新用户信息 */
+		// 刷新用户信息
 		const refreshUserInfo = async () => {
 			const apiRes = await authApi.getLoginUserInfo();
 			setUserInfo(apiRes);

@@ -15,7 +15,7 @@ defineOptions({
 });
 
 const props = defineProps({
-	/** @description 加载提示文本 */
+	/** 加载提示文本 */
 	loadingText: {
 		type: String,
 		default: "加载中...",

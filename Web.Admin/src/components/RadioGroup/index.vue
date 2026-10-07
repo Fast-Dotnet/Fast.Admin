@@ -38,12 +38,12 @@ defineOptions({
 const props = defineProps({
 	// eslint-disable-next-line @typescript-eslint/no-deprecated -- Element Plus 2.x 暂无等价的公开运行时 Props 对象替代。
 	...radioGroupProps,
-	/** @description 是否使用按钮样式 */
+	/** 是否使用按钮样式 */
 	button: {
 		type: Boolean,
 		default: false,
 	},
-	/** @description 字典名称 */
+	/** 字典名称 */
 	name: {
 		type: String,
 		required: true,
@@ -57,10 +57,10 @@ const emit = defineEmits({
 	...radioGroupEmits,
 });
 
-/** @description 当前选中的字典值 */
+// 当前选中的字典值
 const modelValue = defineModel<string | number | boolean>({ default: CommonStatusEnum.Enable });
 
 const appStore = useApp();
-/** 当前字典中允许显示的选项 */
+// 当前字典中允许显示的选项
 const dictionaries = computed(() => (props.name ? appStore.getDictionary(props.name).filter((f) => f.show) : []));
 </script>

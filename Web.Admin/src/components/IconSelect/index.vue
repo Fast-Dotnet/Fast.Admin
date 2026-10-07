@@ -24,7 +24,7 @@ defineOptions({
 });
 
 const props = defineProps({
-	/** @description 编辑区占位文本 */
+	/** 编辑区占位文本 */
 	placeholder: {
 		type: String,
 		default: "请选择图标",

@@ -26,12 +26,12 @@ defineOptions({
 const props = defineProps({
 	// eslint-disable-next-line @typescript-eslint/no-deprecated -- Element Plus 2.x 暂无等价的公开运行时 Props 对象替代。
 	...tagProps,
-	/** @description 字典名称 */
+	/** 字典名称 */
 	name: {
 		type: String,
 		required: true,
 	},
-	/** @description 用于匹配字典项的值 */
+	/** 用于匹配字典项的值 */
 	value: {
 		type: [Number, String, Boolean],
 		default: undefined,
@@ -47,8 +47,8 @@ const emit = defineEmits({
 
 const appStore = useApp();
 
-/** 指定名称对应的字典项列表 */
+// 指定名称对应的字典项列表
 const dictionaries = computed(() => (props.name ? appStore.getDictionary(props.name) : []));
-/** 与当前值匹配的字典项 */
+// 与当前值匹配的字典项
 const dictionary = computed(() => (props.value == null ? null : dictionaries.value.find((f) => f.value === props.value)));
 </script>

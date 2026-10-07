@@ -4,8 +4,8 @@ declare module "vue" {
 	export interface GlobalDirectives {
 		/**
 		 * 权限指令
-		 * @description 用于判断某个按钮或者点击方法是否存在权限，自带防抖
-		 * @param value - 权限码，支持字符串或字符串数组
+		 * 用于判断某个按钮或者点击方法是否存在权限，自带防抖
+		 * @remarks 绑定值为权限码，支持字符串或字符串数组。
 		 * @example
 		 * ```vue
 		 * <!-- 单个权限 -->
@@ -25,16 +25,16 @@ declare module "vue" {
 
 	export interface ComponentCustomProps {
 		/**
-		 * @description 权限类型
-		 * @default 'hide'
+		 * 权限类型
+		 * @defaultValue 'hide'
 		 */
 		authType?: "hide" | "disabled" | "disablePointer" | "none";
 	}
 
 	export interface HTMLAttributes {
 		/**
-		 * @description 权限类型
-		 * @default 'hide'
+		 * 权限类型
+		 * @defaultValue 'hide'
 		 */
 		authType?: "hide" | "disabled" | "disablePointer" | "none";
 	}

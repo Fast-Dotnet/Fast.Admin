@@ -53,7 +53,7 @@ defineOptions({
 	name: "Login",
 });
 
-/** 登录组件 */
+// 登录组件
 const loginComponents = withDefineType<Record<ILoginComponent, Component>>({
 	ClassicLogin: defineAsyncComponent(() => import("./classicLogin/index.vue")),
 	ModernLogin: defineAsyncComponent(() => import("./modernLogin/index.vue")),
@@ -66,7 +66,7 @@ const configStore = useConfig();
 
 const helpDropdownRef = useTemplateRef<DropdownInstance>("helpDropdownRef");
 
-/** 后端返回未知组件名时回退到经典登录页，避免出现空白页面。 */
+// 后端返回未知组件名时回退到经典登录页，避免出现空白页面。
 const activeLoginComponent = computed(() =>
 	Object.hasOwn(loginComponents, appStore.loginComponent)
 		? loginComponents[appStore.loginComponent as ILoginComponent]
@@ -168,9 +168,9 @@ const handleDropdownClick = (command: string) => {
  *  - 主色为中心，向两侧偏蓝与偏紫延伸
  *  - 提供 light / dark 模式自适应亮度与饱和度
  *
- * @param baseColor HEX 主题色，如 "#0487d0"
- * @param mode 'light' | 'dark'，默认 'light'
- * @param angleDeg 渐变角度，默认 165°
+ * @param baseColor - HEX 主题色，如 "#0487d0"
+ * @param mode - 'light' | 'dark'，默认 'light'
+ * @param angleDeg - 渐变角度，默认 165°
  * @returns CSS linear-gradient 字符串
  */
 const getThemeGradient = (baseColor: string, mode: "light" | "dark" = "light", angleDeg = 165) => {

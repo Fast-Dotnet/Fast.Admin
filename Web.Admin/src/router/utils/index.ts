@@ -10,14 +10,14 @@ import type { AuthMenuInfoDto } from "@/api/services/Auth/auth/models/AuthMenuIn
 
 const modules = import.meta.glob("/src/views/**/*.vue");
 
-/** 复制路由配置，同时保留组件加载函数。 */
+// 复制路由配置，同时保留组件加载函数。
 const cloneRoute = (route: RouteRecordRaw): RouteRecordRaw => ({
 	...route,
 	...(route.meta && { meta: { ...route.meta } }),
 	...(route.children && { children: route.children.map(cloneRoute) }),
 });
 
-/** 加载组件 */
+// 加载组件
 const loadComponent = (component: string) => {
 	if (component) {
 		if (component.includes("/")) {
@@ -29,7 +29,7 @@ const loadComponent = (component: string) => {
 	}
 };
 
-/** 加载组件名称 */
+// 加载组件名称
 const loadComponentName = (name: string) => {
 	if (name) {
 		if (name.includes("/")) {
@@ -114,8 +114,8 @@ export const handleDynamicRoute = (): void => {
 export const routerUtil = {
 	/**
 	 * 路由跳转，带错误检查
-	 * @param router 路由对象 useRouter()，因必须在 setup 中获取才存在值
-	 * @param to 导航位置，同 router.push
+	 * @param router - 路由对象 useRouter()，因必须在 setup 中获取才存在值
+	 * @param to - 导航位置，同 router.push
 	 */
 	routePushSafe(router: Router, to: RouteLocationRaw): Promise<NavigationFailure | void> {
 		return router

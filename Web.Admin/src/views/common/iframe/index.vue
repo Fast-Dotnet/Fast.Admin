@@ -6,7 +6,7 @@
 import { useRoute } from "vue-router";
 
 defineOptions({
-	// eslint-disable-next-line vue/no-reserved-component-names
+	// eslint-disable-next-line vue/no-reserved-component-names -- 保持现有组件名称与项目引用兼容
 	name: "Iframe",
 });
 

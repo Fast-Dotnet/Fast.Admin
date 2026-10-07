@@ -38,7 +38,7 @@ defineOptions({
 });
 
 const props = defineProps({
-	/** @description 是否禁用 */
+	/** 是否禁用 */
 	disabled: Boolean,
 });
 
@@ -47,7 +47,7 @@ const editionEnum = appStore.getDictionary("EditionEnum");
 const booleanEnum = appStore.getDictionary("BooleanEnum");
 const commonStatusEnum = appStore.getDictionary("CommonStatusEnum");
 
-/** @description v-model绑定值 */
+// v-model绑定值
 const modelValue = defineModel<EditMenuButtonInput[]>({ required: true });
 
 const editFormRef = useTemplateRef<InstanceType<typeof DevMenuEditButtonEdit>>("editFormRef");

@@ -66,11 +66,11 @@ defineOptions({
 });
 
 const props = defineProps({
-	/** @description 是否禁用 */
+	/** 是否禁用 */
 	disabled: Boolean,
 });
 
-/** @description v-model绑定值 */
+// v-model绑定值
 const modelValue = defineModel<EditDictionaryItemInput[]>({ required: true });
 
 const editFormRef = useTemplateRef<InstanceType<typeof DictionaryEditItemEdit>>("editFormRef");

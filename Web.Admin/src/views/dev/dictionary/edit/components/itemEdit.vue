@@ -61,7 +61,7 @@ defineOptions({
 	name: "DevDictionaryEditItemEdit",
 });
 
-/** @description v-model绑定值 */
+// v-model绑定值
 const modelValue = defineModel<EditDictionaryItemInput[]>({ required: true });
 
 const faDialogRef = useTemplateRef<FaDialogInstance>("faDialogRef");

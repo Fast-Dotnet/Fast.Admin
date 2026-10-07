@@ -46,7 +46,10 @@ defineOptions({
 });
 
 const props = defineProps({
-	/** @description 表单校验字段名 @default "captchaCode" */
+	/**
+	 * 表单校验字段名
+	 * @defaultValue "captchaCode"
+	 */
 	prop: {
 		type: String,
 		default: "captchaCode",
@@ -57,9 +60,9 @@ const props = defineProps({
 	disabled: Boolean,
 });
 
-/** 用户输入的图形验证码 */
+// 用户输入的图形验证码
 const modelValue = defineModel<string>();
-/** 当前图形验证码的服务端标识 */
+// 当前图形验证码的服务端标识
 const captchaKey = defineModel<string>("captchaKey");
 
 const state = reactive({
@@ -73,7 +76,7 @@ const state = reactive({
 	captchaImage: undefined,
 });
 
-/** 重新获取图形验证码并清空旧答案 */
+// 重新获取图形验证码并清空旧答案
 const refresh = async () => {
 	state.loading = true;
 	state.loadFailed = false;

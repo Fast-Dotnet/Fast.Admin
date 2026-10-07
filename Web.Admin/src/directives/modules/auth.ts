@@ -20,11 +20,11 @@ interface AuthElement extends HTMLElement {
 
 interface AuthVNode extends VNode {
 	props: {
-		/** @description 点击事件 */
+		/** 点击事件 */
 		onClick?: () => void;
-		/** @description 类型 */
+		/** 类型 */
 		authType?: "hide" | "disabled" | "disablePointer" | "none";
-		/** @description 禁用 */
+		/** 禁用 */
 		disabled?: boolean;
 		[key: string]: unknown;
 	};

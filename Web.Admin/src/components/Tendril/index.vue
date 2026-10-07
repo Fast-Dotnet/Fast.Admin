@@ -11,34 +11,34 @@ defineOptions({
 });
 
 const props = defineProps({
-	/** @description 节点速度的摩擦衰减系数 */
+	/** 节点速度的摩擦衰减系数 */
 	friction: {
 		type: Number,
 		default: 0.5,
 	},
-	/** @description 丝带数量 */
+	/** 丝带数量 */
 	trails: {
 		type: Number,
 		default: 20,
 	},
-	/** @description 每条丝带的节点数量 */
+	/** 每条丝带的节点数量 */
 	size: {
 		type: Number,
 		default: 50,
 	},
-	/** @description 前一节点速度对后一节点的影响系数 */
+	/** 前一节点速度对后一节点的影响系数 */
 	dampening: {
 		type: Number,
 		default: 0.25,
 	},
-	/** @description 弹力沿节点链逐步衰减的系数 */
+	/** 弹力沿节点链逐步衰减的系数 */
 	tension: {
 		type: Number,
 		default: 0.98,
 	},
 });
 
-/** 动画画布 */
+// 动画画布
 const canvasRef = useTemplateRef<HTMLCanvasElement>("canvasRef");
 /** 画布二维渲染上下文 */
 let ctx: CanvasRenderingContext2D = null;
@@ -180,7 +180,7 @@ class Tendril {
 	}
 }
 
-/** 初始化所有丝带 */
+// 初始化所有丝带
 const reset = () => {
 	state.tendrils = [];
 	for (let i = 0; i < props.trails; i++) {
@@ -194,7 +194,7 @@ const reset = () => {
 	}
 };
 
-/** 更新并绘制丝带与上浮文字，然后安排下一动画帧 */
+// 更新并绘制丝带与上浮文字，然后安排下一动画帧
 const loop = () => {
 	animationFrameId = null;
 	if (!state.running || !ctx) return;
@@ -235,7 +235,7 @@ const loop = () => {
 	animationFrameId = requestAnimationFrame(loop);
 };
 
-/** 鼠标或触摸移动时更新目标点 */
+// 鼠标或触摸移动时更新目标点
 const mousemove = (event: MouseEvent | TouchEvent) => {
 	if ("touches" in event && event.touches.length > 0) {
 		state.target.x = event.touches[0].pageX;
@@ -247,7 +247,7 @@ const mousemove = (event: MouseEvent | TouchEvent) => {
 	event.preventDefault();
 };
 
-/** 触摸开始时初始化目标点 */
+// 触摸开始时初始化目标点
 const touchstart = (event: TouchEvent) => {
 	if (event.touches.length === 1) {
 		state.target.x = event.touches[0].pageX;
@@ -255,13 +255,13 @@ const touchstart = (event: TouchEvent) => {
 	}
 };
 
-/** 画布尺寸自适应窗口大小 */
+// 画布尺寸自适应窗口大小
 const resize = () => {
 	ctx.canvas.width = window.innerWidth;
 	ctx.canvas.height = window.innerHeight;
 };
 
-/** 在首次指针交互时绑定持续事件并启动动画 */
+// 在首次指针交互时绑定持续事件并启动动画
 const init = (event: MouseEvent | TouchEvent) => {
 	document.removeEventListener("mousemove", init);
 	document.removeEventListener("touchstart", init);
@@ -275,14 +275,14 @@ const init = (event: MouseEvent | TouchEvent) => {
 	if (state.running && animationFrameId === null) loop();
 };
 
-/** 页面重新获得焦点时恢复动画 */
+// 页面重新获得焦点时恢复动画
 const start = () => {
 	if (state.running && animationFrameId !== null) return;
 	state.running = true;
 	loop();
 };
 
-/** 页面失去焦点或组件卸载时停止动画帧 */
+// 页面失去焦点或组件卸载时停止动画帧
 const stop = () => {
 	state.running = false;
 	if (animationFrameId !== null) {
@@ -291,7 +291,7 @@ const stop = () => {
 	}
 };
 
-/** 在点击位置添加下一条上浮文字 */
+// 在点击位置添加下一条上浮文字
 const handleClick = (event: PointerEvent) => {
 	const rect = canvasRef.value.getBoundingClientRect();
 

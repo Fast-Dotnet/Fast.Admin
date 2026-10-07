@@ -27,7 +27,7 @@ export const useNavTabs = defineStore(
 			contentFull: false,
 		});
 
-		/** 重置全部页签状态 */
+		// 重置全部页签状态
 		const $reset = () => {
 			state.activeIndex = -1;
 			state.lastActiveIndex = -1;
@@ -38,7 +38,7 @@ export const useNavTabs = defineStore(
 			state.contentFull = false;
 		};
 
-		/** 移除当前页面缓存并通过重定向重新加载页签 */
+		// 移除当前页面缓存并通过重定向重新加载页签
 		const refreshTab = (route: INavTab) => {
 			const fIdx = state.keepAliveComponentNameList.findIndex((f) => f === route.name.toString());
 			if (fIdx >= 0) {
@@ -47,7 +47,7 @@ export const useNavTabs = defineStore(
 			routerUtil.routePushSafe(router, { path: `/redirect${route.path}`, query: route.query });
 		};
 
-		/** 添加或更新页签，并同步 KeepAlive 缓存 */
+		// 添加或更新页签，并同步 KeepAlive 缓存
 		const addTab = (route: INavTab) => {
 			if (route.meta?.tab === false) return;
 			const fRouteIdx = state.navTabs.findIndex((f) => f.path === route.path);
@@ -79,7 +79,7 @@ export const useNavTabs = defineStore(
 			}
 		};
 
-		/** 导航到最后一个页签；无页签时返回首页 */
+		// 导航到最后一个页签；无页签时返回首页
 		const toLastTab = () => {
 			const lastTab = state.navTabs.slice(-1)[0];
 			if (lastTab) {
@@ -89,7 +89,7 @@ export const useNavTabs = defineStore(
 			}
 		};
 
-		/** 关闭非固定页签并导航到合适的剩余页签 */
+		// 关闭非固定页签并导航到合适的剩余页签
 		const closeTab = (route: INavTab) => {
 			if (route?.meta?.affix === true) return;
 			const findIndex = state.navTabs.findIndex((f) => f.path === route.path);
@@ -110,8 +110,8 @@ export const useNavTabs = defineStore(
 
 		/**
 		 * 批量关闭页签，并始终保留固定页签
-		 * @param retainRoute 需要保留的路由，传入 false 时仅保留固定页签
-		 * @param direction 相对于保留路由关闭的方向，传入 false 时仅保留该路由
+		 * @param retainRoute - 需要保留的路由，传入 false 时仅保留固定页签
+		 * @param direction - 相对于保留路由关闭的方向，传入 false 时仅保留该路由
 		 */
 		const closeTabs = (retainRoute: INavTab | false = false, direction: "left" | "right" | false = false) => {
 			const affixNavTabs = state.navTabs.filter((f) => f?.meta?.affix === true);
@@ -139,7 +139,7 @@ export const useNavTabs = defineStore(
 			toLastTab();
 		};
 
-		/** 更新当前和上一个激活页签 */
+		// 更新当前和上一个激活页签
 		const setActiveRoute = (route: INavTab) => {
 			const fIdx = state.navTabs.findIndex((f) => f.path === route.path);
 			if (fIdx === -1) return;
@@ -148,17 +148,17 @@ export const useNavTabs = defineStore(
 			state.activeIndex = fIdx;
 		};
 
-		/** 设置内容区放大状态 */
+		// 设置内容区放大状态
 		const setContentLarge = (contentLarge: boolean) => {
 			state.contentLarge = contentLarge;
 		};
 
-		/** 设置当前页签内容全屏状态 */
+		// 设置当前页签内容全屏状态
 		const setContentFull = (contentFull: boolean) => {
 			state.contentFull = contentFull;
 		};
 
-		/** 合并布局路由中的固定页签与已持久化的普通页签 */
+		// 合并布局路由中的固定页签与已持久化的普通页签
 		const initNavTabs = (router: Router) => {
 			// 仅从 layout 的可见子路由中收集页签
 			const allRoutes = router

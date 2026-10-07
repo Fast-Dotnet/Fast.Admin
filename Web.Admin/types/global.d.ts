@@ -7,7 +7,7 @@ declare global {
 	/**
 	 * element-plus 中文语言包
 	 *
-	 * @description 解决 element-plus CDN 引用国际化，TS环境找不到变量的问题
+	 * 解决 element-plus CDN 引用国际化，TS环境找不到变量的问题
 	 */
 	declare const ElementPlusLocaleZhCn: import("element-plus/es/locale").Language;
 }
