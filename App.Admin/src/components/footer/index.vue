@@ -1,6 +1,6 @@
 <template>
 	<view class="fa-footer">
-		<text>FastDotnet提供计算服务</text>
+		<text>FastDotnet 提供计算服务</text>
 		<text>© {{ new Date().getFullYear() }} {{ domain }} v{{ appStore.appVersion }}</text>
 	</view>
 </template>
@@ -9,7 +9,7 @@
 import { useApp } from "@/stores";
 
 defineOptions({
-	// eslint-disable-next-line vue/no-reserved-component-names
+	// eslint-disable-next-line vue/no-reserved-component-names -- 保持现有组件名称与项目引用兼容
 	name: "Footer",
 	options: {
 		virtualHost: true,

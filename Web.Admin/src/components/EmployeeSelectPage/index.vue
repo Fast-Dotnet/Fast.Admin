@@ -33,12 +33,17 @@ defineOptions({
 });
 
 const emit = defineEmits<{
+	/** 选项变化事件，透传选中的数据 */
 	change: [value: ElSelectorOutput | undefined];
 }>();
 
+/** 选中的职员 ID */
 const modelValue = defineModel<string>();
+/** 选中职员的名称 */
 const employeeName = defineModel<string>("employeeName");
+/** 选中职员的工号；清空选择时同步清空 */
 const employeeNo = defineModel<string>("employeeNo");
+/** 选中职员的手机号；清空选择时同步清空 */
 const mobile = defineModel<string>("mobile");
 
 const handleChange = (data: ElSelectorOutput | ElSelectorOutput[]) => {

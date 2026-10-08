@@ -7,7 +7,7 @@ import { useUserInfo } from "@/stores";
 import type { ApiResponse } from "@fast-china/axios";
 import type { AxiosHeaders, AxiosRequestConfig, AxiosResponse } from "axios";
 
-/** 加载实例 */
+// 并发请求共享的加载提示状态
 const loadingInstance = {
 	// ElLoading 的实例信息
 	target: withDefineType<ReturnType<typeof ElLoading.service>>(null),
@@ -15,10 +15,10 @@ const loadingInstance = {
 	count: 0,
 };
 
-/** 登录回调 */
+// 防止并发的 401 响应重复弹出登录失效提示。
 let loginCallBack = false;
 
-/** 处理重新登录 */
+/** 识别业务状态码或 HTTP 401，并请求重新登录。 */
 const handleReloadLogin = (response: AxiosResponse) => {
 	// 尝试获取 Restful 风格返回Code，或者获取响应状态码
 	const code = response?.data?.code || response?.status;
@@ -38,7 +38,7 @@ const handleReloadLogin = (response: AxiosResponse) => {
 	return true;
 };
 
-/** 加载 FastAxios */
+/** 创建请求实例并注册加载提示、缓存、加解密及认证拦截器。 */
 export function loadFastAxios(): void {
 	let baseUrl = import.meta.env.VITE_API_BASE_URL;
 	if (baseUrl?.endsWith("/")) {

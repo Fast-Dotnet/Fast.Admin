@@ -42,12 +42,12 @@ defineOptions({
 // v-model绑定值
 const modelValue = defineModel<FaTableColumnAdvancedCtx[]>({ required: true });
 
-// 处理新增行
+/** 处理新增行。 */
 const handleTableRowAdd = () => {
 	modelValue.value.push({ type: 1 });
 };
 
-// 处理删除行
+/** 处理删除行。 */
 const handleTableRowDelete = (index: number) => {
 	modelValue.value.splice(index, 1);
 };

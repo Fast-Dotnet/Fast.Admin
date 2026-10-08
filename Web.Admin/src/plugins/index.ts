@@ -6,6 +6,7 @@ import { loadFastAxios } from "./axios";
 import { loadElementPlus } from "./element-plus";
 import type { App, ComponentPublicInstance } from "vue";
 
+/** 初始化应用日志、存储、请求与全局组件，并注册统一异常反馈。 */
 export function loadPlugins(app: App): void {
 	// 全局异常捕获
 	app.config.errorHandler = (err, _instance: ComponentPublicInstance, _info: string) => {

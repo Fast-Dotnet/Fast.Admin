@@ -21,14 +21,19 @@ defineOptions({
 });
 
 const props = defineProps<{
+	/** 查询部门时使用的机构 ID */
 	orgId?: string;
+	/** 选择框占位文本 */
 	placeholder?: string;
 }>();
 
 const emit = defineEmits<{
+	/** 选项变化事件，透传选中的数据 */
 	change: [value: ElSelectorOutput];
 }>();
 
+/** 选中的部门 ID，支持单值或多值 */
 const modelValue = defineModel<string | string[]>();
+/** 选中部门的名称 */
 const departmentName = defineModel<string>("departmentName");
 </script>

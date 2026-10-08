@@ -55,7 +55,7 @@ public static class ImageUtil
     /// <param name="height">高度</param>
     /// <param name="fontSize">文字大小</param>
     /// <param name="lineHeight">行高</param>
-    /// <returns>生成的图片</returns>
+    /// <returns>独立的图像实例，由调用方负责释放</returns>
     public static Image<Rgba32> GenImage(Action<Image<Rgba32>, Font, Color, int, int, int> drawAction, int width = 450,
         int height = 750, float fontSize = 16f, int? lineHeight = null)
     {
@@ -98,7 +98,8 @@ public static class ImageUtil
     /// 将图片转换为 Base64 编码
     /// </summary>
     /// <param name="image">待处理的图像</param>
-    /// <returns>PNG 图像的 Base64 编码字符串</returns>
+    /// <returns>不带 Data URL 前缀的 PNG Base64 字符串</returns>
+    /// <remarks>不会释放传入图像，图像的生命周期仍由调用方管理。</remarks>
     public static async Task<string> ConvertToBase64Image(Image image)
     {
         // 将图片转换为 Base64 字符串
@@ -112,7 +113,8 @@ public static class ImageUtil
     /// 将图片转换为 Base64 编码
     /// </summary>
     /// <param name="image">待处理的图像</param>
-    /// <returns>PNG 图像的 Base64 编码字符串</returns>
+    /// <returns>不带 Data URL 前缀的 PNG Base64 字符串</returns>
+    /// <remarks>不会释放传入图像，图像的生命周期仍由调用方管理。</remarks>
     public static string ConvertToBase64ImageSync(Image image)
     {
         // 将图片转换为 Base64 字符串
@@ -125,7 +127,9 @@ public static class ImageUtil
     /// <summary>
     /// 获取对应文本字体的文本宽度
     /// </summary>
-    /// <returns>对应文本字体的文本宽度</returns>
+    /// <param name="content">需要测量的文本</param>
+    /// <param name="font">实际渲染使用的字体</param>
+    /// <returns>文本渲染宽度，单位为像素</returns>
     public static float GetFontWidthByContent(string content, Font font)
     {
         // 获取要渲染的文字宽度
@@ -142,7 +146,7 @@ public static class ImageUtil
     /// <param name="showContent">显示文字</param>
     /// <param name="fontSize">文字大小</param>
     /// <param name="drawAction">操作 drawAction(image, font, color, lineHeight, width, height)</param>
-    /// <returns>生成的 Code 128 条形码</returns>
+    /// <returns>Code 128 条形码图像，由调用方负责释放</returns>
     public static Image GenBarCode_128(string content, int width = 200, int height = 200, int dWidth = 300,
         bool showContent = true, float fontSize = 16f, Action<Image<Rgba32>, Font, Color, int, int, int> drawAction = null)
     {
@@ -156,7 +160,7 @@ public static class ImageUtil
     /// <param name="width">二维码宽度</param>
     /// <param name="height">二维码高度</param>
     /// <param name="drawAction">操作 drawAction(image, font, color, lineHeight, width, height)</param>
-    /// <returns>生成的 QR Code 二维码</returns>
+    /// <returns>QR Code 图像，由调用方负责释放</returns>
     public static Image GenQrCode(string content, int width = 200, int height = 200,
         Action<Image<Rgba32>, Font, Color, int, int, int> drawAction = null)
     {

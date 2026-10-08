@@ -8,7 +8,12 @@
 		:enable-preview="props.enablePreview && !!state.src"
 		@click.stop="(event: MouseEvent) => emit('click', event)"
 		@load="(event: Event) => emit('load', event)"
-		@error="(event: Event) => emit('error', event)"
+		@error="
+			(event: Event) => {
+				state.loadError ||= true;
+				emit('error', event);
+			}
+		"
 	>
 		<template #loading>
 			<wd-icon custom-class="fa-image__loading" class-prefix="iconfont" name="loadingImage" />
@@ -20,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive } from "vue";
+import { computed, reactive, toRef, watch } from "vue";
 import { addCssUnit, useProps } from "@fast-china/utils";
 import { imgProps } from "@wot-ui/ui/components/wd-img/types";
 import { useConfig } from "@/stores";
@@ -28,7 +33,7 @@ import artwork from "./images/artwork.png";
 import notImage from "./images/notImage.png";
 
 defineOptions({
-	// eslint-disable-next-line vue/no-reserved-component-names
+	// eslint-disable-next-line vue/no-reserved-component-names -- 保持现有组件名称与项目引用兼容
 	name: "Image",
 	options: {
 		virtualHost: true,
@@ -39,57 +44,59 @@ defineOptions({
 
 const props = defineProps({
 	...imgProps,
-	/** @description 是否允许预览 */
+	/** 是否允许预览 */
 	enablePreview: {
 		type: Boolean,
 		default: true,
 	},
-	/** @description 宽度 */
+	/** 宽度 */
 	width: {
 		type: [String, Number],
 		default: "100%",
 	},
-	/** @description 高度 */
+	/** 高度 */
 	height: {
 		type: [String, Number],
 		default: "100%",
 	},
-	/** @description 隐藏图片，优先级最高 */
+	/** 是否显示占位图；未指定时跟随全局隐藏图片设置 */
 	hideImage: {
 		type: Boolean,
 		default: undefined,
 	},
-	/** @description Base64图片 */
+	/** src 是否为不带 Data URL 前缀的 PNG Base64 内容 */
 	base64: Boolean,
-	/** @description 原图 */
+	/** 是否直接使用原始地址，优先于其他图片规格 */
 	original: Boolean,
-	/** @description 标准 */
+	/** 是否使用 @!normal 图片规格 */
 	normal: Boolean,
-	/** @description 小图 */
+	/** 是否使用 @!small 图片规格 */
 	small: Boolean,
-	/** @description 缩略图 */
+	/** 是否使用 @!thumb 图片规格；未指定规格时也使用缩略图 */
 	thumb: Boolean,
 });
 
 const wdImgProps = useProps(props, imgProps, ["customClass", "customStyle", "src", "previewSrc", "enablePreview"]);
 
 const emit = defineEmits<{
-	/** @description 点击事件 */
+	/** 点击事件 */
 	click: [event: MouseEvent];
-	/** @description 当图片载入完毕时触发 */
+	/** 当图片载入完毕时触发 */
 	load: [event: Event];
-	/** @description 当错误发生时触发 */
+	/** 当错误发生时触发 */
 	error: [event: Event];
 }>();
 
 const configStore = useConfig();
 
 const state = reactive({
+	/** 图片加载错误 */
+	loadError: false,
 	/** 隐藏图片 */
 	hideImage: computed(() => (props.hideImage == null ? configStore.tableLayout.hideImage : props.hideImage)),
 	/** 预览地址 */
 	previewSrc: computed(() => {
-		if (props.src) {
+		if (props.enablePreview && props.src) {
 			if (props.base64) {
 				return `data:image/png;base64,${props.src}`;
 			}
@@ -99,29 +106,34 @@ const state = reactive({
 	}),
 	/** 图片地址 */
 	src: computed(() => {
-		if (props.src) {
-			if (props.base64) {
-				return `data:image/png;base64,${props.src}`;
-			} else if (props.original) {
-				return props.src;
-			} else if (props.normal) {
-				return `${props.src}@!normal`;
-			} else if (props.small) {
-				return `${props.src}@!small`;
-			} else if (props.thumb) {
-				return `${props.src}@!thumb`;
-			} else {
-				// 默认使用缩略图
-				return `${props.src}@!thumb`;
-			}
+		if (!props.src) return undefined;
+		if (props.base64) {
+			return `data:image/png;base64,${props.src}`;
+		} else if (props.original || state.loadError) {
+			return props.src;
+		} else if (props.normal) {
+			return `${props.src}@!normal`;
+		} else if (props.small) {
+			return `${props.src}@!small`;
+		} else if (props.thumb) {
+			return `${props.src}@!thumb`;
+		} else {
+			// 默认使用缩略图
+			return `${props.src}@!thumb`;
 		}
-		return undefined;
 	}),
 });
 
+watch(
+	() => props.src,
+	() => {
+		state.loadError = false;
+	}
+);
+
 defineExpose({
-	/** @description 图片路径 */
-	src: computed(() => state.src),
+	/** 处理图片规格后的地址，可能不同于实际显示的占位图地址 */
+	src: toRef(state, "src"),
 });
 </script>
 

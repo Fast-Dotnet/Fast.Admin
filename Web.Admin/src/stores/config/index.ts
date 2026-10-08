@@ -6,10 +6,13 @@ import { useApp } from "../app";
 import type { componentSizes } from "element-plus";
 import type { FaTableDataRange } from "fast-element-plus";
 
+/** 布局模式 */
 export type IModeName = "Classic" | "Horizontal" | "Mixed";
 
+/** 导航页签样式 */
 export type INavTabStyle = "Smart" | "Card" | "Chrome";
 
+/** 页面切换动画名称 */
 export type IAnimationName =
 	| "slide-right"
 	| "slide-left"
@@ -44,6 +47,7 @@ const smallLayoutSize = {
 	footerHeight: 25,
 };
 
+/** 布局、主题与表格偏好配置 */
 export const useConfig = defineStore(
 	"config",
 	() => {
@@ -99,15 +103,15 @@ export const useConfig = defineStore(
 
 		/** 表格配置 */
 		const tableLayout = reactive({
-			/** Table显示搜索 */
+			/** 是否显示表格搜索区域 */
 			showSearch: true,
-			/** Table抽屉式高级搜索 */
+			/** 是否使用抽屉式高级搜索 */
 			advancedSearchDrawer: false,
-			/** Table高级搜索默认折叠 */
+			/** 高级搜索是否默认折叠 */
 			defaultCollapsedSearch: true,
-			/** Table隐藏图片 */
+			/** 是否默认隐藏表格图片 */
 			hideImage: true,
-			/** Table默认时间搜索范围 */
+			/** 默认时间搜索范围 */
 			dataSearchRange: withDefineType<FaTableDataRange>("Past3D"),
 		});
 
@@ -119,13 +123,13 @@ export const useConfig = defineStore(
 			screenLock: false,
 		});
 
-		/** 设置布局方式 */
+		/** 更新布局模式配置。 */
 		const setLayoutMode = (mode: IModeName) => {
 			// 暂且这里只赋值
 			layout.layoutMode = mode;
 		};
 
-		/** 设置主题色 */
+		/** 应用主题色；传入空值时恢复应用主题色并显示提示。 */
 		const setTheme = (color: string) => {
 			if (!color) {
 				color = useApp().themeColor;
@@ -151,7 +155,7 @@ export const useConfig = defineStore(
 		const darkModeMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 		let themeMediaListening = false;
 
-		/** 切换深色模式 */
+		/** 按当前 isDark 配置应用主题，不在此方法中反转配置值。 */
 		const switchDark = () => {
 			const html = document.documentElement;
 			if (layout.isDark) {
@@ -162,7 +166,7 @@ export const useConfig = defineStore(
 			setTheme(layout.themeColor);
 		};
 
-		/** 切换跟随系统变化自动设置浅色/深色模式 */
+		/** 开启跟随系统时读取系统主题并应用。 */
 		const switchAutoThemMode = () => {
 			if (!layout.autoThemMode) return;
 			// 判断是否启用深色模式
@@ -174,7 +178,7 @@ export const useConfig = defineStore(
 			switchDark();
 		};
 
-		/** 切换置灰或色弱模式 */
+		/** 应用置灰或色弱显示配置。 */
 		const switchGreyOrWeak = (type: "grey" | "weak", value: boolean) => {
 			const body = document.body;
 			if (!value) {
@@ -190,7 +194,7 @@ export const useConfig = defineStore(
 			layout.isWeak = type === "weak";
 		};
 
-		/** 初始化主题 */
+		/** 应用当前主题配置，并确保系统主题变化监听只注册一次。 */
 		const initTheme = () => {
 			switchAutoThemMode();
 			if (!themeMediaListening) {
@@ -202,17 +206,17 @@ export const useConfig = defineStore(
 			if (layout.isWeak) switchGreyOrWeak("weak", true);
 		};
 
-		/** 设置默认布局大小 */
+		/** 恢复默认布局尺寸。 */
 		const setDefaultLayoutSize = () => {
 			Object.assign(layout, defaultLayoutSize);
 		};
 
-		/** 设置小的布局大小 */
+		/** 应用紧凑布局尺寸。 */
 		const setSmallLayoutSize = () => {
 			Object.assign(layout, smallLayoutSize);
 		};
 
-		/** 重置 */
+		/** 按预设值重置布局和表格偏好，并重新应用主题。 */
 		const reset = () => {
 			layout.autoSize = true;
 			layout.layoutSize = defaultSize;

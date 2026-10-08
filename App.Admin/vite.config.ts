@@ -1,24 +1,40 @@
 import { readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import UniPlugin from "@dcloudio/vite-plugin-uni";
 import { defineConfig } from "vite";
-const { default: Uni } = createRequire(import.meta.url)("@dcloudio/vite-plugin-uni") as { default: typeof UniPlugin };
 import UniHelperComponents from "@uni-helper/vite-plugin-uni-components";
 import UniHelperLayouts from "@uni-helper/vite-plugin-uni-layouts";
 import UniHelperPages from "@uni-helper/vite-plugin-uni-pages";
 import { FastResolver } from "./resolver.fast";
 import { WotResolver } from "./resolver.wot-ui";
 import { ZPagingResolver } from "./resolver.z-paging";
-import type UniPlugin from "@dcloudio/vite-plugin-uni";
 
+// 兼容插件的模块导出形式，优先使用 default 导出，否则使用模块本身。
+const Uni = (UniPlugin as typeof UniPlugin & { default?: typeof UniPlugin }).default ?? UniPlugin;
+const viteRoot = fileURLToPath(new URL(".", import.meta.url));
 const isDevelopment = process.env.NODE_ENV === "development";
 
 export default defineConfig({
+	/* 固定以配置文件所在目录作为项目根目录，避免因启动位置不同而影响路径解析。 */
+	root: viteRoot,
 	resolve: {
 		/* 配置源码目录别名。 */
 		alias: {
 			"@": fileURLToPath(new URL("./src", import.meta.url)),
 			static: fileURLToPath(new URL("./src/static", import.meta.url)),
 		},
+	},
+	server: {
+		/* 监听所有网络地址，允许通过局域网 IP 访问开发服务器。 */
+		host: true,
+		/* 开发服务器端口。 */
+		port: 2010,
+		/* 启动开发服务器后不自动打开浏览器。 */
+		open: false,
+		/* 允许开发服务器响应跨域请求。 */
+		cors: true,
+		/* 端口被占用时自动尝试下一个可用端口。 */
+		strictPort: false,
 	},
 	css: {
 		preprocessorOptions: {
@@ -39,8 +55,6 @@ export default defineConfig({
 		reportCompressedSize: false,
 		/* 不生成 Source Map，减少构建体积并避免暴露源码。 */
 		sourcemap: false,
-		/* 禁止将小型静态资源内联为 Base64，所有资源均单独输出。 */
-		assetsInlineLimit: 0,
 		/* 开发环境不压缩，发行环境使用 Terser。 */
 		minify: isDevelopment ? false : "terser",
 		terserOptions: {
@@ -54,8 +68,11 @@ export default defineConfig({
 				/* 移除注释。 */
 				comments: false,
 			},
+			/** 混淆变量名。 */
+			mangle: true,
 		},
 	},
+	/** Vite 插件 */
 	plugins: [
 		/* 基于文件系统自动生成页面路由。 */
 		UniHelperPages({
@@ -87,7 +104,6 @@ export default defineConfig({
 			],
 			dts: "types/components.d.ts",
 		}),
-		/* 组件自动
 		/* uni-app Vite 插件必须放在相关转换插件之后。 */
 		Uni(),
 	],

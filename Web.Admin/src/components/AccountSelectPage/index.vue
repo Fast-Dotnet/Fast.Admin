@@ -33,12 +33,17 @@ defineOptions({
 });
 
 const emit = defineEmits<{
+	/** 选项变化事件，透传选中的数据 */
 	change: [value: ElSelectorOutput | undefined];
 }>();
 
+/** 选中的账号 ID */
 const modelValue = defineModel<string>();
+/** 选中账号的手机号 */
 const mobile = defineModel<string>("mobile");
+/** 选中账号的邮箱；清空选择时同步清空 */
 const email = defineModel<string>("email");
+/** 选中账号的标识；清空选择时同步清空 */
 const accountKey = defineModel<string>("accountKey");
 
 const handleChange = (data: ElSelectorOutput | ElSelectorOutput[]) => {

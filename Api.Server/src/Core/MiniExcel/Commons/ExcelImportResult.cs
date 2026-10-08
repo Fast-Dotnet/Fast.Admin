@@ -42,8 +42,9 @@ public class ExcelImportResult<T> where T : class, new()
     }
 
     /// <summary>
-    /// 检查是否存在错误，如果有则抛出异常
+    /// 检查导入结果，并在存在校验错误时汇总行号和错误信息后抛出异常。
     /// </summary>
+    /// <exception cref="UserFriendlyException">Errors 中存在至少一条错误时抛出。</exception>
     public void ThrowIfError()
     {
         if (!HasError)

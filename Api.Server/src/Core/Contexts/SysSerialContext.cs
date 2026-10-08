@@ -60,18 +60,24 @@ public class SysSerialContext
     }
 
     /// <summary>
-    /// 生成应用编号
+    /// 在调用方事务中生成应用编号，并更新对应流水配置。
     /// </summary>
-    /// <returns>生成的应用编号</returns>
+    /// <param name="db">已开启事务的数据库客户端</param>
+    /// <returns>按应用编号规则生成的新编号</returns>
+    /// <exception cref="SqlSugarException">客户端当前未开启事务时抛出。</exception>
+    /// <exception cref="UserFriendlyException">应用编号规则未配置时抛出。</exception>
     public static string GenAppNo(ISqlSugarClient db)
     {
         return GenerateSerialNo(db, SysSerialRuleTypeEnum.AppNo);
     }
 
     /// <summary>
-    /// 生成租户编号
+    /// 在调用方事务中生成租户编号，并更新对应流水配置。
     /// </summary>
-    /// <returns>生成的租户编号</returns>
+    /// <param name="db">已开启事务的数据库客户端</param>
+    /// <returns>按租户编号规则生成的新编号</returns>
+    /// <exception cref="SqlSugarException">客户端当前未开启事务时抛出。</exception>
+    /// <exception cref="UserFriendlyException">租户编号规则未配置时抛出。</exception>
     public static string GenTenantNo(ISqlSugarClient db)
     {
         return GenerateSerialNo(db, SysSerialRuleTypeEnum.TenantNo);

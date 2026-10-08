@@ -29,9 +29,11 @@ public class ConfigContext
     internal static ILogger logger = FastContext.GetService<ILogger<ConfigContext>>();
 
     /// <summary>
-    /// 获取配置
+    /// 获取非空配置值，依次查询当前请求缓存、共享缓存和数据库。
     /// </summary>
+    /// <param name="configCode">配置编码</param>
     /// <returns>配置值</returns>
+    /// <exception cref="UserFriendlyException">配置编码为空、配置不存在或配置值为空时抛出。</exception>
     public static string GetConfigSync(string configCode)
     {
         if (string.IsNullOrWhiteSpace(configCode))
@@ -83,9 +85,11 @@ public class ConfigContext
     }
 
     /// <summary>
-    /// 获取配置
+    /// 获取非空配置值，依次查询当前请求缓存、共享缓存和数据库。
     /// </summary>
+    /// <param name="configCode">配置编码</param>
     /// <returns>配置值</returns>
+    /// <exception cref="UserFriendlyException">配置编码为空、配置不存在或配置值为空时抛出。</exception>
     public static async Task<string> GetConfig(string configCode)
     {
         if (string.IsNullOrWhiteSpace(configCode))
@@ -137,8 +141,10 @@ public class ConfigContext
     }
 
     /// <summary>
-    /// 删除配置
+    /// 清除指定配置的请求缓存与共享缓存，不删除数据库配置。
     /// </summary>
+    /// <param name="configCode">配置编码</param>
+    /// <exception cref="UserFriendlyException">配置编码为空时抛出。</exception>
     public static async Task DeleteConfig(string configCode)
     {
         if (string.IsNullOrWhiteSpace(configCode))
@@ -162,7 +168,7 @@ public class ConfigContext
     }
 
     /// <summary>
-    /// 删除所有配置
+    /// 清除配置缓存，不删除数据库配置。
     /// </summary>
     public static async Task DeleteAllConfig()
     {

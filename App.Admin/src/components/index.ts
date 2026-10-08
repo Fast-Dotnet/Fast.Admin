@@ -8,7 +8,6 @@ import NavbarCapsule from "./navbarCapsule/index.vue";
 import Overlay from "./overlay/index.vue";
 import Popup from "./popup/index.vue";
 import SearchInput from "./searchInput/index.vue";
-import TabBar from "./tabBar/index.vue";
 import Tag from "./tag/index.vue";
 import Watermark from "./watermark/index.vue";
 
@@ -32,8 +31,6 @@ export { Popup };
 export type FaPopupInstance = InstanceType<typeof Popup>;
 export { SearchInput };
 export type FaSearchInputInstance = InstanceType<typeof SearchInput>;
-export { TabBar };
-export type FaTabBarInstance = InstanceType<typeof TabBar>;
 export { Tag };
 export type FaTagInstance = InstanceType<typeof Tag>;
 export { Watermark };

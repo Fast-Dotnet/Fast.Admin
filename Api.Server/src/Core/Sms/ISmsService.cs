@@ -13,25 +13,31 @@ namespace Fast.Core;
 public interface ISmsService
 {
     /// <summary>
-    /// 获取当前验证码发送的剩余等待秒数
+    /// 获取指定接收方和业务类型的验证码发送冷却时间。
     /// </summary>
     /// <param name="smsType">短信类型</param>
     /// <param name="mobile">手机号</param>
+    /// <returns>剩余等待秒数；没有有效冷却记录时为 0</returns>
     Task<int> GetVerificationCodeRetryAfterSeconds(SmsTypeEnum smsType, string mobile);
 
     /// <summary>
-    /// 发送验证码
+    /// 发送与当前客户端绑定的验证码，并设置发送冷却。
     /// </summary>
     /// <param name="smsType">短信类型</param>
     /// <param name="mobile">手机号</param>
+    /// <remarks>验证码有效期为 5 分钟，发送冷却为 60 秒；发送失败也会保留本次冷却限制。</remarks>
+    /// <exception cref="UserFriendlyException">接收地址不合法、仍在冷却期或发送配置不可用时抛出。</exception>
     Task SendVerificationCode(SmsTypeEnum smsType, string mobile);
 
     /// <summary>
-    /// 验证并一次性消费验证码
+    /// 校验验证码，并在校验成功后删除对应记录。
     /// </summary>
     /// <param name="smsType">短信类型</param>
     /// <param name="mobile">手机号</param>
-    /// <param name="verificationCode">验证码</param>
+    /// <param name="verificationCode">用户输入的验证码</param>
+    /// <remarks>校验绑定当前客户端；累计错误达到 5 次时验证码失效，未达到上限的失败不会延长有效期。</remarks>
+    /// <exception cref="ArgumentNullException">验证码为 null 时抛出。</exception>
+    /// <exception cref="UserFriendlyException">接收地址不合法、验证码错误或失效，或并发校验未取得锁时抛出。</exception>
     Task VerifyVerificationCode(SmsTypeEnum smsType, string mobile, string verificationCode);
 
     /// <summary>

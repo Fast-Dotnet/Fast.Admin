@@ -32,7 +32,7 @@ export interface AppUpdateInfo extends AppUpdateOptions {
 	type: "app" | "wgt";
 }
 
-/** APP 版本检测方法 */
+/** 查询更新信息的方法；返回 null 或 undefined 表示无需更新 */
 export type AppUpdateChecker = (versionInfo: AppVersionInfo) => Promise<AppUpdateInfo | null | undefined>;
 
 const getErrorMessage = (error: unknown): string => {
@@ -215,12 +215,32 @@ const checkAppUpdate = async (checker: AppUpdateChecker): Promise<boolean> => {
 
 /** 应用更新 Hook */
 export const useUpdate = {
-	/** 检测小程序更新 */
+	/**
+	 * 注册小程序更新检测并在资源就绪后提示重启。
+	 *
+	 * @returns 资源就绪为 true，无更新或非小程序平台为 false；下载失败时 Promise 拒绝
+	 */
 	checkMiniProgramUpdate,
-	/** 检测并执行 APP 更新 */
+	/**
+	 * 使用调用方的检测方法查询版本，并按更新类型执行整包或资源更新。
+	 *
+	 * @param checker - 接收当前版本信息并返回可用更新的检测方法
+	 * @returns 是否进入对应更新流程；无更新、取消或非 App 平台时为 false
+	 */
 	checkAppUpdate,
-	/** 执行 APP 整包更新 */
+	/**
+	 * 用户确认后通过系统打开整包下载地址，不在本方法内安装整包。
+	 *
+	 * @param options - 下载地址或更新配置
+	 * @returns 是否已调用系统打开地址，不代表下载或安装完成
+	 */
 	updateApp,
-	/** 执行 APP WGT 资源热更新 */
+	/**
+	 * 用户确认后下载并安装 WGT 资源包，再提示重启应用。
+	 *
+	 * @param options - 资源包地址或更新配置
+	 * @returns 是否完成安装并调用重启；取消或非 App 平台时为 false
+	 * @throws 下载、安装或重启前确认失败时继续传播异常。
+	 */
 	hotUpdateApp,
 };

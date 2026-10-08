@@ -176,7 +176,7 @@ const resignedEditFormRef = useTemplateRef<InstanceType<typeof ResignedEdit>>("r
 const bindAccountFormRef = useTemplateRef<InstanceType<typeof BindAccount>>("bindAccountFormRef");
 const userInfoStore = useUserInfo();
 
-/** 处理状态变更 */
+/** 修改职员在职状态；恢复在职不会同时启用登录账号。 */
 const handleChangeStatus = (row: QueryEmployeePagedOutput, status: EmployeeStatusEnum) => {
 	const { employeeId, rowVersion } = row;
 	const message =
@@ -196,7 +196,7 @@ const handleChangeStatus = (row: QueryEmployeePagedOutput, status: EmployeeStatu
 	});
 };
 
-/** 处理状态变更 */
+/** 单独切换职员登录账号的启用状态。 */
 const handleChangeAccountStatus = (row: QueryEmployeePagedOutput) => {
 	const { employeeId, accountStatus, rowVersion } = row;
 	ElMessageBox.confirm(`确定${accountStatus === CommonStatusEnum.Enable ? "禁用" : "启用"}职员【${row.employeeName}】的登录账号？`, {

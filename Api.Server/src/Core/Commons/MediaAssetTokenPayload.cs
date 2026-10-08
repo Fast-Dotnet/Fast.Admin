@@ -48,7 +48,7 @@ public class MediaAssetTokenPayload
     public string SessionId { get; set; }
 
     /// <summary>
-    /// 过期时间戳，单位：秒
+    /// UTC Unix 过期时间戳，单位为秒
     /// </summary>
     public long ExpiresAt { get; set; }
 }

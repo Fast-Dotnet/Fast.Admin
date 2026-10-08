@@ -18,14 +18,14 @@ defineOptions({
 });
 
 const props = defineProps({
-	/** @description 加载 */
+	/** 是否显示加载提示 */
 	loading: Boolean,
-	/** @description 加载文字 */
+	/** 加载提示文本 */
 	text: {
 		type: String,
 		default: "加载中...",
 	},
-	/** @description 是否遮罩层，一般用于组件内部 */
+	/** 是否遮罩层，一般用于组件内部 */
 	mask: Boolean,
 });
 </script>

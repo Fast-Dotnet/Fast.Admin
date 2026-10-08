@@ -6,10 +6,11 @@ import { useToast } from "@/hooks";
 import { useApp } from "../app";
 import type { ConfigProviderThemeVars } from "@wot-ui/ui/components/wd-config-provider/types";
 
+/** 布局、主题与表格偏好配置 */
 export const useConfig = defineStore(
 	"config",
 	() => {
-		/** 布局配置 */
+		// 布局配置
 		const layout = reactive({
 			/** 头部导航栏高度 */
 			navBarHeight: 48,
@@ -35,17 +36,19 @@ export const useConfig = defineStore(
 			isWeak: false,
 			/** 是否显示页脚 */
 			footer: true,
+			/** 是否显示水印 */
+			watermark: true,
 		});
 
 		/** 表格配置 */
 		const tableLayout = reactive({
-			/** Table隐藏图片 */
-			hideImage: true,
-			/** Table默认时间搜索范围 */
-			dataSearchRange: withDefineType<FaTableDataRange>("Past3D"),
+			/** 是否默认隐藏表格图片 */
+			hideImage: false,
+			/** 默认时间搜索范围 */
+			dataSearchRange: withDefineType<FaTableDataRange>("Past1M"),
 		});
 
-		/** 设置主题色 */
+		/** 更新导航栏、平台外观与 Wot UI 主题变量；空值使用应用主题色。 */
 		const setTheme = (color?: string) => {
 			if (!color) {
 				color = useApp().themeColor;
@@ -64,12 +67,15 @@ export const useConfig = defineStore(
 			}
 
 			uni.setNavigationBarColor({ frontColor: navbarFrontColor, backgroundColor: navbarBgColor });
+
+			// #ifdef MP-WEIXIN
 			uni.setBackgroundColor({
 				backgroundColor: pageBackgroundColor,
 				backgroundColorTop: pageBackgroundColor,
 				backgroundColorBottom: pageBackgroundColor,
 			});
 			uni.setBackgroundTextStyle({ textStyle: layout.isDark ? "light" : "dark" });
+			// #endif
 
 			// #ifdef APP-PLUS
 			plus.navigator.setStatusBarStyle(navbarFrontColor === "#ffffff" ? "light" : "dark");
@@ -77,7 +83,7 @@ export const useConfig = defineStore(
 
 			const appStore = useApp();
 			// 头部胶囊padding
-			// eslint-disable-next-line no-useless-assignment
+			// eslint-disable-next-line no-useless-assignment -- 非微信平台编译时保留此默认值
 			let navbarCapsulePadding = CommonUniApp.navbarCapsuleMenuButtonPadding;
 			// #ifdef MP-WEIXIN
 			navbarCapsulePadding = appStore.windowInfo.windowWidth - (appStore.menuButton?.right ?? 0);
@@ -85,7 +91,7 @@ export const useConfig = defineStore(
 
 			const styles: Record<string, string> = {
 				"--fa-window-width": `${appStore.windowInfo.windowWidth}px`,
-				// 如果存在安全距离，页面 100vh 会导致失效，所以这里通过动态计算计算页面剩余高度
+				// 从视口高度扣除底部安全区，避免页面内容延伸到安全区内。
 				"--fa-window-height": `calc(100vh - ${appStore.windowInfo.safeAreaInsets.bottom}px)`,
 				// 状态栏高度
 				"--fa-status-bar-height": `${appStore.windowInfo.statusBarHeight}px`,
@@ -106,7 +112,7 @@ export const useConfig = defineStore(
 				"--wot-navbar-capsule-width": `${appStore.menuButton?.width ?? 0}px`,
 				// 头部胶囊按钮高度，-2 边框
 				"--wot-navbar-capsule-height": `${appStore.menuButton.height - 2}px`,
-				/* 导航栏文字颜色 */
+				// 导航栏文字颜色
 				"--wot-navbar-color": navbarFrontColor,
 				// 底部 tabbar 高度
 				"--wot-tabbar-height": addCssUnit(layout.tabBarHeight),
@@ -138,7 +144,7 @@ export const useConfig = defineStore(
 			layout.themeStyle = serializeStyle(styles);
 		};
 
-		/** 切换深色模式 */
+		/** 按当前 isDark 配置应用主题，不在此方法中反转配置值。 */
 		const switchDark = () => {
 			if (layout.isDark) {
 				// #ifdef APP-PLUS
@@ -152,7 +158,7 @@ export const useConfig = defineStore(
 			setTheme(layout.themeColor);
 		};
 
-		/** 切换跟随系统变化自动设置浅色/深色模式 */
+		/** 开启跟随系统时读取系统主题并应用。 */
 		const switchAutoThemMode = () => {
 			if (!layout.autoThemMode) return;
 			// #ifdef APP-PLUS
@@ -168,14 +174,14 @@ export const useConfig = defineStore(
 			setTheme(layout.themeColor);
 		};
 
-		/** 切换置灰或色弱模式 */
+		/** 应用置灰或色弱显示配置。 */
 		const switchGreyOrWeak = (type: "grey" | "weak", value: boolean) => {
 			layout.isGrey = type === "grey" && value;
 			layout.isWeak = type === "weak" && value;
 			setTheme(layout.themeColor);
 		};
 
-		/** 初始化主题 */
+		/** 按设备更新导航栏高度，注册系统主题监听并应用当前主题。 */
 		const initTheme = () => {
 			const appStore = useApp();
 			if (appStore.isIphone) {
@@ -190,7 +196,7 @@ export const useConfig = defineStore(
 			if (layout.isWeak) switchGreyOrWeak("weak", true);
 		};
 
-		/** 重置 */
+		/** 按预设值重置布局和表格偏好，并重新应用主题。 */
 		const reset = () => {
 			layout.tabBarHeight = 55;
 			layout.footerHeight = 40;
@@ -201,6 +207,7 @@ export const useConfig = defineStore(
 			layout.isGrey = false;
 			layout.isWeak = false;
 			layout.footer = true;
+			layout.watermark = true;
 			initTheme();
 			tableLayout.hideImage = true;
 			tableLayout.dataSearchRange = "Past3D";

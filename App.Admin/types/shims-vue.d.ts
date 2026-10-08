@@ -16,13 +16,13 @@ declare module "vue" {
 	interface ComponentCustomOptions {
 		options?: {
 			/**
-			 * 是否启用多 Slot 支持。
+			 * 是否启用多 Slot 支持
 			 *
-			 * @default true
+			 * @defaultValue true
 			 */
 			multipleSlots?: boolean;
 			/**
-			 * 组件样式隔离方式。
+			 * 组件样式隔离方式
 			 *
 			 * - `isolated`：启用样式隔离，组件内外的 class 样式互不影响。
 			 * - `apply-shared`：页面样式可影响组件，但组件样式不会影响页面。
@@ -31,20 +31,20 @@ declare module "vue" {
 			 *
 			 * 支持微信小程序、支付宝小程序（基础库 2.7.2+）。
 			 *
-			 * @default "apply-shared"
+			 * @defaultValue "apply-shared"
 			 */
 			styleIsolation?: "isolated" | "apply-shared" | "shared";
 			/**
-			 * 是否允许页面全局样式影响当前组件。
+			 * 是否允许页面全局样式影响当前组件
 			 *
 			 * 等价于设置 `styleIsolation: "apply-shared"`。
 			 * 当同时设置 `styleIsolation` 时，以 `styleIsolation` 为准。
 			 *
-			 * @default true
+			 * @defaultValue true
 			 */
 			addGlobalClass?: boolean;
 			/**
-			 * 是否将组件根节点声明为虚拟节点。
+			 * 是否将组件根节点声明为虚拟节点
 			 *
 			 * 启用后，组件根节点本身不参与样式和布局计算，组件内部第一层节点可直接参与外部 Flex 布局等场景。
 			 *
@@ -52,7 +52,7 @@ declare module "vue" {
 			 *
 			 * 支持支付宝小程序、微信小程序、抖音小程序（4.02+）。
 			 *
-			 * @default false
+			 * @defaultValue false
 			 */
 			virtualHost?: boolean;
 		};

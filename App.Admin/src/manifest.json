@@ -7,8 +7,8 @@
 	"app-plus": {
 		"compatible": {
 			"ignoreVersion": true,
-			"runtimeVersion": "5.24",
-			"compilerVersion": "5.24"
+			"runtimeVersion": "5.26",
+			"compilerVersion": "5.26"
 		},
 		"usingComponents": true,
 		"nvueStyleCompiler": "uni-app",
@@ -34,11 +34,11 @@
 		},
 		"modules": {
 			"Barcode": {},
-			"Bluetooth": {},
 			"Camera": {},
 			"VideoPlayer": {},
 			"Geolocation": {},
-			"Maps": {}
+			"Maps": {},
+			"UIWebview": {}
 		},
 		"distribute": {
 			"android": {
@@ -49,22 +49,10 @@
 
 					"<uses-permission android:name=\"android.permission.WAKE_LOCK\" />",
 					"<uses-permission android:name=\"android.permission.VIBRATE\" />",
-					"<uses-permission android:name=\"android.permission.FLASHLIGHT\" />",
 					"<uses-permission android:name=\"android.permission.CAMERA\" />",
 
-					"<uses-permission android:name=\"android.permission.CHANGE_WIFI_STATE\" />",
-					"<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\" />",
-					"<uses-permission android:name=\"android.permission.NEARBY_WIFI_DEVICES\" />",
-
-					"<uses-permission android:name=\"android.permission.BLUETOOTH\" android:maxSdkVersion=\"30\" />",
-					"<uses-permission android:name=\"android.permission.BLUETOOTH_ADMIN\" android:maxSdkVersion=\"30\" />",
-					"<uses-permission android:name=\"android.permission.BLUETOOTH_SCAN\" />",
-					"<uses-permission android:name=\"android.permission.BLUETOOTH_CONNECT\" />",
-
 					"<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\" />",
-					"<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />",
-
-					"<uses-permission android:name=\"android.permission.READ_PHONE_STATE\" />"
+					"<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />"
 				],
 				"permissionExternalStorage": {
 					"request": "none"
@@ -73,19 +61,18 @@
 					"request": "none"
 				},
 				"minSdkVersion": 24,
-				"targetSdkVersion": 24,
-				"abiFilters": ["armeabi-v7a", "arm64-v8a", "x86"]
+				"targetSdkVersion": 35,
+				"abiFilters": ["armeabi-v7a", "arm64-v8a"]
 			},
 			"ios": {
 				"dSYMs": false,
 				"idfa": false,
-				"UIBackgroundModes": ["audio", "location"],
+				"UIBackgroundModes": ["audio"],
 				"privacyDescription": {
-					"NSCameraUsageDescription": "用于拍照和扫描二维码。",
-					"NSPhotoLibraryUsageDescription": "用于选择并上传图片。",
-					"NSPhotoLibraryAddUsageDescription": "用于保存图片到系统相册。",
-					"NSLocationWhenInUseUsageDescription": "用于获取您的位置信息。",
-					"NSBluetoothAlwaysUsageDescription": "用于发现并连接附近的蓝牙设备。"
+					"NSCameraUsageDescription": "用于扫描二维码、拍摄业务照片及上传相关图片，仅在您主动使用对应功能时访问摄像头。",
+					"NSPhotoLibraryUsageDescription": "用于从系统相册选择业务图片并上传，例如个人头像、业务附件及相关凭证。",
+					"NSPhotoLibraryAddUsageDescription": "用于将您主动选择保存的业务图片或二维码保存到系统相册。",
+					"NSLocationWhenInUseUsageDescription": "用于在您使用定位或地图选点功能时获取当前位置，以便完成相关业务操作。"
 				}
 			},
 			"sdkConfigs": {
@@ -103,38 +90,65 @@
 			},
 			"icons": {
 				"android": {
-					"hdpi": "public/com.fastdotnet.app/72x72.png",
-					"xhdpi": "public/com.fastdotnet.app/96x96.png",
-					"xxhdpi": "public/com.fastdotnet.app/144x144.png",
-					"xxxhdpi": "public/com.fastdotnet.app/192x192.png"
+					"hdpi": "public/72x72.png",
+					"xhdpi": "public/96x96.png",
+					"xxhdpi": "public/144x144.png",
+					"xxxhdpi": "public/192x192.png"
 				},
 				"ios": {
-					"appstore": "public/com.fastdotnet.app/1024x1024.png",
+					"appstore": "public/1024x1024.png",
 					"ipad": {
-						"app": "public/com.fastdotnet.app/76x76.png",
-						"app@2x": "public/com.fastdotnet.app/152x152.png",
-						"notification": "public/com.fastdotnet.app/20x20.png",
-						"notification@2x": "public/com.fastdotnet.app/40x40.png",
-						"proapp@2x": "public/com.fastdotnet.app/167x167.png",
-						"settings": "public/com.fastdotnet.app/29x29.png",
-						"settings@2x": "public/com.fastdotnet.app/58x58.png",
-						"spotlight": "public/com.fastdotnet.app/40x40.png",
-						"spotlight@2x": "public/com.fastdotnet.app/80x80.png"
+						"app": "public/76x76.png",
+						"app@2x": "public/152x152.png",
+						"notification": "public/20x20.png",
+						"notification@2x": "public/40x40.png",
+						"proapp@2x": "public/167x167.png",
+						"settings": "public/29x29.png",
+						"settings@2x": "public/58x58.png",
+						"spotlight": "public/40x40.png",
+						"spotlight@2x": "public/80x80.png"
 					},
 					"iphone": {
-						"app@2x": "public/com.fastdotnet.app/120x120.png",
-						"app@3x": "public/com.fastdotnet.app/180x180.png",
-						"notification@2x": "public/com.fastdotnet.app/40x40.png",
-						"notification@3x": "public/com.fastdotnet.app/60x60.png",
-						"settings@2x": "public/com.fastdotnet.app/58x58.png",
-						"settings@3x": "public/com.fastdotnet.app/87x87.png",
-						"spotlight@2x": "public/com.fastdotnet.app/80x80.png",
-						"spotlight@3x": "public/com.fastdotnet.app/120x120.png"
+						"app@2x": "public/120x120.png",
+						"app@3x": "public/180x180.png",
+						"notification@2x": "public/40x40.png",
+						"notification@3x": "public/60x60.png",
+						"settings@2x": "public/58x58.png",
+						"settings@3x": "public/87x87.png",
+						"spotlight@2x": "public/80x80.png",
+						"spotlight@3x": "public/120x120.png"
 					}
 				}
 			}
 		},
 		"nativePlugins": {}
+	},
+	"app-harmony": {
+		"darkmode": true,
+		"themeLocation": "theme.json",
+		"safearea": {
+			"background": "#ffffff",
+			"backgroundDark": "#07111c",
+			"bottom": {
+				"offset": "none"
+			}
+		},
+		"distribute": {
+			"bundleName": "com.fastdotnet.app",
+			"icons": {
+				"foreground": "public/1024x1024.png",
+				"background": "public/1024x1024.png"
+			},
+			"splashScreens": {
+				"startWindowBackground": "#ffffff",
+				"startWindowIcon": "public/192x192.png"
+			},
+			"modules": {
+				"uni-location": {
+					"system": {}
+				}
+			}
+		}
 	},
 	"mp-weixin": {
 		"usingComponents": true,
@@ -152,11 +166,11 @@
 		"plugins": {},
 		"permission": {
 			"scope.userLocation": {
-				"desc": "用于获取您的位置信息。"
+				"desc": "用于在您主动使用定位或地图选点功能时获取当前位置，辅助完成相关业务操作。"
 			}
 		},
 		"requiredPrivateInfos": ["getLocation", "chooseLocation"],
-		"requiredBackgroundModes": ["audio", "location"],
+		"requiredBackgroundModes": ["audio"],
 		"optimization": {
 			"subPackages": true
 		}
@@ -166,7 +180,7 @@
 		"darkmode": true,
 		"themeLocation": "theme.json",
 		"devServer": {
-			"port": 3010,
+			"port": 2010,
 			"https": false
 		},
 		"router": {

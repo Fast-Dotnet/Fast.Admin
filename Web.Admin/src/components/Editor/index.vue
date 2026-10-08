@@ -64,7 +64,7 @@ const props = defineProps({
 	},
 });
 
-// 编辑器 HTML 内容
+/** 编辑器 HTML 内容 */
 const modelValue = defineModel<string>();
 
 // 编辑器实例；使用 shallowRef 避免代理第三方编辑器对象
@@ -76,7 +76,7 @@ const formContext = inject(formContextKey, undefined);
 /** WangEditor 自定义上传成功后的资源插入函数 */
 type InsertFnType = (url: string, alt: string, href: string) => void;
 
-// 上传图片并将返回的资源地址插入编辑器
+/** 上传图片并将返回的资源地址插入编辑器。 */
 const handleUploadImage = async (file: File, insertFn: InsertFnType) => {
 	if (file.size > 5 * 1024 * 1024) {
 		ElMessage.error(`文件过大，最大允许 5MB`);
@@ -93,7 +93,7 @@ const handleUploadImage = async (file: File, insertFn: InsertFnType) => {
 	}
 };
 
-// 上传视频并将返回的资源地址插入编辑器
+/** 上传视频并将返回的资源地址插入编辑器。 */
 const handleUploadVideo = async (file: File, insertFn: InsertFnType) => {
 	if (file.size > 10 * 1024 * 1024) {
 		ElMessage.error(`文件过大，最大允许 10MB`);
@@ -110,12 +110,12 @@ const handleUploadVideo = async (file: File, insertFn: InsertFnType) => {
 	}
 };
 
-// 保存 WangEditor 创建完成后的实例
+/** 保存 WangEditor 创建完成后的实例。 */
 const handleCreated = (editor: IDomEditor) => {
 	editorRef.value = editor;
 };
 
-// 将 WangEditor 的自定义提示映射为 Element Plus 消息
+/** 将 WangEditor 的自定义提示映射为 Element Plus 消息。 */
 const handleCustomAlert = (info: string, type: string) => {
 	switch (type) {
 		case "success":
@@ -134,14 +134,14 @@ const handleCustomAlert = (info: string, type: string) => {
 	}
 };
 
-// 在当前光标位置插入文本
+/** 在当前光标位置插入文本。 */
 const insertText = (text: string) => {
 	const editor = editorRef.value;
 	if (editor == null) return;
 	editor.insertText(text);
 };
 
-/** 跟随所属表单的禁用状态切换编辑器可用性 */
+// 跟随所属表单的禁用状态切换编辑器可用性。
 watch(
 	() => formContext?.disabled,
 	(newValue) => {
@@ -150,7 +150,7 @@ watch(
 	}
 );
 
-/** 跟随组件 disabled 属性切换编辑器可用性 */
+// 跟随组件 disabled 属性切换编辑器可用性。
 watch(
 	() => props.disabled,
 	(newValue) => {
@@ -159,7 +159,7 @@ watch(
 	}
 );
 
-/** 组件卸载时销毁第三方编辑器实例 */
+// 组件卸载时销毁第三方编辑器实例。
 onBeforeUnmount(() => {
 	const editor = editorRef.value;
 	if (editor == null) return;
@@ -169,7 +169,7 @@ onBeforeUnmount(() => {
 defineExpose({
 	/** 编辑器实例 */
 	editorRef,
-	/** 在当前光标位置插入文本 */
+	/** 在当前光标位置插入文本；编辑器未就绪时不执行操作。 */
 	insertText,
 });
 </script>

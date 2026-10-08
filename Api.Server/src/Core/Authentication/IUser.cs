@@ -10,7 +10,7 @@ namespace Fast.Core;
 /// <summary>
 /// 授权用户信息
 /// </summary>
-/// <remarks>作用域注册，保证当前请求管道中是唯一的，并且只会加载一次</remarks>
+/// <remarks>按作用域注册；同一请求共享此实例，首次赋值后默认不再覆盖，除非显式要求强制更新。</remarks>
 public interface IUser
 {
     /// <summary>
@@ -29,7 +29,7 @@ public interface IUser
     string DeviceId { get; set; }
 
     /// <summary>
-    /// WebStock 连接Id
+    /// WebSocket 连接 ID
     /// </summary>
     string ConnectionId { get; set; }
 
@@ -231,75 +231,93 @@ public interface IUser
     List<string> ButtonCodeList { get; set; }
 
     /// <summary>
-    /// 设置授权用户
+    /// 将授权信息复制到当前请求的用户上下文。
     /// </summary>
     /// <param name="authUserInfo">授权用户信息</param>
     /// <param name="forceUserInfo">强制覆盖用户信息，默认 <see langword="false"/></param>
-    /// <remarks>只会赋值一次</remarks>
+    /// <remarks>已经赋值且未要求强制更新时直接返回。</remarks>
+    /// <exception cref="UnauthorizedAccessException">需要赋值但授权信息为 null 时抛出。</exception>
     void SetAuthUser(AuthUserInfo authUserInfo, bool forceUserInfo = false);
 
     /// <summary>
     /// 从缓存中获取授权用户信息
     /// </summary>
-    /// <returns>缓存中的授权用户信息</returns>
+    /// <param name="deviceType">登录设备类型</param>
+    /// <param name="appNo">应用编号</param>
+    /// <param name="tenantNo">租户编号</param>
+    /// <param name="employeeNo">职员编号或客户端主体标识</param>
+    /// <param name="sessionId">需要匹配的会话 ID</param>
+    /// <returns>匹配会话的授权信息；缓存不存在或会话不匹配时为 null</returns>
     Task<AuthUserInfo> GetAuthUserInfo(AppEnvironmentEnum deviceType, string appNo, string tenantNo, string employeeNo,
         string sessionId);
 
     /// <summary>
-    /// 统一登录
+    /// 为管理端用户创建独立会话，并更新当前授权上下文。
     /// </summary>
+    /// <param name="authUserInfo">登录所需的账号、租户、职员与设备信息；方法会写入新会话 ID</param>
+    /// <remarks>启用单点登录时，撤销同应用、租户和职员的其他设备会话。</remarks>
     Task Login(AuthUserInfo authUserInfo);
 
     /// <summary>
-    /// 客户端统一登录
+    /// 为客户端用户创建会话，并使用 client:用户ID 作为跨端主体标识。
     /// </summary>
+    /// <param name="authUserInfo">客户端用户、租户与设备信息；方法会更新职员编号字段和会话 ID</param>
     Task ClientLogin(AuthUserInfo authUserInfo);
 
     /// <summary>
     /// 机器人登录
     /// </summary>
-    /// <remarks>非调度作业请勿使用</remarks>
+    /// <remarks>仅供调度作业使用，基于当前用户上下文生成有效期为 1 分钟的令牌。</remarks>
     /// <returns>机器人登录令牌</returns>
     Task<string> RobotLogin();
 
     /// <summary>
     /// 刷新授权信息
     /// </summary>
+    /// <param name="input">待刷新的应用、租户、职员和权限信息</param>
     Task RefreshAuth(RefreshAuthDto input);
 
     /// <summary>
     /// 刷新账号信息
     /// </summary>
+    /// <param name="input">待刷新的管理账号信息</param>
     Task RefreshAccount(RefreshAccountDto input);
 
     /// <summary>
     /// 刷新客户端用户信息
     /// </summary>
+    /// <param name="input">待刷新的客户端用户信息</param>
     Task RefreshClientUser(RefreshClientUserDto input);
 
     /// <summary>
     /// 刷新职员信息
     /// </summary>
+    /// <param name="input">待刷新的职员信息</param>
     Task RefreshEmployee(RefreshEmployeeDto input);
 
     /// <summary>
     /// 撤销账号在所有租户和设备上的会话
     /// </summary>
+    /// <param name="accountId">需要撤销会话的管理账号 ID</param>
     Task RevokeAccount(long accountId);
 
     /// <summary>
     /// 撤销租户的全部会话
     /// </summary>
+    /// <param name="tenantNo">租户编号；空值不执行操作</param>
     Task RevokeTenant(string tenantNo);
 
     /// <summary>
     /// 撤销指定租户职员的全部会话
     /// </summary>
+    /// <param name="tenantNo">租户编号</param>
+    /// <param name="employeeNo">职员编号；任一编号为空时不执行操作</param>
     Task RevokeEmployee(string tenantNo, string employeeNo);
 
     /// <summary>
     /// 撤销统一主体在三端的会话，不操作管理账号
     /// </summary>
+    /// <param name="userId">客户端用户 ID；非正数不执行操作</param>
     Task RevokeClientUser(long userId);
 
     /// <summary>

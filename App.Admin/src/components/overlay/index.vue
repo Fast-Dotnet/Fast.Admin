@@ -13,9 +13,9 @@ defineOptions({
 });
 
 const props = defineProps({
-	/** @description 显示 */
+	/** 是否显示遮罩 */
 	visible: Boolean,
-	/** @description 透明度（0 ~ 1） */
+	/** 黑色遮罩的 alpha 值，0 为全透明但仍拦截交互，1 为不透明 */
 	transparent: {
 		type: Number,
 		default: 0,

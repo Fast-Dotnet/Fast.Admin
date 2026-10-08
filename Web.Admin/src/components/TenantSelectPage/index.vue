@@ -34,12 +34,17 @@ defineOptions({
 });
 
 const emit = defineEmits<{
+	/** 选项变化事件，透传选中的数据 */
 	change: [value: ElSelectorOutput | undefined];
 }>();
 
+/** 选中的租户 ID */
 const modelValue = defineModel<string>();
+/** 选中租户的名称 */
 const tenantName = defineModel<string>("tenantName");
+/** 选中租户的编号；清空选择时同步清空 */
 const tenantNo = defineModel<string>("tenantNo");
+/** 选中租户的编码；清空选择时同步清空 */
 const tenantCode = defineModel<string>("tenantCode");
 
 const handleChange = (data: ElSelectorOutput | ElSelectorOutput[]) => {

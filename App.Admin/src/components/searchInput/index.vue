@@ -93,49 +93,49 @@ defineOptions({
 });
 
 const props = defineProps({
-	/** @description 占位文本 */
+	/** 占位文本 */
 	placeholder: String,
-	/** @description 显示扫描图标 */
+	/** 显示扫描图标 */
 	scan: {
 		type: Boolean,
 		default: false,
 	},
-	/** @description 显示搜素按钮 */
+	/** 显示搜索按钮 */
 	search: {
 		type: Boolean,
 		default: false,
 	},
-	/** @description 显示筛选图标 */
+	/** 显示筛选图标 */
 	filter: {
 		type: Boolean,
 		default: true,
 	},
-	/** @description 隐藏搜索时间 */
+	/** 隐藏搜索时间 */
 	hideSearchTime: Boolean,
-	/** @description 未来搜索时间 */
+	/** 是否使用从今天起向未来延伸的快捷日期范围 */
 	futureSearchTime: Boolean,
 });
 
 const emit = defineEmits<{
-	/** @description 监听输入框input事件 */
+	/** 输入内容变化事件 */
 	input: [detail: UniHelper.InputOnInputDetail];
-	/** @description 监听输入框focus事件 */
+	/** 输入框获得焦点事件 */
 	focus: [detail: UniHelper.InputOnFocusDetail];
-	/** @description 监听输入框blur事件 */
+	/** 输入框失去焦点事件 */
 	blur: [detail: UniHelper.InputOnBlurDetail];
-	/** @description 点击完成时， 触发 confirm 事件 */
+	/** 键盘确认事件 */
 	confirm: [detail: UniHelper.InputOnConfirmDetail];
-	/** @description 监听输入框清空按钮事件 */
+	/** 清空输入事件 */
 	clear: [];
-	/** @description 弹窗筛选按钮点击事件 */
+	/** 搜索按钮或筛选确认按钮点击事件 */
 	search: [];
 }>();
 
 const configStore = useConfig();
 
-/** @description v-model绑定值 */
+/** 搜索文本，与 searchParam.searchValue 双向同步 */
 const modelValue = defineModel<string>();
-/** @description 搜索参数 */
+/** 分页搜索参数，包含搜索文本和格式化后的日期范围 */
 const searchParam = defineModel<PagedInput>("searchParam", {
 	default: () => ({}),
 });
@@ -267,6 +267,7 @@ const getDateTime = (dataRange: FaTableDataRange | "custom") => {
 	};
 };
 
+/** 接口接收按天扩展的本地时间字符串，日期选择器使用毫秒时间戳。 */
 const handleDateTimeConfirm = ({ value }: { value: number[] }) => {
 	searchParam.value.searchTimeList = [dayjs(value[0]).format("YYYY-MM-DD 00:00:00"), dayjs(value[1]).format("YYYY-MM-DD 23:59:59")];
 };
@@ -280,7 +281,6 @@ const handleDateRangeChange = ({ value }: { value: FaTableDataRange | "custom" }
 const defaultSearchTime = () => {
 	if (!props.filter || props.hideSearchTime) {
 		state.searchTimeList = [];
-		// searchParam.value.searchTimeList = undefined;
 	} else {
 		const { start, end } = getDateTime(configStore.tableLayout.dataSearchRange);
 		state.dataSearchRange = configStore.tableLayout.dataSearchRange;

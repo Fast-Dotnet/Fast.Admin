@@ -13,8 +13,10 @@ namespace Fast.Shared;
 public static class ElTreeOutputExtension
 {
     /// <summary>
-    /// 构造树形
+    /// 将平面节点列表组织为树，并回填原节点的子节点集合。
     /// </summary>
+    /// <typeparam name="T">节点值类型</typeparam>
+    /// <remarks>父节点为 0 或不在当前列表中的节点作为根节点；输入应保证父子关系无环。</remarks>
     /// <param name="list">待构建的节点列表</param>
     /// <returns>构建后的根节点列表</returns>
     public static List<ElTreeOutput<T>> Build<T>(this List<ElTreeOutput<T>> list)
@@ -30,10 +32,10 @@ public static class ElTreeOutputExtension
     }
 
     /// <summary>
-    /// 构造子节点集合
+    /// 递归查找直接子节点并写入当前节点的 Children。
     /// </summary>
-    /// <param name="totalNodes">节点总数</param>
-    /// <param name="node">当前节点序号</param>
+    /// <param name="totalNodes">用于查找父子关系的完整节点列表</param>
+    /// <param name="node">需要填充子节点集合的当前节点</param>
     private static void BuildChildNodes<T>(List<ElTreeOutput<T>> totalNodes, ElTreeOutput<T> node)
     {
         var nodeSubList = totalNodes.Where(wh => wh.ParentId.Equals(node.Value)).ToList();

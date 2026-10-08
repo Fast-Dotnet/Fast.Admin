@@ -16,7 +16,7 @@ let loadingInstance = withDefineType<ReturnType<typeof ElLoading.service>>(null)
 let reLoadingInstance = withDefineType<ReturnType<typeof ElLoading.service>>(null);
 
 /**
- * 初始化 WebSocket
+ * 首次创建 SignalR 连接、注册服务端事件并启动连接；失败时记录日志。
  */
 const initWebSocket = async (): Promise<void> => {
 	try {
@@ -62,9 +62,7 @@ const initWebSocket = async (): Promise<void> => {
 
 			// 判断 WebSocket 是否已经连接
 			if (connection.state !== HubConnectionState.Connected && connection.state !== HubConnectionState.Connecting) {
-				/**
-				 * 重连中
-				 */
+				// 重连期间显示遮罩，阻止继续操作。
 				connection.onreconnecting(() => {
 					ElNotification({
 						title: "温馨提示",
@@ -81,9 +79,7 @@ const initWebSocket = async (): Promise<void> => {
 					});
 				});
 
-				/**
-				 * 重连成功
-				 */
+				// 重连成功后关闭遮罩并提示用户。
 				connection.onreconnected(() => {
 					reLoadingInstance?.close();
 					ElMessage.success("服务重连成功");
@@ -178,9 +174,7 @@ const initWebSocket = async (): Promise<void> => {
 				}
 			);
 
-			/**
-			 * 开始连接
-			 */
+			// 完成事件注册后再启动连接。
 			await connection.start();
 		}
 	} catch (error) {
@@ -189,7 +183,7 @@ const initWebSocket = async (): Promise<void> => {
 };
 
 /**
- * 关闭 WebSocket
+ * 尝试通知服务端退出登录后停止连接；停止失败时向调用方抛出异常。
  */
 const closeWebSocket = async (): Promise<void> => {
 	if (connection) {

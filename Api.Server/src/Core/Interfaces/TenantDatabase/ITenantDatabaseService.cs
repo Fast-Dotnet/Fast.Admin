@@ -10,11 +10,14 @@ namespace Fast.Core;
 /// <summary>
 /// 租户数据库服务
 /// </summary>
-/// <remarks>需要在 Admin 服务中实现</remarks>
+/// <remarks>由 Admin 服务实现，调用会执行实际数据库初始化。</remarks>
 public interface ITenantDatabaseService
 {
     /// <summary>
-    /// 初始化数据库
+    /// 初始化指定租户和数据库类型对应的数据库；已初始化时直接返回。
     /// </summary>
+    /// <param name="tenantId">租户 ID</param>
+    /// <param name="databaseType">需要初始化的数据库类型</param>
+    /// <exception cref="UserFriendlyException">租户或对应数据库配置不存在时抛出。</exception>
     Task InitDatabase(long tenantId, DatabaseTypeEnum databaseType);
 }

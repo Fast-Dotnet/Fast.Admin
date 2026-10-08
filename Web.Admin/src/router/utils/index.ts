@@ -10,14 +10,14 @@ import type { AuthMenuInfoDto } from "@/api/services/Auth/auth/models/AuthMenuIn
 
 const modules = import.meta.glob("/src/views/**/*.vue");
 
-// 复制路由配置，同时保留组件加载函数。
+/** 复制路由配置，同时保留组件加载函数。 */
 const cloneRoute = (route: RouteRecordRaw): RouteRecordRaw => ({
 	...route,
 	...(route.meta && { meta: { ...route.meta } }),
 	...(route.children && { children: route.children.map(cloneRoute) }),
 });
 
-// 加载组件
+/** 加载组件。 */
 const loadComponent = (component: string) => {
 	if (component) {
 		if (component.includes("/")) {
@@ -29,7 +29,7 @@ const loadComponent = (component: string) => {
 	}
 };
 
-// 加载组件名称
+/** 加载组件名称。 */
 const loadComponentName = (name: string) => {
 	if (name) {
 		if (name.includes("/")) {
@@ -46,9 +46,7 @@ const loadComponentName = (name: string) => {
 	}
 };
 
-/**
- * 组装路由
- */
+/** 递归组装目录和菜单路由，按钮权限不参与页面路由注册。 */
 const packageMenu = (menuList: AuthMenuInfoDto[]) => {
 	const routeList: RouteRecordRaw[] = [];
 
@@ -58,7 +56,7 @@ const packageMenu = (menuList: AuthMenuInfoDto[]) => {
 		}
 		const routeInfo: RouteRecordRaw = {
 			path: item.menuType === MenuTypeEnum.Catalog ? randomString(8) : item.router,
-			// 这里由于 keep-alive 必须设置 name 的问题，所以根据组件的地址，生成固定的 name，需要在每个页面增加 name，不然 keep-alive 会失效
+			// 页签使用路由名称维护 KeepAlive include 列表，因此页面组件 name 必须与此名称一致。
 			name: loadComponentName(item.component || item.menuCode),
 			component: loadComponent(item.component),
 			meta: {
@@ -87,7 +85,7 @@ const packageMenu = (menuList: AuthMenuInfoDto[]) => {
 };
 
 /**
- * 处理动态路由
+ * 根据当前用户菜单重新注册布局路由，替换已有同名路由。
  */
 export const handleDynamicRoute = (): void => {
 	const userInfoStore = useUserInfo();
@@ -109,13 +107,15 @@ export const handleDynamicRoute = (): void => {
 };
 
 /**
- * 路由工具类
+ * 路由导航与页签数据处理工具
  */
 export const routerUtil = {
 	/**
-	 * 路由跳转，带错误检查
-	 * @param router - 路由对象 useRouter()，因必须在 setup 中获取才存在值
-	 * @param to - 导航位置，同 router.push
+	 * 执行导航并提示已知的导航失败原因；异常提示后继续向调用方抛出。
+	 *
+	 * @param router - 应用路由实例
+	 * @param to - 目标路由，与 router.push 的参数一致
+	 * @returns 导航结果；守卫中止或重复导航以 NavigationFailure 返回
 	 */
 	routePushSafe(router: Router, to: RouteLocationRaw): Promise<NavigationFailure | void> {
 		return router
@@ -145,14 +145,14 @@ export const routerUtil = {
 			});
 	},
 	/**
-	 * route 部分属性，解决警告
+	 * 提取页签需要的路由字段，避免保存组件和匹配记录等运行时对象。
 	 */
 	pickByRoute(route: Partial<RouteLocationNormalized>): Partial<RouteLocationNormalized> {
 		const keys: (keyof RouteLocationNormalized)[] = ["name", "path", "query", "fullPath", "meta", "params"];
 		return Object.fromEntries(keys.filter((key) => key in route).map((key) => [key, route[key]]));
 	},
 	/**
-	 * 扁平化路由
+	 * 按父节点优先的顺序展开路由；有子节点的路由复制后移除 children。
 	 */
 	flattenRoutes(routes: RouteRecordRaw[]): RouteRecordRaw[] {
 		const resRoutes: RouteRecordRaw[] = [];

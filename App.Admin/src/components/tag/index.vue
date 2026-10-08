@@ -35,12 +35,12 @@ defineOptions({
 
 const props = defineProps({
 	...tagProps,
-	/** @description 字典名称 */
+	/** 字典名称 */
 	name: {
 		type: String,
 		required: true,
 	},
-	/** @description 值 */
+	/** 值 */
 	value: {
 		type: [Number, String, Boolean],
 		default: undefined,
@@ -50,19 +50,19 @@ const props = defineProps({
 const wdTagProps = useProps(props, tagProps, ["type"]);
 
 const emit = defineEmits<{
-	/** @description 标签点击时触发 */
+	/** 标签点击时触发 */
 	click: [event: MouseEvent];
-	/** @description 点击关闭按钮时触发 */
+	/** 点击关闭按钮时触发 */
 	close: [event: MouseEvent];
-	/** @description 新增标签输入内容确定后触发 */
+	/** 新增标签输入内容确定后触发 */
 	confirm: [detail: { value: string }];
 }>();
 
 const appStore = useApp();
 
-/** 字典 */
+// 字典
 const dictionaries = computed(() => (props.name ? appStore.getDictionary(props.name) : []));
-/** 字典值 */
+// 字典值
 const dictionary = computed(() => (props.value == null ? null : dictionaries.value.find((f) => f.value === props.value)));
 
 const type = computed(() => (dictionary?.value?.type === "info" ? "default" : dictionary?.value?.type));

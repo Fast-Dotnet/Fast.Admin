@@ -11,8 +11,8 @@ namespace Fast.Core;
 /// 当前作用域的业务租户
 /// </summary>
 /// <remarks>
-/// <para>不代表操作人已经登录或具有管理权限</para>
-/// <para>作用域注册，保证当前请求管道中是唯一的，并且只会加载一次</para>
+/// <para>仅表示当前业务租户，不代表操作人已经登录或具有管理权限。</para>
+/// <para>按作用域注册，同一请求使用同一个租户上下文实例。</para>
 /// </remarks>
 public interface ITenant
 {

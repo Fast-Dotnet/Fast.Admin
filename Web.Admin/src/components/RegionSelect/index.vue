@@ -23,12 +23,17 @@ defineOptions({
 });
 
 const emit = defineEmits<{
+	/** 选项变化事件，透传选中的数据 */
 	change: [value: ElSelectorOutput<string> | undefined];
 }>();
 
+/** 选中的区县编码；清空选择时为 null */
 const modelValue = defineModel<string>();
+/** 选中区县所属的省份名称 */
 const provinceName = defineModel<string>("provinceName");
+/** 选中区县所属的城市名称 */
 const cityName = defineModel<string>("cityName");
+/** 选中区县的名称 */
 const districtName = defineModel<string>("districtName");
 
 const state = reactive({

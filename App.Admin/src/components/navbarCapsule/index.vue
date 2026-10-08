@@ -1,8 +1,8 @@
 <template>
 	<view class="fa-navbar-capsule">
 		<view class="fa-navbar-capsule__icon">
-			<wd-icon v-if="props.back" name="chevron-left" @click="handleBackClick" />
-			<wd-icon v-if="props.home" name="home" @click="handleHomeClick" />
+			<wd-icon v-if="props.back" name="chevron-left" @click="() => emit('backClick')" />
+			<wd-icon v-if="props.home" name="home" @click="() => emit('homeClick')" />
 			<slot name="icon" />
 		</view>
 		<view class="fa-navbar-capsule__content">
@@ -22,12 +22,12 @@ defineOptions({
 });
 
 const props = defineProps({
-	/** @description 显示返回按钮 */
+	/** 显示返回按钮 */
 	back: {
 		type: Boolean,
 		default: true,
 	},
-	/** @description 显示首页按钮 */
+	/** 显示首页按钮 */
 	home: {
 		type: Boolean,
 		default: false,
@@ -35,19 +35,11 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-	/** @description 返回点击回调 */
+	/** 返回按钮点击事件，实际导航由调用方处理 */
 	backClick: [];
-	/** @description 首页点击回调 */
+	/** 首页按钮点击事件，实际导航由调用方处理 */
 	homeClick: [];
 }>();
-
-const handleBackClick = () => {
-	emit("backClick");
-};
-
-const handleHomeClick = () => {
-	emit("homeClick");
-};
 </script>
 
 <style scoped lang="scss">

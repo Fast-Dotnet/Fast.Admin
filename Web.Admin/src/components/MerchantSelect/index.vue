@@ -29,13 +29,17 @@ defineOptions({
 });
 
 const props = defineProps<{
+	/** 用于筛选商户的支付渠道 */
 	merchantType?: PaymentChannelEnum;
 }>();
 
 const emit = defineEmits<{
+	/** 选项变化事件，透传选中的数据 */
 	change: [value: ElSelectorOutput];
 }>();
 
+/** 选中的商户 ID */
 const modelValue = defineModel<string>();
+/** 选中商户的商户号 */
 const merchantNo = defineModel<string>("merchantNo");
 </script>

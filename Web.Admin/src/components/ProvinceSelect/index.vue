@@ -19,9 +19,12 @@ defineOptions({
 });
 
 const emit = defineEmits<{
+	/** 选项变化事件，透传选中的数据 */
 	change: [value: ElSelectorOutput];
 }>();
 
+/** 选中的省份编码 */
 const modelValue = defineModel<string>();
+/** 选中省份的名称 */
 const provinceName = defineModel<string>("provinceName");
 </script>

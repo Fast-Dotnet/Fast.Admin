@@ -18,15 +18,18 @@ namespace Fast.Admin.Service;
 public static class DataScopeExtension
 {
     /// <summary>
-    /// 数据权限过滤
+    /// 根据当前管理用户的数据范围，为查询附加部门或本人过滤条件。
     /// </summary>
     /// <typeparam name="TEntity">实体类型</typeparam>
     /// <param name="queryable">待应用数据范围的查询对象</param>
-    /// <param name="departmentIdFieldSelector">部门Id过滤字段</param>
-    /// <param name="userIdFieldSelector">用户Id过滤字段</param>
-    /// <param name="menuCode">菜单编码</param>
-    /// <param name="allowPublicData">允许公开数据</param>
-    /// <returns>应用数据权限过滤后的查询对象</returns>
+    /// <param name="departmentIdFieldSelector">部门字段；未指定时查找实体的 DepartmentId 属性</param>
+    /// <param name="userIdFieldSelector">创建人字段；未指定时查找实体的 CreatedUserId 属性，与当前职员 ID 比较</param>
+    /// <param name="menuCode">非空时先校验菜单权限；管理员跳过此检查</param>
+    /// <param name="allowPublicData">是否在通过部门关联计算的数据范围中纳入公开部门</param>
+    /// <returns>附加数据范围的查询；管理员或全部数据范围返回原查询</returns>
+    /// <remarks>此方法只处理菜单和数据范围，不补充租户过滤；租户隔离仍依赖查询上下文。</remarks>
+    /// <exception cref="UserFriendlyException">普通用户缺少指定菜单权限时抛出。</exception>
+    /// <exception cref="NullReferenceException">需要构造过滤条件但实体缺少约定字段且未提供选择器时抛出。</exception>
     public static ISugarQueryable<TEntity> DataScope<TEntity>(this ISugarQueryable<TEntity> queryable,
         Expression<Func<TEntity, long?>> departmentIdFieldSelector = null,
         Expression<Func<TEntity, long?>> userIdFieldSelector = null, string menuCode = null, bool allowPublicData = true)

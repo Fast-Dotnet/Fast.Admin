@@ -13,12 +13,14 @@ import type { LoginTenantOutput } from "@/api/services/Auth/login/models/LoginTe
 import type { TenantLoginInput } from "@/api/services/Auth/login/models/TenantLoginInput";
 import type { ImageCaptcha } from "@/components";
 
+/** 账号登录与租户登录共用的表单数据 */
 export type IFormData = {
 	/** 记住登录信息 */
 	rememberMe?: boolean;
 } & LoginInput &
 	TenantLoginInput;
 
+/** 本地保存的租户登录条目 */
 export type ITenantData = {
 	/** 租户 */
 	tenant: LoginTenantOutput & { userKey: string };
@@ -26,9 +28,10 @@ export type ITenantData = {
 	formData: IFormData;
 };
 
+/** 登录表单步骤 */
 export type IFormStep = "Account" | "TenantAccount" | "SelectTenant" | "NewAccount";
 
-/** 登录服务 */
+/** 从上层注入登录状态，使不同登录页布局复用同一套交互。 */
 const createLogin = (elFormRef: Ref<FormInstance>, faButtonRef: Ref<FaButtonInstance>, captchaRef: Ref<InstanceType<typeof ImageCaptcha>>) => {
 	const userInfoStore = useUserInfo();
 
@@ -168,7 +171,7 @@ const createLogin = (elFormRef: Ref<FormInstance>, faButtonRef: Ref<FaButtonInst
 			.catch(() => done?.());
 	};
 
-	/** 回车键摁下 */
+	/** 回车提交时同时控制按钮与遮罩的加载状态。 */
 	const handleKeyupEnter = () => {
 		useOverlay.show();
 		faButtonRef.value.loading = true;
@@ -195,6 +198,17 @@ const createLogin = (elFormRef: Ref<FormInstance>, faButtonRef: Ref<FaButtonInst
 	};
 };
 
+/**
+ * 创建登录页共享的表单与租户切换操作。
+ *
+ * @remarks
+ * 必须在 setup 中调用，并由上层提供 formData、tenantList、formStep 和 cFormKey。
+ *
+ * @param elFormRef - 登录表单实例
+ * @param faButtonRef - 登录按钮实例，用于管理回车提交时的加载状态
+ * @param captchaRef - 图形验证码实例，用于登录失败后的刷新
+ * @returns 登录状态与表单操作方法
+ */
 export const useLogin = (
 	elFormRef: Ref<FormInstance>,
 	faButtonRef: Ref<FaButtonInstance>,

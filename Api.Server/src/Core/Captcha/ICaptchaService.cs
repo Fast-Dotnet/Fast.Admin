@@ -13,15 +13,17 @@ namespace Fast.Core;
 public interface ICaptchaService
 {
     /// <summary>
-    /// 获取图片验证码
+    /// 生成与当前客户端绑定的图片验证码，有效期为 5 分钟。
     /// </summary>
-    /// <remarks>验证码Key</remarks>
+    /// <returns>验证码标识和带 PNG Data URL 前缀的图片内容</returns>
     Task<(string captchaKey, string captchaImage)> GetImageCaptcha();
 
     /// <summary>
-    /// 验证并一次性消费图片验证码
+    /// 校验图片验证码，并在读取到当前客户端的有效记录后立即消费。
     /// </summary>
-    /// <param name="captchaKey">验证码Key</param>
-    /// <param name="verificationCode">验证码</param>
+    /// <param name="captchaKey">获取验证码时返回的标识，格式为不带分隔符的 GUID</param>
+    /// <param name="verificationCode">用户输入的四位验证码，比较时忽略大小写</param>
+    /// <remarks>当前客户端的有效记录在比较答案前删除，因此输入错误后也必须重新获取验证码。</remarks>
+    /// <exception cref="UserFriendlyException">输入格式错误、验证码失效、客户端不匹配或并发校验未取得锁时抛出。</exception>
     Task VerifyImageCaptcha(string captchaKey, string verificationCode);
 }

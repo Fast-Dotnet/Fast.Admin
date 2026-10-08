@@ -76,12 +76,13 @@ public class FileContext
         ["application/zip", "application/x-rar-compressed", "application/x-7z-compressed", "application/gzip"];
 
     /// <summary>
-    /// 将配置或数据库中的跨平台路径转换为当前操作系统使用的本地路径
+    /// 将存储配置中的路径解析为当前操作系统使用的绝对路径。
     /// </summary>
     /// <param name="rootPath">应用根目录</param>
-    /// <param name="filePath">配置或数据库中的相对目录，兼容“/”和“\”</param>
+    /// <param name="filePath">配置或数据库中的存储目录，可为相对或绝对路径，兼容两种目录分隔符</param>
     /// <param name="fileName">可选文件名</param>
-    /// <returns>绝对配置保持原位置；相对配置基于程序根目录解析</returns>
+    /// <returns>绝对配置保持原位置；相对配置基于 rootPath 解析</returns>
+    /// <remarks>仅进行路径组合与规范化，不保证结果位于 rootPath 内；调用方须负责目录访问边界。</remarks>
     public static string GetLocalPath(string rootPath, string filePath, string fileName = null)
     {
         if (string.IsNullOrWhiteSpace(filePath))
@@ -99,9 +100,9 @@ public class FileContext
     }
 
     /// <summary>
-    /// 创建媒体资源匿名临时访问 Token
+    /// 创建包含匿名媒体访问票据的临时地址。
     /// </summary>
-    /// <remarks>Token 有效期默认位15分钟</remarks>
+    /// <remarks>票据有效期固定为 15 分钟；调用方负责确定允许匿名访问的应用与租户范围。</remarks>
     /// <param name="fileUrl">媒体文件地址</param>
     /// <param name="appNo">应用编号</param>
     /// <param name="tenantNo">租户编号</param>
@@ -156,10 +157,10 @@ public class FileContext
     }
 
     /// <summary>
-    /// 创建媒体资源临时访问 Token
+    /// 创建绑定当前登录会话的媒体资源临时访问地址。
     /// </summary>
     /// <param name="fileUrl">媒体文件地址</param>
-    /// <param name="lifetimeMinutes">Token 有效期，单位：分钟，限制为 15～120 分钟</param>
+    /// <param name="lifetimeMinutes">有效期，单位为分钟；有限值自动限制在 15～120 之间，非有限值拒绝处理</param>
     /// <returns>媒体资源临时访问地址</returns>
     public static async Task<string> CreateMediaAssetTicket(string fileUrl, double lifetimeMinutes)
     {
@@ -215,11 +216,12 @@ public class FileContext
     }
 
     /// <summary>
-    /// 验证并解析媒体资源访问 Token
+    /// 校验媒体票据的加密认证、载荷格式和有效期，并解析载荷。
     /// </summary>
     /// <param name="token">媒体资源访问 Token</param>
-    /// <param name="payload">验证成功后的 Token 载荷</param>
-    /// <returns>Token 加密认证、格式和有效期均有效时返回 <c>true</c></returns>
+    /// <param name="payload">校验成功时返回的载荷；校验失败时为 null</param>
+    /// <returns>票据有效时为 true，格式错误、加密认证失败或过期时为 false</returns>
+    /// <remarks>此方法不检查文件是否仍存在，也不验证会话或业务访问权限，调用方必须继续执行这些检查。</remarks>
     public static bool TryValidateMediaAssetToken(string token, out MediaAssetTokenPayload payload)
     {
         payload = null;

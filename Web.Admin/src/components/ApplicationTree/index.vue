@@ -27,9 +27,12 @@ defineOptions({
 });
 
 const emit = defineEmits<{
+	/** 选项变化事件，透传选中的数据 */
 	change: [value: ElTreeOutput];
 }>();
 
+/** 选中的应用 ID */
 const modelValue = defineModel<string>();
+/** 选中应用的名称 */
 const appName = defineModel<string>("appName");
 </script>

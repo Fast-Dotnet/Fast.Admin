@@ -13,25 +13,29 @@ declare module "vue-router" {
 		 */
 		icon?: string;
 		/**
-		 * 默认 true，如果设置为 false，则不会在导航栏中显示
+		 * 是否显示导航页签
+		 * @defaultValue true
 		 */
 		tab?: boolean;
 		/**
-		 * 登录后是否禁止查看该页面
-		 * 默认是 false，为 true 是代表登录后此页面不能再进入，否则跳转到首页
+		 * 登录后是否禁止访问当前页面
+		 *
+		 * @defaultValue false
+		 * @remarks 设置为 true 时，已登录用户会被重定向至首页。
 		 */
 		authForbidView?: boolean;
 		/**
-		 * 跳过登录
-		 * 默认是 false，为 true 是代表不用登录即可进入该页面
+		 * 是否允许未登录访问当前页面
+		 * @defaultValue false
 		 */
 		noLogin?: boolean;
 		/**
-		 * 默认 false，设置 true 的时候该路由不会在侧边栏出现
+		 * 是否在侧边栏隐藏路由
+		 * @defaultValue false
 		 */
 		hide?: boolean;
 		/**
-		 * 缓存页面
+		 * 是否缓存页面；设为 false 时不加入普通页签的 KeepAlive 列表
 		 */
 		keepAlive?: boolean;
 	}

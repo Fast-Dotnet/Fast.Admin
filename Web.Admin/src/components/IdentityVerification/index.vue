@@ -127,9 +127,9 @@ type IFormData = AccountVerificationInput & {
 };
 
 const state = reactive({
-	/** 下次允许发送手机验证码的时间戳 */
+	/** 下次允许发送手机验证码的时间戳，单位为毫秒 */
 	mobileNextSendAt: 0,
-	/** 下次允许发送邮箱验证码的时间戳 */
+	/** 下次允许发送邮箱验证码的时间戳，单位为毫秒 */
 	emailNextSendAt: 0,
 	formData: withDefineType<IFormData>({}),
 	formRules: withDefineType<FormRules<IFormData>>({
@@ -220,7 +220,7 @@ const handleConfirm = () => {
 	});
 };
 
-/** 在账号需要安全校验时打开弹窗并加载当前联系方式 */
+// 账号需要安全校验时，等待弹窗挂载后加载当前联系方式。
 watch(
 	() => userInfoStore.identityVerification,
 	(newValue) => {

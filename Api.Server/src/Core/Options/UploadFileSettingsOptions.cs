@@ -143,22 +143,22 @@ public class UploadFileInfoSettings
     public string Path { get; set; }
 
     /// <summary>
-    /// 最大大小，单位kb
+    /// 单个文件允许的最大大小，单位为 KB（1024 字节）
     /// </summary>
     public long MaxSize { get; set; }
 
     /// <summary>
-    /// 使用类型文件夹
+    /// 是否按文件类型创建存储子目录
     /// </summary>
     public bool UseTypeFolder { get; set; }
 
     /// <summary>
-    /// 使用日期文件夹
+    /// 是否按日期创建存储子目录
     /// </summary>
     public bool UseDateFolder { get; set; }
 
     /// <summary>
-    /// 类型
+    /// 允许上传的 MIME 类型列表
     /// </summary>
     public string[] ContentType { get; set; }
 }

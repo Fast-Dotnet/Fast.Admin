@@ -1,9 +1,10 @@
 import type { RouteRecordRaw } from "vue-router";
 
 /**
- * Layout 模板路由
- * 必须带有 Name 属性
- * 动态添加的
+ * 动态菜单共用的布局路由模板
+ *
+ * @remarks
+ * 注册前复制此模板；固定的 name 用于替换已有布局路由，避免重复注册。
  */
 export const layoutRoute: RouteRecordRaw = {
 	path: "/",

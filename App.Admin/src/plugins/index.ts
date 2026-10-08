@@ -11,6 +11,7 @@ import { loadFastAxios } from "./axios";
 import { loadWotUi } from "./wot-ui";
 import { loadZPaging } from "./z-paging";
 
+/** 初始化平台信息、存储、请求和 UI 默认配置；调用前须先安装 Pinia。 */
 export function loadPlugins(app: App): void {
 	// 全局异常捕获
 	app.config.errorHandler = (err, _instance: ComponentPublicInstance, _info: string) => {

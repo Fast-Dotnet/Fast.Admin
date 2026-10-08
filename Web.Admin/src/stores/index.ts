@@ -6,8 +6,10 @@ import type { App } from "vue";
 const storageCrypto = import.meta.env.VITE_STORAGE_CRYPTO === "true";
 const storagePrefix = "pinia__";
 
+/** 应用共用的 Pinia 实例 */
 export const pinia = createPinia();
 
+/** 注册存储适配和持久化插件，并将 Pinia 安装到应用。 */
 export const loadPinia = (app: App): void => {
 	pinia.use(
 		createPersistedState({

@@ -1,9 +1,8 @@
 /**
- * v-auth
- * 用于判断某个 按钮 或者 点击方法是否存在权限
- * 自带防抖
- * 默认使用隐藏或者显示，也可以再标签上 增加 authType="xxx"
- * 接收参数：string | string[] 类型
+ * v-auth 按钮权限指令。
+ * 权限码支持字符串或数组，数组中任意一个权限通过即可；管理员直接通过。
+ * 无权限时默认移除元素，可通过 authType 改为禁用、禁止指针交互或仅提示。
+ * 已授权的原始点击回调采用 500 毫秒尾沿防抖；此指令不替代服务端授权。
  */
 import { ElMessage } from "element-plus";
 import { withInstallDirective } from "@fast-china/utils";
@@ -22,7 +21,7 @@ interface AuthVNode extends VNode {
 	props: {
 		/** 点击事件 */
 		onClick?: () => void;
-		/** 类型 */
+		/** 无权限时的展示与交互策略 */
 		authType?: "hide" | "disabled" | "disablePointer" | "none";
 		/** 禁用 */
 		disabled?: boolean;
@@ -30,24 +29,11 @@ interface AuthVNode extends VNode {
 	};
 }
 
-/**
- * 无权限提示
- */
-const notAuthMsg = () => {
-	ElMessage({
-		type: "warning",
-		message: "无操作权限",
-		duration: 1500,
-	});
-};
-
-/**
- * 无权限操作
- */
+/** 根据 authType 应用无权限时的展示与交互策略。 */
 const notAuthAction = (el: AuthElement, vNode: AuthVNode) => {
 	const authType = vNode.props.authType || "hide";
 	el.__authType = authType;
-	// 不存在权限，根据系统配置执行
+	// 策略来自当前节点属性，未指定时隐藏。
 	switch (authType) {
 		case "disabled":
 			// 禁用
@@ -64,7 +50,7 @@ const notAuthAction = (el: AuthElement, vNode: AuthVNode) => {
 			el.style.pointerEvents = "none";
 			break;
 		case "none":
-			// 啥也不干
+			// 保留元素的外观与指针交互，点击回调已替换为权限提示。
 			break;
 		default:
 			throw new Error("The auth type is incorrect");
@@ -119,7 +105,13 @@ const AuthDirective: Directive = {
 			}
 		} else {
 			// 替换点击事件
-			vNode.props.onClick = notAuthMsg;
+			vNode.props.onClick = () => {
+				ElMessage({
+					type: "warning",
+					message: "无操作权限",
+					duration: 1500,
+				});
+			};
 			notAuthAction(el, vNode);
 		}
 	},

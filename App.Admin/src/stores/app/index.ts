@@ -9,6 +9,7 @@ import { appApi } from "@/api/services/Center/app";
 import { dictionaryApi } from "@/api/services/Center/dictionary";
 import type { LaunchOutput } from "@/api/services/Center/app/models/LaunchOutput";
 
+/** 应用默认主题色 */
 export const defaultThemeColor = "#409EFF";
 
 type IState = {
@@ -22,16 +23,16 @@ type IState = {
 	env: ViteEnv;
 	/** 设备类型 */
 	deviceType: AppEnvironmentEnum;
-	/** 当前应用的AppId，获取到的 */
+	/** 运行平台提供的应用 ID */
 	appId: string;
 	/**
 	 * - manifest.json 中应用版本名称
 	 * - 如果存在热更新则为 应用资源（wgt）的版本名称
 	 */
 	appVersion: string;
-	/** 是否为 IPhone 设备 */
+	/** 是否为 iPhone 设备 */
 	isIphone: boolean;
-	/** 是否为客户端（Pc） */
+	/** 是否为桌面设备 */
 	isClient: boolean;
 	/** 设备基础信息 */
 	appBaseInfo: UniNamespace.GetAppBaseInfoResult;
@@ -41,7 +42,7 @@ type IState = {
 	windowInfo: UniNamespace.GetWindowInfoResult;
 	/**
 	 * 小程序胶囊按钮信息
-	 * @description 非小程序平台下，只有默认高度
+	 * 非小程序平台下，只有默认高度
 	 */
 	menuButton: UniNamespace.GetMenuButtonBoundingClientRectRes;
 	/** 网络 */
@@ -53,6 +54,7 @@ type IState = {
 	};
 };
 
+/** 应用启动配置与运行时缓存 */
 export const useApp = defineStore(
 	"app",
 	() => {
@@ -88,13 +90,13 @@ export const useApp = defineStore(
 		/** 字典 */
 		const dictionary = shallowRef<Map<string, FaTableEnumColumnCtx[]>>(new Map());
 
-		/** 设置App名称 */
+		/** 设置非空应用名称。 */
 		const setAppName = (appName: string) => {
 			if (!appName) return;
 			state.appName = appName;
 		};
 
-		/** 设置字典 */
+		/** 启动配置就绪后重新加载字典；失败时记录日志。 */
 		const setDictionary = async () => {
 			// 判断是否存在 Launch 数据
 			if (!state.hasLaunch) return;
@@ -110,7 +112,7 @@ export const useApp = defineStore(
 			}
 		};
 
-		/** 设置 FastAxios */
+		/** 启动配置就绪后更新请求超时和加密选项。 */
 		const setFastAxios = () => {
 			// 判断是否存在 Launch 数据
 			if (!state.hasLaunch) return;
@@ -120,7 +122,7 @@ export const useApp = defineStore(
 			});
 		};
 
-		/** Launch */
+		/** 加载应用启动数据，并更新导航标题、请求配置和字典；启动请求异常继续向外传播。 */
 		const launch = async () => {
 			try {
 				const apiRes = await appApi.launch();
@@ -139,7 +141,12 @@ export const useApp = defineStore(
 			}
 		};
 
-		/** 获取字典 */
+		/**
+		 * 获取已加载的字典项；不存在时记录日志并返回 null。
+		 *
+		 * @param key - 字典名称
+		 * @param includeAll - 是否在结果首部增加值为 null 的“全部”选项
+		 */
 		const getDictionary = (key: string, includeAll = false): FaTableEnumColumnCtx[] => {
 			if (!dictionary.value.has(key)) {
 				logger.error("app", `字典 [${key}] 不存在`);
@@ -149,7 +156,7 @@ export const useApp = defineStore(
 			return includeAll ? [{ label: "全部", value: null }, ...items] : items;
 		};
 
-		/** 清除 App 缓存 */
+		/** 清空 Local 存储并恢复安装标识，不直接重置内存中的 Store。 */
 		const clearAppCache = () => {
 			// 获取设备Id
 			const deviceId = installationIdentity.deviceId;

@@ -5,10 +5,10 @@ if (import.meta.env.DEV) {
 	await import("dayjs/locale/zh-cn");
 }
 
-/** 加载 Element Plus */
+/** 设置日期语言，并完整安装 Fast Element Plus 组件。 */
 export function loadElementPlus(app: App): void {
 	dayjs.locale("zh-cn");
 
-	/** Fast Element Plus 组件完整引入 */
+	// 完整注册 Fast Element Plus 组件。
 	app.use(FastElementPlus);
 }

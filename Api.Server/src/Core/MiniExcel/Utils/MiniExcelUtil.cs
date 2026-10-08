@@ -42,8 +42,11 @@ public static class MiniExcelUtil
     /// <summary>
     /// 导出 Excel 数据到内存流
     /// </summary>
-    /// <typeparam name="T">数据模型类型</typeparam>
-    /// <returns>导出内容的内存流</returns>
+    /// <typeparam name="T">通过 ExcelColumn 特性声明导出列的数据类型</typeparam>
+    /// <param name="data">待导出的数据集合</param>
+    /// <param name="sheetName">工作表名称</param>
+    /// <param name="excelType">导出文件格式</param>
+    /// <returns>位置已回到起点的内存流，由调用方负责释放</returns>
     public static MemoryStream ExportExcel<T>(IEnumerable<T> data, string sheetName = "Sheet1",
         ExcelType excelType = ExcelType.XLSX) where T : class, new()
     {
@@ -81,7 +84,7 @@ public static class MiniExcelUtil
     /// <param name="sheetName">Sheet名称</param>
     /// <param name="excelType">Excel类型</param>
     /// <param name="cancellationToken">取消令牌</param>
-    /// <returns>导出内容的内存流</returns>
+    /// <returns>位置已回到起点的内存流，由调用方负责释放</returns>
     public static async Task<MemoryStream> ExportExcelAsync<T>(IEnumerable<T> data, string sheetName = "Sheet1",
         ExcelType excelType = ExcelType.XLSX, CancellationToken cancellationToken = default) where T : class, new()
     {
@@ -115,7 +118,11 @@ public static class MiniExcelUtil
     /// <summary>
     /// 导出 Excel 文件并返回下载流
     /// </summary>
-    /// <typeparam name="T">数据模型类型</typeparam>
+    /// <typeparam name="T">通过 ExcelColumn 特性声明导出列的数据类型</typeparam>
+    /// <param name="data">待导出的数据集合</param>
+    /// <param name="fileName">响应中的下载文件名</param>
+    /// <param name="sheetName">工作表名称</param>
+    /// <param name="excelType">导出文件格式</param>
     /// <returns>导出文件响应</returns>
     public static FileStreamResult ExportExcelResult<T>(IEnumerable<T> data, string fileName, string sheetName = "Sheet1",
         ExcelType excelType = ExcelType.XLSX) where T : class, new()
@@ -145,7 +152,11 @@ public static class MiniExcelUtil
     /// <summary>
     /// 导出 Excel 数据到文件
     /// </summary>
-    /// <typeparam name="T">数据模型类型</typeparam>
+    /// <typeparam name="T">通过 ExcelColumn 特性声明导出列的数据类型</typeparam>
+    /// <param name="filePath">目标文件路径</param>
+    /// <param name="data">待导出的数据集合</param>
+    /// <param name="sheetName">工作表名称</param>
+    /// <param name="excelType">导出文件格式</param>
     public static void ExportToFile<T>(string filePath, IEnumerable<T> data, string sheetName = "Sheet1",
         ExcelType excelType = ExcelType.XLSX) where T : class, new()
     {
@@ -216,7 +227,7 @@ public static class MiniExcelUtil
     /// <param name="sheetName">Sheet名称，为空时读取第一个Sheet</param>
     /// <param name="excelType">Excel类型</param>
     /// <param name="startCell">起始单元格，如 "A1"、"B2"，默认从 A1 开始读取</param>
-    /// <returns>导入结果</returns>
+    /// <returns>解析数据与逐行校验错误；Data 仍包含有错误的行，调用方需检查 Errors 或调用 ThrowIfError</returns>
     public static ExcelImportResult<T> ImportExcel<T>(Stream stream, string sheetName = null,
         ExcelType excelType = ExcelType.XLSX, string startCell = "A1") where T : class, new()
     {
@@ -238,7 +249,7 @@ public static class MiniExcelUtil
     /// <param name="excelType">Excel类型</param>
     /// <param name="startCell">起始单元格，如 "A1"、"B2"，默认从 A1 开始读取</param>
     /// <param name="cancellationToken">取消令牌</param>
-    /// <returns>导入结果</returns>
+    /// <returns>解析数据与逐行校验错误；Data 仍包含有错误的行，调用方需检查 Errors 或调用 ThrowIfError</returns>
     public static async Task<ExcelImportResult<T>> ImportExcelAsync<T>(Stream stream, string sheetName = null,
         ExcelType excelType = ExcelType.XLSX, string startCell = "A1", CancellationToken cancellationToken = default)
         where T : class, new()
@@ -262,7 +273,7 @@ public static class MiniExcelUtil
     /// <param name="sheetName">Sheet名称，为空时读取第一个Sheet</param>
     /// <param name="excelType">Excel类型</param>
     /// <param name="startCell">起始单元格，如 "A1"、"B2"，默认从 A1 开始读取</param>
-    /// <returns>导入结果</returns>
+    /// <returns>解析数据与逐行校验错误；Data 仍包含有错误的行，调用方需检查 Errors 或调用 ThrowIfError</returns>
     public static ExcelImportResult<T> ImportExcel<T>(string filePath, string sheetName = null,
         ExcelType excelType = ExcelType.XLSX, string startCell = "A1") where T : class, new()
     {
@@ -284,7 +295,7 @@ public static class MiniExcelUtil
     /// <param name="excelType">Excel类型</param>
     /// <param name="startCell">起始单元格，如 "A1"、"B2"，默认从 A1 开始读取</param>
     /// <param name="cancellationToken">取消令牌</param>
-    /// <returns>导入结果</returns>
+    /// <returns>解析数据与逐行校验错误；Data 仍包含有错误的行，调用方需检查 Errors 或调用 ThrowIfError</returns>
     public static async Task<ExcelImportResult<T>> ImportExcelAsync<T>(string filePath, string sheetName = null,
         ExcelType excelType = ExcelType.XLSX, string startCell = "A1", CancellationToken cancellationToken = default)
         where T : class, new()
@@ -662,7 +673,7 @@ public static class MiniExcelUtil
     /// </remarks>
     /// <typeparam name="T">数据模型类型</typeparam>
     /// <param name="rows">从 MiniExcel 读取的原始行数据</param>
-    /// <returns>导入结果</returns>
+    /// <returns>解析数据与逐行校验错误；Data 仍包含有错误的行，调用方需检查 Errors 或调用 ThrowIfError</returns>
     private static ExcelImportResult<T> ParseImportData<T>(List<IDictionary<string, object>> rows) where T : class, new()
     {
         var result = new ExcelImportResult<T>();

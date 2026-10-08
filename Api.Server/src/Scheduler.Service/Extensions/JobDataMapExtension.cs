@@ -18,7 +18,9 @@ public static class JobDataMapExtension
     /// <summary>
     /// 获取以 <see langword="int"/> 为基础类型的枚举值
     /// </summary>
-    /// <typeparam name="T">枚举类型</typeparam>
+    /// <typeparam name="T">以 int 为基础类型的枚举</typeparam>
+    /// <param name="jobData">作业数据集合</param>
+    /// <param name="key">数据键</param>
     /// <returns>枚举值</returns>
     public static T GetEnum<T>(this JobDataMap jobData, string key) where T : Enum
     {
@@ -50,8 +52,11 @@ public static class JobDataMapExtension
     /// <summary>
     /// 获取以 <see langword="int"/> 为基础类型的可空枚举值
     /// </summary>
-    /// <typeparam name="T">枚举类型</typeparam>
-    /// <returns>枚举值；键不存在、值为空或数值无效时为 <see langword="null"/></returns>
+    /// <typeparam name="T">以 int 为基础类型的枚举</typeparam>
+    /// <param name="jobData">作业数据集合</param>
+    /// <param name="key">数据键</param>
+    /// <returns>枚举值；键不存在、值为空或不满足枚举值检查时为 null</returns>
+    /// <remarks>不是容错解析：值不能转换为 int 时，转换异常仍会向外传播。</remarks>
     public static T? GetNullableEnum<T>(this JobDataMap jobData, string key) where T : struct, Enum
     {
         // ReSharper disable once CanSimplifyDictionaryLookupWithTryGetValue
@@ -94,7 +99,10 @@ public static class JobDataMapExtension
     /// <summary>
     /// 获取可空的 <see langword="int"/> 值
     /// </summary>
-    /// <returns>对应的值；键不存在或值为空时为 <see langword="null"/></returns>
+    /// <param name="jobData">作业数据集合</param>
+    /// <param name="key">数据键</param>
+    /// <returns>转换后的数值；键不存在或值为空时为 null</returns>
+    /// <remarks>格式无效或数值溢出时，Convert 的异常会向外传播。</remarks>
     public static int? GetNullableInt(this JobDataMap jobData, string key)
     {
         // 判断是否存在
@@ -115,7 +123,10 @@ public static class JobDataMapExtension
     /// <summary>
     /// 获取可空的 <see langword="long"/> 值
     /// </summary>
-    /// <returns>对应的值；键不存在或值为空时为 <see langword="null"/></returns>
+    /// <param name="jobData">作业数据集合</param>
+    /// <param name="key">数据键</param>
+    /// <returns>转换后的数值；键不存在或值为空时为 null</returns>
+    /// <remarks>格式无效或数值溢出时，Convert 的异常会向外传播。</remarks>
     public static long? GetNullableLong(this JobDataMap jobData, string key)
     {
         // 判断是否存在
@@ -136,7 +147,10 @@ public static class JobDataMapExtension
     /// <summary>
     /// 获取可空的 <see cref="DateTime"/> 值
     /// </summary>
-    /// <returns>对应的值；键不存在或值为空时为 <see langword="null"/></returns>
+    /// <param name="jobData">作业数据集合</param>
+    /// <param name="key">数据键</param>
+    /// <returns>转换后的数值；键不存在或值为空时为 null</returns>
+    /// <remarks>格式无效或数值溢出时，Convert 的异常会向外传播。</remarks>
     public static DateTime? GetNullableDateTime(this JobDataMap jobData, string key)
     {
         // 判断是否存在

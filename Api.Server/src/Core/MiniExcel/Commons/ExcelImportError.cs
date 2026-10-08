@@ -16,7 +16,7 @@ public class ExcelImportError
     /// <summary>
     /// 行号
     /// </summary>
-    /// <remarks>从1开始（不含表头）</remarks>
+    /// <remarks>从 1 开始统计读取到的数据行，不含表头，也不是工作表中的绝对行号。</remarks>
     public int RowIndex { get; set; }
 
     /// <summary>

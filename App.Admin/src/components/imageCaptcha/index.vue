@@ -34,7 +34,10 @@ defineOptions({
 
 const props = defineProps({
 	...baseProps,
-	/** @description 表单校验字段名 @default "captchaCode" */
+	/**
+	 * 表单校验字段名
+	 * @defaultValue "captchaCode"
+	 */
 	prop: {
 		type: String,
 		default: "captchaCode",
@@ -66,7 +69,7 @@ const state = reactive({
 	captchaImage: undefined,
 });
 
-/** 重新获取图形验证码并清空旧答案 */
+/** 重新获取图形验证码并清空旧答案。 */
 const refresh = async () => {
 	state.loading = true;
 	state.loadFailed = false;
@@ -89,6 +92,7 @@ const refresh = async () => {
 onMounted(refresh);
 
 defineExpose({
+	/** 重新获取图形验证码并清空旧答案；请求失败时记录失败状态。 */
 	refresh,
 });
 </script>

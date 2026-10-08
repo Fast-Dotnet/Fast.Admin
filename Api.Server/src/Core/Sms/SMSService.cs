@@ -64,7 +64,7 @@ public class SMSService : ISmsService, ISingletonDependency
         /// <summary>
         /// 错误次数
         /// </summary>
-        /// <remarks>超过5次自动失效</remarks>
+        /// <remarks>累计错误达到 5 次时删除记录，验证码失效。</remarks>
         public int ErrorCount { get; set; }
     }
 
@@ -160,7 +160,7 @@ public class SMSService : ISmsService, ISingletonDependency
             }
             else
             {
-                // // 更新错误次数并保持原有过期时间
+                // 更新错误次数并保持原有过期时间。
                 await _cache.SetAsync(cacheKey, dto, dto.SendTime.AddMinutes(5) - DateTime.Now);
             }
 

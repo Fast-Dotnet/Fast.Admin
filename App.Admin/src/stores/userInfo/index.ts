@@ -20,8 +20,11 @@ type IState = {
 	refreshToken: string;
 	/** 激活的 TabBar 页面 */
 	activeTabBar: string;
+	/** 授权登录弹窗 */
+	authLoginPopup: boolean;
 };
 
+/** 当前账号、租户与登录凭据状态 */
 export const useUserInfo = defineStore(
 	"userInfo",
 	() => {
@@ -29,6 +32,7 @@ export const useUserInfo = defineStore(
 			token: "",
 			refreshToken: "",
 			activeTabBar: CommonRoute.Workbench,
+			authLoginPopup: false,
 			accountId: undefined,
 			accountKey: "",
 			mobile: "",
@@ -55,25 +59,18 @@ export const useUserInfo = defineStore(
 			menuList: [],
 		});
 
-		/** 是否存在用户信息 */
+		// 是否存在用户信息
 		const hasUserInfo = ref(false);
 
-		/** WebSocket 是否连接 */
+		// WebSocket 是否连接
 		const hasWebSocket = ref(false);
 
-		/** 底部导航配置，后续可根据用户权限动态调整 */
-		const tabBars = reactive<ITabBar[]>([
-			{ path: CommonRoute.Home, icon: "home", title: "首页" },
-			{ path: CommonRoute.Workbench, icon: "workbench", title: "工作台" },
-			{ path: CommonRoute.My, icon: "my", title: "我的" },
-		]);
-
-		/** 设置用户信息 */
+		/** 合并服务端返回的用户信息。 */
 		const setUserInfo = (uInfo: GetLoginUserInfoOutput) => {
 			Object.assign(state, uInfo);
 		};
 
-		/** 删除 Token */
+		/** 删除 Token。 */
 		const removeToken = () => {
 			state.token = "";
 			state.refreshToken = "";
@@ -81,13 +78,13 @@ export const useUserInfo = defineStore(
 			state.identityVerification = false;
 		};
 
-		/** 设置 Token */
+		/** 读取响应头中的双 Token；服务端标记访问 Token 失效时清除本地凭据。 */
 		const setToken = (axiosResponse: AxiosResponse) => {
-			if (!axiosResponse) return;
-			// 从请求头部中获取 Token
-			const token = (axiosResponse.headers.get as (headerName: string) => string)("access-token");
-			// 从请求头部中获取 Refresh Token
-			const refreshToken = (axiosResponse.headers.get as (headerName: string) => string)("x-access-token");
+			if (typeof axiosResponse?.headers?.get !== "function") return;
+			// 从响应头获取访问 Token
+			const token = axiosResponse.headers.get("access-token")?.toString();
+			// 从响应头获取刷新 Token
+			const refreshToken = axiosResponse.headers.get("x-access-token")?.toString();
 			// 判断是否为无效 Token
 			if (token === "invalid_token") {
 				// 删除 Token
@@ -100,20 +97,29 @@ export const useUserInfo = defineStore(
 		};
 
 		/**
-		 * 获取 Token
-		 * @description 从缓存中获取
+		 * 获取当前 Pinia 状态中的 Token。
 		 */
 		const getToken = () => {
 			return { token: state.token, refreshToken: state.refreshToken };
 		};
 
 		/**
-		 * 解析Token
-		 * @description 如果Token过期，会解析不出来
-		 * @param token 可以传入，也可以直接获取 pinia 中的
-		 * @param refreshToken 可以传入，也可以直接获取 pinia 中的
+		 * 解析 Token 载荷；访问 Token 过期时同时返回刷新 Token。
+		 *
+		 * @remarks
+		 * 此处仅解码载荷，不校验签名，也不发起刷新请求；格式错误会抛出异常。
+		 *
+		 * @param token - 访问 Token；null 或 undefined 时使用 Pinia 中的值
+		 * @param refreshToken - 刷新 Token；null 或 undefined 时使用 Pinia 中的值
 		 */
-		const resolveToken = (token: string = null, refreshToken: string = null) => {
+		const resolveToken = (
+			token: string = null,
+			refreshToken: string = null
+		): {
+			token: string;
+			refreshToken: string;
+			tokenData: unknown;
+		} => {
 			token ??= state.token;
 			refreshToken ??= state.refreshToken;
 			if (token) {
@@ -129,7 +135,7 @@ export const useUserInfo = defineStore(
 			return { token: null, refreshToken: null, tokenData: null };
 		};
 
-		/** 登录 */
+		/** 登录。 */
 		const login = (loginRes: LoginOutput) => {
 			if (!loginRes || loginRes.status !== LoginStatusEnum.Success) return;
 			// 优先缓存一些数据
@@ -148,6 +154,7 @@ export const useUserInfo = defineStore(
 			uni.switchTab({ url: CommonRoute.Workbench });
 		};
 
+		/** 清除登录凭据与 HTTP 缓存，并导航到登录页。 */
 		const logoutClear = () => {
 			removeToken();
 			// 删除 HTTP 缓存数据
@@ -165,7 +172,7 @@ export const useUserInfo = defineStore(
 			}
 		};
 
-		/** 退出登录 */
+		/** 退出登录。 */
 		const logout = async (
 			data: {
 				/**
@@ -205,13 +212,13 @@ export const useUserInfo = defineStore(
 			}
 		};
 
-		/** 刷新用户信息 */
+		/** 请求并合并当前用户信息；请求失败继续向调用方抛出异常。 */
 		const refreshUserInfo = async () => {
 			const apiRes = await authApi.getLoginUserInfo();
 			setUserInfo(apiRes);
 		};
 
-		/** 刷新应用 */
+		/** 刷新应用。 */
 		const refreshApp = async () => {
 			// 删除 HTTP 缓存数据
 			Local.removeByPrefix("HTTP_CACHE_");
@@ -223,14 +230,23 @@ export const useUserInfo = defineStore(
 			await useApp().setDictionary();
 		};
 
-		/** 切换登录 @description 调用此方法下次才不会 tryLogin */
+		/** 清除登录状态并返回登录页，使下次导航重新加载用户信息。 */
 		const switchLogin = () => {
 			// 确保下次会自动刷新用户信息
 			hasUserInfo.value = false;
 			logoutClear();
 		};
 
-		/** 获取微信Code */
+		/** 检查手机号是否已存在；缺失时打开授权弹窗并返回 false。 */
+		const authLoginCheck = (): boolean => {
+			if (!state.mobile) {
+				state.authLoginPopup = true;
+				return false;
+			}
+			return true;
+		};
+
+		/** 获取微信小程序登录 code；授权失败或非微信小程序平台时返回空字符串。 */
 		const getWeChatCode = () =>
 			new Promise<string>((resolve) => {
 				// #ifdef MP-WEIXIN
@@ -252,7 +268,6 @@ export const useUserInfo = defineStore(
 			...toRefs(state),
 			hasUserInfo,
 			hasWebSocket,
-			tabBars,
 			setUserInfo,
 			removeToken,
 			setToken,
@@ -264,13 +279,14 @@ export const useUserInfo = defineStore(
 			refreshUserInfo,
 			refreshApp,
 			switchLogin,
+			authLoginCheck,
 			getWeChatCode,
 		};
 	},
 	{
 		persist: {
 			key: "store-user-info",
-			// 这里是配置 pinia 只需要持久化 state 中的 Token 即可，而不是整个 store
+			// 仅持久化登录凭据和选定的账号展示字段；用户信息加载状态不持久化。
 			pick: [
 				"token",
 				"refreshToken",

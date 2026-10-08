@@ -17,7 +17,7 @@ namespace Fast.Core;
 public class MetadataContext
 {
     /// <summary>
-    /// 元数据信息
+    /// 首次访问时同步加载并缓存的服务器元数据信息
     /// </summary>
     public static ServerMetadataInfo MetadataInfo
     {
@@ -30,9 +30,9 @@ public class MetadataContext
     }
 
     /// <summary>
-    /// 获取服务器Ip地址
+    /// 依次探测云平台元数据，均不可用时返回本机信息。
     /// </summary>
-    /// <remarks>从Metadata Service中获取</remarks>
+    /// <remarks>云元数据探测失败时继续尝试下一平台；本机 DNS 查询异常仍会向调用方传播。</remarks>
     /// <returns>服务器元数据；无法识别云平台时返回本机信息</returns>
     private static async Task<ServerMetadataInfo> GetServerMetadata()
     {
@@ -59,7 +59,7 @@ public class MetadataContext
         }
         catch
         {
-            // ignored
+            // 当前云平台元数据不可用，继续尝试后续来源。
         }
 
         // 腾讯云
@@ -87,7 +87,7 @@ public class MetadataContext
         }
         catch
         {
-            // ignored
+            // 当前云平台元数据不可用，继续尝试后续来源。
         }
 
         // 华为云
@@ -115,7 +115,7 @@ public class MetadataContext
         }
         catch
         {
-            // ignored
+            // 当前云平台元数据不可用，继续尝试后续来源。
         }
 
         return new ServerMetadataInfo

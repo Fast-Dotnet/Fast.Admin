@@ -162,11 +162,7 @@ const handleDropdownClick = (command: string) => {
 };
 
 /**
- * 根据主题色生成线性渐变（支持浅色 / 深色模式）
- * --------------------------------------------------------
- * 特点：
- *  - 主色为中心，向两侧偏蓝与偏紫延伸
- *  - 提供 light / dark 模式自适应亮度与饱和度
+ * 根据主题色生成向蓝、紫两侧延伸的线性渐变，并适配浅色与深色模式。
  *
  * @param baseColor - HEX 主题色，如 "#0487d0"
  * @param mode - 'light' | 'dark'，默认 'light'
@@ -174,9 +170,7 @@ const handleDropdownClick = (command: string) => {
  * @returns CSS linear-gradient 字符串
  */
 const getThemeGradient = (baseColor: string, mode: "light" | "dark" = "light", angleDeg = 165) => {
-	/**
-	 * HEX 转 HSL
-	 */
+	/** 无效 HEX 色值使用默认主题色，再转换为 HSL。 */
 	const hexToHsl = (hex: string) => {
 		if (!/^#[\da-f]{6}$/iu.test(hex)) hex = defaultThemeColor;
 		hex = hex.replace("#", "");
@@ -211,9 +205,7 @@ const getThemeGradient = (baseColor: string, mode: "light" | "dark" = "light", a
 		return { h, s: s * 100, l: l * 100 };
 	};
 
-	/**
-	 * HSL 转 HEX
-	 */
+	/** 将调整后的 HSL 转回 HEX。 */
 	const hslToHex = (h: number, s: number, l: number) => {
 		s /= 100;
 		l /= 100;

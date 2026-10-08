@@ -12,7 +12,9 @@ import { useConfig } from "../config";
 import type { FaTableColumnCtx, FaTableEnumColumnCtx } from "fast-element-plus";
 import type { LaunchOutput } from "@/api/services/Center/app/models/LaunchOutput";
 
+/** 可选的登录页布局名称 */
 export type ILoginComponent = "ClassicLogin" | "ModernLogin" | "SimpleLogin" | "SplitLogin";
+/** 应用默认主题色 */
 export const defaultThemeColor = "#409EFF";
 
 type IState = {
@@ -24,6 +26,7 @@ type IState = {
 	publicSecurityCode: string;
 };
 
+/** 应用启动配置与运行时缓存 */
 export const useApp = defineStore(
 	"app",
 	() => {
@@ -51,7 +54,7 @@ export const useApp = defineStore(
 		/** 表格列 */
 		const tableColumns = shallowRef<Map<string, FaTableColumnCtx[]>>(new Map());
 
-		/** Launch */
+		/** 加载运行配置和启动数据，并更新字典；启动接口失败时允许沿用已有启动缓存。 */
 		const launch = async () => {
 			try {
 				const publicPath = import.meta.env.VITE_PUBLIC_PATH.endsWith("/")
@@ -100,7 +103,7 @@ export const useApp = defineStore(
 
 				// 判断是否存在 Launch 数据
 				if (state.hasLaunch) {
-					/** 刷新页面标题 */
+					// 使用服务端应用名称更新页面标题。
 					document.title = state.appName;
 
 					useFastAxios().setOptions({
@@ -125,7 +128,12 @@ export const useApp = defineStore(
 			}
 		};
 
-		/** 获取字典 */
+		/**
+		 * 获取已加载的字典项；不存在时返回 null。
+		 *
+		 * @param key - 字典名称
+		 * @param throwError - 是否记录缺失字典的错误日志，不会因此抛出异常
+		 */
 		const getDictionary = (key: string, throwError = true): FaTableEnumColumnCtx[] => {
 			if (!dictionary.value.has(key)) {
 				if (throwError) {
@@ -136,7 +144,12 @@ export const useApp = defineStore(
 			return dictionary.value.get(key);
 		};
 
-		/** 获取表格列 */
+		/**
+		 * 获取应用内的表格列缓存；不存在时返回 null。
+		 *
+		 * @param tableKey - 表格配置标识
+		 * @param throwError - 是否记录缓存缺失的错误日志，不会因此抛出异常
+		 */
 		const getTableColumns = (tableKey: string, throwError = true): FaTableColumnCtx[] => {
 			if (!tableColumns.value.has(tableKey)) {
 				if (throwError) {
@@ -147,7 +160,7 @@ export const useApp = defineStore(
 			return tableColumns.value.get(tableKey) ?? [];
 		};
 
-		/** 设置或更新表格列 */
+		/** 设置或替换指定表格的应用内列缓存。 */
 		const setTableColumns = (tableKey: string, columns: FaTableColumnCtx[]) => {
 			if (tableColumns.value.has(tableKey)) {
 				tableColumns.value.delete(tableKey);
@@ -155,7 +168,7 @@ export const useApp = defineStore(
 			tableColumns.value.set(tableKey, columns);
 		};
 
-		/** 删除表格列 */
+		/** 使指定表格的应用内列缓存失效。 */
 		const deleteTableColumns = (tableKey: string) => {
 			if (tableColumns.value.has(tableKey)) {
 				tableColumns.value.delete(tableKey);

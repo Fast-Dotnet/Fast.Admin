@@ -21,8 +21,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, reactive } from "vue";
-import { addCssUnit, callOptionalFunction, definePropType, logger, useProps } from "@fast-china/utils";
+import { computed, nextTick, reactive, toRef } from "vue";
+import { addCssUnit, callOptionalFunction, definePropType, useProps } from "@fast-china/utils";
 import { popupProps } from "@wot-ui/ui/components/wd-popup/types";
 import FaLoading from "../loading/index.vue";
 
@@ -37,13 +37,13 @@ defineOptions({
 
 const props = defineProps({
 	...popupProps,
-	/** @description 宽度 */
+	/** 弹窗宽度，数字按 px 处理 */
 	width: [String, Number],
-	/** @description 高度 */
+	/** 弹窗高度，数字按 px 处理 */
 	height: [String, Number],
-	/** @description 显示关闭回调 */
+	/** 保留的关闭配置；当前实现未读取此属性 */
 	showBeforeClose: Boolean,
-	/** @description 打开之后 */
+	/** 弹窗显示后的初始化回调，优先于 open 方法传入的回调 */
 	afterOpen: {
 		type: definePropType<() => void>(Function),
 	},
@@ -52,23 +52,23 @@ const props = defineProps({
 const wdPopupProps = useProps(props, popupProps);
 
 const emit = defineEmits<{
-	/** @description 进入前触发 */
+	/** 进入前触发 */
 	beforeEnter: [];
-	/** @description 进入时触发 */
+	/** 进入时触发 */
 	enter: [];
-	/** @description 进入后触发 */
+	/** 进入后触发 */
 	afterEnter: [];
-	/** @description 离开前触发 */
+	/** 离开前触发 */
 	beforeLeave: [];
-	/** @description 离开时触发 */
+	/** 离开时触发 */
 	leave: [];
-	/** @description 离开后触发 */
+	/** 离开后触发 */
 	afterLeave: [];
-	/** @description 点击遮罩时触发 */
+	/** 点击遮罩时触发 */
 	clickModal: [];
-	/** @description 弹出层打开时触发 */
+	/** 弹出层打开时触发 */
 	open: [];
-	/** @description 弹出层关闭时触发 */
+	/** 弹出层关闭时触发 */
 	close: [];
 }>();
 
@@ -104,62 +104,51 @@ const state = reactive({
 	}),
 });
 
-const handleOpen = (openFunction?: () => void | Promise<void>) => {
+const handleOpen = async (openFunction?: () => void | Promise<void>) => {
 	state.visible = true;
-	nextTick(() => {
-		state.loading = true;
-		callOptionalFunction(props.afterOpen ?? openFunction)
-			.then(() => {
-				emit("open");
-			})
-			.catch((error: unknown) => {
-				logger.error("FaPopup", error);
-				// 自动关闭
-				state.visible = false;
-			})
-			.finally(() => {
-				state.loading = false;
-			});
-	});
+	await nextTick();
+	state.loading = true;
+	try {
+		await callOptionalFunction(props.afterOpen ?? openFunction);
+		emit("open");
+	} catch (error) {
+		state.visible = false;
+		throw error;
+	} finally {
+		state.loading = false;
+	}
 };
 
-const handleClose = (closeFunction?: () => void | Promise<void>) => {
+const handleClose = async (closeFunction?: () => void | Promise<void>) => {
 	state.loading = true;
-	callOptionalFunction(closeFunction)
-		.then(() => {
-			emit("close");
-			state.visible = false;
-		})
-		.catch((error: unknown) => {
-			logger.error("FaPopup", error);
-		})
-		.finally(() => {
-			state.loading = false;
-		});
+	try {
+		await callOptionalFunction(closeFunction);
+		emit("close");
+		state.visible = false;
+	} finally {
+		state.loading = false;
+	}
 };
 
-const handleLoading = (loadingFunction: () => void | Promise<void>) => {
+const handleLoading = async (loadingFunction: () => void | Promise<void>) => {
 	state.loading = true;
-	callOptionalFunction(loadingFunction)
-		.then()
-		.catch((error: unknown) => {
-			logger.error("FaPopup", error);
-		})
-		.finally(() => {
-			state.loading = false;
-		});
+	try {
+		await callOptionalFunction(loadingFunction);
+	} finally {
+		state.loading = false;
+	}
 };
 
 defineExpose({
-	/** @description 加载状态 */
-	loading: computed(() => state.loading),
-	/** @description 是否显示 */
-	visible: computed(() => state.visible),
-	/** @description 打开弹窗 */
+	/** 加载状态 */
+	loading: toRef(state, "loading"),
+	/** 是否显示 */
+	visible: toRef(state, "visible"),
+	/** 显示弹窗并等待初始化回调；失败时关闭弹窗并向调用方抛出异常。 */
 	open: handleOpen,
-	/** @description 关闭弹窗 */
+	/** 等待关闭回调成功后隐藏弹窗；回调失败时保留显示状态并抛出异常。 */
 	close: handleClose,
-	/** @description 弹窗加载 */
+	/** 执行异步操作并在结束时恢复加载状态；异常继续向调用方传播。 */
 	doLoading: handleLoading,
 });
 </script>

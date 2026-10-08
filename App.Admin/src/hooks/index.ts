@@ -5,6 +5,7 @@ import type { NotifyProps } from "@wot-ui/ui/components/wd-notify/types";
 import type { Toast, ToastOptions } from "@wot-ui/ui/components/wd-toast/types";
 
 export * from "./use-loading";
+export * from "./use-audio";
 export * from "./use-message-box";
 export * from "./use-notify";
 export * from "./use-overlay";
@@ -12,22 +13,43 @@ export * from "./use-paging";
 export * from "./use-toast";
 export * from "./use-update";
 
-/** Wot Ui Hooks 共享状态 */
+/**
+ * 页面布局与应用级提示方法之间的共享状态。
+ *
+ * @remarks
+ * 通知、轻提示和弹窗采用单槽请求，由可见页面布局消费后清空，不提供队列。
+ * 加载与遮罩状态由布局直接渲染，调用方负责关闭。
+ */
 export const wdHookState = reactive({
 	/** 加载状态 */
 	loading: {
-		/** 状态 @default false */
+		/**
+		 * 是否显示
+		 * @defaultValue false
+		 */
 		state: false,
-		/** 加载文字 @default "加载中..." */
+		/**
+		 * 加载提示文本
+		 * @defaultValue "加载中..."
+		 */
 		text: "加载中...",
-		/** 全屏Loading，和默认Loading不一样 @default false */
+		/**
+		 * 是否使用全屏加载组件
+		 * @defaultValue false
+		 */
 		fullscreen: false,
 	},
 	/** 遮罩层 */
 	overlay: {
-		/** 状态 @default false */
+		/**
+		 * 是否显示
+		 * @defaultValue false
+		 */
 		state: false,
-		/** 透明度（0 ~ 1） @default 0 */
+		/**
+		 * 黑色遮罩的 alpha 值，0 为全透明，1 为不透明
+		 * @defaultValue 0
+		 */
 		transparent: 0,
 	},
 	/** Notify 通知 */

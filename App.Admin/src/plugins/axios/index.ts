@@ -1,13 +1,13 @@
 import { createFastAxios } from "@fast-china/axios";
 import { AESDecrypt, AESEncrypt, Local, installationIdentity, logger, withDefineType } from "@fast-china/utils";
 import { isAxiosError } from "axios";
-import { AppEnvironmentEnum } from "@/api/enums/AppEnvironmentEnum";
 import { useLoading, useMessageBox, useToast } from "@/hooks";
 import { useApp, useUserInfo } from "@/stores";
 import type { ApiResponse } from "@fast-china/axios";
 import type { AxiosHeaders, AxiosRequestConfig, AxiosResponse } from "axios";
+import type { AppEnvironmentEnum } from "@/api/enums/AppEnvironmentEnum";
 
-/** 加载实例 */
+// 并发请求共享的加载提示状态
 const loadingInstance = {
 	// 加载文案
 	texts: withDefineType<string[]>([]),
@@ -15,10 +15,10 @@ const loadingInstance = {
 	count: 0,
 };
 
-/** 登录回调 */
+// 防止并发的 401 响应重复弹出登录失效提示。
 let loginCallBack = false;
 
-/** 处理重新登录 */
+/** 识别业务状态码或 HTTP 401，并请求重新登录。 */
 const handleReloadLogin = (response?: AxiosResponse) => {
 	// 尝试获取 Restful 风格返回Code，或者获取响应状态码
 	const code = response?.data?.code || response?.status;
@@ -38,7 +38,7 @@ const handleReloadLogin = (response?: AxiosResponse) => {
 	return true;
 };
 
-/** 加载 FastAxios */
+/** 创建请求实例并注册加载提示、缓存、加解密及认证拦截器。 */
 export function loadFastAxios(): void {
 	const appStore = useApp();
 
@@ -47,11 +47,29 @@ export function loadFastAxios(): void {
 		baseUrl = baseUrl.slice(0, -1);
 	}
 
+	let origin: string;
+	let deviceType: keyof typeof AppEnvironmentEnum;
+	switch (process.env.UNI_PLATFORM) {
+		case "mp-weixin":
+			origin = appStore.appId;
+			deviceType = "WeChatMiniProgram";
+			break;
+		case "app":
+			origin = appStore.appId;
+			deviceType = uni.getSystemInfoSync().platform === "ios" ? "IOS" : "Android";
+			break;
+		case "h5":
+		default:
+			origin = import.meta.env.DEV ? import.meta.env.VITE_APP_ORIGIN || window.location.host : window.location.host;
+			deviceType = "Web";
+			break;
+	}
+
 	const fastAxios = createFastAxios({
 		baseUrl,
 		headers: {
-			"Fast-Origin": import.meta.env.DEV ? import.meta.env.VITE_APP_ORIGIN || appStore.appId : appStore.appId,
-			"Fast-Device-Type": Object.entries(AppEnvironmentEnum).find(([, value]) => value === AppEnvironmentEnum.WeChatMiniProgram)?.[0],
+			"Fast-Origin": origin,
+			"Fast-Device-Type": deviceType,
 			"Fast-Device-Id": installationIdentity.deviceId,
 		},
 		requestCipher: true,

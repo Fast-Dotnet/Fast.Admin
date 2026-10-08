@@ -6,11 +6,18 @@ import { tableApi } from "@/api/services/Center/table";
 import { useApp, useConfig } from "@/stores";
 import type { FaTableColumnCtx, FaTableInstance, FaTableSlots } from "fast-element-plus";
 
+/**
+ * 集成用户列配置和应用表格偏好的表格组件。
+ *
+ * @remarks
+ * 传入 columns 时使用静态列，并跳过用户列配置操作；否则通过 tableKey 读取缓存或服务端列配置。
+ * 其余 Props、事件、插槽和实例方法沿用基础 FaTable 合同。
+ */
 export default defineComponent({
 	name: "FastTable",
 	props: {
 		...faTableProps,
-		/** 是否显示列配置按钮 */
+		/** 是否显示列配置按钮；传入静态 columns 时不显示 */
 		columnSettingBtn: {
 			type: Boolean,
 			default: true,
@@ -49,9 +56,9 @@ export default defineComponent({
 			searchAdvancedConfig?: { prop: string; type: number }[];
 		};
 
-		// 将后端列配置中的函数字符串恢复为运行时回调
+		/** 将后端列配置中的函数字符串恢复为运行时回调。 */
 		const handleColumnType = (localColumns: (FaTableColumnCtx & FaTableColumnLocalCtx)[]) => {
-			// 提取受支持箭头函数字符串中的参数和函数体
+			/** 提取受支持箭头函数字符串中的参数和函数体。 */
 			const handleFunctionArgs = (
 				functionStr: string
 			): {
@@ -61,7 +68,7 @@ export default defineComponent({
 				// 去掉字符串开头和结尾的多余空白字符，包括换行符
 				const trimmedStr = functionStr.trim();
 
-				// 正则表达式用于匹配箭头函数的参数和函数体，包括支持解构参数
+				// 仅解析带块体的箭头函数；参数按逗号拆分，不支持参数内部包含逗号的复杂解构。
 				const arrowFunctionMatch =
 					trimmedStr.match(/^\(([^)]*)\)\s*=>\s*\{([\s\S]*)\};?$/) ?? trimmedStr.match(/^([A-Za-z_$][\w$]*)\s*=>\s*\{([\s\S]*)\};?$/);
 
@@ -103,7 +110,7 @@ export default defineComponent({
 			return localColumns;
 		};
 
-		// 将系统最新列配置同步到当前用户缓存
+		/** 将系统最新列配置同步到当前用户缓存。 */
 		const syncColumnsCache = (showConfirm = true) => {
 			if (props.columns) return;
 
@@ -136,7 +143,7 @@ export default defineComponent({
 			}
 		};
 
-		// 清除当前用户的表格列缓存并重新加载配置
+		/** 清除当前用户的表格列缓存并重新加载配置。 */
 		const clearColumnsCache = () => {
 			if (props.columns) return;
 			ElMessageBox.confirm("确认重置列缓存配置？此操作无法撤销。", {
@@ -157,7 +164,7 @@ export default defineComponent({
 			});
 		};
 
-		// 保存当前用户调整后的表格列配置
+		/** 保存当前用户调整后的表格列配置。 */
 		const saveColumnsCache = async (columns: FaTableColumnCtx[]) => {
 			if (props.columns) return;
 			const findSourceColumn = (columnId?: number | string, sourceColumns = state.columns): FaTableColumnCtx | undefined => {
@@ -190,7 +197,7 @@ export default defineComponent({
 							};
 						}),
 					});
-					/* 服务端缓存保存成功后，使应用级列缓存失效，后续重新获取最新配置。 */
+					// 服务端缓存保存成功后，使应用级列缓存失效，后续重新获取最新配置。
 					state.existCacheColumns = true;
 					appStore.setTableColumns(props.tableKey, columns);
 					appStore.deleteTableColumns(props.tableKey);
@@ -202,7 +209,7 @@ export default defineComponent({
 			}, "保存列配置中...");
 		};
 
-		// 递归复制列配置，并将字典名称解析为字典项
+		/** 递归复制列配置，并将字典名称解析为字典项。 */
 		const handleColumns = (columns: FaTableColumnCtx[]) => {
 			return columns.map((col) => {
 				const result = { ...col };
@@ -237,7 +244,7 @@ export default defineComponent({
 			return cancelBusinessColumnFixed(state.columns);
 		});
 
-		// 优先加载传入列或本地缓存，否则请求服务端列配置
+		/** 优先加载传入列或本地缓存，否则请求服务端列配置。 */
 		const loadTableColumns = async () => {
 			let columns: FaTableColumnCtx[];
 			if (props.columns) {
@@ -251,7 +258,7 @@ export default defineComponent({
 					state.loadingText = "加载列配置中...";
 					try {
 						const apiRes = await tableApi.queryTableColumnConfig(props.tableKey);
-						/* 服务端列定义变化时，先同步用户缓存，避免继续使用过期列配置。 */
+						// 服务端列定义变化时，先同步用户缓存，避免继续使用过期列配置。
 						if (apiRes.change) {
 							const lastUpdateTime = apiRes.updatedTime ?? new Date();
 							ElMessage.info(
@@ -276,7 +283,7 @@ export default defineComponent({
 			state.columns = handleColumns(columns);
 		};
 
-		// 清空列状态并重新加载、渲染表格
+		/** 清空列状态并重新加载、渲染表格。 */
 		const doRender = () => {
 			state.columns = [];
 			debounce(async () => {
@@ -338,37 +345,37 @@ export default defineComponent({
 		));
 
 		return useExpose(expose, {
-			/** 清空多选表格的用户选择 */
+			/** 清空多选表格的用户选择。 */
 			clearSelection: computed(() => faTableRef.value?.clearSelection),
-			/** 返回当前选中的行 */
+			/** 返回当前选中的行。 */
 			getSelectionRows: computed(() => faTableRef.value?.getSelectionRows),
-			/** 返回当前半选中的行 */
+			/** 返回当前半选中的行。 */
 			getHalfSelectionRows: computed(() => faTableRef.value?.getHalfSelectionRows),
-			/** 切换多选表格中某一行的选中状态；第二个参数可直接指定是否选中 */
+			/** 切换多选表格中某一行的选中状态；第二个参数可直接指定是否选中。 */
 			toggleRowSelection: computed(() => faTableRef.value?.toggleRowSelection),
-			/** 切换多选表格的全选状态 */
+			/** 切换多选表格的全选状态。 */
 			toggleAllSelection: computed(() => faTableRef.value?.toggleAllSelection),
-			/** 切换可展开表格或树表格中某一行的展开状态；第二个参数可直接指定是否展开 */
+			/** 切换可展开表格或树表格中某一行的展开状态；第二个参数可直接指定是否展开。 */
 			toggleRowExpansion: computed(() => faTableRef.value?.toggleRowExpansion),
-			/** 设置单选表格的当前行；不传参数时取消当前高亮行 */
+			/** 设置单选表格的当前行；不传参数时取消当前高亮行。 */
 			setCurrentRow: computed(() => faTableRef.value?.setCurrentRow),
-			/** 清空排序条件，使数据恢复为未排序状态 */
+			/** 清空排序条件，使数据恢复为未排序状态。 */
 			clearSort: computed(() => faTableRef.value?.clearSort),
-			/** 清除指定 columnKey 列表的过滤条件；不传参数时清除全部过滤器 */
+			/** 清除指定 columnKey 列表的过滤条件；不传参数时清除全部过滤器。 */
 			clearFilter: computed(() => faTableRef.value?.clearFilter),
-			/** 重新计算表格布局，适用于表格可见性发生变化的场景 */
+			/** 重新计算表格布局，适用于表格可见性发生变化的场景。 */
 			doLayout: computed(() => faTableRef.value?.doLayout),
-			/** 手动排序表格；prop 指定排序列，order 指定排序顺序 */
+			/** 手动排序表格；prop 指定排序列，order 指定排序顺序。 */
 			sort: computed(() => faTableRef.value?.sort),
-			/** 将表格滚动到指定坐标 */
+			/** 将表格滚动到指定坐标。 */
 			scrollTo: computed(() => faTableRef.value?.scrollTo),
-			/** 设置垂直滚动位置 */
+			/** 设置垂直滚动位置。 */
 			setScrollTop: computed(() => faTableRef.value?.setScrollTop),
-			/** 设置水平滚动位置 */
+			/** 设置水平滚动位置。 */
 			setScrollLeft: computed(() => faTableRef.value?.setScrollLeft),
 			/** 获取当前表格列上下文 */
 			columns: computed(() => faTableRef.value?.columns),
-			/** 更新懒加载表格指定 rowKey 对应的子节点 */
+			/** 更新懒加载表格指定 rowKey 对应的子节点。 */
 			updateKeyChildren: computed(() => faTableRef.value?.updateKeyChildren),
 			/** 当前加载状态 */
 			loading: computed(() => faTableRef.value?.loading),
@@ -392,13 +399,13 @@ export default defineComponent({
 			tableHeight: computed(() => faTableRef.value?.tableHeight),
 			/** 切换多选表格中某一行的半选状态；第二个参数可直接指定是否半选 */
 			toggleRowIndeterminateSelection: computed(() => faTableRef.value?.toggleRowIndeterminateSelection),
-			/** 刷新表格数据 */
+			/** 刷新表格数据。 */
 			refresh: computed(() => faTableRef.value?.refresh),
-			/** 重置表格状态和数据 */
+			/** 重置表格状态和数据。 */
 			reset: computed(() => faTableRef.value?.reset),
 			/** 重新加载并渲染表格，适用于 tableKey 发生变化的场景 */
 			doRender,
-			/** 在异步操作期间显示 Table 加载状态 */
+			/** 在异步操作期间显示 Table 加载状态。 */
 			doLoading: computed(() => faTableRef.value?.doLoading),
 		});
 	},

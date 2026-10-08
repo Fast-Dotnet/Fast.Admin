@@ -1,25 +1,23 @@
 /**
- * @description 常用路由
+ * 常用路由
  */
 export const CommonRoute = {
-	/** App加载页 */
+	/** 应用启动页 */
 	Launcher: "/pages/launcher/index",
-	/** WebView页面 */
+	/** 内嵌网页页 */
 	WebView: "/pages/webView/index",
 	/** 隐私协议 */
 	PrivacyAgreement: "/pages/agreement/privacy/index",
 	/** 服务协议 */
 	ServiceAgreement: "/pages/agreement/service/index",
-	/** 投诉建议 */
+	/** 投诉建议列表页 */
 	ComplaintPage: "/pages/complaint/page/index",
-	/** 投诉建议 */
+	/** 投诉建议提交页 */
 	ComplaintSubmit: "/pages/complaint/submit/index",
 	/** 登录页 */
 	Login: "/pages/login/index",
 	/** 重置密码页 */
 	PasswordReset: "/pages/passwordReset/index",
-	/** 选择租户 */
-	SelectTenant: "/pages/selectTenant/index",
 	/** 首页 */
 	Home: "/pages/tabBar/home/index",
 	/** 工作台 */
@@ -29,6 +27,6 @@ export const CommonRoute = {
 };
 
 /**
- * @description TabBar 路由
+ * TabBar 路由
  */
 export const TabBarRoute = [CommonRoute.Home, CommonRoute.Workbench, CommonRoute.My];

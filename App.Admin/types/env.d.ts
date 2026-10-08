@@ -7,6 +7,10 @@ declare interface ImportMetaEnv {
 	 */
 	readonly VITE_API_BASE_URL: string;
 	/**
+	 * 接口请求地址
+	 */
+	readonly VITE_API_REQUEST_URL: string;
+	/**
 	 * 本地缓存加密
 	 */
 	readonly VITE_STORAGE_CRYPTO: "true" | "false";
@@ -14,8 +18,4 @@ declare interface ImportMetaEnv {
 	 * APP 来源
 	 */
 	readonly VITE_APP_ORIGIN: string;
-	/**
-	 * 接口请求地址
-	 */
-	readonly VITE_API_REQUEST_URL: string;
 }

@@ -204,7 +204,7 @@ public class MailService : IMailService, ISingletonDependency
         /// <summary>
         /// 错误次数
         /// </summary>
-        /// <remarks>超过5次自动失效</remarks>
+        /// <remarks>累计错误达到 5 次时删除记录，验证码失效。</remarks>
         public int ErrorCount { get; set; }
     }
 

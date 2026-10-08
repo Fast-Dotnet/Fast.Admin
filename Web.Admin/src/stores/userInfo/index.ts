@@ -17,6 +17,7 @@ type IState = {
 	refreshToken: string;
 };
 
+/** 当前账号、租户与登录凭据状态 */
 export const useUserInfo = defineStore(
 	"userInfo",
 	() => {
@@ -55,12 +56,12 @@ export const useUserInfo = defineStore(
 		// WebSocket 是否连接
 		const hasWebSocket = ref(false);
 
-		// 设置用户信息
+		/** 合并服务端返回的用户信息。 */
 		const setUserInfo = (uInfo: GetLoginUserInfoOutput) => {
 			Object.assign(state, uInfo);
 		};
 
-		// 删除 Token
+		/** 删除 Token。 */
 		const removeToken = () => {
 			state.token = "";
 			state.refreshToken = "";
@@ -68,12 +69,12 @@ export const useUserInfo = defineStore(
 			state.identityVerification = false;
 		};
 
-		// 设置 Token
+		/** 读取响应头中的双 Token；服务端标记访问 Token 失效时清除本地凭据。 */
 		const setToken = (axiosResponse: AxiosResponse) => {
 			if (typeof axiosResponse?.headers?.get !== "function") return;
-			// 从请求头部中获取 Token
+			// 从响应头获取访问 Token
 			const token = axiosResponse.headers.get("access-token")?.toString();
-			// 从请求头部中获取 Refresh Token
+			// 从响应头获取刷新 Token
 			const refreshToken = axiosResponse.headers.get("x-access-token")?.toString();
 			// 判断是否为无效 Token
 			if (token === "invalid_token") {
@@ -95,9 +96,12 @@ export const useUserInfo = defineStore(
 
 		/**
 		 * 解析 Token 载荷；访问 Token 过期时同时返回刷新 Token。
-		 * @remarks 此处仅解码载荷，不校验签名；格式错误会抛出异常。
-		 * @param token - 访问 Token；为空时使用 Pinia 中的值。
-		 * @param refreshToken - 刷新 Token；为空时使用 Pinia 中的值。
+		 *
+		 * @remarks
+		 * 此处仅解码载荷，不校验签名，也不发起刷新请求；格式错误会抛出异常。
+		 *
+		 * @param token - 访问 Token；null 或 undefined 时使用 Pinia 中的值
+		 * @param refreshToken - 刷新 Token；null 或 undefined 时使用 Pinia 中的值
 		 */
 		const resolveToken = (
 			token: string = null,
@@ -122,7 +126,7 @@ export const useUserInfo = defineStore(
 			return { token: null, refreshToken: null, tokenData: null };
 		};
 
-		// 登录
+		/** 登录。 */
 		const login = () => {
 			ElMessage.success("登录成功");
 			// 确保 getLoginUser 获取用户信息
@@ -131,6 +135,7 @@ export const useUserInfo = defineStore(
 			router.push("/");
 		};
 
+		/** 清除登录凭据与 HTTP 缓存，并导航到登录页。 */
 		const logoutClear = () => {
 			removeToken();
 			// 删除 HTTP 缓存数据
@@ -143,7 +148,7 @@ export const useUserInfo = defineStore(
 			}
 		};
 
-		// 退出登录
+		/** 退出登录。 */
 		const logout = async (
 			data: {
 				/**
@@ -187,7 +192,7 @@ export const useUserInfo = defineStore(
 			}
 		};
 
-		// 刷新用户信息
+		/** 请求并合并当前用户信息；请求失败继续向调用方抛出异常。 */
 		const refreshUserInfo = async () => {
 			const apiRes = await authApi.getLoginUserInfo();
 			setUserInfo(apiRes);

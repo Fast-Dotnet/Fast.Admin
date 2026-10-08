@@ -1,8 +1,7 @@
 import type { RouteRecordRaw } from "vue-router";
 
 /**
- * 默认路由
- * 必须带有 Name 属性
+ * 登录、错误页面与重定向等静态路由
  */
 export const defaultRoute: RouteRecordRaw[] = [
 	{

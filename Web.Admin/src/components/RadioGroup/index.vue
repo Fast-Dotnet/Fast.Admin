@@ -57,7 +57,7 @@ const emit = defineEmits({
 	...radioGroupEmits,
 });
 
-// 当前选中的字典值
+/** 当前选中的字典值，默认使用启用状态对应的值 */
 const modelValue = defineModel<string | number | boolean>({ default: CommonStatusEnum.Enable });
 
 const appStore = useApp();

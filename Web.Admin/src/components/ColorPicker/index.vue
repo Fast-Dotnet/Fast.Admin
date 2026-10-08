@@ -22,5 +22,6 @@ const predefineColorList = [
 	"#AD6DEF", // 紫色
 ];
 
+/** 选中的颜色值 */
 const modelValue = defineModel<string>();
 </script>

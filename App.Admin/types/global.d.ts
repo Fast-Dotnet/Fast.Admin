@@ -1,24 +1,14 @@
 declare global {
-	/** Vite 运行环境。 */
+	/** Vite 环境 */
 	type ViteEnv = "production" | "development" | "test" | "staging";
 
-	/** uni-app 支持的网络类型。 */
+	/** 网络类型 */
 	type INetworkType = "wifi" | "2g" | "3g" | "4g" | "5g" | "ethernet" | "unknown" | "none";
 
-	/** TabBar */
-	type ITabBar = {
-		/** 路径 */
-		path: string;
-		/** 图标 */
-		icon: string;
-		/** 标题 */
-		title: string;
-	};
-
-	/** FaTable 默认时间搜索支持的快捷日期范围。 */
+	/** FaTable 默认时间搜索支持的快捷日期范围 */
 	type FaTableDataRange = "Past1D" | "Past3D" | "Past1W" | "Past1M" | "Past3M" | "Past6M" | "Past1Y" | "Past3Y";
 
-	/** FaTable 枚举列的选项配置。 */
+	/** FaTable 枚举列的选项配置 */
 	interface FaTableEnumColumnCtx {
 		/**
 		 * 选项框显示的文字
@@ -37,7 +27,7 @@ declare global {
 		 */
 		disabled?: boolean;
 		/**
-		 * 为树形选择是，可以通过 children 属性指定子选项
+		 * 树形选择的子选项
 		 */
 		children?: FaTableEnumColumnCtx[];
 		/**
@@ -45,14 +35,15 @@ declare global {
 		 */
 		tips?: string;
 		/**
-		 * Tag的类型，默认 "primary"
+		 * 标签展示类型
+		 * @defaultValue "primary"
 		 */
 		type?: "primary" | "success" | "info" | "warning" | "danger";
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any -- 枚举项允许携带业务接口定义的附加字段。
 		[key: string]: any;
 	}
 
-	/** FaTable 统一分页返回结果。 */
+	/** FaTable 统一分页返回结果 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any -- 默认分页行字段由业务接口定义。
 	interface PagedResult<Output = Record<string, any>> {
 		/**
@@ -60,7 +51,7 @@ declare global {
 		 */
 		pageIndex?: number;
 		/**
-		 * 当前页码
+		 * 每页条数
 		 */
 		pageSize?: number;
 		/**
@@ -72,7 +63,7 @@ declare global {
 		 */
 		totalRows?: number;
 		/**
-		 * Data
+		 * 当前页数据
 		 */
 		rows?: Output[];
 		/**
@@ -93,7 +84,7 @@ declare global {
 		fullName?: string;
 	}
 
-	/** FaTable 分页搜索运算符。 */
+	/** FaTable 分页搜索运算符 */
 	enum PagedSearchTypeEnum {
 		/**
 		 * 模糊匹配
@@ -133,7 +124,7 @@ declare global {
 		NotInclude = 9,
 	}
 
-	/** FaTable 单个分页搜索条件。 */
+	/** FaTable 单个分页搜索条件 */
 	interface PagedSearchInput {
 		/**
 		 * 搜索字段英文
@@ -153,7 +144,7 @@ declare global {
 		type?: PagedSearchTypeEnum;
 	}
 
-	/** FaTable 单个分页排序条件。 */
+	/** FaTable 单个分页排序条件 */
 	interface PagedSortInput {
 		/**
 		 * 排序字段英文
@@ -170,14 +161,15 @@ declare global {
 		mode?: string;
 	}
 
-	/** FaTable 分页、搜索和排序请求参数。 */
+	/** FaTable 分页、搜索和排序请求参数 */
 	interface PagedInput {
 		/**
-		 * 当前页面索引值，默认为1
+		 * 当前页码，从 1 开始
+		 * @defaultValue 1
 		 */
 		pageIndex?: number;
 		/**
-		 * 页码容量
+		 * 每页条数
 		 */
 		pageSize?: number;
 		/**
@@ -185,7 +177,7 @@ declare global {
 		 */
 		searchValue?: string;
 		/**
-		 * 搜索时间
+		 * 起止搜索时间
 		 */
 		searchTimeList?: (Date | string)[];
 		/**
@@ -198,15 +190,15 @@ declare global {
 		sortList?: PagedSortInput[];
 		/**
 		 * 启用分页
-		 * @default true
+		 * @defaultValue true
 		 */
 		enablePaged?: boolean;
-		/** 业务接口附加的查询字段。 */
+		/** 业务接口附加的查询字段 */
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any -- 分页查询允许携带业务接口定义的扩展字段。
 		[key: string]: any;
 	}
 
-	/** 选择器标准化后的选项数据。 */
+	/** 选择器标准化后的选项数据 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any -- 选择项原始数据由业务接口定义。
 	interface ElSelectorOutput<T = ElSelectorValue, Data = any> {
 		/**
@@ -237,7 +229,7 @@ declare global {
 		[key: string]: any;
 	}
 
-	/** 树组件标准化后的节点数据。 */
+	/** 树组件标准化后的节点数据 */
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any -- 树节点原始数据由业务接口定义。
 	interface ElTreeOutput<T = ElTreeValue, Data = any> {
 		/**
