@@ -69,10 +69,30 @@
 				"idfa": false,
 				"UIBackgroundModes": ["audio"],
 				"privacyDescription": {
-					"NSCameraUsageDescription": "用于扫描二维码、拍摄业务照片及上传相关图片，仅在您主动使用对应功能时访问摄像头。",
 					"NSPhotoLibraryUsageDescription": "用于从系统相册选择业务图片并上传，例如个人头像、业务附件及相关凭证。",
 					"NSPhotoLibraryAddUsageDescription": "用于将您主动选择保存的业务图片或二维码保存到系统相册。",
-					"NSLocationWhenInUseUsageDescription": "用于在您使用定位或地图选点功能时获取当前位置，以便完成相关业务操作。"
+					"NSCameraUsageDescription": "用于扫描二维码、拍摄业务照片及上传相关图片，仅在您主动使用对应功能时访问摄像头。",
+					"NSMicrophoneUsageDescription": "用于在您主动录音、拍摄有声视频或进行语音输入时采集声音。",
+					"NSLocationWhenInUseUsageDescription": "用于在您使用定位或地图选点功能时获取当前位置，以便完成相关业务操作。",
+					"NSLocationAlwaysUsageDescription": "用于在您主动开启持续定位功能后，在应用进入后台时继续获取位置，以记录连续的位置变化。",
+					"NSLocationAlwaysAndWhenInUseUsageDescription": "用于在您主动开启持续定位功能后，在应用使用期间及后台持续获取位置，以记录连续的位置变化。",
+					"NSCalendarsUsageDescription": "用于在您使用日程同步功能时读取日历，并添加或更新您选择同步的业务日程。",
+					"NSContactsUsageDescription": "用于在您使用联系人选择或保存功能时读取通讯录，或将您确认的联系人保存到系统通讯录。",
+					"NSBluetoothPeripheralUsageDescription": "用于在您使用蓝牙设备连接功能时发现、连接附近设备并传输您选择的数据。",
+					"NSBluetoothAlwaysUsageDescription": "用于在您使用蓝牙设备功能时发现、连接附近设备，并与您选择的设备交换数据。",
+					"NSSpeechRecognitionUsageDescription": "用于在您使用语音输入功能时，将您提供的语音交由系统语音识别服务转换为文字。",
+					"NSRemindersUsageDescription": "用于在您使用待办同步功能时读取提醒事项，并创建或更新您选择同步的业务待办。",
+					"NSMotionUsageDescription": "用于在您使用运动记录功能时读取步数和运动状态，展示对应的活动记录。",
+					"NSHealthUpdateUsageDescription": "用于在您主动开启健康数据同步并确认后，将您选择的健康或运动记录写入系统健康应用。",
+					"NSHealthShareUsageDescription": "用于在您主动开启健康数据读取功能后，读取您授权的健康或运动记录并展示相关数据。",
+					"NSAppleMusicUsageDescription": "用于在您使用媒体资料库功能时读取您授权的音乐资料，并选择和播放相关媒体。",
+					"NFCReaderUsageDescription": "用于在您主动使用 NFC 扫描功能时读取靠近设备的 NFC 标签，获取对应的业务标识或信息。",
+					"NSHealthClinicalHealthRecordsShareUsageDescription": "用于在您主动使用健康档案导入功能时，读取您授权的临床健康记录并展示对应档案。",
+					"NSHomeKitUsageDescription": "用于在您使用智能家居功能时访问您授权的家庭和配件，并执行您选择的设备控制操作。",
+					"NSSiriUsageDescription": "用于在您启用 Siri 快捷操作后，通过您发出的语音指令执行对应的应用操作。",
+					"NSFaceIDUsageDescription": "用于在您启用面容验证后，通过系统 Face ID 验证身份，以解锁应用或确认敏感操作。",
+					"NSLocalNetworkUsageDescription": "用于在您使用局域网设备连接功能时发现并访问同一网络中的设备，以完成设备通信和数据传输。",
+					"NSUserTrackingUsageDescription": "用于在您同意跨应用和网站跟踪后，使用设备广告标识关联活动数据，以衡量广告投放效果并提供个性化广告。"
 				}
 			},
 			"sdkConfigs": {
@@ -135,6 +155,8 @@
 		},
 		"distribute": {
 			"bundleName": "com.fastdotnet.app",
+			"targetSdkVersion": "6.0.0(20)",
+			"compatibleSdkVersion": "5.0.1(13)",
 			"icons": {
 				"foreground": "public/1024x1024.png",
 				"background": "public/1024x1024.png"
@@ -185,6 +207,11 @@
 		},
 		"router": {
 			"mode": "history"
+		},
+		"optimization": {
+			"treeShaking": {
+				"enable": true
+			}
 		}
 	},
 	"quickapp": {
