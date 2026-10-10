@@ -1,5 +1,5 @@
 <template>
-	<wd-watermark :rotate="-38" :opacity="0.5" :width="150" :size="14" :color="color" :content="content" />
+	<wd-watermark :rotate="-38" :opacity="0.5" :width="100" :gutter-x="50" :height="150" :size="12" :color="color" :content="content" />
 </template>
 
 <script setup lang="ts">

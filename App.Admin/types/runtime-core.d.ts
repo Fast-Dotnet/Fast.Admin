@@ -59,9 +59,9 @@ interface RouteOptions {
 	noLogin?: boolean;
 }
 
-declare module "uni-mini-router" {
+declare module "@wot-ui/router" {
 	// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- 通过模块扩展将页面配置并入路由类型
-	interface Route extends RouteOptions {}
+	interface RouteLocationNormalized extends RouteOptions {}
 }
 
 declare module "@uni-helper/vite-plugin-uni-pages" {

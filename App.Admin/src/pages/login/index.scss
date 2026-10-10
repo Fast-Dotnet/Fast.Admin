@@ -105,6 +105,10 @@
 	--wot-checkbox-icon-size: 32rpx;
 }
 
+.page__agreement-text {
+	text-align: left;
+}
+
 .page__agreement-text text {
 	color: var(--wot-primary-6);
 }
@@ -139,44 +143,4 @@
 	width: 88rpx;
 	height: 88rpx;
 	border-radius: 50%;
-}
-
-.page__auth-popup {
-	padding: 32rpx 40rpx 0;
-	text-align: center;
-}
-
-.page__auth-logo {
-	width: 96rpx;
-	height: 96rpx;
-	border-radius: 24rpx;
-}
-
-.page__auth-title {
-	margin-top: 20rpx;
-	font-size: 34rpx;
-	font-weight: var(--wot-font-weight-semibold);
-	color: var(--wot-text-main);
-}
-
-.page__auth-description {
-	margin-top: 18rpx;
-	font-size: 26rpx;
-	line-height: 1.7;
-	color: var(--wot-text-secondary);
-}
-
-.page__auth-agreement {
-	margin-top: 16rpx;
-	font-size: 22rpx;
-	line-height: 1.6;
-	text-align: left;
-	color: var(--wot-text-auxiliary);
-}
-
-.page__auth-actions {
-	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 20rpx;
-	margin-top: 32rpx;
 }

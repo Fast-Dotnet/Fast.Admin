@@ -1,153 +1,114 @@
 .page {
-	padding-top: var(--wot-status-bar-height);
-	background-size: contain;
-	background-position: top;
-	background-repeat: no-repeat;
-	// background-position: center calc(var(--wot-status-bar-height));
+	padding: var(--fa-page-padding);
 }
 
-.status-bar {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	height: var(--wot-status-bar-height);
-	// background-color: var(--wot-navbar-bg-color);
-	z-index: 1001;
-	transition: background-color var(--wot-transition-duration);
+.user-card {
+	display: flex;
+	gap: 28rpx;
+	align-items: center;
+	padding: 36rpx 32rpx;
+	margin-bottom: 28rpx;
+	border: 1px solid var(--wot-border-light);
+	border-radius: var(--wot-radius-super-large);
+	color: var(--wot-text-main);
+	box-shadow: var(--fa-box-shadow-lighter);
+	background-color: var(--wot-filled-oppo);
 }
 
-:deep(.wd-navbar) {
-	--wot-navbar-background: none;
+.user-card .fa-image {
+	border: 1px solid var(--wot-border-light);
 }
 
-.user__card {
-	position: relative;
-	margin: 20rpx 60rpx 40rpx;
-	border-radius: var(--wot-border-radius-large);
-	color: var(--wot-text-color-primary);
-	box-shadow: var(--wot-box-shadow-lighter);
-	background-color: var(--wot-bg-color);
-	.top_bg {
-		position: absolute;
-		z-index: 1;
-		width: 118px;
-		height: 53px;
-		right: 20px;
-	}
-	.bottom_bg {
-		position: absolute;
-		z-index: 1;
-		width: 118px;
-		height: 53px;
-		bottom: 0;
-		left: 20px;
-	}
-	.user__warp {
-		position: relative;
-		z-index: 2;
-		display: flex;
-		flex-direction: column;
-		gap: 30rpx;
-		box-sizing: border-box;
-		.top {
-			padding: 30rpx 40rpx 0;
-			display: flex;
-			align-items: center;
-			gap: 20rpx;
-			.fa-image {
-				border: var(--wot-border);
-			}
-			.user__info {
-				flex: 1;
-				.employeeName {
-					font-size: var(--wot-font-size-medium);
-					font-weight: var(--wot-typography-body-font-weight-strong);
-					color: var(--wot-text-color-primary);
-				}
-				.nickName {
-					font-size: var(--wot-font-size-small);
-					color: var(--wot-text-color-secondary);
-				}
-				.employeeNo {
-					font-size: var(--wot-font-size-small);
-					color: var(--wot-text-color-secondary);
-				}
-			}
-		}
-		.bottom {
-			padding: 20rpx 40rpx 20rpx;
-			display: flex;
-			align-items: center;
-			justify-content: space-around;
-			gap: 20rpx;
-			border-top: 1px solid var(--wot-border-color);
-			.bottom__item {
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				justify-content: center;
-				.txt__1 {
-					color: var(--wot-text-color-primary);
-					font-weight: var(--wot-typography-body-font-weight-strong);
-				}
-				.txt__2 {
-					color: var(--wot-text-color-placeholder);
-					font-size: var(--wot-font-size-extra-small);
-				}
-			}
-		}
-	}
+.user-card__info {
+	flex: 1;
 }
 
-.data-card {
-	background-color: var(--wot-bg-color);
-	.card__cell::after {
-		position: absolute;
-		display: block;
-		content: "";
-		width: 94%;
-		height: var(--wot-border-width);
-		left: 3%;
-		bottom: 0;
-		transform: scaleY(0.5);
-		background: var(--wot-border-color);
-	}
-	.card__content {
-		padding: 30rpx 20rpx;
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(140rpx, 1fr));
-		row-gap: 30rpx;
-		column-gap: 20rpx;
-		.card__item {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			gap: 10rpx;
-			.wd-icon,
-			.fa-icon {
-				font-size: 50rpx;
-				color: var(--wot-color-primary);
-			}
-			text {
-				color: var(--wot-text-color-secondary);
-				font-size: var(--wot-font-size-small);
-			}
-		}
-	}
+.user-card__employeeName {
+	font-size: 18px;
+	font-weight: var(--wot-typography-body-font-weight-strong);
+	line-height: 1.5;
+	color: var(--wot-text-main);
+	overflow-wrap: anywhere;
 }
 
-.wd-cell {
-	--wot-cell-value-color: var(--wot-text-color-placeholder);
-	:deep(.wd-cell__icon) {
-		min-width: 24px;
-		text-align: center;
-	}
+.user-card__employeeNo,
+.user-card__nickName {
+	font-size: 12px;
+	line-height: 1.6;
+	overflow-wrap: anywhere;
+	margin-top: 8rpx;
+	color: var(--wot-text-secondary);
+}
+
+.user-card__nickName {
+	margin-top: 4rpx;
+	color: var(--wot-text-auxiliary);
+}
+
+:deep(.wd-cell-group) {
+	--wot-cell-padding: 28rpx 32rpx;
+	--wot-cell-border-color: var(--wot-divider-light);
+	--wot-cell-value-font-size: 12px;
+	--wot-cell-value-color: var(--wot-text-auxiliary);
+	--wot-cell-arrow-size: 16px;
+	--wot-cell-arrow-color: var(--wot-icon-placeholder);
+	margin-bottom: 20rpx;
+}
+
+:deep(.wd-cell__left) .wd-icon {
+	min-width: 24px;
+	text-align: center;
 }
 
 .btn__exit-login {
-	--wot-button-medium-fs: var(--wot-font-size-base);
-	--wot-button-medium-height: 80rpx;
-	margin: 30rpx 50rpx !important;
+	--wot-button-size-icon-medium: 16px;
+	border: 1px solid var(--wot-border-light);
+	border-radius: var(--wot-radius-extra-large);
+}
+
+.tenant-list {
+	height: 100%;
+	margin-bottom: calc(30rpx + var(--wot-tabbar-height, 55px));
+}
+
+.tenant-list__content {
+	display: flex;
+	flex-direction: column;
+	gap: 24rpx;
+	padding: 8rpx 24rpx 24rpx;
+}
+
+.tenant-card {
+	display: flex;
+	gap: 18rpx;
+	align-items: center;
+}
+
+.tenant-card__image {
+	flex: none;
+	width: 84rpx;
+	height: 84rpx;
+	border-radius: 18rpx;
+	box-shadow: var(--fa-box-shadow-light);
+}
+
+.tenant-card__content {
+	flex: 1;
+	overflow: hidden;
+}
+
+.tenant-card__name {
+	font-weight: var(--wot-font-weight-semibold);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.tenant-card__meta {
+	margin-top: 6rpx;
+	color: var(--wot-text-auxiliary);
+	font-size: 24rpx;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }

@@ -6,16 +6,18 @@ export const CommonRoute = {
 	Launcher: "/pages/launcher/index",
 	/** 内嵌网页页 */
 	WebView: "/pages/webView/index",
-	/** 隐私协议 */
-	PrivacyAgreement: "/pages/agreement/privacy/index",
 	/** 服务协议 */
 	ServiceAgreement: "/pages/agreement/service/index",
+	/** 隐私协议 */
+	PrivacyAgreement: "/pages/agreement/privacy/index",
 	/** 投诉建议列表页 */
 	ComplaintPage: "/pages/complaint/page/index",
 	/** 投诉建议提交页 */
 	ComplaintSubmit: "/pages/complaint/submit/index",
 	/** 登录页 */
 	Login: "/pages/login/index",
+	/** 选择租户页 */
+	SelectTenant: "/pages/selectTenant/index",
 	/** 重置密码页 */
 	PasswordReset: "/pages/passwordReset/index",
 	/** 首页 */

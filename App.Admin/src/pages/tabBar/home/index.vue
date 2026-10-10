@@ -9,20 +9,21 @@
 			@clear="handleSearch"
 			@search="handleSearch"
 		/>
-		<wd-swiper
-			v-if="appStore.bannerImages?.length > 0"
-			customClass="mb20"
-			:list="appStore.bannerImages"
-			autoplay
-			v-model:current="state.swiperCurrent"
-			:indicator="{ type: 'dots-bar' }"
-		/>
+		<wd-swiper custom-class="mb20" :list="state.swiperList" autoplay v-model:current="state.swiperCurrent" :indicator="{ type: 'dots-bar' }" />
 	</view>
 </template>
 
 <script setup lang="ts">
-import { onLoad, onPullDownRefresh, onShow } from "@dcloudio/uni-app";
+import { onLoad, onPullDownRefresh, onShareAppMessage, onShareTimeline, onShow } from "@dcloudio/uni-app";
 import { reactive, watch } from "vue";
+import { Local } from "@fast-china/utils";
+import { CommonRoute } from "@/common";
+import bannerAdmin from "@/static/images/banner-fast-admin.jpg";
+import bannerAnywhere from "@/static/images/banner-fast-anywhere.jpg";
+import bannerInsights from "@/static/images/banner-fast-insights.jpg";
+import bannerSecure from "@/static/images/banner-fast-secure.jpg";
+import bannerTogether from "@/static/images/banner-fast-together.jpg";
+import defaultLogo from "@/static/logo.png";
 import { useApp, useUserInfo } from "@/stores";
 
 definePage({
@@ -39,6 +40,7 @@ const appStore = useApp();
 const userInfoStore = useUserInfo();
 
 const state = reactive({
+	swiperList: [bannerAdmin, bannerInsights, bannerTogether, bannerAnywhere, bannerSecure],
 	swiperCurrent: 0,
 	/** 搜素值 */
 	searchValue: "",
@@ -50,59 +52,62 @@ const handleSearch = () => {
 };
 
 /** 加载页面 */
-const loadPage = async () => {};
+const loadPage = () => {
+	console.log("加载页面");
+};
 
 /** 页面刷新 */
-const loadRefresh = async () => {};
+const loadRefresh = () => {
+	console.log("页面刷新");
+};
 
-onLoad(async () => {
-	watch(
-		() => appStore.appName,
-		(newVal) => {
-			if (newVal) {
-				uni.setNavigationBarTitle({
-					title: appStore.appName,
-				});
-			}
-		},
-		{
-			immediate: true,
-		}
-	);
-	watch(
-		() => userInfoStore.hasUserInfo,
-		async (newVal) => {
-			if (newVal) {
-				await loadPage();
-			}
-		},
-		{
-			immediate: true,
-		}
-	);
+watch(
+	() => appStore.appName,
+	(newVal) => {
+		uni.setNavigationBarTitle({
+			title: newVal ?? "首页",
+		});
+	},
+	{
+		immediate: true,
+	}
+);
+
+onLoad(() => {
+	loadPage();
 });
 
-onShow(async () => {
-	watch(
-		() => userInfoStore.hasUserInfo,
-		async (newVal) => {
-			if (newVal) {
-				await loadRefresh();
-			}
-		},
-		{
-			immediate: true,
-		}
-	);
+onShow(() => {
+	loadRefresh();
 });
 
 onPullDownRefresh(async () => {
-	await loadPage();
-	await loadRefresh();
+	loadPage();
+	loadRefresh();
+	// 删除 HTTP 缓存数据
+	Local.removeByPrefix("HTTP_CACHE_");
+	// 刷新用户信息
+	await userInfoStore.refreshUserInfo();
+	// 刷新字典
+	await appStore.setDictionary();
 	uni.stopPullDownRefresh();
 });
+
+// #ifdef MP-WEIXIN
+onShareAppMessage(() => ({
+	title: appStore.appName,
+	path: CommonRoute.Launcher,
+	imageUrl: defaultLogo,
+}));
+
+onShareTimeline(() => ({
+	title: appStore.appName,
+	path: CommonRoute.Launcher,
+	imageUrl: defaultLogo,
+}));
+// #endif
 </script>
 
 <style scoped lang="scss">
-@import "./index.scss";
+@use "./index.scss";
 </style>

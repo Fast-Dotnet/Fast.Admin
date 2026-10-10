@@ -1,4 +1,7 @@
-@mixin fa-dark-theme-vars {
+.fa-layout.fa-layout__dark.wot-theme-dark,
+.fa-layout.fa-layout__dark.wot-theme-dark .wd-root-portal {
+	--fa-local-icon-filter: brightness(0) invert(1);
+
 	/* 成功色 */
 	--wot-success-main: #67c23a;
 	--wot-success-hover: #5fb136;
@@ -24,9 +27,9 @@
 	--wot-danger-surface: #2b1d1d;
 
 	/* 深色中性色 */
-	--wot-text-main: #e5eaf3;
-	--wot-text-secondary: #cfd3dc;
-	--wot-text-auxiliary: #a3a6ad;
+	--wot-text-main: #e8eaed;
+	--wot-text-secondary: #b4bac4;
+	--wot-text-auxiliary: #959ca8;
 	--wot-text-placeholder: #8d9095;
 	--wot-text-disabled: #6c6e72;
 	--wot-text-white: #ffffff;
@@ -38,15 +41,15 @@
 	--wot-icon-white: #ffffff;
 	--wot-border-extra-strong: #636466;
 	--wot-border-strong: #58585b;
-	--wot-border-main: #4c4d4f;
-	--wot-border-light: #414243;
+	--wot-border-main: #3b414b;
+	--wot-border-light: #30353e;
 	--wot-border-white: #ffffff;
 	--wot-border-zero: transparent;
 	--wot-filled-extra-strong: #424243;
 	--wot-filled-strong: #39393a;
-	--wot-filled-content: #262727;
-	--wot-filled-bottom: #0a0a0a;
-	--wot-filled-oppo: #141414;
+	--wot-filled-content: #25282e;
+	--wot-filled-bottom: #17191d;
+	--wot-filled-oppo: #202329;
 	--wot-filled-zero: transparent;
 	--wot-divider-main: #363637;
 	--wot-divider-light: #2b2b2c;

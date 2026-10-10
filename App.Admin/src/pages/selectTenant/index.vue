@@ -21,9 +21,11 @@
 <script setup lang="ts">
 import { onLoad } from "@dcloudio/uni-app";
 import { getCurrentInstance, reactive } from "vue";
-import { throttle, withDefineType } from "@fast-china/utils";
+import { logger, throttle, withDefineType } from "@fast-china/utils";
+import { useRouter } from "@wot-ui/router";
 import { LoginStatusEnum } from "@/api/enums/LoginStatusEnum";
 import { loginApi } from "@/api/services/Auth/login";
+import { CommonRoute } from "@/common";
 import { useMessageBox } from "@/hooks";
 import { useUserInfo } from "@/stores";
 import type { LoginTenantOutput } from "@/api/services/Auth/login/models/LoginTenantOutput";
@@ -41,6 +43,7 @@ definePage({
 const { proxy } = getCurrentInstance();
 
 const userInfoStore = useUserInfo();
+const router = useRouter();
 
 const state = reactive({
 	nickName: withDefineType<string>(),
@@ -53,6 +56,7 @@ const handleTenantLogin = throttle(async (userKey: string) => {
 	const apiRes = await loginApi.tenantLogin({ userKey, loginTicket: state.loginTicket });
 	if (apiRes.status === LoginStatusEnum.Success) {
 		userInfoStore.login(apiRes);
+		router.replaceAll(CommonRoute.Workbench);
 	} else {
 		useMessageBox.alert(apiRes.message || "租户登录失败");
 	}
@@ -62,7 +66,7 @@ onLoad(() => {
 	(proxy as { getOpenerEventChannel?: () => UniNamespace.EventChannel })
 		?.getOpenerEventChannel?.()
 		?.once("selectTenantLogin", (data: { nickName: string; loginTicket: string; tenantList: LoginTenantOutput[] }) => {
-			console.log(data);
+			logger.log("selectTenantLogin", data);
 			state.nickName = data.nickName;
 			state.loginTicket = data.loginTicket;
 			state.tenantList = data.tenantList;
@@ -75,6 +79,7 @@ onLoad(() => {
 .page {
 	display: flex;
 	flex-direction: column;
+	padding: var(--fa-page-padding);
 }
 
 .tenant-list {

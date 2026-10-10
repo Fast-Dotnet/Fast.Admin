@@ -1,4 +1,8 @@
-@mixin fa-light-theme-vars {
+page,
+.fa-layout.fa-layout__light.wot-theme-light,
+.fa-layout.fa-layout__light.wot-theme-light .wd-root-portal {
+	--fa-local-icon-filter: brightness(0);
+
 	/* 成功色 */
 	--wot-success-main: #67c23a;
 	--wot-success-hover: #76c84e;

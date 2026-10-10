@@ -14,7 +14,7 @@
 					<text class="page__employee-name">{{ userInfoStore.employeeName || userInfoStore.nickName }}</text>
 				</view>
 			</view>
-			<wd-form-item v-else custom-class="page__field" prop="account">
+			<wd-form-item v-else prop="account">
 				<wd-input
 					v-model="state.formData.account"
 					clearable
@@ -25,7 +25,7 @@
 					placeholder="请输入登录账号"
 				/>
 			</wd-form-item>
-			<wd-form-item custom-class="page__field" prop="password">
+			<wd-form-item prop="password">
 				<wd-input
 					v-model="state.formData.password"
 					clearable
@@ -44,6 +44,7 @@
 				<wd-icon name="question-circle" size="28rpx" />
 				<text>忘记密码</text>
 			</view>
+
 			<view class="page__agreement">
 				<wd-checkbox v-model="state.formData.agreed" type="square" />
 				<view class="page__agreement-text" @click="state.formData.agreed = !state.formData.agreed">
@@ -74,32 +75,17 @@
 			<text @click.stop="router.push(CommonRoute.PrivacyAgreement)">《隐私政策》</text>
 		</view>
 	</wd-dialog>
-
-	<!-- #ifdef MP-WEIXIN -->
-	<FaPopup ref="authLoginPopupRef" width="80%" :close-on-click-modal="false">
-		<view class="page__auth-popup">
-			<image class="page__auth-logo" :src="appStore.logoUrl || defaultLogo" mode="aspectFit" />
-			<view class="page__auth-title">绑定手机号</view>
-			<view class="page__auth-description">该微信尚未绑定手机号。授权手机号后，将自动匹配对应管理账号并继续登录。</view>
-			<view class="page__auth-agreement">授权即表示您已阅读并同意《服务协议》和《隐私政策》</view>
-			<view class="page__auth-actions">
-				<wd-button type="info" block variant="plain" @click="authLoginPopupRef?.close()">暂不登录</wd-button>
-				<wd-button open-type="getPhoneNumber" type="primary" block @getphonenumber="handlePhoneLogin"> 授权手机号 </wd-button>
-			</view>
-		</view>
-	</FaPopup>
-	<!-- #endif -->
 </template>
 
 <script setup lang="ts">
+import { onShareAppMessage, onShareTimeline } from "@dcloudio/uni-app";
 import { reactive, ref } from "vue";
 import { logger, throttle, withDefineType } from "@fast-china/utils";
+import { useRouter } from "@wot-ui/router";
 import { useDialog } from "@wot-ui/ui";
-import { useRouter } from "uni-mini-router";
 import { LoginStatusEnum } from "@/api/enums/LoginStatusEnum";
 import { loginApi } from "@/api/services/Auth/login";
 import { CommonRoute } from "@/common";
-import FaPopup from "@/components/popup/index.vue";
 import { useMessageBox, useToast } from "@/hooks";
 import weChatLogo from "@/static/images/wechat.png";
 import defaultLogo from "@/static/logo.png";
@@ -107,7 +93,7 @@ import { useApp, useUserInfo } from "@/stores";
 import type { FormInstance, FormSchema } from "@wot-ui/ui/components/wd-form/types";
 import type { LoginInput } from "@/api/services/Auth/login/models/LoginInput";
 import type { LoginOutput } from "@/api/services/Auth/login/models/LoginOutput";
-import type { FaImageCaptchaInstance, FaPopupInstance } from "@/components";
+import type { FaImageCaptchaInstance } from "@/components";
 
 definePage({
 	name: "Login",
@@ -124,7 +110,6 @@ const router = useRouter();
 
 const formRef = ref<FormInstance>();
 const captchaRef = ref<FaImageCaptchaInstance>();
-const authLoginPopupRef = ref<FaPopupInstance>();
 
 const confirmAgreementDialog = useDialog("confirm_agreement_dialog");
 
@@ -166,6 +151,7 @@ const loginSuccess = (loginRes: LoginOutput) => {
 	switch (loginRes.status) {
 		case LoginStatusEnum.Success:
 			userInfoStore.login(loginRes);
+			router.replaceAll(CommonRoute.Workbench);
 			break;
 		case LoginStatusEnum.SelectTenant:
 			uni.navigateTo({
@@ -181,7 +167,7 @@ const loginSuccess = (loginRes: LoginOutput) => {
 			break;
 		case LoginStatusEnum.NotAccount:
 			// #ifdef MP-WEIXIN
-			authLoginPopupRef.value?.open();
+			userInfoStore.authMobilePopup = true;
 			// #endif
 			// #ifndef MP-WEIXIN
 			useMessageBox.alert(loginRes.message || "未找到可登录的账号");
@@ -229,20 +215,19 @@ const handleWeChatLogin = throttle(async ({ detail }: { detail: UniNamespace.Get
 	useToast.warning("授权失败，无法获取您的信息。请重新授权以继续使用我们的服务。");
 });
 
-/** 手机登录 */
-const handlePhoneLogin = throttle(({ detail }: { detail: UniHelper.ButtonOnGetphonenumberDetail }) => {
-	authLoginPopupRef.value.close(async () => {
-		logger.log("Login", "GetPhoneNumber", detail);
-		const { code } = detail;
-		const weChatCode = await userInfoStore.getWeChatCode();
-		if (code && weChatCode) {
-			const loginRes = await loginApi.weChatAuthLogin({ weChatCode, code });
-			loginSuccess(loginRes);
-			return;
-		}
-		useToast.warning("授权失败，无法获取您的信息。请重新授权以继续使用我们的服务。");
-	});
-});
+// #ifdef MP-WEIXIN
+onShareAppMessage(() => ({
+	title: appStore.appName,
+	path: CommonRoute.Launcher,
+	imageUrl: defaultLogo,
+}));
+
+onShareTimeline(() => ({
+	title: appStore.appName,
+	path: CommonRoute.Launcher,
+	imageUrl: defaultLogo,
+}));
+// #endif
 </script>
 
 <style scoped lang="scss">

@@ -39,10 +39,17 @@ textarea {
 	box-sizing: border-box;
 }
 
-/* 页面基础容器，统一页面边距、文字颜色和背景色 */
+.w100 {
+	width: 100%;
+}
+
+.h100 {
+	height: 100%;
+}
+
+/* 页面基础容器，统一文字颜色和背景色 */
 .page {
 	width: 100%;
-	padding: var(--fa-page-padding);
 	color: var(--wot-text-main);
 	background-color: var(--wot-filled-bottom);
 }
@@ -54,47 +61,6 @@ textarea {
 	border: var(--wot-stroke-light) solid var(--wot-divider-light);
 	border-radius: var(--wot-radius-extra-large);
 	box-shadow: var(--fa-box-shadow-lighter);
-}
-
-/* 页面纵向区块布局，统一相邻区块之间的间距 */
-.page-stack {
-	display: flex;
-	flex-direction: column;
-	gap: var(--fa-page-section-gap);
-}
-
-/* 页面主标题 */
-.page-heading {
-	font-size: var(--wot-typography-title-size-large);
-	font-weight: var(--wot-typography-title-font-weight-strong);
-	line-height: 1.35;
-}
-
-/* 页面主标题下方的辅助描述 */
-.page-description {
-	margin-top: 10rpx;
-	font-size: 26rpx;
-	line-height: 1.6;
-	color: var(--wot-text-auxiliary);
-}
-
-/* 页面内内容区块的标题 */
-.page-section-title {
-	margin-bottom: 20rpx;
-	font-size: var(--wot-typography-body-size-large);
-	font-weight: var(--wot-typography-body-font-weight-strong);
-}
-
-.safe-bottom {
-	padding-bottom: calc(var(--fa-page-safe-bottom) + var(--fa-area-inset-bottom, 0px));
-}
-
-.w100 {
-	width: 100%;
-}
-
-.h100 {
-	height: 100%;
 }
 
 /* 表格卡片样式 */

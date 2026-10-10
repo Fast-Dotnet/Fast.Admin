@@ -4,7 +4,6 @@
 		:custom-class="`fa-popup ${props.customClass}`"
 		:custom-style="`${state.style} ${props.customStyle}`"
 		v-model="state.visible"
-		:transition="state.transition"
 		safe-area-inset-bottom
 		@before-enter="() => emit('beforeEnter')"
 		@enter="() => emit('enter')"
@@ -37,19 +36,22 @@ defineOptions({
 
 const props = defineProps({
 	...popupProps,
+	/** 是否开启圆角,开启后根据弹出位置自动适配（底部弹出→上圆角，顶部弹出→下圆角，居中→四圆角）*/
+	round: {
+		type: Boolean,
+		default: true,
+	},
 	/** 弹窗宽度，数字按 px 处理 */
 	width: [String, Number],
 	/** 弹窗高度，数字按 px 处理 */
 	height: [String, Number],
-	/** 保留的关闭配置；当前实现未读取此属性 */
-	showBeforeClose: Boolean,
 	/** 弹窗显示后的初始化回调，优先于 open 方法传入的回调 */
 	afterOpen: {
 		type: definePropType<() => void>(Function),
 	},
 });
 
-const wdPopupProps = useProps(props, popupProps);
+const wdPopupProps = useProps(props, popupProps, ["safeAreaInsetBottom"]);
 
 const emit = defineEmits<{
 	/** 进入前触发 */
@@ -85,22 +87,6 @@ const state = reactive({
 		}
 
 		return result;
-	}),
-	transition: computed(() => {
-		switch (props.position) {
-			case "center":
-				return "zoom-in";
-			case "top":
-				return "fade-down";
-			case "bottom":
-				return "fade-up";
-			case "left":
-				return "fade-left";
-			case "right":
-				return "fade-right";
-			default:
-				return "fade";
-		}
 	}),
 });
 

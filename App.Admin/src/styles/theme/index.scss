@@ -1,21 +1,28 @@
-@use "./common.scss" as common;
-@use "./light.scss" as light;
-@use "./dark.scss" as dark;
+@use "./light.scss";
+@use "./dark.scss";
 
 /* 页面公共变量，与明暗模式无关 */
 :root,
 page,
 .wd-root-portal {
-	@include common.fa-common-theme-vars;
-}
+	/* 标题、选中项与关键数据使用半粗字重 */
+	--wot-font-weight-semibold: 600;
 
-page,
-.fa-layout.fa-layout__light.wot-theme-light,
-.fa-layout.fa-layout__light.wot-theme-light .wd-root-portal {
-	@include light.fa-light-theme-vars;
-}
+	/* 页面布局变量 */
+	--fa-page-padding: 24rpx;
+	--fa-page-section-gap: 24rpx;
+	--fa-page-card-padding: 28rpx;
+	--fa-page-safe-bottom: 32rpx;
 
-.fa-layout.fa-layout__dark.wot-theme-dark,
-.fa-layout.fa-layout__dark.wot-theme-dark .wd-root-portal {
-	@include dark.fa-dark-theme-vars;
+	/* 通用过渡变量 */
+	--fa-transition-duration: 0.3s;
+	--fa-transition-duration-fast: 0.2s;
+	--fa-transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+	--fa-transition-timing-function-fast: cubic-bezier(0.23, 1, 0.32, 1);
+	--fa-transition-fade: opacity var(--fa-transition-duration) var(--fa-transition-timing-function-fast);
+	--fa-transition-transform: transform var(--fa-transition-duration-fast) var(--fa-transition-timing-function-fast);
+	--fa-transition-colors:
+		color var(--fa-transition-duration-fast) var(--fa-transition-timing-function),
+		background-color var(--fa-transition-duration-fast) var(--fa-transition-timing-function),
+		border-color var(--fa-transition-duration-fast) var(--fa-transition-timing-function);
 }

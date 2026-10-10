@@ -1,10 +1,13 @@
 .fa-layout {
+	width: min(100%, 440px);
 	color: var(--wot-text-main);
 	background-color: var(--wot-filled-bottom);
 }
 
 .fa-main {
 	min-height: var(--fa-window-height, 100vh);
+	margin: 0 auto;
+	box-sizing: border-box;
 	padding-left: var(--fa-area-inset-left, 0px);
 	padding-right: var(--fa-area-inset-right, 0px);
 	padding-bottom: var(--fa-area-inset-bottom, 0px);
@@ -16,23 +19,68 @@
 			min-height: var(--main-height);
 		}
 	}
+}
 
-	&.fa-main__page-scroll {
-		:deep() {
-			.page {
-				min-height: auto;
-				height: var(--main-height);
-				overflow-y: auto;
-			}
-			.z-paging__page {
-				min-height: auto;
-				height: var(--main-height);
-				overflow-y: auto;
-			}
+.fa-main.fa-main__page-scroll {
+	:deep() {
+		.page {
+			min-height: auto;
+			height: var(--main-height);
+			overflow-y: auto;
+		}
+		.z-paging__page {
+			min-height: auto;
+			height: var(--main-height);
+			overflow-y: auto;
 		}
 	}
 }
 
 .fa-main__tabBar {
 	padding-bottom: 0;
+}
+
+.fa-auth-mobile {
+	padding: 12rpx 24rpx 0;
+	text-align: center;
+}
+
+.fa-auth-mobile__logo {
+	width: 96rpx;
+	height: 96rpx;
+	border-radius: 24rpx;
+}
+
+.fa-auth-mobile__title {
+	margin-top: 20rpx;
+	font-size: 34rpx;
+	font-weight: var(--wot-font-weight-semibold);
+	color: var(--wot-text-main);
+}
+
+.fa-auth-mobile__description {
+	margin-top: 18rpx;
+	font-size: 26rpx;
+	line-height: 1.7;
+	text-align: left;
+	color: var(--wot-text-secondary);
+}
+
+.fa-auth-mobile__agreement {
+	margin-top: 16rpx;
+	font-size: 22rpx;
+	line-height: 1.6;
+	text-align: left;
+	color: var(--wot-text-auxiliary);
+}
+
+.fa-auth-mobile__agreement .fa-auth-mobile__link {
+	color: var(--wot-primary-6);
+}
+
+.fa-auth-mobile__actions {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 20rpx;
+	margin-top: 32rpx;
 }

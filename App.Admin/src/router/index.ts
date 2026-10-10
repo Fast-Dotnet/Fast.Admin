@@ -1,36 +1,32 @@
 /// <reference types="@uni-helper/vite-plugin-uni-pages/client" />
 import { getLocalTimeGreeting, logger } from "@fast-china/utils";
-import { createRouter } from "uni-mini-router";
+import { type RouteRecordRaw, createRouter } from "@wot-ui/router";
 import { pages, subPackages } from "virtual:uni-pages";
 import { CommonRoute, TabBarRoute } from "@/common";
 import { useToast } from "@/hooks";
 import { initWebSocket } from "@/signalR";
 import { useUserInfo } from "@/stores";
 
-const generateRoutes = () => {
+const generateRoutes = (): RouteRecordRaw[] => {
 	const mainRoutes = pages.map((page) => ({ ...page, path: `/${page.path}` }));
 	const packageRoutes = (subPackages ?? []).flatMap((subPackage) =>
 		subPackage.pages.map((page) => ({ ...page, path: `/${subPackage.root}/${page.path}` }))
 	);
-	return [...mainRoutes, ...packageRoutes];
+	return [...mainRoutes, ...packageRoutes] as RouteRecordRaw[];
 };
 
 const router = createRouter({ routes: generateRoutes() });
 
 const defaultRoutePath = new Set([CommonRoute.Launcher, CommonRoute.Login, CommonRoute.WebView]);
 
-/** 获取登录后的站内重定向地址 */
+/** 只接受以单个斜杠开头的站内路径，排除协议相对地址。 */
 const getLoginRedirect = (value: unknown) => {
 	const redirect = Array.isArray(value) ? value[0] : value;
 	return typeof redirect === "string" && redirect.startsWith("/") && !redirect.startsWith("//") ? redirect : "";
 };
 
-/** 路由加载前 */
 router.beforeEach(async (to, from, next) => {
 	const userInfoStore = useUserInfo();
-
-	// 判断进入的页面是否为 TabBar 页面
-	if (TabBarRoute.includes(to.path)) userInfoStore.activeTabBar = to.path;
 
 	// 判断是否存在Token
 	if (!userInfoStore.token) {
@@ -51,13 +47,13 @@ router.beforeEach(async (to, from, next) => {
 			return;
 		}
 	} else {
-		// 判断 pinia 中的动态路由生成的状态，必须存在Token才加载
+		// 已有 Token 但尚未加载用户信息时，先完成用户状态初始化。
 		if (!userInfoStore.hasUserInfo) {
 			try {
 				// 刷新用户信息
 				await userInfoStore.refreshUserInfo();
 
-				// 确保用户添加完成
+				// 标记用户信息已加载，避免后续导航重复初始化。
 				userInfoStore.hasUserInfo = true;
 
 				// 初始化 WebSocket
@@ -79,17 +75,8 @@ router.beforeEach(async (to, from, next) => {
 			}
 		}
 
-		// 判断去的页面是否为 Launcher 页面
-		if (to.path === CommonRoute.Launcher) {
-			// 如果来源页面时选择租户，则重定向到登录页面
-			if (from.path === CommonRoute.SelectTenant) {
-				next({ path: CommonRoute.Login, navType: "replaceAll" });
-				return;
-			}
-		}
-
 		// 判断是否存在重定向路径，如果有则跳转
-		const redirect = getLoginRedirect(decodeURIComponent(from.query.redirect));
+		const redirect = getLoginRedirect(decodeURIComponent(String(to.query.redirect ?? "")));
 		if (redirect && redirect !== to.fullPath) {
 			// 判断是否为 TabBar 页面
 			if (TabBarRoute.some((item) => redirect.startsWith(item))) {
@@ -109,7 +96,17 @@ router.beforeEach(async (to, from, next) => {
 		}
 	}
 
+	// 需要手机号授权的页面必须先通过登录授权检查。
+	if (to.mobileRequired && !userInfoStore.authMobileCheck()) return;
+
 	next();
+});
+
+router.afterEach((to) => {
+	const userInfoStore = useUserInfo();
+
+	// 判断进入的页面是否为 TabBar 页面
+	if (TabBarRoute.includes(to.path)) userInfoStore.activeTabBar = to.path;
 });
 
 export default router;

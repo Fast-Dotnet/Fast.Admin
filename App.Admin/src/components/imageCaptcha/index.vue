@@ -11,7 +11,7 @@
 				:disabled="props.disabled || state.loading || state.loadFailed"
 			/>
 			<button class="fa-image-captcha__image" :disabled="props.disabled || state.loading" @click="refresh">
-				<image v-if="state.captchaImage" :src="state.captchaImage" mode="scaleToFill" />
+				<image v-if="state.captchaImage" class="fa-image-captcha__picture" :src="state.captchaImage" mode="scaleToFill" />
 				<text v-else>{{ state.loading ? "加载中…" : state.loadFailed ? "加载失败" : "点击重试" }}</text>
 			</button>
 		</view>
@@ -128,7 +128,7 @@ defineExpose({
 		border: 0;
 	}
 
-	image {
+	.fa-image-captcha__picture {
 		display: block;
 		width: 100%;
 		height: 100%;

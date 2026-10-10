@@ -88,13 +88,17 @@ const sections = computed(() => [
 		title: "政策更新与联系我们",
 		paragraphs: [
 			"我们可能根据功能变化或法律要求更新本政策，并通过页面提示、通知或其他合理方式告知您。重大变化将在生效前以显著方式提示。",
-			`如对本政策或个人信息保护有疑问、意见或请求，请通过 ${appStore.appName} 内的“问题反馈”或运营方公开的联系方式联系我们。我们将在核实身份后依法处理。`,
+			`如对本政策或个人信息保护有疑问、意见或请求，请通过 ${appStore.appName} 内的“意见反馈”或运营方公开的联系方式联系我们。我们将在核实身份后依法处理。`,
 		],
 	},
 ]);
 </script>
 
 <style scoped lang="scss">
+.page {
+	padding: var(--fa-page-padding);
+}
+
 .page__header {
 	padding-bottom: 30rpx;
 	border-bottom: 1rpx solid var(--wot-divider-strong);

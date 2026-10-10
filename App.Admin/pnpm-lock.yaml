@@ -29,6 +29,9 @@ importers:
       '@fast-china/utils':
         specifier: ^2.1.11
         version: 2.1.11(vue@3.5.43(typescript@6.0.3))
+      '@wot-ui/router':
+        specifier: ^1.1.2
+        version: 1.1.2(vue@3.5.43(typescript@6.0.3))
       '@wot-ui/ui':
         specifier: ^2.3.2
         version: 2.3.2(vue@3.5.43(typescript@6.0.3))
@@ -47,9 +50,6 @@ importers:
       pinia-plugin-persistedstate:
         specifier: ^4.7.1
         version: 4.7.1(pinia@2.3.1(typescript@6.0.3)(vue@3.5.43(typescript@6.0.3)))
-      uni-mini-router:
-        specifier: ^0.1.6
-        version: 0.1.6
       vue:
         specifier: 3.5.43
         version: 3.5.43(typescript@6.0.3)
@@ -2488,6 +2488,11 @@ packages:
 
   '@vue/shared@3.5.43':
     resolution: {integrity: sha512-uksS7YGMR5NZyr4JNq0Rp+QyLns0ueaz20KwzIPW9R0LH1Vnt4E+XUM29PNseEbf1www2gOuhuDi5AKOIXag9Q==}
+
+  '@wot-ui/router@1.1.2':
+    resolution: {integrity: sha512-z0+XJgeMl4DRoKQBRwSsYeoDDkyuXSNQ+jpMyxZpisp5db73+ffsP9Ac5imjjlUKfb2t9XZzpMq2kuUIaq3V/w==}
+    peerDependencies:
+      vue: ~3.4.38
 
   '@wot-ui/ui@2.3.2':
     resolution: {integrity: sha512-voPLlAsSh9mWASqYXXiYMSp8Rc9aZ3HBEYh7kAuxrADtbwtL+D+gbofUL5hd2SnSIbRVaweVD5Bb+MicZ6jIlw==}
@@ -5306,9 +5311,6 @@ packages:
   undici-types@8.9.0:
     resolution: {integrity: sha512-KTDyRTYX8sWmKXAikPHHSyc63CRPETMctyjKFupcC6OBLXT3xsN0e9aF7m+mIXutFWpUXuedtowG7iLOzp0kQg==}
 
-  uni-mini-router@0.1.6:
-    resolution: {integrity: sha512-dgeEYCv00yTkiX3gVAQXrx4IAzAVtZv+2lVtVaixH6J/IHfZP7R3wqUwBvy4eFD0vP20p+QWNNE2c5LuHbPSiQ==}
-
   unicode-canonical-property-names-ecmascript@2.0.0:
     resolution: {integrity: sha512-yY5PpDlfVIU5+y/BSCxAJRBIS1Zc2dDG3Ujq+sR0U+JjUevW2JhocOF+soROYDSaAezOzOKuyyixhD6mBknSmQ==}
     engines: {node: '>=4'}
@@ -7934,7 +7936,7 @@ snapshots:
 
   '@jridgewell/remapping@2.3.5':
     dependencies:
-      '@jridgewell/gen-mapping': 0.3.5
+      '@jridgewell/gen-mapping': 0.3.12
       '@jridgewell/trace-mapping': 0.3.31
 
   '@jridgewell/resolve-uri@3.1.2': {}
@@ -8862,6 +8864,10 @@ snapshots:
   '@vue/shared@3.4.38': {}
 
   '@vue/shared@3.5.43': {}
+
+  '@wot-ui/router@1.1.2(vue@3.5.43(typescript@6.0.3))':
+    dependencies:
+      vue: 3.5.43(typescript@6.0.3)
 
   '@wot-ui/ui@2.3.2(vue@3.5.43(typescript@6.0.3))':
     dependencies:
@@ -12251,8 +12257,6 @@ snapshots:
   undici-types@7.24.6: {}
 
   undici-types@8.9.0: {}
-
-  uni-mini-router@0.1.6: {}
 
   unicode-canonical-property-names-ecmascript@2.0.0: {}
 

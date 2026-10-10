@@ -8,7 +8,6 @@ import { loginApi } from "@/api/services/Auth/login";
 import { CommonRoute } from "@/common";
 import { useMessageBox, useToast } from "@/hooks";
 import { closeWebSocket } from "@/signalR";
-import { useApp } from "../app";
 import type { AxiosResponse } from "axios";
 import type { GetLoginUserInfoOutput } from "@/api/services/Auth/auth/models/GetLoginUserInfoOutput";
 import type { LoginOutput } from "@/api/services/Auth/login/models/LoginOutput";
@@ -20,8 +19,8 @@ type IState = {
 	refreshToken: string;
 	/** 激活的 TabBar 页面 */
 	activeTabBar: string;
-	/** 授权登录弹窗 */
-	authLoginPopup: boolean;
+	/** 授权手机号弹窗 */
+	authMobilePopup: boolean;
 };
 
 /** 当前账号、租户与登录凭据状态 */
@@ -32,7 +31,7 @@ export const useUserInfo = defineStore(
 			token: "",
 			refreshToken: "",
 			activeTabBar: CommonRoute.Workbench,
-			authLoginPopup: false,
+			authMobilePopup: false,
 			accountId: undefined,
 			accountKey: "",
 			mobile: "",
@@ -150,8 +149,6 @@ export const useUserInfo = defineStore(
 			useToast.success("登录成功");
 			// 确保 getLoginUser 获取用户信息
 			hasUserInfo.value = false;
-			// 跳转到工作台
-			uni.switchTab({ url: CommonRoute.Workbench });
 		};
 
 		/** 清除登录凭据与 HTTP 缓存，并导航到登录页。 */
@@ -218,18 +215,6 @@ export const useUserInfo = defineStore(
 			setUserInfo(apiRes);
 		};
 
-		/** 刷新应用。 */
-		const refreshApp = async () => {
-			// 删除 HTTP 缓存数据
-			Local.removeByPrefix("HTTP_CACHE_");
-
-			// 刷新用户信息
-			await refreshUserInfo();
-
-			// 刷新字典
-			await useApp().setDictionary();
-		};
-
 		/** 清除登录状态并返回登录页，使下次导航重新加载用户信息。 */
 		const switchLogin = () => {
 			// 确保下次会自动刷新用户信息
@@ -238,9 +223,9 @@ export const useUserInfo = defineStore(
 		};
 
 		/** 检查手机号是否已存在；缺失时打开授权弹窗并返回 false。 */
-		const authLoginCheck = (): boolean => {
+		const authMobileCheck = (): boolean => {
 			if (!state.mobile) {
-				state.authLoginPopup = true;
+				state.authMobilePopup = true;
 				return false;
 			}
 			return true;
@@ -277,9 +262,8 @@ export const useUserInfo = defineStore(
 			logout,
 			logoutClear,
 			refreshUserInfo,
-			refreshApp,
 			switchLogin,
-			authLoginCheck,
+			authMobileCheck,
 			getWeChatCode,
 		};
 	},

@@ -1,25 +1,5 @@
-/* Fast 弹出层：增加内容留白，并根据弹出方向保留靠屏幕一侧的直角 */
+/* Fast 弹出层：增加内容留白 */
 .fa-popup {
 	padding-top: 20rpx;
 	padding-bottom: 40rpx;
-
-	&.wd-popup--center {
-		border-radius: var(--wot-radius-extra-large);
-	}
-
-	&.wd-popup--top {
-		border-radius: 0 0 var(--wot-radius-extra-large) var(--wot-radius-extra-large);
-	}
-
-	&.wd-popup--right {
-		border-radius: var(--wot-radius-extra-large) 0 0 var(--wot-radius-extra-large);
-	}
-
-	&.wd-popup--bottom {
-		border-radius: var(--wot-radius-extra-large) var(--wot-radius-extra-large) 0 0;
-	}
-
-	&.wd-popup--left {
-		border-radius: 0 var(--wot-radius-extra-large) var(--wot-radius-extra-large) 0;
-	}
 }

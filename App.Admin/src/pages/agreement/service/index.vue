@@ -97,12 +97,16 @@ const sections = computed(() => [
 	},
 	{
 		title: "联系我们",
-		paragraphs: [`如对本协议有疑问或需要投诉、反馈，请通过 ${appStore.appName} 内的“问题反馈”或运营方公开的联系方式联系我们。`],
+		paragraphs: [`如对本协议有疑问或需要投诉、反馈，请通过 ${appStore.appName} 内的“意见反馈”或运营方公开的联系方式联系我们。`],
 	},
 ]);
 </script>
 
 <style scoped lang="scss">
+.page {
+	padding: var(--fa-page-padding);
+}
+
 .page__header {
 	padding-bottom: 30rpx;
 	border-bottom: 1rpx solid var(--wot-divider-strong);

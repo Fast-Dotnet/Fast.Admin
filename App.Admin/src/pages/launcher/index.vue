@@ -34,7 +34,7 @@
 import { onLoad } from "@dcloudio/uni-app";
 import { reactive } from "vue";
 import { logger, withDefineType } from "@fast-china/utils";
-import { useRouter } from "uni-mini-router";
+import { useRouter } from "@wot-ui/router";
 import { LoginStatusEnum } from "@/api/enums/LoginStatusEnum";
 import { loginApi } from "@/api/services/Auth/login";
 import { CommonRoute } from "@/common";
@@ -62,7 +62,7 @@ const state = reactive({
 	loading: true,
 	/** 状态文字 */
 	statusText: "正在初始化应用",
-	// launch 接口异常，则跳过更新
+	/** launch 接口异常，则跳过更新 */
 	skipUpdateCheck: false,
 	/** 重试类型 */
 	retryType: withDefineType<"launch" | "update">(null),
@@ -70,19 +70,18 @@ const state = reactive({
 
 const openStartPage = async () => {
 	state.statusText = "正在验证登录状态";
-	// 判断是否存在 token, userKey
-	const { token, userKey } = userInfoStore;
-	if (token && userKey) {
-		try {
+	try {
+		// 判断是否存在 token, userKey
+		const { token, userKey } = userInfoStore;
+		if (token && userKey) {
 			// 验证登录
 			const loginRes = await loginApi.tryLogin({ userKey });
 			if (loginRes.status === LoginStatusEnum.Success) {
 				userInfoStore.login(loginRes);
+				state.statusText = "正在进入应用";
+				router.replaceAll(CommonRoute.Workbench);
 				return;
 			}
-			logger.warn("Launcher", "缓存登录已失效", loginRes);
-		} catch (error) {
-			logger.error("Launcher", "尝试缓存登录失败", error);
 		}
 
 		// 尝试微信自动登录
@@ -90,20 +89,19 @@ const openStartPage = async () => {
 		state.statusText = "正在进行微信授权登录";
 		const weChatCode = await userInfoStore.getWeChatCode();
 		if (weChatCode) {
-			try {
-				const loginRes = await loginApi.weChatLogin({ weChatCode });
-				if (loginRes.status === LoginStatusEnum.Success) {
-					userInfoStore.login(loginRes);
-					return;
-				}
-				logger.warn("Launcher", "微信自动登录失败", loginRes);
-			} catch (error) {
-				logger.error("Launcher", "微信自动登录失败", error);
+			const loginRes = await loginApi.weChatLogin({ weChatCode });
+			if (loginRes.status === LoginStatusEnum.Success) {
+				userInfoStore.login(loginRes);
+				state.statusText = "正在进入应用";
+				router.replaceAll(CommonRoute.Workbench);
+				return;
 			}
-		} else {
-			logger.warn("Launcher", "微信授权失败，转入手动登录");
 		}
 		// #endif
+	} catch {
+		state.statusText = "正在进入应用";
+		router.replaceAll(CommonRoute.Login);
+		return;
 	}
 
 	state.statusText = "正在进入应用";
@@ -171,16 +169,13 @@ const appLaunch = () => {
 		.then(() => {
 			// 设置主题色
 			configStore.setTheme(appStore.themeColor);
-
 			state.statusText = "服务连接成功";
 			checkUpdate();
 		})
 		.catch((error: unknown) => {
 			logger.error("Launcher", "应用初始化失败", error);
-
 			// launch 接口异常，则跳过更新
 			state.skipUpdateCheck = true;
-
 			// 判断是否存在缓存数据
 			if (appStore.hasLaunch) {
 				state.statusText = "正在使用缓存配置进入应用";
@@ -201,7 +196,6 @@ const handleRetry = () => {
 	const retryType = state.retryType;
 	state.loading = true;
 	state.retryType = null;
-
 	if (retryType === "update") {
 		checkUpdate();
 	} else {
