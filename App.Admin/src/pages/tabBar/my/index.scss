@@ -61,9 +61,7 @@
 }
 
 .btn__exit-login {
-	--wot-button-size-icon-medium: 16px;
-	border: 1px solid var(--wot-border-light);
-	border-radius: var(--wot-radius-extra-large);
+	--wot-button-radius-main: var(--wot-radius-extra-large);
 }
 
 .tenant-list {

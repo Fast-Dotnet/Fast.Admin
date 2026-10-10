@@ -41,15 +41,7 @@
 			<wd-cell title="清除缓存" :value="`${currentSize}/${limitSize}`" clickable @click="handleClearCache" />
 		</wd-cell-group>
 
-		<wd-button
-			v-if="userInfoStore.hasUserInfo"
-			custom-class="btn__exit-login"
-			type="danger"
-			block
-			:round="false"
-			icon="Export"
-			@click="handleLogout"
-		>
+		<wd-button v-if="userInfoStore.hasUserInfo" custom-class="btn__exit-login" type="danger" block icon="Export" @click="handleLogout">
 			退出登录
 		</wd-button>
 
@@ -135,7 +127,7 @@ const appVersion = computed(() => {
 			envName = "Stress";
 			break;
 	}
-	return `v${appStore.appBaseInfo.appVersion} ${envName}`;
+	return `${envName} v${appStore.appBaseInfo.appVersion}`;
 });
 
 const currentSize = computed(() => {
