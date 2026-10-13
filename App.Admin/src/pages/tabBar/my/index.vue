@@ -45,7 +45,7 @@
 			退出登录
 		</wd-button>
 
-		<FaPopup ref="switchTenantPopupRef" height="70%" position="bottom">
+		<FaPopup ref="switchTenantPopupRef" height="70%" position="bottom" :z-index="2001">
 			<scroll-view class="tenant-list" scroll-y>
 				<view class="tenant-list__content">
 					<view v-for="item in state.tenantList" :key="item.userKey" class="page-card tenant-card" @click="handleTenantLogin(item)">

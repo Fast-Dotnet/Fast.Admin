@@ -4,8 +4,9 @@ import type { Dialog, DialogOptions, DialogResult } from "@wot-ui/ui/components/
 import type { NotifyProps } from "@wot-ui/ui/components/wd-notify/types";
 import type { Toast, ToastOptions } from "@wot-ui/ui/components/wd-toast/types";
 
-export * from "./use-loading";
 export * from "./use-audio";
+export * from "./use-form-schema";
+export * from "./use-loading";
 export * from "./use-message-box";
 export * from "./use-notify";
 export * from "./use-overlay";

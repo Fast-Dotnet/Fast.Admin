@@ -3,6 +3,10 @@
  */
 export interface EditAccountInput {
 	/**
+	 * 客户端用户Id
+	 */
+	clientUserId?: string;
+	/**
 	 * 手机
 	 */
 	mobile?: string;

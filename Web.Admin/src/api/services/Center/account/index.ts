@@ -2,6 +2,8 @@ import { axiosUtil } from "@fast-china/axios";
 import type { ElSelectorOutput, PagedInput, PagedResult } from "fast-element-plus";
 import type { AccountIdInput } from "./models/AccountIdInput";
 import type { AccountVerificationInput } from "./models/AccountVerificationInput";
+import type { BindWeChatInput } from "./models/BindWeChatInput";
+import type { ChangePasswordByWeChatInput } from "./models/ChangePasswordByWeChatInput";
 import type { ChangePasswordInput } from "./models/ChangePasswordInput";
 import type { EditAccountInput } from "./models/EditAccountInput";
 import type { PasswordResetInput } from "./models/PasswordResetInput";
@@ -106,6 +108,17 @@ export const accountApi = {
 		});
 	},
 	/**
+	 * 通过绑定的微信修改密码
+	 */
+	changePasswordByWeChat(data: ChangePasswordByWeChatInput): Promise<void> {
+		return axiosUtil.request<void>({
+			url: "/account/changePasswordByWeChat",
+			method: "post",
+			data,
+			requestType: "edit",
+		});
+	},
+	/**
 	 * 账号重置密码
 	 */
 	resetPassword(data: AccountIdInput): Promise<void> {
@@ -166,6 +179,28 @@ export const accountApi = {
 	sendEditAccountVerificationCode(data: SendAccountVerificationCodeInput): Promise<void> {
 		return axiosUtil.request<void>({
 			url: "/account/sendEditAccountVerificationCode",
+			method: "post",
+			data,
+			requestType: "auth",
+		});
+	},
+	/**
+	 * 绑定微信用户
+	 */
+	bindWeChat(data: BindWeChatInput): Promise<void> {
+		return axiosUtil.request<void>({
+			url: "/account/bindWeChat",
+			method: "post",
+			data,
+			requestType: "auth",
+		});
+	},
+	/**
+	 * 解绑微信用户
+	 */
+	unBindWeChat(data: BindWeChatInput): Promise<void> {
+		return axiosUtil.request<void>({
+			url: "/account/unBindWeChat",
 			method: "post",
 			data,
 			requestType: "auth",

@@ -86,11 +86,11 @@ import { useDialog } from "@wot-ui/ui";
 import { LoginStatusEnum } from "@/api/enums/LoginStatusEnum";
 import { loginApi } from "@/api/services/Auth/login";
 import { CommonRoute } from "@/common";
-import { useMessageBox, useToast } from "@/hooks";
+import { useFormSchema, useMessageBox, useToast } from "@/hooks";
 import weChatLogo from "@/static/images/wechat.png";
 import defaultLogo from "@/static/logo.png";
 import { useApp, useUserInfo } from "@/stores";
-import type { FormInstance, FormSchema } from "@wot-ui/ui/components/wd-form/types";
+import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { LoginInput } from "@/api/services/Auth/login/models/LoginInput";
 import type { LoginOutput } from "@/api/services/Auth/login/models/LoginOutput";
 import type { FaImageCaptchaInstance } from "@/components";
@@ -115,17 +115,27 @@ const confirmAgreementDialog = useDialog("confirm_agreement_dialog");
 
 const state = reactive({
 	formData: withDefineType<LoginInput & { agreed?: boolean }>({}),
-	formSchema: withDefineType<FormSchema>({
-		validate(formModel: LoginInput) {
-			return [
-				...(!formModel.account ? [{ path: ["account"], message: "请输入账号" }] : []),
-				...(formModel.account?.length > 50 ? [{ path: ["account"], message: "账号长度必须为 1~50 个字符" }] : []),
-				...(!formModel.password ? [{ path: ["password"], message: "请输入密码" }] : []),
-				...(formModel.password?.length < 6 || formModel.password?.length > 20
-					? [{ path: ["password"], message: "密码长度必须为 6~20 个字符" }]
-					: []),
-				...(!/^[A-Za-z0-9]{4}$/.test(formModel.captchaCode) ? [{ path: ["captchaCode"], message: "图形验证码必须为4位字母或数字" }] : []),
-			];
+	formSchema: useFormSchema<LoginInput>({
+		account: [
+			{ required: true, message: "请输入账号" },
+			{
+				validator(value) {
+					return typeof value === "string" && value.length > 50 ? "账号长度必须为 1~50 个字符" : undefined;
+				},
+			},
+		],
+		password: [
+			{ required: true, message: "请输入密码" },
+			{
+				validator(value) {
+					return typeof value === "string" && (value.length < 6 || value.length > 20) ? "密码长度必须为 6~20 个字符" : undefined;
+				},
+			},
+		],
+		captchaCode: {
+			required: true,
+			pattern: /^[A-Za-z0-9]{4}$/,
+			message: "图形验证码必须为4位字母或数字",
 		},
 	}),
 });

@@ -4,8 +4,8 @@
 			<slot name="prefix" />
 			<wd-input
 				v-model="modelValue"
-				:placeholder="props.placeholder ? props.placeholder : props.scan ? '请输入或扫描您想要搜索的内容' : '请输入您想要搜索的内容'"
 				clearable
+				:placeholder="props.placeholder ? props.placeholder : props.scan ? '请输入或扫描您想要搜索的内容' : '请输入您想要搜索的内容'"
 				@input="handleInput"
 				@focus="(detail: UniHelper.InputOnFocusDetail) => emit('focus', detail)"
 				@blur="(detail: UniHelper.InputOnBlurDetail) => emit('blur', detail)"
@@ -31,15 +31,7 @@
 		<view class="fa-search-input__footer">
 			<slot name="footer" />
 		</view>
-		<wd-popup
-			v-if="props.filter"
-			custom-class="fa-search-popup"
-			v-model="state.filterVisible"
-			closable
-			position="bottom"
-			transition="fade-up"
-			safe-area-inset-bottom
-		>
+		<wd-popup v-if="props.filter" custom-class="fa-search-popup" v-model="state.filterVisible" closable position="bottom" safe-area-inset-bottom>
 			<text class="fa-search-popup__title">高级筛选</text>
 			<view class="fa-search-popup__warp">
 				<template v-if="!props.hideSearchTime">
@@ -70,8 +62,8 @@
 				<slot name="filter" />
 			</view>
 			<view class="fa-search-popup__footer">
-				<wd-button type="info" plain block :round="false" @click="state.filterVisible = false">取消</wd-button>
-				<wd-button type="primary" block :round="false" @click="handleFilterClick">筛选</wd-button>
+				<wd-button type="info" plain block @click="state.filterVisible = false">取消</wd-button>
+				<wd-button type="primary" block @click="handleFilterClick">筛选</wd-button>
 			</view>
 		</wd-popup>
 	</view>

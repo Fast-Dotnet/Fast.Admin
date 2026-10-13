@@ -4,12 +4,12 @@
 			custom-class="pl20 pt20 mb20"
 			custom-style="display: block;"
 			text="本渠道为平台自有渠道，非官方监管渠道"
-			size="var(--wot-font-size-small)"
+			size="var(--wot-typography-label-size-main)"
 		/>
 
 		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>
 			<wd-cell-group>
-				<wd-form-item title="投诉类型" prop="complaintType" required>
+				<wd-form-item title="投诉类型" prop="complaintType">
 					<wd-radio-group v-model="state.formData.complaintType" direction="horizontal">
 						<wd-radio v-for="(item, index) in complaintTypeEnum" :key="index" :value="item.value" :disabled="item.disabled">
 							{{ item.label }}
@@ -17,22 +17,15 @@
 					</wd-radio-group>
 				</wd-form-item>
 
-				<wd-form-item title="联系电话" prop="contactPhone" required>
-					<wd-input
-						v-model="state.formData.contactPhone"
-						clearable
-						type="number"
-						inputmode="numeric"
-						:maxlength="11"
-						placeholder="请输入联系电话"
-					/>
+				<wd-form-item title="联系电话" prop="contactPhone">
+					<wd-input v-model="state.formData.contactPhone" clearable type="tel" :maxlength="11" placeholder="请输入联系电话" />
 				</wd-form-item>
 
-				<wd-form-item title="联系邮箱" prop="contactEmail" required>
+				<wd-form-item title="联系邮箱" prop="contactEmail">
 					<wd-input v-model="state.formData.contactEmail" clearable type="text" inputmode="email" placeholder="请输入联系邮箱" />
 				</wd-form-item>
 
-				<wd-form-item title="投诉描述" prop="description" required>
+				<wd-form-item title="投诉描述" prop="description">
 					<wd-textarea v-model="state.formData.description" clearable :maxlength="200" placeholder="请简单描述内容" />
 				</wd-form-item>
 			</wd-cell-group>
@@ -53,9 +46,8 @@ import { useRouter } from "@wot-ui/router";
 import { complaintApi } from "@/api/services/Center/complaint";
 import { fileApi } from "@/api/services/File";
 import { RegExps } from "@/constants";
-import { useLoading, useToast } from "@/hooks";
+import { useFormSchema, useLoading, useToast } from "@/hooks";
 import { useApp } from "@/stores";
-import type { FormSchema } from "@wot-ui/ui";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { UploadFile, UploadMethod } from "@wot-ui/ui/components/wd-upload/types";
 import type { AddComplaintInput } from "@/api/services/Center/complaint/models/AddComplaintInput";
@@ -75,21 +67,17 @@ const complaintTypeEnum = appStore.getDictionary("ComplaintTypeEnum");
 
 const state = reactive({
 	formData: withDefineType<AddComplaintInput>({}),
-	formSchema: withDefineType<FormSchema>({
-		validate(formModel: AddComplaintInput) {
-			return [
-				...(!formModel.complaintType ? [{ path: ["complaintType"], message: "请选择投诉类型" }] : []),
-				...(!formModel.contactPhone ? [{ path: ["contactPhone"], message: "请输入联系手机" }] : []),
-				...(formModel.contactPhone && !RegExps.Mobile.test(formModel.contactPhone)
-					? [{ path: ["contactPhone"], message: "请输入有效的联系手机" }]
-					: []),
-				...(!formModel.contactEmail ? [{ path: ["contactEmail"], message: "请输入联系邮箱" }] : []),
-				...(formModel.contactEmail && !RegExps.Email.test(formModel.contactEmail)
-					? [{ path: ["contactEmail"], message: "请输入有效的联系邮箱" }]
-					: []),
-				...(!formModel.description ? [{ path: ["description"], message: "请输入投诉描述" }] : []),
-			];
-		},
+	formSchema: useFormSchema<AddComplaintInput>({
+		complaintType: { required: true, message: "请选择投诉类型" },
+		contactPhone: [
+			{ required: true, message: "请输入联系手机" },
+			{ pattern: RegExps.Mobile, message: "请输入有效的联系手机" },
+		],
+		contactEmail: [
+			{ required: true, message: "请输入联系邮箱" },
+			{ pattern: RegExps.Email, message: "请输入有效的联系邮箱" },
+		],
+		description: { required: true, message: "请输入投诉描述" },
 	}),
 	fileList: withDefineType<UploadFile[]>([]),
 });
@@ -115,7 +103,7 @@ const handleSubmit = throttle(async () => {
 		useToast.warning("请上传附件图片");
 		return;
 	}
-	useLoading.show("提交中...");
+	useLoading.show();
 	await complaintApi
 		.addComplaint({
 			complaintType,
@@ -137,6 +125,6 @@ const handleSubmit = throttle(async () => {
 
 .btn__submit {
 	display: block;
-	margin: 30rpx 50rpx !important;
+	margin: 30rpx 50rpx;
 }
 </style>

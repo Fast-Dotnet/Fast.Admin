@@ -60,6 +60,7 @@ export const loginApi = {
 			params: {
 				isForce,
 			},
+			cancelDuplicateRequest: false,
 			requestType: "auth",
 		});
 	},

@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using SKIT.FlurlHttpClient.Wechat.Api;
+using SKIT.FlurlHttpClient.Wechat.Api.Models;
 using Yitter.IdGenerator;
 
 namespace Fast.Center.Service.Account;
@@ -167,16 +169,18 @@ public partial class AccountService
             throw new UserFriendlyException("数据不存在！");
         }
 
+        // 验证账号状态
+        if (accountModel.Status == CommonStatusEnum.Disable)
+        {
+            throw new UserFriendlyException("账号已被平台禁用！");
+        }
+
         if (!CryptoUtil.VerifyPasswordPBKDF2SHA256(input.OldPassword, accountModel.Password))
         {
             throw new UserFriendlyException("旧密码不正确！");
         }
 
         await EnsurePasswordNotReused(accountModel.AccountId, input.NewPassword);
-
-        // 更新密码
-        accountModel.Password = CryptoUtil.HashPasswordPBKDF2SHA256(input.NewPassword);
-        accountModel.RowVersion = input.RowVersion;
 
         HttpContext httpContext = FastContext.HttpContext;
         ISqlSugarRepository<VisitLogModel> _visitLogRepository =
@@ -200,6 +204,13 @@ public partial class AccountService
         };
         visitLogModel.RecordCreate(httpContext);
 
+        // 更新密码
+        accountModel.Password = CryptoUtil.HashPasswordPBKDF2SHA256(input.NewPassword);
+        accountModel.PasswordErrorTime = null;
+        accountModel.LockStartTime = null;
+        accountModel.LockEndTime = null;
+        accountModel.RowVersion = input.RowVersion;
+
         await _repository.Ado.UseTranAsync(async () =>
         {
             await _repository.UpdateAsync(accountModel);
@@ -221,6 +232,125 @@ public partial class AccountService
 
         // 发送通知
         await SendPasswordChangedNotification(accountModel, "用户修改密码");
+    }
+
+    /// <summary>
+    /// 通过绑定的微信修改密码
+    /// </summary>
+    [HttpPost]
+    [ApiInfo("通过绑定的微信修改密码", HttpRequestActionEnum.Edit)]
+    public async Task ChangePasswordByWeChat(ChangePasswordByWeChatInput input)
+    {
+        VerifyPasswordComplexity(input.NewPassword, input.ConfirmPassword);
+
+        ApplicationOpenIdModel applicationModel = await EnsureApplication();
+        if (applicationModel.AppType != AppEnvironmentEnum.WeChatMiniProgram)
+        {
+            throw new UserFriendlyException("当前应用不支持此方法！");
+        }
+
+        AccountModel accountModel = await _repository.SingleOrDefaultAsync(_user.AccountId);
+        if (accountModel == null)
+        {
+            throw new UserFriendlyException("数据不存在！");
+        }
+
+        // 验证账号状态
+        if (accountModel.Status == CommonStatusEnum.Disable)
+        {
+            throw new UserFriendlyException("账号已被平台禁用！");
+        }
+
+        if (accountModel.ClientUserId == null)
+        {
+            throw new UserFriendlyException("当前账号未绑定微信！");
+        }
+
+        ClientUserModel clientUserModel = await _repository.Queryable<ClientUserModel>()
+            .Where(wh => wh.UserId == accountModel.ClientUserId)
+            .SingleAsync();
+
+        if (clientUserModel == null || string.IsNullOrWhiteSpace(clientUserModel.OpenId))
+        {
+            throw new UserFriendlyException("微信绑定信息无效，请重新绑定！");
+        }
+
+        // 解析微信Code，获取OpenId
+        WechatApiClient apiClient = WechatApiClientBuilder
+            .Create(new WechatApiClientOptions {AppId = applicationModel.OpenId, AppSecret = applicationModel.OpenSecret})
+            .Build();
+        SnsJsCode2SessionResponse response =
+            await apiClient.ExecuteSnsJsCode2SessionAsync(new SnsJsCode2SessionRequest {JsCode = input.WeChatCode});
+        if (!response.IsSuccessful())
+        {
+            throw new UserFriendlyException(
+                $"解析Code失败，获取微信登录信息失败：ErrorCode：{response.ErrorCode}。ErrorMessage：{response.ErrorMessage}");
+        }
+
+        if (!string.Equals(response.OpenId, clientUserModel.OpenId, StringComparison.Ordinal))
+        {
+            throw new UserFriendlyException("当前微信与账号绑定的微信不一致！");
+        }
+
+        await EnsurePasswordNotReused(accountModel.AccountId, input.NewPassword);
+
+        // 判断是否新旧密码一致
+        if (!string.IsNullOrWhiteSpace(accountModel.Password)
+            && CryptoUtil.VerifyPasswordPBKDF2SHA256(input.NewPassword, accountModel.Password))
+        {
+            throw new UserFriendlyException("新密码不能与当前密码相同！");
+        }
+
+        HttpContext httpContext = FastContext.HttpContext;
+        ISqlSugarRepository<VisitLogModel> _visitLogRepository =
+            httpContext.RequestServices.GetService<ISqlSugarRepository<VisitLogModel>>();
+
+        // 添加访问日志
+        var visitLogModel = new VisitLogModel
+        {
+            RecordId = YitIdHelper.NextId(),
+            AccountId = _user.AccountId,
+            Mobile = _user.Mobile,
+            NickName = _user.NickName,
+            VisitType = VisitTypeEnum.ChangePassword,
+            DepartmentId = _user.DepartmentId,
+            DepartmentName = _user.DepartmentName,
+            CreatedUserId = _user.EmployeeId,
+            CreatedUserName = _user.EmployeeName,
+            CreatedTime = DateTime.Now,
+            TenantId = _user.TenantId,
+            TenantName = _user.TenantName
+        };
+        visitLogModel.RecordCreate(httpContext);
+
+        // 更新密码
+        accountModel.Password = CryptoUtil.HashPasswordPBKDF2SHA256(input.NewPassword);
+        accountModel.PasswordErrorTime = null;
+        accountModel.LockStartTime = null;
+        accountModel.LockEndTime = null;
+        accountModel.RowVersion = input.RowVersion;
+
+        await _repository.Ado.UseTranAsync(async () =>
+        {
+            await _repository.UpdateAsync(accountModel);
+            await _repository.Insertable(new PasswordRecordModel
+                {
+                    AccountId = accountModel.AccountId,
+                    OperationType = PasswordOperationTypeEnum.Change,
+                    Type = PasswordTypeEnum.PBKDF2_SHA256,
+                    Password = accountModel.Password
+                })
+                .ExecuteCommandAsync();
+            await _visitLogRepository.InsertAsync(visitLogModel);
+        }, ex => throw ex);
+
+        // 退出登录
+        await _user.Logout();
+        await _user.RevokeAccount(accountModel.AccountId);
+        await AccountForceOffline(accountModel.AccountId, "密码已通过微信修改，请重新登录");
+
+        // 发送通知
+        await SendPasswordChangedNotification(accountModel, "通过已绑定微信修改密码");
     }
 
     /// <summary>

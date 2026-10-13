@@ -285,6 +285,7 @@ public partial class AccountService : IDynamicApplication
             .Where(wh => wh.AccountId == _user.AccountId)
             .Select(sl => new EditAccountInput
             {
+                ClientUserId = sl.ClientUserId,
                 Mobile = sl.Mobile,
                 Email = sl.Email,
                 NickName = sl.NickName,

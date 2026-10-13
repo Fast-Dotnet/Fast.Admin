@@ -144,16 +144,24 @@ export const useApp = defineStore(
 		/**
 		 * 获取已加载的字典项；不存在时记录日志并返回 null。
 		 *
+		 * @typeParam T - 字典项类型，默认为 FaTableEnumColumnCtx
 		 * @param key - 字典名称
 		 * @param includeAll - 是否在结果首部增加值为 null 的“全部”选项
+		 * @returns 字典项数组；字典不存在时返回 null
+		 *
+		 * @remarks
+		 * 泛型仅指定返回类型，不转换实际数据结构。
+		 * includeAll 为 true 时，目标类型需要能够表示值为 null 的“全部”选项。
 		 */
-		const getDictionary = (key: string, includeAll = false): FaTableEnumColumnCtx[] => {
+		const getDictionary = <T = FaTableEnumColumnCtx>(key: string, includeAll = false): T[] | null => {
 			if (!dictionary.value.has(key)) {
 				logger.error("app", `字典 [${key}] 不存在`);
 				return null;
 			}
 			const items = dictionary.value.get(key);
-			return includeAll ? [{ label: "全部", value: null }, ...items] : items;
+			const result = includeAll ? [{ label: "全部", value: null }, ...items] : items;
+
+			return result as unknown as T[];
 		};
 
 		/** 清空 Local 存储并恢复安装标识，不直接重置内存中的 Store。 */

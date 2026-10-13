@@ -9,6 +9,17 @@ import type { QueryClientUserPagedOutput } from "./models/QueryClientUserPagedOu
  */
 export const clientUserApi = {
 	/**
+	 * 客户端用户选择器
+	 */
+	clientUserSelector(data: PagedInput): Promise<PagedResult<ElSelectorOutput<string>>> {
+		return axiosUtil.request<PagedResult<ElSelectorOutput<string>>>({
+			url: "/clientUser/clientUserSelector",
+			method: "post",
+			data,
+			requestType: "query",
+		});
+	},
+	/**
 	 * 获取客户端用户分页列表
 	 */
 	queryClientUserPaged(data: QueryClientUserPagedInput): Promise<PagedResult<QueryClientUserPagedOutput>> {

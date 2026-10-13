@@ -28,10 +28,11 @@
 			</FaFormItem>
 			<FaFormItem prop="loginComponent" label="登录组件">
 				<el-radio-group v-model="state.formData.loginComponent">
-					<el-radio label="ClassicLogin">经典</el-radio>
-					<el-radio label="ModernLogin">现代</el-radio>
-					<el-radio label="SimpleLogin">简约</el-radio>
-					<el-radio label="SplitLogin">分屏</el-radio>
+					<el-radio value="">无</el-radio>
+					<el-radio value="ClassicLogin">经典</el-radio>
+					<el-radio value="ModernLogin">现代</el-radio>
+					<el-radio value="SimpleLogin">简约</el-radio>
+					<el-radio value="SplitLogin">分屏</el-radio>
 				</el-radio-group>
 			</FaFormItem>
 			<FaFormItem prop="webSocketUrl" label="WebSocket地址">
@@ -170,13 +171,18 @@ const handleTemplateIdDelete = (index: number) => {
 const handleConfirm = () => {
 	faDialogRef.value.close(async () => {
 		await faFormRef.value.validateScrollToField();
+		// Radio 使用空字符串表示“无”，提交时转换为接口的空值。
+		const formData = {
+			...state.formData,
+			loginComponent: state.formData.loginComponent === "" ? null : state.formData.loginComponent,
+		};
 		switch (state.dialogState) {
 			case "add":
-				await applicationOpenIdApi.addApplicationOpenId(state.formData);
+				await applicationOpenIdApi.addApplicationOpenId(formData);
 				ElMessage.success("新增成功！");
 				break;
 			case "edit":
-				await applicationOpenIdApi.editApplicationOpenId(state.formData);
+				await applicationOpenIdApi.editApplicationOpenId(formData);
 				ElMessage.success("保存成功！");
 				break;
 		}
@@ -188,7 +194,7 @@ const detail = (recordId: string) => {
 	faDialogRef.value.open(async () => {
 		state.formDisabled = true;
 		const apiRes = await applicationOpenIdApi.queryApplicationOpenIdDetail(recordId);
-		state.formData = apiRes;
+		state.formData = { ...apiRes, loginComponent: apiRes.loginComponent ?? "" };
 		state.dialogTitle = `应用OpenId详情 - ${apiRes.appName}`;
 	});
 };
@@ -203,6 +209,7 @@ const add = () => {
 			environmentType: EnvironmentTypeEnum.Production,
 			requestTimeout: 60000,
 			requestEncipher: true,
+			loginComponent: "",
 			templateIdList: [],
 		};
 	});
@@ -213,7 +220,7 @@ const edit = (recordId: string) => {
 		state.dialogState = "edit";
 		state.formDisabled = false;
 		const apiRes = await applicationOpenIdApi.queryApplicationOpenIdDetail(recordId);
-		state.formData = apiRes;
+		state.formData = { ...apiRes, loginComponent: apiRes.loginComponent ?? "" };
 		state.dialogTitle = `编辑应用OpenId - ${apiRes.openId}`;
 	});
 };

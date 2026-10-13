@@ -18,7 +18,7 @@
 				shape="round"
 				:active-color="configStore.layout.themeColor"
 				inactive-color="var(--wot-text-secondary)"
-				:z-index="2001"
+				:z-index="1001"
 				bordered
 				fixed
 				placeholder

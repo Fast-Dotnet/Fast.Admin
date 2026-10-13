@@ -24,7 +24,8 @@ public partial class LoginService
     /// <summary>
     /// 创建客户端用户
     /// </summary>
-    private static ClientUserModel CreateClientUser(long appId, AppEnvironmentEnum appType, string openId, string unionId)
+    private static ClientUserModel CreateClientUser(long appId, AppEnvironmentEnum appType, string openId, string unionId,
+        string sessionKey)
     {
         ClientUserTypeEnum userType = appType switch
         {
@@ -46,6 +47,7 @@ public partial class LoginService
             UserType = userType,
             OpenId = openId,
             UnionId = unionId,
+            SessionKey = sessionKey,
             NickName = "微信用户",
             Avatar = CommonConst.DefaultAvatar,
             Sex = GenderEnum.Unknown
@@ -79,34 +81,13 @@ public partial class LoginService
     {
         DateTime dateTime = DateTime.Now;
 
-        // 判断客户端用户是否已绑定手机号
-        if (string.IsNullOrWhiteSpace(clientUserModel.Mobile))
-        {
-            return new LoginOutput {Status = LoginStatusEnum.NotAccount, Message = "客户端用户未绑定手机号，请先授权手机号！"};
-        }
-
         AccountModel accountModel = await _repository.Queryable<AccountModel>()
-            .Where(wh => wh.Mobile == clientUserModel.Mobile)
+            .Where(wh => wh.ClientUserId == clientUserModel.UserId)
             .SingleAsync();
 
         if (accountModel == null)
         {
-            throw new UserFriendlyException("账号不存在！");
-        }
-
-        // 保证一个客户端用户只绑定一个账号，并持久化首次绑定关系
-        if (accountModel.ClientUserId != clientUserModel.UserId)
-        {
-            await _repository.Ado.UseTranAsync(async () =>
-            {
-                await _repository.Updateable<AccountModel>()
-                    .SetColumns(e => e.ClientUserId == null)
-                    .Where(wh => wh.ClientUserId == clientUserModel.UserId)
-                    .ExecuteCommandAsync();
-
-                accountModel.ClientUserId = clientUserModel.UserId;
-                await _repository.Updateable(accountModel).ExecuteCommandAsync();
-            }, ex => throw ex);
+            throw new UserFriendlyException("微信未绑定账号，请先使用账号密码登录后绑定！");
         }
 
         List<TenantUserModel> tenantUserList = await _repository.Queryable<TenantUserModel>()
@@ -256,9 +237,8 @@ public partial class LoginService
             }
 
             // 保存微信用户
-            clientUserModel =
-                CreateClientUser(applicationModel.AppId, GlobalContext.DeviceType, response.OpenId, response.UnionId);
-            clientUserModel.SessionKey = response.SessionKey;
+            clientUserModel = CreateClientUser(applicationModel.AppId, GlobalContext.DeviceType, response.OpenId,
+                response.UnionId, response.SessionKey);
             clientUserModel.NickName = decryptData.NickName;
             clientUserModel.Sex = decryptData.Gender;
             await _repository.Insertable(clientUserModel).ExecuteCommandAsync();
@@ -359,8 +339,7 @@ public partial class LoginService
             {
                 // 保存微信用户
                 clientUserModel = CreateClientUser(applicationModel.AppId, GlobalContext.DeviceType, response.OpenId,
-                    response.UnionId);
-                clientUserModel.SessionKey = response.SessionKey;
+                    response.UnionId, response.SessionKey);
 
                 // 这里的 IV 和 EncryptedData 在没有授权的情况下是为空的
                 if (string.IsNullOrWhiteSpace(input.IV) != string.IsNullOrWhiteSpace(input.EncryptedData))
@@ -442,7 +421,7 @@ public partial class LoginService
             {
                 // 保存微信用户
                 clientUserModel = CreateClientUser(applicationModel.AppId, GlobalContext.DeviceType, response.OpenId,
-                    response.UnionId);
+                    response.UnionId, null);
                 clientUserModel.NickName = response.Nickname;
                 clientUserModel.Avatar = response.HeadImageUrl;
                 await _repository.Insertable(clientUserModel).ExecuteCommandAsync();
