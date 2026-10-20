@@ -49,7 +49,7 @@ public partial class RoleService
 
         var menuIds = (input.MenuIds ?? []).Distinct().ToList();
         var buttonIds = (input.ButtonIds ?? []).Distinct().ToList();
-        (ApplicationOpenIdModel applicationModel, TenantModel tenantModel) = await GetAuthorizationContext();
+        (ApplicationClientModel applicationModel, TenantModel tenantModel) = await GetAuthorizationContext();
 
         var menuList = await _centerRepository.Queryable<MenuModel>()
             .Where(wh => wh.AppId == applicationModel.AppId)
@@ -175,7 +175,7 @@ public partial class RoleService
             throw new UserFriendlyException("角色不存在或无权操作！");
         }
 
-        (ApplicationOpenIdModel applicationModel, TenantModel tenantModel) = await GetAuthorizationContext();
+        (ApplicationClientModel applicationModel, TenantModel tenantModel) = await GetAuthorizationContext();
         List<long> validMenuIds = await _centerRepository.Queryable<MenuModel>()
             .Where(wh => wh.AppId == applicationModel.AppId)
             .Where(wh => wh.Status == CommonStatusEnum.Enable)
@@ -219,7 +219,7 @@ public partial class RoleService
     public async Task<List<ElSelectorOutput<long>>> QueryAuthMenu()
     {
         // 查询应用信息
-        ApplicationOpenIdModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
+        ApplicationClientModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
 
         if (applicationModel.AppType != GlobalContext.DeviceType)
         {

@@ -1,0 +1,109 @@
+.layout {
+	min-width: 0;
+	min-height: 0;
+
+	> .el-container {
+		min-width: 0;
+		min-height: 0;
+	}
+
+	> .el-aside,
+	> .el-header,
+	> .el-footer,
+	> .el-container > .el-header,
+	> .el-container > .el-footer {
+		flex-shrink: 0;
+	}
+
+	> .el-footer,
+	> .el-container > .el-footer {
+		height: auto;
+		min-height: var(--el-footer-height);
+		padding-block: 4px;
+	}
+
+	> .el-main,
+	> .el-container > .el-main {
+		min-width: 0;
+		min-height: 0;
+		// 只约束布局本身的滚动区，避免把业务组件的嵌套滚动内容强制撑满。
+		> :deep(.el-scrollbar) {
+			> .el-scrollbar__wrap {
+				> .el-scrollbar__view {
+					height: 100%;
+
+					> .layout-main {
+						width: 100%;
+						min-width: 0;
+						height: 100%;
+						min-height: 0;
+					}
+				}
+			}
+		}
+	}
+
+	.nav-bar {
+		.left {
+			flex: 1;
+			min-width: 0;
+
+			> .el-menu {
+				flex: 1;
+				min-width: 0;
+			}
+		}
+
+		.right {
+			flex-shrink: 0;
+			min-width: 0;
+		}
+
+		.menu-collapse,
+		.menu-search,
+		.screen-full,
+		.setting,
+		.logout {
+			flex-shrink: 0;
+
+			&:focus-visible {
+				outline-offset: -3px;
+			}
+		}
+
+		.user-info,
+		.nick-name {
+			min-width: 0;
+		}
+	}
+
+	&.contentFull > .el-footer,
+	&.contentFull > .el-container > .el-footer,
+	&.contentLarge > .el-footer,
+	&.contentLarge > .el-container > .el-footer {
+		height: 0;
+		min-height: 0;
+		padding: 0;
+	}
+}
+
+@media (max-width: 1366px) {
+	.layout {
+		> .el-footer,
+		> .el-container > .el-footer {
+			gap: 3px;
+			padding: 4px max(8px, env(safe-area-inset-right)) max(4px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+		}
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.layout {
+		.el-aside,
+		.el-header,
+		.el-footer,
+		.nav-bar {
+			transition: none;
+		}
+	}
+}

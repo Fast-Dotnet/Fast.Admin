@@ -58,6 +58,10 @@ export interface EditTenantInput {
 	 */
 	logoUrl?: string;
 	/**
+	 * 阿里云签名名称
+	 */
+	aliyunSignName?: string;
+	/**
 	 * 
 	 */
 	rowVersion?: string;

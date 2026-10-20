@@ -76,9 +76,9 @@ public partial class RoleService : IDynamicApplication
     /// 获取角色授权所需的当前应用与租户上下文
     /// </summary>
     /// <returns>角色授权所需的当前应用和租户</returns>
-    private async Task<(ApplicationOpenIdModel Application, TenantModel Tenant)> GetAuthorizationContext()
+    private async Task<(ApplicationClientModel Application, TenantModel Tenant)> GetAuthorizationContext()
     {
-        ApplicationOpenIdModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
+        ApplicationClientModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
         if (applicationModel.AppType != GlobalContext.DeviceType)
         {
             throw new UserFriendlyException("应用类型不匹配！");

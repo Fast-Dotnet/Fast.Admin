@@ -11,7 +11,7 @@ export interface PayRecordModel {
 	/**
 	 * 应用标识
 	 */
-	appOpenId?: string;
+	appKey?: string;
 	/**
 	 * 收款商户号
 	 */

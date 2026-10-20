@@ -116,8 +116,8 @@ internal static class ConfigSeedData
                 new()
                 {
                     ConfigId = YitIdHelper.NextId(),
-                    ConfigCode = ConfigConst.SmsAccessKeyId,
-                    ConfigName = "阿里云短信AccessKeyId",
+                    ConfigCode = ConfigConst.AliyunAccessKeyID,
+                    ConfigName = "阿里云 AccessKey ID",
                     ConfigValue = "",
                     Remark = "",
                     CreatedTime = dateTime
@@ -125,28 +125,10 @@ internal static class ConfigSeedData
                 new()
                 {
                     ConfigId = YitIdHelper.NextId(),
-                    ConfigCode = ConfigConst.SmsAccessKeySecret,
-                    ConfigName = "阿里云短信AccessKey密钥",
+                    ConfigCode = ConfigConst.AliyunAccessKeySecret,
+                    ConfigName = "阿里云 AccessKey Secret",
                     ConfigValue = "",
                     Remark = "",
-                    CreatedTime = dateTime
-                },
-                new()
-                {
-                    ConfigId = YitIdHelper.NextId(),
-                    ConfigCode = ConfigConst.SmsSignName,
-                    ConfigName = "阿里云短信签名",
-                    ConfigValue = "",
-                    Remark = "",
-                    CreatedTime = dateTime
-                },
-                new()
-                {
-                    ConfigId = YitIdHelper.NextId(),
-                    ConfigCode = ConfigConst.SmsVerificationTemplateCode,
-                    ConfigName = "阿里云短信验证码模板Code",
-                    ConfigValue = "",
-                    Remark = "阿里云审核通过的验证码短信模板编码，模板变量为Code；",
                     CreatedTime = dateTime
                 },
                 new()

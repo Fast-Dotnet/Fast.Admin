@@ -25,7 +25,7 @@ public partial class LoginService
     public async Task<LoginOutput> TryLogin(TryLoginInput input)
     {
         // 查询应用信息
-        ApplicationOpenIdModel applicationModel = await EnsureApplication();
+        ApplicationClientModel applicationModel = await EnsureApplication();
 
         TenantUserModel tenantUserModel = await _repository.Queryable<TenantUserModel>()
             .InnerJoin<TenantModel>((t1, t2) => t1.TenantId == t2.TenantId)

@@ -48,10 +48,6 @@ export interface QueryRoleDetailOutput {
 	/**
 	 * 
 	 */
-	departmentName?: string;
-	/**
-	 * 
-	 */
 	createdUserName?: string;
 	/**
 	 * 

@@ -27,32 +27,45 @@ const breadcrumbs = computed(() => {
 });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .el-breadcrumb {
+	display: flex;
+	overflow: hidden;
+	min-width: 0;
 	padding-left: 10px;
 	font-weight: var(--el-font-weight-primary);
-	.el-breadcrumb__item {
-		:deep() {
-			.el-breadcrumb__inner {
-				display: inline-flex;
-				gap: 5px;
-				transition: var(--el-transition-color);
+	white-space: nowrap;
+}
+
+.el-breadcrumb__item {
+	flex-shrink: 0;
+
+	:deep(.el-breadcrumb__inner) {
+		display: inline-flex;
+		gap: 5px;
+		transition: var(--el-transition-color);
+	}
+
+	&:last-child {
+		flex-shrink: 1;
+		min-width: 0;
+
+		:deep(.el-breadcrumb__inner) {
+			display: block;
+			overflow: hidden;
+			text-overflow: ellipsis;
+
+			.fa-icon {
+				color: var(--el-text-color-primary);
 			}
-		}
-		&:last-child {
-			:deep() {
-				.el-breadcrumb__inner {
-					.fa-icon {
-						color: var(--el-text-color-primary);
-					}
-					span {
-						color: var(--el-text-color-placeholder);
-					}
-				}
+
+			span {
+				color: var(--el-text-color-placeholder);
 			}
 		}
 	}
 }
+
 html.small {
 	.el-breadcrumb {
 		font-size: var(--el-font-size-extra-small);

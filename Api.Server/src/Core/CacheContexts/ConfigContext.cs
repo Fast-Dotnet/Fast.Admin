@@ -43,7 +43,7 @@ public class ConfigContext
 
         HttpContext httpContext = FastContext.HttpContext;
         // 优先从 HttpContext.Items 中获取
-        string configValue = httpContext?.Items[$"{nameof(Fast)}.{nameof(ConfigModel.ConfigCode)}.{configCode}"]?.ToString();
+        string configValue = httpContext?.Items[$"{nameof(Fast)}.{nameof(ConfigModel)}.{configCode}"]?.ToString();
 
         if (!string.IsNullOrWhiteSpace(configValue))
         {
@@ -71,7 +71,7 @@ public class ConfigContext
         if (httpContext != null)
         {
             // 放入 HttpContext.Items 中
-            httpContext.Items[$"{nameof(Fast)}.{nameof(ConfigModel.ConfigCode)}.{configCode}"] = configModel.ConfigValue;
+            httpContext.Items[$"{nameof(Fast)}.{nameof(ConfigModel)}.{configCode}"] = configModel.ConfigValue;
         }
 
         if (string.IsNullOrWhiteSpace(configModel.ConfigValue))
@@ -99,7 +99,7 @@ public class ConfigContext
 
         HttpContext httpContext = FastContext.HttpContext;
         // 优先从 HttpContext.Items 中获取
-        string configValue = httpContext?.Items[$"{nameof(Fast)}.{nameof(ConfigModel.ConfigCode)}.{configCode}"]?.ToString();
+        string configValue = httpContext?.Items[$"{nameof(Fast)}.{nameof(ConfigModel)}.{configCode}"]?.ToString();
 
         if (!string.IsNullOrWhiteSpace(configValue))
         {
@@ -127,7 +127,7 @@ public class ConfigContext
         if (httpContext != null)
         {
             // 放入 HttpContext.Items 中
-            httpContext.Items[$"{nameof(Fast)}.{nameof(ConfigModel.ConfigCode)}.{configCode}"] = configModel.ConfigValue;
+            httpContext.Items[$"{nameof(Fast)}.{nameof(ConfigModel)}.{configCode}"] = configModel.ConfigValue;
         }
 
         if (string.IsNullOrWhiteSpace(configModel.ConfigValue))
@@ -156,10 +156,7 @@ public class ConfigContext
         if (httpContext != null)
         {
             // 删除 HttpContext.Items 中的
-            if (httpContext.Items.ContainsKey($"{nameof(Fast)}.{nameof(ConfigModel.ConfigCode)}.{configCode}"))
-            {
-                httpContext.Items.Remove($"{nameof(Fast)}.{nameof(ConfigModel.ConfigCode)}.{configCode}");
-            }
+            httpContext.Items.Remove($"{nameof(Fast)}.{nameof(ConfigModel)}.{configCode}");
         }
 
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.Config, configCode);
@@ -177,7 +174,7 @@ public class ConfigContext
         {
             // 清空 HttpContext.Items 中的
             var keys = httpContext.Items.Keys
-                .Where(wh => wh is string key && key.StartsWith($"{nameof(Fast)}.{nameof(ConfigModel.ConfigCode)}."))
+                .Where(wh => wh is string key && key.StartsWith($"{nameof(Fast)}.{nameof(ConfigModel)}."))
                 .ToList();
             foreach (object key in keys)
             {

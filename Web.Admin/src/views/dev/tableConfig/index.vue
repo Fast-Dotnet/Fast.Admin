@@ -83,9 +83,7 @@ const handleBack = () => {
 /** 处理删除 */
 const handleDelete = (row: QueryTableConfigPagedOutput) => {
 	const { tableId, rowVersion } = row;
-	ElMessageBox.confirm("确定要删除表格配置？", {
-		type: "warning",
-	}).then(async () => {
+	ElMessageBox.confirm("确定要删除表格配置？", { type: "warning" }).then(async () => {
 		await tableApi.deleteTableConfig({ tableId, rowVersion });
 		ElMessage.success("删除成功！");
 		await faTableRef.value?.refresh();

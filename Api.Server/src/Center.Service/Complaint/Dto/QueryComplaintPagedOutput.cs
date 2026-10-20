@@ -28,7 +28,7 @@ public class QueryComplaintPagedOutput
     /// <summary>
     /// 应用标识
     /// </summary>
-    public string OpenId { get; set; }
+    public string AppKey { get; set; }
 
     /// <summary>
     /// 昵称

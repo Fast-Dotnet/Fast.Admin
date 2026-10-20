@@ -5,7 +5,6 @@
 // 本软件按“原样”提供，相关免责声明及责任限制以许可证及适用法律为准。
 // 版权来源、合法使用与二次开发责任说明见仓库根目录 README.md。
 
-using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using Fast.CenterLog.Domain;
@@ -55,6 +54,14 @@ public class GlobalExceptionHandler : IGlobalExceptionHandler
         }
 
         HttpContext httpContext = context.HttpContext;
+
+        // 已取消的请求及入站连接终止不记录为业务错误。
+        if (httpContext.RequestAborted.IsCancellationRequested
+            && context.Exception is OperationCanceledException or ConnectionAbortedException or ConnectionResetException)
+        {
+            return;
+        }
+
         var message = new StringBuilder();
 
         try
@@ -75,45 +82,10 @@ public class GlobalExceptionHandler : IGlobalExceptionHandler
             {
                 message.AppendLine("请求参数: 无");
             }
-
-            if (httpContext.RequestAborted.IsCancellationRequested)
-            {
-                message.AppendLine("连接被客户端强制关闭。");
-                // 写入警告日志
-                _logger.LogWarning(message.ToString());
-                return;
-            }
-        }
-        // 客户端中途断开
-        catch (ConnectionResetException)
-        {
-            message.AppendLine("连接被客户端强制关闭。");
-            // 写入警告日志
-            _logger.LogWarning(message.ToString());
-            return;
-        }
-        catch (SocketException socketException) when (socketException.SocketErrorCode == SocketError.ConnectionReset)
-        {
-            message.AppendLine("连接被客户端强制关闭。");
-            // 写入警告日志
-            _logger.LogWarning(message.ToString());
-            return;
-        }
-        // Kestrel 封装的管道读写抛出 IOException
-        catch (IOException ioException) when (ioException.InnerException is SocketException
-                                              {
-                                                  SocketErrorCode: SocketError.ConnectionReset
-                                              })
-        {
-            message.AppendLine("连接被客户端强制关闭。");
-            // 写入警告日志
-            _logger.LogWarning(message.ToString());
-            return;
         }
         catch (Exception ex)
         {
-            _logger.LogError(context.Exception, "全局异常原始错误。");
-            _logger.LogError(ex, "全局异常拦截失败。");
+            _logger.LogWarning(ex, "组装异常日志上下文失败。");
         }
 
         // 判断是否为友好异常
@@ -144,16 +116,19 @@ public class GlobalExceptionHandler : IGlobalExceptionHandler
         }
         else
         {
-            string className = context.Exception.TargetSite?.DeclaringType?.FullName;
-            string methodName = "";
-            GroupCollection groupCollection = Regex.Match(className, "<(.*?)>").Groups;
-            if (groupCollection.Count > 1)
-            {
-                methodName = groupCollection[1].Value;
-            }
-
             try
             {
+                string className = context.Exception.TargetSite?.DeclaringType?.FullName;
+                string methodName = context.Exception.TargetSite?.Name ?? "";
+                if (!string.IsNullOrEmpty(className))
+                {
+                    Match match = Regex.Match(className, "<(.*?)>");
+                    if (match.Success)
+                    {
+                        methodName = match.Groups[1].Value;
+                    }
+                }
+
                 // 获取 CenterLog 库的连接字符串配置
                 ConnectionSettingsOptions connectionSetting =
                     await _sqlSugarEntityService.GetConnectionSetting(CommonConst.Default.TenantId, CommonConst.Default.TenantNo,
@@ -161,34 +136,35 @@ public class GlobalExceptionHandler : IGlobalExceptionHandler
                 ConnectionConfig connectionConfig = SqlSugarContext.GetConnectionConfig(connectionSetting);
 
                 IUser _user = httpContext.RequestServices.GetService<IUser>();
+                ITenant _tenant = httpContext.RequestServices.GetService<ITenant>();
                 var exceptionLogModel = new ExceptionLogModel
                 {
                     RecordId = YitIdHelper.NextId(),
                     AccountId = _user?.AccountId,
                     Mobile = _user?.Mobile,
                     NickName = _user?.NickName,
-                    ClassName = context.Exception.TargetSite?.DeclaringType?.FullName,
+                    ClassName = className,
                     MethodName = methodName,
                     Message = context.Exception.Message,
                     Source = context.Exception.Source,
                     StackTrace = context.Exception.StackTrace,
-                    ParamsObj = context
-                        .Exception.TargetSite?.GetParameters()
-                        .Select(sl => new
-                        {
-                            PropertyName = sl.Name,
-                            TypeName = sl.ParameterType.Name,
-                            TypeFullName = sl.ParameterType.FullName
-                        })
-                        .ToList()
-                        .ToJsonString(),
-                    DepartmentId = _user?.DepartmentId,
+                    ParamsObj =
+                        context.Exception.TargetSite?.GetParameters()
+                            .Select(sl => new
+                            {
+                                PropertyName = sl.Name,
+                                TypeName = sl.ParameterType.Name,
+                                TypeFullName = sl.ParameterType.FullName
+                            })
+                            .ToList()
+                            .ToJsonString(),
+                    DepartmentId = _user?.DepartmentId > 0 ? _user.DepartmentId : null,
                     DepartmentName = _user?.DepartmentName,
-                    CreatedUserId = _user?.EmployeeId,
+                    CreatedUserId = _user?.EmployeeId > 0 ? _user.EmployeeId : null,
                     CreatedUserName = _user?.EmployeeName,
                     CreatedTime = DateTime.Now,
-                    TenantId = _user?.TenantId,
-                    TenantName = _user?.TenantName
+                    TenantId = _tenant?.TenantId,
+                    TenantName = _tenant?.TenantName
                 };
                 exceptionLogModel.RecordCreate(httpContext);
 

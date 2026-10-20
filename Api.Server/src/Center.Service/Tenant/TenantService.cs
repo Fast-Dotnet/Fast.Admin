@@ -18,6 +18,7 @@ namespace Fast.Center.Service.Tenant;
 /// 租户服务
 /// </summary>
 [ApiDescriptionSettings(ApiGroupConst.Center, Name = "tenant")]
+[PlatformOnly]
 public class TenantService : IDynamicApplication
 {
     private readonly IUser _user;
@@ -38,11 +39,7 @@ public class TenantService : IDynamicApplication
     [ApiInfo("租户选择器", HttpRequestActionEnum.Query)]
     public async Task<PagedResult<ElSelectorOutput<long>>> TenantSelector(PagedInput input)
     {
-        TenantModel tenantModel = await TenantContext.GetTenant(_user.TenantNo);
-
-        PagedResult<TenantModel> data = await _repository.Entities
-            .WhereIF(tenantModel.TenantType == TenantTypeEnum.Common, wh => wh.TenantId == _user.TenantId)
-            .OrderBy(ob => ob.TenantName)
+        PagedResult<TenantModel> data = await _repository.Entities.OrderBy(ob => ob.TenantName)
             .Select(sl => new TenantModel
             {
                 TenantId = sl.TenantId,
@@ -76,7 +73,6 @@ public class TenantService : IDynamicApplication
     [HttpPost]
     [ApiInfo("获取租户分页列表", HttpRequestActionEnum.Paged)]
     [Permission(PermissionConst.Tenant.Paged)]
-    [PlatformOnly]
     public async Task<PagedResult<QueryTenantPagedOutput>> QueryTenantPaged(QueryTenantPagedInput input)
     {
         return await _repository.Entities.WhereIF(input.Status != null, wh => wh.Status == input.Status)
@@ -104,8 +100,7 @@ public class TenantService : IDynamicApplication
                 RobotName = sl.RobotName,
                 TenantType = sl.TenantType,
                 LogoUrl = sl.LogoUrl,
-                AllowDeleteData = sl.AllowDeleteData,
-                DepartmentName = sl.DepartmentName,
+                AliyunSignName = sl.AliyunSignName,
                 CreatedUserName = sl.CreatedUserName,
                 CreatedTime = sl.CreatedTime,
                 UpdatedUserName = sl.UpdatedUserName,
@@ -121,7 +116,6 @@ public class TenantService : IDynamicApplication
     [HttpGet]
     [ApiInfo("获取租户详情", HttpRequestActionEnum.Query)]
     [Permission(PermissionConst.Tenant.Detail)]
-    [PlatformOnly]
     public async Task<QueryTenantDetailOutput> QueryTenantDetail([Required(ErrorMessage = "租户Id不能为空")] long? tenantId)
     {
         QueryTenantDetailOutput result = await _repository.Queryable<TenantModel>()
@@ -145,8 +139,7 @@ public class TenantService : IDynamicApplication
                 RobotName = t1.RobotName,
                 TenantType = t1.TenantType,
                 LogoUrl = t1.LogoUrl,
-                AllowDeleteData = t1.AllowDeleteData,
-                DepartmentName = t1.DepartmentName,
+                AliyunSignName = t1.AliyunSignName,
                 CreatedUserName = t1.CreatedUserName,
                 CreatedTime = t1.CreatedTime,
                 UpdatedUserName = t1.UpdatedUserName,
@@ -186,7 +179,6 @@ public class TenantService : IDynamicApplication
     [HttpPost]
     [ApiInfo("添加租户", HttpRequestActionEnum.Add)]
     [Permission(PermissionConst.Tenant.Add)]
-    [PlatformOnly]
     public async Task AddTenant(AddTenantInput input)
     {
         if (await _repository.AnyAsync(a => a.TenantCode == input.TenantCode))
@@ -215,7 +207,7 @@ public class TenantService : IDynamicApplication
             RobotName = input.RobotName,
             TenantType = TenantTypeEnum.Common,
             LogoUrl = input.LogoUrl,
-            AllowDeleteData = true
+            AliyunSignName = input.AliyunSignName
         };
 
         await _repository.Ado.UseTranAsync(async () =>
@@ -234,7 +226,6 @@ public class TenantService : IDynamicApplication
     [HttpPost]
     [ApiInfo("编辑租户", HttpRequestActionEnum.Edit)]
     [Permission(PermissionConst.Tenant.Edit)]
-    [PlatformOnly]
     public async Task EditTenant(EditTenantInput input)
     {
         if (await _repository.AnyAsync(a => a.TenantCode == input.TenantCode && a.TenantId != input.TenantId))
@@ -263,6 +254,7 @@ public class TenantService : IDynamicApplication
         tenantModel.AdminEmail = input.AdminEmail;
         tenantModel.AdminPhone = input.AdminPhone;
         tenantModel.LogoUrl = input.LogoUrl;
+        tenantModel.AliyunSignName = input.AliyunSignName;
         tenantModel.RowVersion = input.RowVersion;
 
         await _repository.Ado.UseTranAsync(async () =>
@@ -277,7 +269,8 @@ public class TenantService : IDynamicApplication
                         .SingleAsync();
                     if (accountModel == null)
                     {
-                        string passwordHash = CryptoUtil.HashPasswordPBKDF2SHA256(CommonConst.Default.Password);
+                        string passwordHash =
+                            CryptoUtil.HashPasswordPBKDF2SHA256(GlobalContext.InitializationSettings.DefaultPassword);
                         long accountId = YitIdHelper.NextId();
                         accountModel = new AccountModel
                         {
@@ -356,7 +349,6 @@ public class TenantService : IDynamicApplication
     [HttpPost]
     [ApiInfo("租户更改状态", HttpRequestActionEnum.Edit)]
     [Permission(PermissionConst.Tenant.Status)]
-    [PlatformOnly]
     public async Task ChangeStatus(TenantIdInput input)
     {
         TenantModel tenantModel = await _repository.SingleOrDefaultAsync(input.TenantId);

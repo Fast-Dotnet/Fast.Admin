@@ -137,7 +137,7 @@ defineExpose({
 });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .is-small {
 	padding: calc(var(--height) * 0.1);
 }

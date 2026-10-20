@@ -48,7 +48,7 @@
 					autocomplete="new-password"
 				/>
 			</FaFormItem>
-			<FaFormItem prop="customConnectionStr" label="自定义连接字符串" span="2">
+			<FaFormItem prop="customConnectionStr" label="连接字符串" span="2">
 				<el-input
 					type="textarea"
 					v-model="state.formData.customConnectionStr"
@@ -157,7 +157,7 @@
 							</el-form-item>
 						</template>
 					</FaTableColumn>
-					<FaTableColumn prop="customConnectionStr" label="自定义连接字符串" width="300">
+					<FaTableColumn prop="customConnectionStr" label="连接字符串" width="300">
 						<template #default="{ row, $index }: { row: EditSlaveDatabaseInput; $index: number }">
 							<el-form-item :prop="`slaveDatabaseList.${$index}.customConnectionStr`">
 								<el-input
@@ -302,10 +302,8 @@ defineExpose({
 });
 </script>
 
-<style scoped lang="scss">
-.el-table__cell {
-	.el-form-item {
-		margin-bottom: 0;
-	}
+<style lang="scss" scoped>
+.el-table__cell .el-form-item {
+	margin-bottom: 0;
 }
 </style>

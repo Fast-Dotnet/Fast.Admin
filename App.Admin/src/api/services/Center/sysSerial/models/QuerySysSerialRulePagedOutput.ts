@@ -45,10 +45,6 @@ export interface QuerySysSerialRulePagedOutput {
 	/**
 	 * 
 	 */
-	departmentName?: string;
-	/**
-	 * 
-	 */
 	createdUserName?: string;
 	/**
 	 * 

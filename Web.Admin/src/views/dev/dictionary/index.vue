@@ -1,12 +1,6 @@
 <template>
 	<div>
-		<FaTable
-			ref="faTableRef"
-			row-key="dictionaryId"
-			:request-api="dictionaryApi.queryDictionaryPaged"
-			hide-search-time
-			@custom-cell-click="handleCustomCellClick"
-		>
+		<FaTable ref="faTableRef" row-key="dictionaryId" :request-api="dictionaryApi.queryDictionaryPaged" hide-search-time>
 			<!-- 表格按钮操作区域 -->
 			<template #header>
 				<el-button v-auth="'Dictionary:Add'" type="primary" :icon="Plus" @click="editFormRef.add()">新增</el-button>
@@ -67,14 +61,11 @@
 			<FaTableColumn
 				prop="updatedTime"
 				label="更新时间"
-				type="timeInfo"
 				width="240"
 				small-width="220"
 				sortable
-				:time-info-field="{
-					userName: 'updatedUserName',
-					time: 'updatedTime',
-				}"
+				type="timeInfo"
+				:time-info-field="{ userName: 'updatedUserName', time: 'updatedTime' }"
 			/>
 			<!-- 表格操作 -->
 			<template #operation="{ row }: { row: QueryDictionaryPagedOutput }">
@@ -103,16 +94,10 @@ defineOptions({
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
 const editFormRef = useTemplateRef<InstanceType<typeof DictionaryEdit>>("editFormRef");
 
-const handleCustomCellClick = (_emitName: string, { row }: { row: QueryDictionaryPagedOutput }) => {
-	editFormRef.value.detail(row.dictionaryId);
-};
-
 /** 处理删除 */
 const handleDelete = (row: QueryDictionaryPagedOutput) => {
 	const { dictionaryId, rowVersion } = row;
-	ElMessageBox.confirm("确定要删除数据字典？", {
-		type: "warning",
-	}).then(async () => {
+	ElMessageBox.confirm("确定要删除数据字典？", { type: "warning" }).then(async () => {
 		await dictionaryApi.deleteDictionary({ dictionaryId, rowVersion });
 		ElMessage.success("删除成功！");
 		await faTableRef.value?.refresh();

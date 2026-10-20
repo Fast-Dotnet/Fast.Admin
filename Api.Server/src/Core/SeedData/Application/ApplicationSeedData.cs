@@ -28,25 +28,24 @@ internal static class ApplicationSeedData
             AppId = YitIdHelper.NextId(),
             Edition = EditionEnum.None,
             AppNo = "App201801",
-            AppName = "Fast.Admin",
-            LogoUrl = CommonConst.DefaultLogo,
-            ThemeColor = "#409EFF",
+            AppName = GlobalContext.InitializationSettings.AppName,
+            LogoUrl = GlobalContext.InitializationSettings.DefaultLogo,
+            ThemeColor = GlobalContext.InitializationSettings.ThemeColor,
             CreatedTime = dateTime
         };
         applicationModel = await db.Insertable(applicationModel).ExecuteReturnEntityAsync();
-        await db.Insertable(new List<ApplicationOpenIdModel>
+        await db.Insertable(new List<ApplicationClientModel>
             {
                 new()
                 {
                     AppId = applicationModel.AppId,
-                    OpenId = "127.0.0.1:2001",
+                    AppKey = "127.0.0.1:2001",
                     AppType = AppEnvironmentEnum.Web,
                     EnvironmentType =
                         FastContext.HostEnvironment.IsDevelopment()
                             ? EnvironmentTypeEnum.Development
                             : EnvironmentTypeEnum.Production,
                     LoginComponent = "ClassicLogin",
-                    WebSocketUrl = "/hubs/chatHub",
                     RequestTimeout = 60000,
                     RequestEncipher = true,
                     CreatedTime = dateTime
@@ -54,7 +53,7 @@ internal static class ApplicationSeedData
                 new()
                 {
                     AppId = applicationModel.AppId,
-                    OpenId = "DesktopOpenId",
+                    AppKey = "DesktopOpenId",
                     AppType = AppEnvironmentEnum.Desktop,
                     EnvironmentType =
                         FastContext.HostEnvironment.IsDevelopment()
@@ -67,13 +66,12 @@ internal static class ApplicationSeedData
                 new()
                 {
                     AppId = applicationModel.AppId,
-                    OpenId = "WeChatMiniProgramOpenId",
+                    AppKey = "WeChatMiniProgramOpenId",
                     AppType = AppEnvironmentEnum.WeChatMiniProgram,
                     EnvironmentType =
                         FastContext.HostEnvironment.IsDevelopment()
                             ? EnvironmentTypeEnum.Development
                             : EnvironmentTypeEnum.Production,
-                    WebSocketUrl = "/hubs/chatHub",
                     RequestTimeout = 60000,
                     RequestEncipher = true,
                     CreatedTime = dateTime
@@ -81,13 +79,12 @@ internal static class ApplicationSeedData
                 new()
                 {
                     AppId = applicationModel.AppId,
-                    OpenId = "AndroidOpenId",
+                    AppKey = "AndroidOpenId",
                     AppType = AppEnvironmentEnum.Android,
                     EnvironmentType =
                         FastContext.HostEnvironment.IsDevelopment()
                             ? EnvironmentTypeEnum.Development
                             : EnvironmentTypeEnum.Production,
-                    WebSocketUrl = "/hubs/chatHub",
                     RequestTimeout = 60000,
                     RequestEncipher = true,
                     CreatedTime = dateTime
@@ -95,13 +92,12 @@ internal static class ApplicationSeedData
                 new()
                 {
                     AppId = applicationModel.AppId,
-                    OpenId = "IOSOpenId",
+                    AppKey = "IOSOpenId",
                     AppType = AppEnvironmentEnum.IOS,
                     EnvironmentType =
                         FastContext.HostEnvironment.IsDevelopment()
                             ? EnvironmentTypeEnum.Development
                             : EnvironmentTypeEnum.Production,
-                    WebSocketUrl = "/hubs/chatHub",
                     RequestTimeout = 60000,
                     RequestEncipher = true,
                     CreatedTime = dateTime

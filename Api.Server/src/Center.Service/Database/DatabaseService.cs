@@ -59,7 +59,6 @@ public class DatabaseService : IDynamicApplication
                 IsInitialized = t1.IsInitialized,
                 TenantId = t1.TenantId,
                 TenantName = t2.TenantName,
-                DepartmentName = t1.DepartmentName,
                 CreatedUserName = t1.CreatedUserName,
                 CreatedTime = t1.CreatedTime,
                 UpdatedUserName = t1.UpdatedUserName,
@@ -101,7 +100,6 @@ public class DatabaseService : IDynamicApplication
                 IsInitialized = t1.IsInitialized,
                 TenantId = t1.TenantId,
                 TenantName = t2.TenantName,
-                DepartmentName = t1.DepartmentName,
                 CreatedUserName = t1.CreatedUserName,
                 CreatedTime = t1.CreatedTime,
                 UpdatedUserName = t1.UpdatedUserName,
@@ -384,5 +382,20 @@ public class DatabaseService : IDynamicApplication
 
         // 删除缓存
         await _sqlSugarEntityService.DeleteCache(tenantModel.TenantNo, mainDatabaseModel.DatabaseType);
+    }
+
+    /// <summary>
+    /// 初始化数据库
+    /// </summary>
+    [HttpPost]
+    [ApiInfo("初始化数据库", HttpRequestActionEnum.Submit)]
+    [Permission(PermissionConst.Database.Edit)]
+    public async Task InitDatabase(InitDatabaseInput input)
+    {
+        foreach (IInitTenantDatabaseHandler handler in FastContext.GetServices<IInitTenantDatabaseHandler>()
+                     .OrderBy(handler => handler.Order))
+        {
+            await handler.HandleAsync(input.TenantId, input.DatabaseType);
+        }
     }
 }

@@ -40,10 +40,6 @@ export interface QueryRolePagedOutput {
 	/**
 	 * 
 	 */
-	departmentName?: string;
-	/**
-	 * 
-	 */
 	createdUserName?: string;
 	/**
 	 * 

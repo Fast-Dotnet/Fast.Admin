@@ -25,8 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AlibabaCloud.SDK.Dysmsapi20180501" />
-        <PackageReference Include="AlipaySDKNet.Standard" />
+        <PackageReference Include="AlibabaCloud.SDK.Dysmsapi20170525" />
         <PackageReference Include="SKIT.FlurlHttpClient.Wechat.Api" />
         <PackageReference Include="SKIT.FlurlHttpClient.Wechat.TenpayV3" />
     </ItemGroup>
@@ -60,6 +59,12 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
         <None Update="dbsettings.Development.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="rolepermissions.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="customrolepermissions.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
     </ItemGroup>

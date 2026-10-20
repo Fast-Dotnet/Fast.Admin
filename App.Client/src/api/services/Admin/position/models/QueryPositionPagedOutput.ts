@@ -21,10 +21,6 @@ export interface QueryPositionPagedOutput {
 	/**
 	 * 
 	 */
-	departmentName?: string;
-	/**
-	 * 
-	 */
 	createdUserName?: string;
 	/**
 	 * 

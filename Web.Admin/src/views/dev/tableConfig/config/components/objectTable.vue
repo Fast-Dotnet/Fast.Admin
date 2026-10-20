@@ -40,7 +40,7 @@ defineOptions({
 });
 
 // v-model绑定值
-const modelValue = defineModel<FaTableColumnAdvancedCtx[]>({ required: true });
+const modelValue = defineModel<FaTableColumnAdvancedCtx[]>({ default: () => [], required: true });
 
 /** 处理新增行。 */
 const handleTableRowAdd = () => {

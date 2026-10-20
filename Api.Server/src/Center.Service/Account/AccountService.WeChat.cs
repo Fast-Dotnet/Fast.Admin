@@ -26,7 +26,7 @@ public partial class AccountService
     [ApiInfo("绑定微信用户", HttpRequestActionEnum.Auth)]
     public async Task BindWeChat(BindWeChatInput input)
     {
-        ApplicationOpenIdModel applicationModel = await EnsureApplication();
+        ApplicationClientModel applicationModel = await EnsureApplication();
         if (applicationModel.AppType != AppEnvironmentEnum.WeChatMiniProgram)
         {
             throw new UserFriendlyException("当前应用不支持此方法！");
@@ -34,7 +34,7 @@ public partial class AccountService
 
         // 解析微信Code，获取OpenId
         WechatApiClient apiClient = WechatApiClientBuilder
-            .Create(new WechatApiClientOptions {AppId = applicationModel.OpenId, AppSecret = applicationModel.OpenSecret})
+            .Create(new WechatApiClientOptions {AppId = applicationModel.AppKey, AppSecret = applicationModel.AppSecret})
             .Build();
         SnsJsCode2SessionResponse response =
             await apiClient.ExecuteSnsJsCode2SessionAsync(new SnsJsCode2SessionRequest {JsCode = input.WeChatCode});
@@ -130,7 +130,7 @@ public partial class AccountService
     [ApiInfo("解绑微信用户", HttpRequestActionEnum.Auth)]
     public async Task UnBindWeChat(BindWeChatInput input)
     {
-        ApplicationOpenIdModel applicationModel = await EnsureApplication();
+        ApplicationClientModel applicationModel = await EnsureApplication();
         if (applicationModel.AppType != AppEnvironmentEnum.WeChatMiniProgram)
         {
             throw new UserFriendlyException("当前应用不支持此方法！");
@@ -138,7 +138,7 @@ public partial class AccountService
 
         // 解析微信Code，获取OpenId
         WechatApiClient apiClient = WechatApiClientBuilder
-            .Create(new WechatApiClientOptions {AppId = applicationModel.OpenId, AppSecret = applicationModel.OpenSecret})
+            .Create(new WechatApiClientOptions {AppId = applicationModel.AppKey, AppSecret = applicationModel.AppSecret})
             .Build();
         SnsJsCode2SessionResponse response =
             await apiClient.ExecuteSnsJsCode2SessionAsync(new SnsJsCode2SessionRequest {JsCode = input.WeChatCode});

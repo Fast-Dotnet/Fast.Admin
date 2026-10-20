@@ -3,7 +3,7 @@ import { useFastAxios } from "@fast-china/axios";
 import { installationIdentity, logger, toQueryString, withDefineType } from "@fast-china/utils";
 import { HttpTransportType, HubConnectionBuilder, HubConnectionState, LogLevel } from "@microsoft/signalr";
 import { AppEnvironmentEnum } from "@/api/enums/AppEnvironmentEnum";
-import { useApp, useUserInfo } from "@/stores";
+import { useUserInfo } from "@/stores";
 import type { HubConnection } from "@microsoft/signalr";
 import type { TenantOnlineUserModel } from "@/api/services/Center/tenantOnlineUser/models/TenantOnlineUserModel";
 
@@ -21,9 +21,8 @@ let reLoadingInstance = withDefineType<ReturnType<typeof ElLoading.service>>(nul
 const initWebSocket = async (): Promise<void> => {
 	try {
 		const fastAxios = useFastAxios();
-		const appStore = useApp();
 		const userInfoStore = useUserInfo();
-		const url = `${fastAxios.baseUrl}${appStore.webSocketUrl}`;
+		const url = `${fastAxios.baseUrl}/hubs/chatHub`;
 		const params = {
 			"Fast-Origin": import.meta.env.DEV ? import.meta.env.VITE_APP_ORIGIN || window.location.host : window.location.host,
 			"Fast-Device-Type": Object.entries(AppEnvironmentEnum).find(([, value]) => value === AppEnvironmentEnum.Web)?.[0],
@@ -127,9 +126,7 @@ const initWebSocket = async (): Promise<void> => {
 			// 登录失败监听
 			connection.on("LoginFail", (message: string) => {
 				userInfoStore.logoutClear();
-				ElMessageBox.alert(message, {
-					type: "warning",
-				});
+				ElMessageBox.alert(message, { type: "warning" });
 			});
 
 			// 其他地方登录监听

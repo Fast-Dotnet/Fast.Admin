@@ -47,10 +47,10 @@ public partial class AccountService : IDynamicApplication
     /// <summary>
     /// 确保应用安全
     /// </summary>
-    private async Task<ApplicationOpenIdModel> EnsureApplication()
+    private async Task<ApplicationClientModel> EnsureApplication()
     {
         // 查询应用信息
-        ApplicationOpenIdModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
+        ApplicationClientModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
 
         if (applicationModel.AppType != GlobalContext.DeviceType)
         {
@@ -104,8 +104,7 @@ public partial class AccountService : IDynamicApplication
     [ApiInfo("账号选择器", HttpRequestActionEnum.Query)]
     public async Task<PagedResult<ElSelectorOutput<long>>> AccountSelector(PagedInput input)
     {
-        TenantModel tenantModel = await TenantContext.GetTenant(_user.TenantNo);
-        if (tenantModel.TenantType == TenantTypeEnum.System)
+        if (_user.IsSystemTenant)
         {
             PagedResult<AccountModel> data = await _repository.Entities
                 .WhereIF(!string.IsNullOrWhiteSpace(input.SearchValue),
@@ -376,7 +375,8 @@ public partial class AccountService : IDynamicApplication
 
                 if (!dto.MobileVerified)
                 {
-                    await _smsService.VerifyVerificationCode(SmsTypeEnum.Validity, mobile, input.MobileVerificationCode);
+                    await _smsService.VerifyVerificationCode(MessageTemplateTypeEnum.MobileVerifyCode, mobile,
+                        input.MobileVerificationCode);
                     dto.Mobile = mobile;
                     dto.MobileVerified = true;
                     await _cache.SetAsync(cacheKey, dto, TimeSpan.FromMinutes(5));
@@ -397,7 +397,8 @@ public partial class AccountService : IDynamicApplication
 
                 if (!dto.EmailVerified)
                 {
-                    await _mailService.VerifyVerificationCode(MailTypeEnum.Validity, email, input.MobileVerificationCode);
+                    await _mailService.VerifyVerificationCode(MessageTemplateTypeEnum.MobileVerifyCode, email,
+                        input.EmailVerificationCode);
                     dto.Email = mobile;
                     dto.EmailVerified = true;
                     await _cache.SetAsync(cacheKey, dto, TimeSpan.FromMinutes(5));

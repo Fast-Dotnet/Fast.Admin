@@ -47,7 +47,7 @@ public class RequestLogService : IDynamicApplication
             .WhereIF(input.OperationAction != null, wh => wh.OperationAction == input.OperationAction)
             .WhereIF(input.RequestMethod != null, wh => wh.RequestMethod == input.RequestMethod);
 
-        if (_user.IsSuperAdmin)
+        if (_user.IsSystemTenant)
         {
             queryable = queryable.WhereIF(input.TenantId != null, wh => wh.TenantId == input.TenantId);
         }

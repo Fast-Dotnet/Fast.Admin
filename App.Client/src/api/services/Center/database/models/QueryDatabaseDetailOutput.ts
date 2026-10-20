@@ -81,10 +81,6 @@ export interface QueryDatabaseDetailOutput {
 	/**
 	 * 
 	 */
-	departmentName?: string;
-	/**
-	 * 
-	 */
 	createdUserName?: string;
 	/**
 	 * 

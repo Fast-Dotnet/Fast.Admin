@@ -1,17 +1,17 @@
 :where(html.small) {
-	.el-scrollbar {
-		.el-scrollbar__bar {
-			&.is-horizontal {
-				height: 3px;
-			}
-			&.is-vertical {
-				width: 3px;
-			}
+	.el-scrollbar .el-scrollbar__bar {
+		&.is-horizontal {
+			height: 3px;
+		}
+
+		&.is-vertical {
+			width: 3px;
 		}
 	}
 
 	.el-tabs {
 		--el-tabs-header-height: 30px;
+
 		.el-tabs__content {
 			padding: 5px;
 		}
@@ -19,11 +19,18 @@
 
 	:where(.el-select-dropdown) {
 		.el-select-dropdown__item {
-			padding: 0 15px;
 			height: 30px;
+			padding: 0 15px;
 			line-height: 30px;
 		}
 	}
+
+	:where(.el-select-dropdown.is-multiple) {
+		.el-select-dropdown__item {
+			padding-right: 32px;
+		}
+	}
+
 	:where(.el-tree-select__popper) {
 		.el-select-dropdown__item {
 			padding: 0 15px 0 0;

@@ -160,9 +160,7 @@ export const useUserInfo = defineStore(
 			} = null
 		) => {
 			if (data?.type === 2) {
-				ElMessageBox.alert(data?.message, {
-					type: "warning",
-				});
+				ElMessageBox.alert(data?.message, { type: "warning" });
 				try {
 					// 关闭 WebSocket 连接
 					await closeWebSocket();

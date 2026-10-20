@@ -145,7 +145,7 @@ internal abstract class JobBase<T> : IJob where T : SchedulerJobLogInfo, new()
             {
                 title = $"【异常】调度作业-{title}";
                 msg = $"""
-                       <p class='error'>错误提示：</p>
+                       <p class='log-error'>错误提示：</p>
                        {msg}
                        """;
                 string emailContent = await _mailService.GetEmailTemplate(title, msg, "error");
@@ -161,10 +161,10 @@ internal abstract class JobBase<T> : IJob where T : SchedulerJobLogInfo, new()
             {
                 title = $"【异常】调度作业-{title}";
                 msg = $"""
-                       <p class='error'>错误提示：</p>
+                       <p class='log-error'>错误提示：</p>
                        {msg}
-                       <p class='error'>异常信息：</p>
-                       <pre class='error'>{JsonConvert.SerializeObject(exception, _jsonSerializerSettings)}</pre>
+                       <p class='log-error'>异常信息：</p>
+                       <pre class='log-error'>{JsonConvert.SerializeObject(exception, _jsonSerializerSettings)}</pre>
                        """;
                 string emailContent = await _mailService.GetEmailTemplate(title, msg, "error");
                 await _mailService.SendEmail(title, emailContent);
@@ -225,7 +225,7 @@ internal abstract class JobBase<T> : IJob where T : SchedulerJobLogInfo, new()
 
                 if (result == null)
                 {
-                    await ErrorLog(_logInfo.JobName, null, $"<pre class='error'>未能找到对应租户【{tenantNo}】机器人信息！</pre>");
+                    await ErrorLog(_logInfo.JobName, null, $"<pre class='log-error'>未能找到对应租户【{tenantNo}】机器人信息！</pre>");
                 }
 
                 return result;
@@ -318,13 +318,13 @@ internal abstract class JobBase<T> : IJob where T : SchedulerJobLogInfo, new()
                 {
                     // 输出重试警告日志
                     await WarnLog(_logInfo.JobName,
-                        $"<p class='warn'>Retrying {times}/{total} times</p><pre class='warn'>{JsonConvert.SerializeObject(_logInfo, _jsonSerializerSettings)}");
+                        $"<p class='log-warn'>Retrying {times}/{total} times</p><pre class='log-warn'>{JsonConvert.SerializeObject(_logInfo, _jsonSerializerSettings)}");
                 });
 
             // 处理作业执行结果
             if (string.IsNullOrWhiteSpace(_logInfo.Result))
             {
-                _logInfo.Result = "<span class='result'>作业执行成功。</span>";
+                _logInfo.Result = "<span class='log-result'>作业执行成功。</span>";
             }
 
             await InfoLog(_logInfo.JobName,
@@ -333,19 +333,19 @@ internal abstract class JobBase<T> : IJob where T : SchedulerJobLogInfo, new()
         catch (Exception ex)
         {
             _logInfo.ErrorMsg =
-                $"<span class='error'>{HttpUtility.HtmlEncode(ex.Message).GetSubStringWithEllipsis(3000, true)}</span>";
+                $"<span class='log-error'>{HttpUtility.HtmlEncode(ex.Message).GetSubStringWithEllipsis(3000, true)}</span>";
             context.JobDetail.JobDataMap[nameof(SchedulerJobInfo.Exception)] =
-                $"<div class='logList error'><span class='time'>{DateTime.Now:yyyy-MM-dd HH:mm:ss}</span>{_logInfo.ToJsonString()}</div>";
+                $"<div class='log-list log-list__error'><span class='time'>{DateTime.Now:yyyy-MM-dd HH:mm:ss}</span>{_logInfo.ToJsonString()}</div>";
 
             if (ex is UserFriendlyException userFriendlyException)
             {
                 await WarnLog(_logInfo.JobName,
-                    $"<p class='warn'>{userFriendlyException.Message}</p><pre class='warn'>{JsonConvert.SerializeObject(_logInfo, _jsonSerializerSettings)}");
+                    $"<p class='log-warn'>{userFriendlyException.Message}</p><pre class='log-warn'>{JsonConvert.SerializeObject(_logInfo, _jsonSerializerSettings)}");
             }
             else
             {
                 await ErrorLog(_logInfo.JobName, ex,
-                    $"<pre class='error'>{JsonConvert.SerializeObject(_logInfo, _jsonSerializerSettings)}</pre>");
+                    $"<pre class='log-error'>{JsonConvert.SerializeObject(_logInfo, _jsonSerializerSettings)}</pre>");
             }
         }
         finally
@@ -366,11 +366,11 @@ internal abstract class JobBase<T> : IJob where T : SchedulerJobLogInfo, new()
 
             string executeTime = seconds >= 1 ? $"{seconds}秒" : $"{milliseconds}毫秒";
 
-            string className = string.IsNullOrWhiteSpace(_logInfo.ErrorMsg) ? "" : "error";
+            string className = string.IsNullOrWhiteSpace(_logInfo.ErrorMsg) ? "" : "log-list__error";
 
             // 添加日志
             logs.Add(
-                $"<div class='logList {className}'><span class='time'>{_logInfo.BeginTime:yyyy-MM-dd HH:mm:ss} 至 {_logInfo.EndTime:yyyy-MM-dd HH:mm:ss}</span><span class='execTime'>【耗时】{executeTime}</span>{_logInfo.ToJsonString()}</div>");
+                $"<div class='log-list {className}'><span class='time'>{_logInfo.BeginTime:yyyy-MM-dd HH:mm:ss} 至 {_logInfo.EndTime:yyyy-MM-dd HH:mm:ss}</span><span class='execTime'>【耗时】{executeTime}</span>{_logInfo.ToJsonString()}</div>");
 
             // 判断如果超出最大保留日志数则截取日志
             if (logs.Count > _maxLogCount)
@@ -385,7 +385,7 @@ internal abstract class JobBase<T> : IJob where T : SchedulerJobLogInfo, new()
             if (seconds >= warnTime)
             {
                 await WarnLog(_logInfo.JobName,
-                    $"<p class='warn'>调度作业执行耗时过长</p><pre class='warn'>{JsonConvert.SerializeObject(_logInfo, _jsonSerializerSettings)}</pre>");
+                    $"<p class='log-warn'>调度作业执行耗时过长</p><pre class='log-warn'>{JsonConvert.SerializeObject(_logInfo, _jsonSerializerSettings)}</pre>");
             }
         }
     }

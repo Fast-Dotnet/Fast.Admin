@@ -247,93 +247,226 @@ const handleTenantLogin = async (tenant: LoginTenantOutput) => {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
+// 浮层默认 Teleport 到 body，容器和组件库节点使用专属命名空间覆盖。
+.login-tenant-popper.el-popper {
+	overflow: hidden;
+	max-width: min(430px, calc(100vw - 24px));
+	border: 1px solid var(--el-border-color-lighter);
+	border-radius: 14px;
+	box-shadow: 0 18px 50px rgb(15 23 42 / 18%);
+
+	.el-select-dropdown__list {
+		padding: 0;
+	}
+
+	.el-select-dropdown__item {
+		height: auto;
+		min-height: 72px;
+		margin: 0;
+		padding: 12px 14px;
+		line-height: 1.4;
+		border-bottom: 1px solid var(--el-border-color-lighter);
+		border-radius: 0;
+		background: transparent;
+		transition:
+			color 180ms ease,
+			background-color 180ms ease;
+
+		&:last-child {
+			border-bottom: 0;
+		}
+
+		&.is-hovering {
+			background: var(--el-color-primary-light-9);
+		}
+
+		&.is-selected {
+			background: color-mix(in srgb, var(--el-color-primary) 12%, var(--el-bg-color));
+
+			.tenant-option__content strong {
+				color: var(--el-color-primary);
+			}
+		}
+	}
+
+	.el-select-dropdown__footer {
+		padding: 0;
+		border-top: 1px solid var(--el-border-color-lighter);
+
+		.el-button {
+			width: 100%;
+			height: 52px;
+			margin: 0;
+			border-radius: 0;
+		}
+	}
+
+	.tenant-option {
+		display: grid;
+		grid-template-columns: 42px minmax(0, 1fr) auto 32px;
+		align-items: center;
+		gap: 12px;
+		width: 100%;
+		min-width: 0;
+	}
+
+	.tenant-option__logo {
+		width: 42px;
+		height: 42px;
+		object-fit: cover;
+		border: 1px solid var(--el-border-color-lighter);
+		border-radius: 11px;
+		box-shadow: 0 3px 8px rgb(15 23 42 / 10%);
+	}
+
+	.tenant-option__content {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		min-width: 0;
+
+		strong,
+		span {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		strong {
+			font-size: 14px;
+			font-weight: 600;
+			color: var(--el-text-color-primary);
+		}
+
+		span {
+			font-size: 12px;
+			color: var(--el-text-color-secondary);
+		}
+	}
+
+	.tenant-option__remove {
+		width: 28px;
+		height: 28px;
+		padding: 0;
+		color: var(--el-text-color-placeholder);
+		transition:
+			color 180ms ease,
+			background-color 180ms ease,
+			transform 180ms ease;
+
+		&:hover {
+			color: var(--el-color-danger);
+			background: var(--el-color-danger-light-9);
+			transform: rotate(90deg) scale(1.06);
+		}
+
+		&:active {
+			transform: rotate(90deg) scale(0.9);
+		}
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.login-tenant-popper.el-popper {
+		.tenant-option__remove,
+		.el-select-dropdown__item {
+			transition: none;
+		}
+	}
+}
+</style>
+
+<style lang="scss" scoped>
 .login-form {
 	width: 100%;
 	color: var(--login-text, #162033);
+}
 
-	.login-form__header {
-		margin-bottom: 28px;
+.login-form__header {
+	margin-bottom: 28px;
+}
 
-		h2 {
-			margin: 10px 0 8px;
-			font-size: clamp(28px, 3vw, 36px);
-			font-weight: 600;
-			line-height: 1.16;
-			letter-spacing: -1.2px;
-			color: var(--login-heading, #101828);
-		}
+.login-form__header h2 {
+	margin: 10px 0 8px;
+	font-size: clamp(28px, 3vw, 36px);
+	font-weight: 600;
+	line-height: 1.16;
+	letter-spacing: -1.2px;
+	color: var(--login-heading, #101828);
+}
 
-		p {
-			margin: 0;
-			font-size: 14px;
-			line-height: 1.65;
-			color: var(--login-muted, #667085);
-		}
+.login-form__header p {
+	margin: 0;
+	font-size: 14px;
+	line-height: 1.65;
+	overflow-wrap: anywhere;
+	color: var(--login-muted, #667085);
+}
+
+.login-form__eyebrow {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 1.8px;
+	color: var(--el-color-primary);
+}
+
+.eyebrow-dot {
+	flex-shrink: 0;
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: #22c55e;
+	box-shadow: 0 0 0 5px rgb(34 197 94 / 12%);
+	animation: loginStatusPulse 2.4s ease-in-out infinite;
+}
+
+.login-form__step {
+	min-height: 334px;
+}
+
+.login-form__step--tenant {
+	display: flex;
+	flex-direction: column;
+	min-height: 360px;
+}
+
+.login-form__back {
+	margin: -8px 0 14px;
+
+	:deep(.el-button > span) {
+		margin-left: 0;
 	}
+}
 
-	.login-form__eyebrow {
-		display: flex;
-		align-items: center;
-		gap: 8px;
-		font-size: 11px;
-		font-weight: 600;
-		letter-spacing: 1.8px;
-		color: var(--el-color-primary);
-	}
-	.login-form {
-		.eyebrow-dot {
-			width: 7px;
-			height: 7px;
-			border-radius: 50%;
-			background: #22c55e;
-			box-shadow: 0 0 0 5px rgb(34 197 94 / 12%);
-			animation: loginStatusPulse 2.4s ease-in-out infinite;
-		}
-	}
+.login-form__meta {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin: -2px 0 20px;
+}
 
-	.login-form__step {
-		min-height: 334px;
-	}
+.login-form__footer {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 9px;
+	margin-top: 18px;
+	font-size: 11px;
+	letter-spacing: 0.6px;
+	color: var(--login-faint, #98a2b3);
+}
 
-	.login-form__step--tenant {
-		display: flex;
-		min-height: 360px;
-		flex-direction: column;
-	}
+.login-form__footer span {
+	width: 18px;
+	height: 1px;
+	background: currentcolor;
+}
 
-	.login-form__back {
-		margin: -8px 0 14px;
-
-		:deep(.el-button > span) {
-			margin-left: 0;
-		}
-	}
-
-	.login-form__meta {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		margin: -2px 0 20px;
-	}
-
-	.login-form__footer {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 9px;
-		margin-top: 18px;
-		font-size: 11px;
-		letter-spacing: 0.6px;
-		color: var(--login-faint, #98a2b3);
-
-		span {
-			width: 18px;
-			height: 1px;
-			background: currentcolor;
-		}
-	}
-
+.login-form {
 	:deep(.el-form-item) {
 		margin-bottom: 20px;
 	}
@@ -389,38 +522,38 @@ const handleTenantLogin = async (tenant: LoginTenantOutput) => {
 		font-size: 13px;
 		color: var(--login-muted, #667085);
 	}
+}
 
-	.login-submit {
-		width: 100%;
-		height: 50px;
-		border: 0;
-		border-radius: 13px;
-		font-size: 15px;
-		font-weight: 600;
-		letter-spacing: 0.8px;
-		background: linear-gradient(110deg, var(--el-color-primary), color-mix(in srgb, var(--el-color-primary) 68%, #7259ff));
-		box-shadow: 0 12px 24px color-mix(in srgb, var(--el-color-primary) 25%, transparent);
-		transition:
-			transform 180ms ease,
-			box-shadow 180ms ease,
-			filter 180ms ease;
+.login-submit {
+	width: 100%;
+	height: 50px;
+	font-size: 15px;
+	font-weight: 600;
+	letter-spacing: 0.8px;
+	border: 0;
+	border-radius: 13px;
+	background: linear-gradient(110deg, var(--el-color-primary), color-mix(in srgb, var(--el-color-primary) 68%, #7259ff));
+	box-shadow: 0 12px 24px color-mix(in srgb, var(--el-color-primary) 25%, transparent);
+	transition:
+		transform 180ms ease,
+		box-shadow 180ms ease,
+		filter 180ms ease;
 
-		:deep(> span) {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			gap: 10px;
-		}
+	:deep(> span) {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+	}
 
-		&:hover {
-			filter: saturate(1.08) brightness(1.04);
-			box-shadow: 0 16px 30px color-mix(in srgb, var(--el-color-primary) 32%, transparent);
-			transform: translateY(-2px);
-		}
+	&:hover {
+		filter: saturate(1.08) brightness(1.04);
+		box-shadow: 0 16px 30px color-mix(in srgb, var(--el-color-primary) 32%, transparent);
+		transform: translateY(-2px);
+	}
 
-		&:active {
-			transform: translateY(0);
-		}
+	&:active {
+		transform: translateY(0);
 	}
 }
 
@@ -433,60 +566,62 @@ const handleTenantLogin = async (tenant: LoginTenantOutput) => {
 
 .tenant-card {
 	display: grid;
-	width: 100%;
 	grid-template-columns: 42px minmax(0, 1fr) auto 20px;
 	align-items: center;
 	gap: 12px;
+	width: 100%;
 	margin-top: 5px;
 	margin-bottom: 5px;
 	padding: 12px;
-	color: var(--login-text, #162033);
 	text-align: left;
-	cursor: pointer;
+	color: var(--login-text, #162033);
 	border: 1px solid var(--login-input-border, rgb(16 24 40 / 10%));
 	border-radius: 14px;
 	background: var(--login-input-bg, rgb(255 255 255 / 78%));
+	cursor: pointer;
 	transition:
 		border-color 180ms ease,
 		background-color 180ms ease,
 		transform 180ms ease,
 		box-shadow 180ms ease;
+}
 
-	> img {
-		width: 42px;
-		height: 42px;
-		object-fit: cover;
-		border-radius: 12px;
-		box-shadow: 0 5px 12px rgb(16 24 40 / 10%);
-	}
+.tenant-card > img {
+	width: 42px;
+	height: 42px;
+	object-fit: cover;
+	border-radius: 12px;
+	box-shadow: 0 5px 12px rgb(16 24 40 / 10%);
+}
 
-	.tenant-card__body {
-		display: flex;
-		flex-direction: column;
-		gap: 4px;
+.tenant-card__body {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
 
-		strong,
-		small {
-			overflow: hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
-		}
+.tenant-card__body strong,
+.tenant-card__body small {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
 
-		strong {
-			font-size: 14px;
-			font-weight: 600;
-		}
+.tenant-card__body strong {
+	font-size: 14px;
+	font-weight: 600;
+}
 
-		small {
-			color: var(--login-muted, #667085);
-		}
-	}
+.tenant-card__body small {
+	color: var(--login-muted, #667085);
+}
 
-	.tenant-card__arrow {
-		color: var(--login-faint, #98a2b3);
-		transition: transform 180ms ease;
-	}
+.tenant-card__arrow {
+	color: var(--login-faint, #98a2b3);
+	transition: transform 180ms ease;
+}
 
+.tenant-card {
 	&:hover,
 	&:focus-visible {
 		outline: none;
@@ -494,130 +629,17 @@ const handleTenantLogin = async (tenant: LoginTenantOutput) => {
 		background: var(--login-input-focus-bg, #fff);
 		box-shadow: 0 10px 24px color-mix(in srgb, var(--el-color-primary) 10%, transparent);
 		transform: translateY(-2px);
+	}
+}
 
+.tenant-card {
+	&:hover,
+	&:focus-visible {
 		.tenant-card__arrow {
 			color: var(--el-color-primary);
 			transform: translateX(3px);
 		}
 	}
-}
-
-.login-tenant-popper {
-	max-width: min(430px, calc(100vw - 24px));
-	border: 1px solid var(--el-border-color-lighter);
-	border-radius: 14px;
-	box-shadow: 0 18px 50px rgb(15 23 42 / 18%);
-	overflow: hidden;
-}
-
-.login-tenant-popper .el-select-dropdown__list {
-	padding: 0;
-}
-
-.login-tenant-popper .el-select-dropdown__item {
-	height: auto;
-	min-height: 72px;
-	margin: 0;
-	padding: 12px 14px;
-	line-height: 1.4;
-	border-bottom: 1px solid var(--el-border-color-lighter);
-	border-radius: 0;
-	background: transparent;
-	transition:
-		color 180ms ease,
-		background-color 180ms ease;
-}
-
-.login-tenant-popper .el-select-dropdown__item:last-child {
-	border-bottom: 0;
-}
-
-.login-tenant-popper .el-select-dropdown__item.is-hovering {
-	background: var(--el-color-primary-light-9);
-}
-
-.login-tenant-popper .el-select-dropdown__item.is-selected {
-	background: color-mix(in srgb, var(--el-color-primary) 12%, var(--el-bg-color));
-}
-
-.login-tenant-popper .el-select-dropdown__item.is-selected .tenant-option__content strong {
-	color: var(--el-color-primary);
-}
-
-.login-tenant-popper .el-select-dropdown__footer {
-	padding: 0;
-	border-top: 1px solid var(--el-border-color-lighter);
-}
-
-.login-tenant-popper .el-select-dropdown__footer .el-button {
-	width: 100%;
-	height: 52px;
-	margin: 0;
-	border-radius: 0;
-}
-
-.login-tenant-popper .tenant-option {
-	display: grid;
-	width: 100%;
-	min-width: 0;
-	grid-template-columns: 42px minmax(0, 1fr) auto 32px;
-	align-items: center;
-	gap: 12px;
-}
-
-.login-tenant-popper .tenant-option__logo {
-	width: 42px;
-	height: 42px;
-	object-fit: cover;
-	border: 1px solid var(--el-border-color-lighter);
-	border-radius: 11px;
-	box-shadow: 0 3px 8px rgb(15 23 42 / 10%);
-}
-
-.login-tenant-popper .tenant-option__content {
-	display: flex;
-	min-width: 0;
-	flex-direction: column;
-	gap: 4px;
-}
-
-.login-tenant-popper .tenant-option__content strong,
-.login-tenant-popper .tenant-option__content span {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-
-.login-tenant-popper .tenant-option__content strong {
-	color: var(--el-text-color-primary);
-	font-size: 14px;
-	font-weight: 600;
-}
-
-.login-tenant-popper .tenant-option__content span {
-	font-size: 12px;
-	color: var(--el-text-color-secondary);
-}
-
-.login-tenant-popper .tenant-option__remove {
-	width: 28px;
-	height: 28px;
-	padding: 0;
-	color: var(--el-text-color-placeholder);
-	transition:
-		color 180ms ease,
-		background-color 180ms ease,
-		transform 180ms ease;
-}
-
-.login-tenant-popper .tenant-option__remove:hover {
-	color: var(--el-color-danger);
-	background: var(--el-color-danger-light-9);
-	transform: rotate(90deg) scale(1.06);
-}
-
-.login-tenant-popper .tenant-option__remove:active {
-	transform: rotate(90deg) scale(0.9);
 }
 
 .login-step-enter-active,
@@ -652,43 +674,40 @@ const handleTenantLogin = async (tenant: LoginTenantOutput) => {
 }
 
 @media (max-width: 520px) {
-	.login-form {
-		.login-form__header {
-			margin-bottom: 18px;
+	.login-form__header {
+		margin-bottom: 18px;
+	}
 
-			h2 {
-				margin-block: 8px 6px;
-				font-size: 27px;
-			}
-		}
+	.login-form__header h2 {
+		margin-block: 8px 6px;
+		font-size: 27px;
+	}
 
-		.login-form__step {
-			min-height: 300px;
-		}
+	.login-form__step {
+		min-height: 300px;
+	}
 
-		.login-form__footer {
-			margin-top: 14px;
-		}
+	.login-form__footer {
+		margin-top: 14px;
+	}
 
-		.login-form__meta {
-			margin-bottom: 16px;
-		}
+	.login-form__meta {
+		margin-bottom: 16px;
+	}
 
-		:deep(.el-form-item) {
-			margin-bottom: 16px;
-		}
+	.login-form :deep(.el-form-item) {
+		margin-bottom: 16px;
 	}
 }
 
 @media (prefers-reduced-motion: reduce) {
 	.login-form *,
 	.login-form *::before,
-	.login-form *::after,
-	.login-tenant-popper .tenant-option__remove {
+	.login-form *::after {
 		scroll-behavior: auto !important;
+		transition-duration: 0.01ms !important;
 		animation-duration: 0.01ms !important;
 		animation-iteration-count: 1 !important;
-		transition-duration: 0.01ms !important;
 	}
 }
 </style>

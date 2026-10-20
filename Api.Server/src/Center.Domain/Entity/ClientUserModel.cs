@@ -1,4 +1,4 @@
-﻿// Copyright © 2018-Present 小方
+// Copyright © 2018-Present 小方
 // SPDX-License-Identifier: Apache-2.0
 // 
 // 本文件依据 Apache License 2.0 授权，完整条款见仓库根目录 LICENSE。
@@ -10,10 +10,15 @@ namespace Fast.Center.Domain;
 /// <summary>
 /// 客户端用户表Model类
 /// </summary>
+/// <remarks>
+/// SQL Server 下，若 UX_ClientUser_OpenId 和 UX_ClientUser_Mobile 为普通唯一索引，
+/// 需手动执行索引调整 SQL，将其重建为排除 NULL 和空字符串的过滤唯一索引，
+/// 避免同一应用下的仅手机号用户或仅微信用户因另一身份字段为空而发生唯一键冲突。
+/// </remarks>
 [SugarTable("ClientUser", "客户端用户表")]
 [SugarDbType(DatabaseTypeEnum.Center)]
-[SugarIndex("UX_{table}_Identity", nameof(AppId), OrderByType.Asc, nameof(OpenId), OrderByType.Asc, nameof(Mobile),
-    OrderByType.Asc, true)]
+[SugarIndex($"UX_{{table}}_{nameof(OpenId)}", nameof(AppId), OrderByType.Asc, nameof(OpenId), OrderByType.Asc, true)]
+[SugarIndex($"UX_{{table}}_{nameof(Mobile)}", nameof(AppId), OrderByType.Asc, nameof(Mobile), OrderByType.Asc, true)]
 public class ClientUserModel : IUpdateVersion
 {
     /// <summary>

@@ -43,6 +43,11 @@
 						v-if="configStore.layout.menuSearch"
 						class="menu-search fa__hover__twinkle"
 						title="搜索菜单"
+						role="button"
+						tabindex="0"
+						aria-label="搜索菜单"
+						@keydown.enter.prevent="menuSearchRef.open()"
+						@keydown.space.prevent="menuSearchRef.open()"
 						@click="menuSearchRef.open()"
 					>
 						<Search />
@@ -61,18 +66,46 @@
 						</div>
 						<template #dropdown>
 							<el-dropdown-menu>
-								<el-dropdown-item :icon="User" @click="routerUtil.routePushSafe(router, { path: '/settings/account' })">
-									个人信息
-								</el-dropdown-item>
 								<el-dropdown-item :icon="Key" @click="changePasswordRef.open()">修改密码</el-dropdown-item>
-								<el-dropdown-item :icon="Refresh" @click="handleRefreshSystem">刷新系统</el-dropdown-item>
-								<el-dropdown-item divided :icon="Lock" @click="handleScreenLock">锁定屏幕</el-dropdown-item>
-								<el-dropdown-item :icon="SwitchButton" @click="handleLogout">退出系统</el-dropdown-item>
+								<el-dropdown-item :icon="IdCard" @click="accountEditRef.open()">账号信息</el-dropdown-item>
+								<el-dropdown-item
+									v-if="!userInfoStore.isSuperAdmin && !userInfoStore.isAdmin"
+									:icon="User"
+									@click="employeeEditRef.open()"
+								>
+									职员信息
+								</el-dropdown-item>
+								<el-dropdown-item divided :icon="Iphone" @click="changeMobileRef.open()">修改手机</el-dropdown-item>
+								<el-dropdown-item :icon="Message" @click="changeEmailRef.open()">修改邮箱</el-dropdown-item>
+								<el-dropdown-item divided :icon="Refresh" @click="handleRefreshSystem">刷新系统</el-dropdown-item>
+								<el-dropdown-item :icon="Lock" @click="handleScreenLock">锁定屏幕</el-dropdown-item>
 							</el-dropdown-menu>
 						</template>
 					</el-dropdown>
-					<el-icon class="setting fa__hover__twinkle" title="高级配置" @click="layoutConfigRef.open()"><Setting /></el-icon>
-					<el-icon class="logout fa__hover__twinkle" title="退出登录" @click="handleLogout"><SwitchButton /></el-icon>
+					<el-icon
+						class="setting fa__hover__twinkle"
+						title="高级配置"
+						role="button"
+						tabindex="0"
+						aria-label="高级配置"
+						@keydown.enter.prevent="layoutConfigRef.open()"
+						@keydown.space.prevent="layoutConfigRef.open()"
+						@click="layoutConfigRef.open()"
+					>
+						<Setting />
+					</el-icon>
+					<el-icon
+						class="logout fa__hover__twinkle"
+						title="退出系统"
+						role="button"
+						tabindex="0"
+						aria-label="退出系统"
+						@keydown.enter.prevent="handleLogout"
+						@keydown.space.prevent="handleLogout"
+						@click="handleLogout"
+					>
+						<SwitchButton />
+					</el-icon>
 				</div>
 			</div>
 			<LayoutNavTab />
@@ -101,18 +134,18 @@
 
 <script setup lang="ts">
 import { inject, useTemplateRef } from "vue";
-import { RouterView, useRouter } from "vue-router";
-import { Key, Lock, Refresh, Search, Setting, SwitchButton, User, UserFilled } from "@element-plus/icons-vue";
+import { RouterView } from "vue-router";
+import { Iphone, Key, Lock, Message, Refresh, Search, Setting, SwitchButton, User, UserFilled } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
+import { IdCard } from "@fast-element-plus/icons-vue";
 import { Local, addCssUnit } from "@fast-china/utils";
 import { LoginStatusEnum } from "@/api/enums/LoginStatusEnum";
 import { loginApi } from "@/api/services/Auth/login";
-import { changePasswordKey, layoutConfigKey, menuSearchKey } from "@/layouts";
+import { accountEditKey, changeEmailKey, changeMobileKey, changePasswordKey, employeeEditKey, layoutConfigKey, menuSearchKey } from "@/layouts";
 import LayoutLogo from "@/layouts/components/Logo/index.vue";
 import LayoutNavTab from "@/layouts/components/NavTab/index.vue";
 import LayoutScreenFull from "@/layouts/components/ScreenFull/index.vue";
 import LayoutScreenLock from "@/layouts/components/ScreenLock/index.vue";
-import { routerUtil } from "@/router";
 import { useConfig, useNavTabs, useUserInfo } from "@/stores";
 import LayoutMenu from "./components/menu.vue";
 import type { ElSelectorOutput, FaSelectInstance } from "fast-element-plus";
@@ -121,7 +154,6 @@ defineOptions({
 	name: "LayoutHorizontal",
 });
 
-const router = useRouter();
 const configStore = useConfig();
 const navTabsStore = useNavTabs();
 const userInfoStore = useUserInfo();
@@ -129,12 +161,14 @@ const userInfoStore = useUserInfo();
 const layoutConfigRef = inject(layoutConfigKey);
 const menuSearchRef = inject(menuSearchKey);
 const changePasswordRef = inject(changePasswordKey);
+const accountEditRef = inject(accountEditKey);
+const employeeEditRef = inject(employeeEditKey);
+const changeMobileRef = inject(changeMobileKey);
+const changeEmailRef = inject(changeEmailKey);
 const faTenantSelectRef = useTemplateRef<FaSelectInstance>("faTenantSelectRef");
 
 const handleRefreshSystem = () => {
-	ElMessageBox.confirm("此操作会强制刷新当前页面，是否继续操作？", {
-		type: "warning",
-	}).then(() => {
+	ElMessageBox.confirm("此操作会强制刷新当前页面，是否继续操作？", { type: "warning" }).then(() => {
 		Local.removeByPrefix("HTTP_CACHE_");
 		window.location.reload();
 	});
@@ -183,6 +217,6 @@ const handleLogout = () => {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use "./index.scss";
 </style>

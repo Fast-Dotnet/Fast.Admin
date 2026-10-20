@@ -51,45 +51,64 @@ public class RefreshWeChatAccessTokenLocalJob : ISchedulerJob
         int successCount = 0;
         int errorCount = 0;
 
-        // 获取所有微信小程序信息
-        var applicationOpenIdList = await db.Queryable<ApplicationOpenIdModel>()
-            .Where(wh => (wh.AppType & (AppEnvironmentEnum.MiniProgram | AppEnvironmentEnum.WeChatServiceAccount)) != 0)
-            .Where(wh => !string.IsNullOrWhiteSpace(wh.OpenSecret))
-            .Select(sl => new {sl.RecordId, sl.AppType, sl.OpenId, sl.OpenSecret})
+        // 获取所有凭证信息
+        var applicationTokenList = await db.Queryable<ApplicationTokenModel>()
+            .LeftJoin<ApplicationClientModel>((t1, t2) => t1.AppKey == t2.AppKey)
+            .Where((t1, t2) => (t2.AppType & (AppEnvironmentEnum.MiniProgram | AppEnvironmentEnum.WeChatServiceAccount)) != 0)
+            .Where((t1, t2) => !string.IsNullOrWhiteSpace(t2.AppSecret))
+            .Select((t1, t2) => new {t1.RecordId, t1.TokenType, t1.AppKey, t2.AppSecret})
             .ToListAsync();
 
-        foreach (var item in applicationOpenIdList)
+        foreach (var item in applicationTokenList)
         {
             try
             {
                 WechatApiClient apiClient = WechatApiClientBuilder
-                    .Create(new WechatApiClientOptions {AppId = item.OpenId, AppSecret = item.OpenSecret})
+                    .Create(new WechatApiClientOptions {AppId = item.AppKey, AppSecret = item.AppSecret})
                     .Build();
-                CgibinStableTokenResponse response =
-                    await apiClient.ExecuteCgibinStableTokenAsync(new CgibinStableTokenRequest {ForceRefresh = true});
-                if (!response.IsSuccessful())
-                {
-                    errorCount++;
-                    await logInfo.ErrorLog(logInfo.JobName, null,
-                        $"调用刷新AccessToken接口失败。ErrorCode：{response.ErrorCode}。ErrorMessage：{response.ErrorMessage}");
-                    continue;
-                }
 
-                await db.Updateable<ApplicationOpenIdModel>()
-                    .SetColumns(_ => new ApplicationOpenIdModel
+                if (item.TokenType == ApplicationTokenTypeEnum.AccessToken)
+                {
+                    CgibinStableTokenResponse response = await apiClient.ExecuteCgibinStableTokenAsync(
+                        new CgibinStableTokenRequest
+                        {
+                            // 强制刷新
+                            ForceRefresh = true
+                        });
+                    if (!response.IsSuccessful())
                     {
-                        WeChatAccessToken = response.AccessToken,
-                        WeChatAccessTokenExpiresIn = response.ExpiresIn,
-                        WeChatAccessTokenRefreshTime = dateTime
-                    })
-                    .Where(wh => wh.RecordId == item.RecordId)
-                    .ExecuteCommandAsync();
-                // 删除缓存
-                await ApplicationContext.DeleteApplication(item.OpenId);
+                        errorCount++;
+                        await logInfo.ErrorLog(logInfo.JobName, null,
+                            $"调用刷新AccessToken接口失败。ErrorCode：{response.ErrorCode}。ErrorMessage：{response.ErrorMessage}");
+                        continue;
+                    }
 
-                // 公众号才需要 ticket
-                if (item.AppType == AppEnvironmentEnum.WeChatServiceAccount)
+                    await db.Updateable<ApplicationTokenModel>()
+                        .SetColumns(_ => new ApplicationTokenModel
+                        {
+                            TokenValue = response.AccessToken,
+                            RefreshTime = dateTime,
+                            ExpireTime = dateTime.AddSeconds(response.ExpiresIn)
+                        })
+                        .Where(wh => wh.RecordId == item.RecordId)
+                        .ExecuteCommandAsync();
+                }
+                else if (item.TokenType == ApplicationTokenTypeEnum.JsApiTicket)
                 {
+                    CgibinStableTokenResponse response = await apiClient.ExecuteCgibinStableTokenAsync(
+                        new CgibinStableTokenRequest
+                        {
+                            // 不强制刷新
+                            ForceRefresh = false
+                        });
+                    if (!response.IsSuccessful())
+                    {
+                        errorCount++;
+                        await logInfo.ErrorLog(logInfo.JobName, null,
+                            $"调用刷新AccessToken接口失败。ErrorCode：{response.ErrorCode}。ErrorMessage：{response.ErrorMessage}");
+                        continue;
+                    }
+
                     CgibinTicketGetTicketResponse ticketResponse =
                         await apiClient.ExecuteCgibinTicketGetTicketAsync(
                             new CgibinTicketGetTicketRequest {AccessToken = response.AccessToken});
@@ -101,28 +120,29 @@ public class RefreshWeChatAccessTokenLocalJob : ISchedulerJob
                         continue;
                     }
 
-                    await db.Updateable<ApplicationOpenIdModel>()
-                        .SetColumns(_ => new ApplicationOpenIdModel
+                    await db.Updateable<ApplicationTokenModel>()
+                        .SetColumns(_ => new ApplicationTokenModel
                         {
-                            WeChatJsApiTicket = ticketResponse.Ticket,
-                            WeChatJsApiTicketExpiresIn = ticketResponse.ExpiresIn,
-                            WeChatJsApiTicketRefreshTime = dateTime
+                            TokenValue = ticketResponse.Ticket,
+                            RefreshTime = dateTime,
+                            ExpireTime = dateTime.AddSeconds(ticketResponse.ExpiresIn)
                         })
                         .Where(wh => wh.RecordId == item.RecordId)
                         .ExecuteCommandAsync();
-                    // 删除缓存
-                    await ApplicationContext.DeleteApplication(item.OpenId);
                 }
+
+                // 删除缓存
+                await ApplicationTokenContext.DeleteApplicationToken(item.AppKey, item.TokenType);
 
                 successCount++;
             }
             catch (Exception ex)
             {
                 errorCount++;
-                await logInfo.ErrorLog(logInfo.JobName, ex, $"执行异常 AppId={item.OpenId}");
+                await logInfo.ErrorLog(logInfo.JobName, ex, $"执行异常 AppKey={item.AppKey}");
             }
         }
 
-        return $"刷新完成，总数：{applicationOpenIdList.Count}，成功：{successCount}个，失败：{errorCount}个";
+        return $"刷新完成，总数：{applicationTokenList.Count}，成功：{successCount}个，失败：{errorCount}个";
     }
 }

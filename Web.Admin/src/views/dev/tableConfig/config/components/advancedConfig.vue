@@ -1,9 +1,9 @@
 <template>
 	<FaDialog ref="faDialogRef" width="80vw" full-height title="高级配置" confirm-button-text="保存" @confirm-click="handleConfirm">
-		<el-tabs type="border-card" v-model="state.activeTab">
+		<el-tabs class="advanced-config-tabs" type="border-card" v-model="state.activeTab">
 			<el-tab-pane :name="1" label="基础配置">
 				<el-scrollbar>
-					<el-form class="fa-form" label-width="auto" label-suffix="" :model="state.formData" label-position="top">
+					<el-form class="fa-form advanced-config-form" label-width="auto" label-suffix="" :model="state.formData" label-position="top">
 						<el-row :gutter="24">
 							<el-col :span="6">
 								<el-form-item prop="prop" label="绑定字段">
@@ -224,7 +224,7 @@
 							</el-col>
 							<el-col :span="12">
 								<el-form-item prop="dataDeleteField" label="数据删除">
-									<el-radio-group v-model="state.formData.dataDeleteField" class="pr30" style="width: auto">
+									<el-radio-group v-model="state.formData.dataDeleteField" style="width: auto; padding-right: 30px">
 										<el-radio value="">无</el-radio>
 										<el-radio value="isDelete">删除</el-radio>
 									</el-radio-group>
@@ -250,11 +250,11 @@
 						<el-form-item prop="searchEl" label="搜索项">
 							<template #label="{ label }">
 								{{ label }}
-								<el-text size="small" type="info">
+								<el-text class="search-component-tip" size="small" type="info">
 									支持任何全局组件，如没有选项，请自行在代码中添加(src\views\dev\tableConfig\config\components\advancedConfig.vue)
 								</el-text>
 							</template>
-							<el-radio-group v-model="state.formData.searchEl" class="pr30" style="width: auto">
+							<el-radio-group v-model="state.formData.searchEl" style="width: auto; padding-right: 30px">
 								<el-radio value="">无</el-radio>
 								<el-radio value="el-input">输入框</el-radio>
 								<el-radio value="el-input-number">数字输入框</el-radio>
@@ -393,3 +393,51 @@ defineExpose({
 	edit,
 });
 </script>
+
+<style lang="scss" scoped>
+.advanced-config-tabs {
+	height: inherit;
+
+	> :deep(.el-tabs__content) {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		height: 100%;
+
+		> .el-tab-pane {
+			display: flex;
+			flex: 1;
+			flex-direction: column;
+			height: 100%;
+
+			> :first-child {
+				height: 100%;
+			}
+		}
+	}
+}
+
+.advanced-config-form {
+	// 为 24px gutter 的右侧负外边距预留空间，保留原有左侧对齐。
+	padding-right: 12px;
+}
+
+.search-component-tip {
+	overflow-wrap: anywhere;
+}
+
+@media (max-width: 520px) {
+	.advanced-config-form {
+		:deep(.el-col-6) {
+			flex-basis: 50%;
+			max-width: 50%;
+		}
+
+		:deep(.el-col-12),
+		:deep(.el-col-18) {
+			flex-basis: 100%;
+			max-width: 100%;
+		}
+	}
+}
+</style>

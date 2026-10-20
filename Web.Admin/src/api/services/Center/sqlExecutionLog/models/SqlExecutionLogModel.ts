@@ -27,6 +27,14 @@ export interface SqlExecutionLogModel {
 	 */
 	pureSql?: string;
 	/**
+	 * 部门Id
+	 */
+	departmentId?: string;
+	/**
+	 * 部门名称
+	 */
+	departmentName?: string;
+	/**
 	 * 执行时间
 	 */
 	createdTime?: string;
@@ -62,14 +70,6 @@ export interface SqlExecutionLogModel {
 	 * 
 	 */
 	ip?: string;
-	/**
-	 * 
-	 */
-	departmentId?: string;
-	/**
-	 * 
-	 */
-	departmentName?: string;
 	/**
 	 * 
 	 */

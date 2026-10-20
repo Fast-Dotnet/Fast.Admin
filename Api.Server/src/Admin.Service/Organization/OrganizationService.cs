@@ -127,7 +127,6 @@ public class OrganizationService : IDynamicApplication
                 Sort = sl.Sort,
                 DataPublic = sl.DataPublic,
                 Remark = sl.Remark,
-                DepartmentName = sl.DepartmentName,
                 CreatedUserName = sl.CreatedUserName,
                 CreatedTime = sl.CreatedTime,
                 UpdatedUserName = sl.UpdatedUserName,

@@ -199,11 +199,11 @@ public partial class LoginService
     public async Task<LoginOutput> WeChatLogin(WeChatLoginInput input)
     {
         // 查询应用信息
-        ApplicationOpenIdModel applicationModel = await EnsureApplication();
+        ApplicationClientModel applicationModel = await EnsureApplication();
 
         // 解析微信Code，获取OpenId
         WechatApiClient apiClient = WechatApiClientBuilder
-            .Create(new WechatApiClientOptions {AppId = applicationModel.OpenId, AppSecret = applicationModel.OpenSecret})
+            .Create(new WechatApiClientOptions {AppId = applicationModel.AppKey, AppSecret = applicationModel.AppSecret})
             .Build();
         SnsJsCode2SessionResponse response =
             await apiClient.ExecuteSnsJsCode2SessionAsync(new SnsJsCode2SessionRequest {JsCode = input.WeChatCode});
@@ -259,11 +259,11 @@ public partial class LoginService
     public async Task<LoginOutput> WeChatAuthLogin(WeChatAuthLoginInput input)
     {
         // 查询应用信息
-        ApplicationOpenIdModel applicationModel = await EnsureApplication();
+        ApplicationClientModel applicationModel = await EnsureApplication();
 
         // 解析微信Code，获取OpenId
         WechatApiClient apiClient = WechatApiClientBuilder
-            .Create(new WechatApiClientOptions {AppId = applicationModel.OpenId, AppSecret = applicationModel.OpenSecret})
+            .Create(new WechatApiClientOptions {AppId = applicationModel.AppKey, AppSecret = applicationModel.AppSecret})
             .Build();
         SnsJsCode2SessionResponse response =
             await apiClient.ExecuteSnsJsCode2SessionAsync(new SnsJsCode2SessionRequest {JsCode = input.WeChatCode});
@@ -283,9 +283,13 @@ public partial class LoginService
             return new LoginOutput {Status = LoginStatusEnum.NotAccount, Message = "未找到微信用户信息，请先授权登录！"};
         }
 
+        // 获取凭据信息
+        ApplicationTokenModel applicationTokenModel =
+            await ApplicationTokenContext.GetApplicationToken(applicationModel.AppKey, ApplicationTokenTypeEnum.AccessToken);
+
         // 换取用户手机号
         WxaBusinessGetUserPhoneNumberResponse phoneNumberResponse = await apiClient.ExecuteWxaBusinessGetUserPhoneNumberAsync(
-            new WxaBusinessGetUserPhoneNumberRequest {AccessToken = applicationModel.WeChatAccessToken, Code = input.Code});
+            new WxaBusinessGetUserPhoneNumberRequest {AccessToken = applicationTokenModel.TokenValue, Code = input.Code});
         if (!phoneNumberResponse.IsSuccessful())
         {
             throw new UserFriendlyException(
@@ -310,10 +314,14 @@ public partial class LoginService
     public async Task<WeChatClientLoginOutput> WeChatClientLogin(WeChatClientLoginInput input)
     {
         // 查询应用信息
-        ApplicationOpenIdModel applicationModel = await EnsureApplication();
+        ApplicationClientModel applicationModel = await EnsureApplication();
+
+        // 获取凭据信息
+        ApplicationTokenModel applicationTokenModel =
+            await ApplicationTokenContext.GetApplicationToken(applicationModel.AppKey, ApplicationTokenTypeEnum.AccessToken);
 
         WechatApiClient apiClient = WechatApiClientBuilder
-            .Create(new WechatApiClientOptions {AppId = applicationModel.OpenId, AppSecret = applicationModel.OpenSecret})
+            .Create(new WechatApiClientOptions {AppId = applicationModel.AppKey, AppSecret = applicationModel.AppSecret})
             .Build();
 
         ClientUserModel clientUserModel = null;
@@ -373,7 +381,7 @@ public partial class LoginService
                     await apiClient.ExecuteWxaBusinessGetUserPhoneNumberAsync(
                         new WxaBusinessGetUserPhoneNumberRequest
                         {
-                            AccessToken = applicationModel.WeChatAccessToken, Code = input.Code
+                            AccessToken = applicationTokenModel.TokenValue, Code = input.Code
                         });
 
                 if (!phoneNumberResponse.IsSuccessful())

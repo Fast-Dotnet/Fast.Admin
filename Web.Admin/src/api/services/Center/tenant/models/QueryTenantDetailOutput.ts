@@ -71,9 +71,9 @@ export interface QueryTenantDetailOutput {
 	 */
 	logoUrl?: string;
 	/**
-	 * 允许删除数据
+	 * 阿里云签名名称
 	 */
-	allowDeleteData?: boolean;
+	aliyunSignName?: string;
 	/**
 	 * 初次登录设备
 	 */
@@ -142,10 +142,6 @@ export interface QueryTenantDetailOutput {
 	 * 锁定结束时间
 	 */
 	lockEndTime?: string;
-	/**
-	 * 
-	 */
-	departmentName?: string;
 	/**
 	 * 
 	 */

@@ -42,7 +42,7 @@ const emit = defineEmits<{
 }>();
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .fa-navbar-capsule {
 	position: relative;
 	top: -2px;

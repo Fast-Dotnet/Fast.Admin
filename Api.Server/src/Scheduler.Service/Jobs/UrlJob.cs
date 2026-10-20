@@ -126,7 +126,7 @@ internal sealed class UrlJob : JobBase<SchedulerJobUrlLogInfo>
         }
 
         _logInfo.Result =
-            $"<span class='result'>{HttpUtility.HtmlEncode(responseData).GetSubStringWithEllipsis(1000, true)}</span>";
+            $"<span class='log-result'>{HttpUtility.HtmlEncode(responseData).GetSubStringWithEllipsis(1000, true)}</span>";
 
         var responseHeader = new Dictionary<string, string>();
         foreach (KeyValuePair<string, IEnumerable<string>> header in responseHeaders)

@@ -41,7 +41,7 @@ public class TenantContext
 
         HttpContext httpContext = FastContext.HttpContext;
         // 优先从 HttpContext.Items 中获取
-        if (httpContext?.Items.TryGetValue($"{nameof(Fast)}.{nameof(TenantModel.TenantNo)}.{tenantNo}", out object obj) == true
+        if (httpContext?.Items.TryGetValue($"{nameof(Fast)}.{nameof(TenantModel)}.{tenantNo}", out object obj) == true
             && obj is TenantModel tenantModel)
         {
             return tenantModel;
@@ -68,7 +68,7 @@ public class TenantContext
         if (httpContext != null)
         {
             // 放入 HttpContext.Items 中
-            httpContext.Items[$"{nameof(Fast)}.{nameof(TenantModel.TenantNo)}.{tenantNo}"] = tenantModel;
+            httpContext.Items[$"{nameof(Fast)}.{nameof(TenantModel)}.{tenantNo}"] = tenantModel;
         }
 
         return tenantModel;
@@ -87,7 +87,7 @@ public class TenantContext
 
         HttpContext httpContext = FastContext.HttpContext;
         // 优先从 HttpContext.Items 中获取
-        if (httpContext?.Items.TryGetValue($"{nameof(Fast)}.{nameof(TenantModel.TenantNo)}.{tenantNo}", out object obj) == true
+        if (httpContext?.Items.TryGetValue($"{nameof(Fast)}.{nameof(TenantModel)}.{tenantNo}", out object obj) == true
             && obj is TenantModel tenantModel)
         {
             return tenantModel;
@@ -114,7 +114,7 @@ public class TenantContext
         if (httpContext != null)
         {
             // 放入 HttpContext.Items 中
-            httpContext.Items[$"{nameof(Fast)}.{nameof(TenantModel.TenantNo)}.{tenantNo}"] = tenantModel;
+            httpContext.Items[$"{nameof(Fast)}.{nameof(TenantModel)}.{tenantNo}"] = tenantModel;
         }
 
         return tenantModel;
@@ -134,10 +134,7 @@ public class TenantContext
         if (httpContext != null)
         {
             // 删除 HttpContext.Items 中的
-            if (httpContext.Items.ContainsKey($"{nameof(Fast)}.{nameof(TenantModel.TenantNo)}.{tenantNo}"))
-            {
-                httpContext.Items.Remove($"{nameof(Fast)}.{nameof(TenantModel.TenantNo)}.{tenantNo}");
-            }
+            httpContext.Items.Remove($"{nameof(Fast)}.{nameof(TenantModel)}.{tenantNo}");
         }
 
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.Tenant, tenantNo);
@@ -155,7 +152,7 @@ public class TenantContext
         {
             // 清空 HttpContext.Items 中的
             var keys = httpContext.Items.Keys
-                .Where(wh => wh is string key && key.StartsWith($"{nameof(Fast)}.{nameof(TenantModel.TenantNo)}."))
+                .Where(wh => wh is string key && key.StartsWith($"{nameof(Fast)}.{nameof(TenantModel)}."))
                 .ToList();
             foreach (object key in keys)
             {

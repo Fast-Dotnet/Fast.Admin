@@ -72,7 +72,7 @@ public partial class TableService
         };
 
         // 权限判断
-        if (!_user.IsSuperAdmin)
+        if (!_user.IsSuperAdmin && !_user.IsAdmin)
         {
             tableConfigModel.TableColumnConfigList = tableConfigModel.TableColumnConfigList
                 .Where(wh => !wh.AuthTag.Any() || wh.AuthTag.Any(a => _user.ButtonCodeList.Contains(a)))

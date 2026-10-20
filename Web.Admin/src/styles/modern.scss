@@ -1,6 +1,8 @@
-.layout .nav-bar .logout:hover {
-	background-color: var(--el-color-danger-light-9) !important;
-	color: var(--el-color-danger) !important;
+.layout .nav-bar .logout {
+	&:hover {
+		color: var(--el-color-danger) !important;
+		background-color: var(--el-color-danger-light-9) !important;
+	}
 }
 
 .fa-table {

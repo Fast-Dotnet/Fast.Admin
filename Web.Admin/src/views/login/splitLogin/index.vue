@@ -64,6 +64,6 @@ const props = defineProps<{
 const appStore = useApp();
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use "./index.scss";
 </style>

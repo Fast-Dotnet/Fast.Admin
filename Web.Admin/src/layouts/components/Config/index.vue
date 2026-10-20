@@ -1,11 +1,11 @@
 <template>
 	<FaDrawer ref="faDrawerRef" :draggable="false" :with-header="false" hide-footer size="300">
-		<div class="main">
+		<div class="config-main">
 			<el-divider content-position="left">
 				<el-icon><Notification /></el-icon>
 				布局样式
 			</el-divider>
-			<div class="main__box">
+			<div class="config-main__box">
 				<div class="layout-mode">
 					<el-tooltip effect="dark" placement="top" :show-after="200" content="经典">
 						<el-container
@@ -81,7 +81,7 @@
 				<el-icon><MagicStick /></el-icon>
 				主题样式
 			</el-divider>
-			<div class="main__box">
+			<div class="config-main__box">
 				<div class="box-item">
 					<span>主题颜色</span>
 					<ColorPicker v-model="configStore.layout.themeColor" @change="configStore.setTheme" />
@@ -118,7 +118,7 @@
 				<el-icon><Grid /></el-icon>
 				界面配置
 			</el-divider>
-			<div class="main__box">
+			<div class="config-main__box">
 				<div class="box-item">
 					<span>页签</span>
 					<el-switch v-model="configStore.layout.navTab" :active-action-icon="View" :inactive-action-icon="Hide" />
@@ -156,75 +156,7 @@
 					</el-input-number>
 				</div>
 			</div>
-			<el-divider content-position="left">
-				<el-icon><Grid /></el-icon>
-				表格配置
-			</el-divider>
-			<div class="main__box">
-				<div class="box-item">
-					<span>
-						显示搜索
-						<el-tooltip effect="dark" raw-content content="开启 => 显示所有表格的搜索栏<br/>关闭 => 隐藏所有表格的搜索栏" placement="top">
-							<el-icon><QuestionFilled /></el-icon>
-						</el-tooltip>
-					</span>
-					<el-switch v-model="configStore.tableLayout.showSearch" />
-				</div>
-				<div class="box-item">
-					<span>
-						抽屉式高级搜索
-						<el-tooltip
-							effect="dark"
-							raw-content
-							content="开启 => 所有表格的高级搜索隐藏为抽屉弹出<br/>关闭 => 所有表格的高级搜索使用展开折叠的方式"
-							placement="top"
-						>
-							<el-icon><QuestionFilled /></el-icon>
-						</el-tooltip>
-					</span>
-					<el-switch v-model="configStore.tableLayout.advancedSearchDrawer" />
-				</div>
-				<div v-if="!configStore.tableLayout.advancedSearchDrawer" class="box-item">
-					<span>
-						默认折叠搜索
-						<el-tooltip
-							effect="dark"
-							raw-content
-							content="开启 => 所有表格的高级搜索默认折叠<br/>关闭 => 所有表格的高级搜索默认展开"
-							placement="top"
-						>
-							<el-icon><QuestionFilled /></el-icon>
-						</el-tooltip>
-					</span>
-					<el-switch v-model="configStore.tableLayout.defaultCollapsedSearch" />
-				</div>
-				<div class="box-item">
-					<span>
-						隐藏图片
-						<el-tooltip
-							effect="dark"
-							raw-content
-							content="开启 => 表格所有图片列需要点击才能查看（减少网络资源消耗）<br/>关闭 => 表格所有图片列默认展示（注：此选项可能会增加对应的网络资源消耗）"
-							placement="top"
-						>
-							<el-icon><QuestionFilled /></el-icon>
-						</el-tooltip>
-					</span>
-					<el-switch v-model="configStore.tableLayout.hideImage" />
-				</div>
-				<div class="box-item">
-					<span>
-						默认搜索时间范围
-						<el-tooltip effect="dark" content="改变后需要手动刷新页面即可生效" placement="top">
-							<el-icon><QuestionFilled /></el-icon>
-						</el-tooltip>
-					</span>
-					<el-select v-model="configStore.tableLayout.dataSearchRange" style="width: 80px">
-						<el-option v-for="(item, index) in dataSearchRangeList" :key="index" :label="item.label" :value="item.value" />
-					</el-select>
-				</div>
-			</div>
-			<el-button class="button-reset" type="danger" :icon="Refresh" @click="configStore.reset">重置</el-button>
+			<el-button class="button__reset" type="danger" :icon="Refresh" @click="configStore.reset">重置</el-button>
 		</div>
 	</FaDrawer>
 </template>
@@ -232,10 +164,10 @@
 <script lang="ts" setup>
 import { computed, useTemplateRef } from "vue";
 import { Grid, Hide, MagicStick, Moon, Notification, QuestionFilled, Refresh, Sunny, View } from "@element-plus/icons-vue";
-import { useWindowSize, withDefineType } from "@fast-china/utils";
+import { useWindowSize } from "@fast-china/utils";
 import { useConfig } from "@/stores";
 import type { componentSizes } from "element-plus";
-import type { ElSelectorOutput, FaDrawerInstance, FaTableDataRange } from "fast-element-plus";
+import type { ElSelectorOutput, FaDrawerInstance } from "fast-element-plus";
 import type { IAnimationName, INavTabStyle } from "@/stores";
 
 defineOptions({
@@ -319,45 +251,6 @@ const navTabStyleList: Readonly<ElSelectorOutput<INavTabStyle>[]> = [
 	},
 ];
 
-const dataSearchRangeList: Readonly<ElSelectorOutput<FaTableDataRange>[]> = [
-	{
-		label: "近1天",
-		value: "Past1D",
-	},
-	{
-		label: "近3天",
-		value: "Past3D",
-	},
-	{
-		label: "近1周",
-		value: "Past1W",
-	},
-	{
-		label: "近1月",
-		value: "Past1M",
-	},
-	{
-		label: "近3月",
-		value: "Past3M",
-	},
-	{
-		label: "近6月",
-		value: "Past6M",
-	},
-	{
-		label: "近1年",
-		value: "Past1Y",
-	},
-	...(import.meta.env.DEV
-		? [
-				{
-					label: "近3年",
-					value: withDefineType<FaTableDataRange>("Past3Y"),
-				},
-			]
-		: []),
-];
-
 const open = () => {
 	faDrawerRef.value.open();
 };
@@ -365,6 +258,6 @@ const open = () => {
 defineExpose({ open });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use "./index.scss";
 </style>

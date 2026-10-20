@@ -106,33 +106,45 @@ defineExpose({
 });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .image-captcha {
 	display: grid;
-	width: 100%;
 	grid-template-columns: minmax(0, 1fr) 132px;
 	align-items: center;
 	gap: 8px;
+	width: 100%;
+	min-width: 0;
 }
+
 .image-captcha__image {
+	overflow: hidden;
 	height: 46px;
 	padding: 0;
-	cursor: pointer;
 	color: var(--el-text-color-secondary);
 	border: 1px solid var(--el-border-color-lighter);
 	border-radius: 8px;
 	background: var(--el-fill-color-light);
-	overflow: hidden;
+	cursor: pointer;
+
 	img {
 		display: block;
 		width: 100%;
 		height: 100%;
+		object-fit: contain;
+	}
+
+	&:disabled {
+		cursor: not-allowed;
 	}
 }
-.image-captcha__image:disabled {
-	cursor: not-allowed;
-}
+
 :deep(.el-form-item__label-wrap) {
 	align-items: center;
+}
+
+@media (max-width: 480px) {
+	.image-captcha {
+		grid-template-columns: minmax(0, 1fr) 104px;
+	}
 }
 </style>

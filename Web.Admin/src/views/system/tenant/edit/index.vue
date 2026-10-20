@@ -56,6 +56,9 @@
 			<FaFormItem prop="robotName" label="机器人名称">
 				<el-input v-model="state.formData.robotName" maxlength="20" placeholder="请输入机器人名称" />
 			</FaFormItem>
+			<FaFormItem prop="aliyunSignName" label="阿里云签名名称">
+				<el-input v-model="state.formData.aliyunSignName" maxlength="30" placeholder="请输入阿里云签名名称" />
+			</FaFormItem>
 			<FaFormItem v-if="state.dialogState !== 'add'" prop="status" label="状态">
 				<RadioGroup button name="CommonStatusEnum" v-model="state.formData.status" />
 			</FaFormItem>

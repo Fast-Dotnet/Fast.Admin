@@ -142,12 +142,8 @@ public class SqlSugarEntityService : ISqlSugarEntityService, ISingletonDependenc
         if (httpContext != null)
         {
             // 删除 HttpContext.Items 中的
-            if (httpContext.Items.ContainsKey(
-                    $"{nameof(Fast)}.{nameof(SqlSugar)}.{nameof(ConnectionSettingsOptions)}.{databaseType.ToString()}"))
-            {
-                httpContext.Items.Remove(
-                    $"{nameof(Fast)}.{nameof(SqlSugar)}.{nameof(ConnectionSettingsOptions)}.{databaseType.ToString()}");
-            }
+            httpContext.Items.Remove(
+                $"{nameof(Fast)}.{nameof(SqlSugar)}.{nameof(ConnectionSettingsOptions)}.{databaseType.ToString()}");
         }
 
 

@@ -50,6 +50,14 @@ export interface SqlDiffLogModel {
 	 */
 	pureSql?: string;
 	/**
+	 * 部门Id
+	 */
+	departmentId?: string;
+	/**
+	 * 部门名称
+	 */
+	departmentName?: string;
+	/**
 	 * 差异时间
 	 */
 	createdTime?: string;
@@ -85,14 +93,6 @@ export interface SqlDiffLogModel {
 	 * 
 	 */
 	ip?: string;
-	/**
-	 * 
-	 */
-	departmentId?: string;
-	/**
-	 * 
-	 */
-	departmentName?: string;
 	/**
 	 * 
 	 */

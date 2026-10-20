@@ -1,6 +1,7 @@
 import { axiosUtil } from "@fast-china/axios";
 import type { AddDatabaseInput } from "./models/AddDatabaseInput";
 import type { EditDatabaseInput } from "./models/EditDatabaseInput";
+import type { InitDatabaseInput } from "./models/InitDatabaseInput";
 import type { MainIdInput } from "./models/MainIdInput";
 import type { QueryDatabaseDetailOutput } from "./models/QueryDatabaseDetailOutput";
 import type { QueryDatabasePagedInput } from "./models/QueryDatabasePagedInput";
@@ -65,6 +66,17 @@ export const databaseApi = {
 			method: "post",
 			data,
 			requestType: "delete",
+		});
+	},
+	/**
+	 * 初始化数据库
+	 */
+	initDatabase(data: InitDatabaseInput): Promise<void> {
+		return axiosUtil.request<void>({
+			url: "/database/initDatabase",
+			method: "post",
+			data,
+			requestType: "submit",
 		});
 	},
 };

@@ -156,13 +156,15 @@ public partial class AccountService
         switch (sendChannel)
         {
             case MessageSendChannelEnum.Email:
-                await _mailService.SendVerificationCode(MailTypeEnum.Validity, account);
+                await _mailService.SendVerificationCode(MessageTemplateTypeEnum.MobileVerifyCode, account);
                 dto.Email = account;
                 dto.EmailExpiresTime = expiresTime;
                 dto.EmailVerified = false;
                 break;
             case MessageSendChannelEnum.Sms:
-                await _smsService.SendVerificationCode(SmsTypeEnum.Validity, account);
+                TenantModel tenantModel = await TenantContext.GetTenant(_user.TenantNo);
+                await _smsService.SendVerificationCode(MessageTemplateTypeEnum.MobileVerifyCode, tenantModel.AliyunSignName,
+                    account);
                 dto.Mobile = account;
                 dto.MobileExpiresTime = expiresTime;
                 dto.MobileVerified = false;
@@ -243,14 +245,16 @@ public partial class AccountService
         // 分别保存已验证的结果，邮箱输错或后续更新失败时，不会要求重发已通过的短信验证码。
         if (!dto.MobileVerified)
         {
-            await _smsService.VerifyVerificationCode(SmsTypeEnum.Validity, mobile, input.MobileVerificationCode);
+            await _smsService.VerifyVerificationCode(MessageTemplateTypeEnum.MobileVerifyCode, mobile,
+                input.MobileVerificationCode);
             dto.MobileVerified = true;
             await _cache.SetAsync(cacheKey, dto, TimeSpan.FromMinutes(5));
         }
 
         if (!dto.EmailVerified)
         {
-            await _mailService.VerifyVerificationCode(MailTypeEnum.Validity, email, input.EmailVerificationCode);
+            await _mailService.VerifyVerificationCode(MessageTemplateTypeEnum.MobileVerifyCode, email,
+                input.EmailVerificationCode);
             dto.EmailVerified = true;
             await _cache.SetAsync(cacheKey, dto, TimeSpan.FromMinutes(5));
         }
@@ -337,7 +341,7 @@ public partial class AccountService
 
         // 不同客户端独立保存校验进度，发送与提交共用锁，避免覆盖已验证的结果。
         string clientIdentity = GlobalContext.ClientIdentity;
-        string cacheKey = CacheConst.GetCacheKey(CacheConst.AccountIdentityVerification, accountModel.AccountKey, clientIdentity);
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.EditAccountVerification, accountModel.AccountKey, clientIdentity);
         using CSRedisClientLock codeLock = _cache.Client.TryLock($"{cacheKey}:Lock", 120);
         if (codeLock == null)
         {
@@ -361,13 +365,15 @@ public partial class AccountService
         switch (sendChannel)
         {
             case MessageSendChannelEnum.Email:
-                await _mailService.SendVerificationCode(MailTypeEnum.Validity, account);
+                await _mailService.SendVerificationCode(MessageTemplateTypeEnum.MobileVerifyCode, account);
                 dto.Email = account;
                 dto.EmailExpiresTime = expiresTime;
                 dto.EmailVerified = false;
                 break;
             case MessageSendChannelEnum.Sms:
-                await _smsService.SendVerificationCode(SmsTypeEnum.Validity, account);
+                TenantModel tenantModel = await TenantContext.GetTenant(_user.TenantNo);
+                await _smsService.SendVerificationCode(MessageTemplateTypeEnum.MobileVerifyCode, tenantModel.AliyunSignName,
+                    account);
                 dto.Mobile = account;
                 dto.MobileExpiresTime = expiresTime;
                 dto.MobileVerified = false;

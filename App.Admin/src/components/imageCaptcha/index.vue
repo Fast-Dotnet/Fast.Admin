@@ -97,7 +97,7 @@ defineExpose({
 });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .fa-image-captcha__content {
 	display: grid;
 	grid-template-columns: minmax(0, 1fr) 196rpx;

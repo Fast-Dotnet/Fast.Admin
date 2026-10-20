@@ -16,14 +16,13 @@ namespace Fast.Center.Service.ExceptionLog;
 /// 异常日志服务
 /// </summary>
 [ApiDescriptionSettings(ApiGroupConst.Center, Name = "exceptionLog")]
+[PlatformOnly]
 public class ExceptionLogService : IDynamicApplication
 {
-    private readonly IUser _user;
     private readonly ISqlSugarRepository<ExceptionLogModel> _repository;
 
-    public ExceptionLogService(IUser user, ISqlSugarRepository<ExceptionLogModel> repository)
+    public ExceptionLogService(ISqlSugarRepository<ExceptionLogModel> repository)
     {
-        _user = user;
         _repository = repository;
     }
 
@@ -35,18 +34,9 @@ public class ExceptionLogService : IDynamicApplication
     [Permission(PermissionConst.ExceptionLogPaged)]
     public async Task<PagedResult<ExceptionLogModel>> QueryExceptionLogPaged(QueryExceptionLogPagedInput input)
     {
-        ISugarQueryable<ExceptionLogModel> queryable =
-            _repository.Entities.WhereIF(input.AccountId != null, wh => wh.AccountId == input.AccountId);
-
-        if (_user.IsSuperAdmin)
-        {
-            queryable = queryable.WhereIF(input.TenantId != null, wh => wh.TenantId == input.TenantId);
-        }
-        else
-        {
-            queryable = queryable.Where(wh => wh.TenantId == _user.TenantId);
-        }
-
-        return await queryable.OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc).ToPagedListAsync(input);
+        return await _repository.Entities.WhereIF(input.AccountId != null, wh => wh.AccountId == input.AccountId)
+            .WhereIF(input.TenantId != null, wh => wh.TenantId == input.TenantId)
+            .OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
+            .ToPagedListAsync(input);
     }
 }

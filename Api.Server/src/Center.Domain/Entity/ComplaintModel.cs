@@ -36,7 +36,7 @@ public class ComplaintModel : IUpdateVersion
     /// 应用标识
     /// </summary>
     [SugarColumn(ColumnDescription = "应用标识", Length = 50)]
-    public string OpenId { get; set; }
+    public string AppKey { get; set; }
 
     /// <summary>
     /// 用户Id

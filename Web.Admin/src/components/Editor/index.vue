@@ -174,7 +174,7 @@ defineExpose({
 });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .wang-editor {
 	/* 编辑区背景 */
 	--w-e-textarea-bg-color: var(--el-bg-color);
@@ -192,7 +192,6 @@ defineExpose({
 	--w-e-textarea-selected-border-color: var(--el-color-primary);
 	/* 拖拽点 */
 	--w-e-textarea-handler-bg-color: var(--el-color-primary);
-
 	/* 工具栏文字 */
 	--w-e-toolbar-color: var(--el-text-color-regular);
 	/* 工具栏背景 */
@@ -205,20 +204,21 @@ defineExpose({
 	--w-e-toolbar-disabled-color: var(--el-text-color-disabled);
 	/* 工具栏边框 */
 	--w-e-toolbar-border-color: var(--el-border-color);
-
 	/* 弹窗按钮背景 */
 	--w-e-modal-button-bg-color: var(--el-fill-color-light);
 	/* 弹窗按钮边框 */
 	--w-e-modal-button-border-color: var(--el-border-color-light);
 
 	border: var(--el-border);
-	.wang-editor__toolbar {
-		border-bottom: var(--el-border);
-	}
-	.wang-editor__warp {
-		height: var(--height) !important;
-		min-height: 100px;
-		overflow-y: hidden;
-	}
+}
+
+.wang-editor__toolbar {
+	border-bottom: var(--el-border);
+}
+
+.wang-editor__warp {
+	overflow-y: hidden;
+	height: var(--height) !important;
+	min-height: 100px;
 }
 </style>

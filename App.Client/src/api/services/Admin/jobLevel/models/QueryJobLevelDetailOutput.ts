@@ -21,10 +21,6 @@ export interface QueryJobLevelDetailOutput {
 	/**
 	 * 
 	 */
-	departmentName?: string;
-	/**
-	 * 
-	 */
 	createdUserName?: string;
 	/**
 	 * 

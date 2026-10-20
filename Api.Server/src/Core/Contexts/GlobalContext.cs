@@ -8,6 +8,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace Fast.Core;
 
@@ -17,6 +18,86 @@ namespace Fast.Core;
 [SuppressSniffer]
 public class GlobalContext
 {
+    /// <summary>
+    /// 初始化配置
+    /// </summary>
+    public static InitializationSettingsOptions InitializationSettings { get; set; }
+
+    /// <summary>
+    /// 菜单、按钮初始化权限，Key 为权限编码，Value 为角色标志组合
+    /// </summary>
+    public static Dictionary<string, RoleTypeEnum> RolePermissions { get; private set; } = new(StringComparer.Ordinal);
+
+    /// <summary>
+    /// 加载默认及下游初始化权限，同一权限编码的角色取并集。
+    /// </summary>
+    public static void LoadRolePermissions(IConfiguration configuration)
+    {
+        var permissions = new Dictionary<string, RoleTypeEnum>(StringComparer.Ordinal);
+        IConfigurationSection[] sections =
+        [
+            configuration.GetRequiredSection("RolePermissions"),
+            configuration.GetSection("CustomRolePermissions")
+        ];
+
+        foreach (IConfigurationSection section in sections)
+        {
+            if (section.Value != null)
+            {
+                throw new InvalidOperationException($"配置节 {section.Path} 必须为权限字典。");
+            }
+
+            foreach (IConfigurationSection child in section.GetChildren())
+            {
+                MergePermission(child, child.Key);
+            }
+        }
+
+        RolePermissions = permissions;
+
+        void MergePermission(IConfigurationSection section, string permissionCode)
+        {
+            if (string.IsNullOrWhiteSpace(permissionCode))
+            {
+                throw new InvalidOperationException($"配置节点 {section.Path} 的权限编码不能为空。");
+            }
+
+            IConfigurationSection[] children = section.GetChildren().ToArray();
+
+            // 角色数组对应数字索引节点，其余节点继续拼接权限编码。
+            bool isRoleArray = children.Length > 0
+                               && children.All(child => int.TryParse(child.Key, out int index)
+                                                        && index >= 0
+                                                        && !child.GetChildren().Any());
+
+            if (children.Length > 0 && !isRoleArray)
+            {
+                foreach (IConfigurationSection child in children)
+                {
+                    MergePermission(child, $"{permissionCode}:{child.Key}");
+                }
+
+                return;
+            }
+
+            string[] roleNames = section.Get<string[]>(options => options.ErrorOnUnknownConfiguration = true)
+                                 ?? throw new InvalidOperationException($"配置节点 {section.Path} 必须为角色数组。");
+
+            permissions.TryGetValue(permissionCode, out RoleTypeEnum roleFlags);
+            foreach (string roleName in roleNames)
+            {
+                if (roleName == null || !Enum.IsDefined(typeof(RoleTypeEnum), roleName))
+                {
+                    throw new InvalidOperationException($"配置节点 {section.Path} 包含无效角色名称：{roleName}。");
+                }
+
+                roleFlags |= Enum.Parse<RoleTypeEnum>(roleName);
+            }
+
+            permissions[permissionCode] = roleFlags;
+        }
+    }
+
     /// <summary>
     /// 客户端标识
     /// </summary>

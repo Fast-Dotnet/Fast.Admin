@@ -33,6 +33,7 @@ public class ComplaintService : IDynamicApplication
     [HttpPost]
     [ApiInfo("获取投诉工单分页列表", HttpRequestActionEnum.Paged)]
     [Permission(PermissionConst.Complaint.Paged)]
+    [PlatformOnly]
     public async Task<PagedResult<QueryComplaintPagedOutput>> QueryComplaintPaged(QueryComplaintPagedInput input)
     {
         return await _repository.Entities.WhereIF(input.ComplaintType != null, wh => wh.ComplaintType == input.ComplaintType)
@@ -41,7 +42,7 @@ public class ComplaintService : IDynamicApplication
             {
                 ComplaintId = sl.ComplaintId,
                 AppName = sl.AppName,
-                OpenId = sl.OpenId,
+                AppKey = sl.AppKey,
                 NickName = sl.NickName,
                 ComplaintType = sl.ComplaintType,
                 Mobile = sl.Mobile,
@@ -74,7 +75,7 @@ public class ComplaintService : IDynamicApplication
             {
                 ComplaintId = sl.ComplaintId,
                 AppName = sl.AppName,
-                OpenId = sl.OpenId,
+                AppKey = sl.AppKey,
                 NickName = sl.NickName,
                 ComplaintType = sl.ComplaintType,
                 Mobile = sl.Mobile,
@@ -105,7 +106,7 @@ public class ComplaintService : IDynamicApplication
             {
                 ComplaintId = sl.ComplaintId,
                 AppName = sl.AppName,
-                OpenId = sl.OpenId,
+                AppKey = sl.AppKey,
                 NickName = sl.NickName,
                 ComplaintType = sl.ComplaintType,
                 Mobile = sl.Mobile,
@@ -138,7 +139,7 @@ public class ComplaintService : IDynamicApplication
     public async Task AddComplaint(AddComplaintInput input)
     {
         // 查询应用信息
-        ApplicationOpenIdModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
+        ApplicationClientModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
 
         if (applicationModel.AppType != GlobalContext.DeviceType)
         {
@@ -149,7 +150,7 @@ public class ComplaintService : IDynamicApplication
         {
             AppId = applicationModel.AppId,
             AppName = applicationModel.Application.AppName,
-            OpenId = applicationModel.OpenId,
+            AppKey = applicationModel.AppKey,
             UserId = _user.EmployeeId,
             NickName = _user.NickName,
             ComplaintType = input.ComplaintType,

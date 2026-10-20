@@ -1,4 +1,4 @@
-﻿// Copyright © 2018-Present 小方
+// Copyright © 2018-Present 小方
 // SPDX-License-Identifier: Apache-2.0
 // 
 // 本文件依据 Apache License 2.0 授权，完整条款见仓库根目录 LICENSE。
@@ -125,10 +125,10 @@ public class TenantModel : BaseEntity, IUpdateVersion
     public string LogoUrl { get; set; }
 
     /// <summary>
-    /// 允许删除数据
+    /// 阿里云签名名称
     /// </summary>
-    [SugarColumn(ColumnDescription = "允许删除数据")]
-    public bool AllowDeleteData { get; set; }
+    [SugarColumn(ColumnDescription = "阿里云签名名称", Length = 30)]
+    public string AliyunSignName { get; set; }
 
     /// <summary>
     /// 更新版本控制字段

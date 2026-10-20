@@ -54,11 +54,6 @@ public class LaunchOutput
     public string LoginComponent { get; set; }
 
     /// <summary>
-    /// WebSocket地址
-    /// </summary>
-    public string WebSocketUrl { get; set; }
-
-    /// <summary>
     /// 请求超时时间（毫秒）
     /// </summary>
     public int RequestTimeout { get; set; }

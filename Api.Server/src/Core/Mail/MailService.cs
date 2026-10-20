@@ -209,14 +209,14 @@ public class MailService : IMailService, ISingletonDependency
     }
 
     /// <inheritdoc />
-    public async Task<int> GetVerificationCodeRetryAfterSeconds(MailTypeEnum mailType, string email)
+    public async Task<int> GetVerificationCodeRetryAfterSeconds(MessageTemplateTypeEnum templateType, string email)
     {
-        string cacheKey = CacheConst.GetCacheKey(CacheConst.Mail, mailType.ToString(), email.Trim().ToLowerInvariant());
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.Mail, templateType.ToString(), email.Trim().ToLowerInvariant());
         return (int)Math.Max(0, await _cache.Client.TtlAsync($"{cacheKey}:SendCooldown"));
     }
 
     /// <inheritdoc />
-    public async Task SendVerificationCode(MailTypeEnum mailType, string email)
+    public async Task SendVerificationCode(MessageTemplateTypeEnum templateType, string email)
     {
         if (string.IsNullOrWhiteSpace(email) || !Regex.IsMatch(email, RegexConst.EmailAddress))
         {
@@ -226,7 +226,7 @@ public class MailService : IMailService, ISingletonDependency
         email = email.Trim().ToLowerInvariant();
 
         // 获取缓存Key
-        string cacheKey = CacheConst.GetCacheKey(CacheConst.Mail, mailType.ToString(), email);
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.Mail, templateType.ToString(), email);
         using CSRedisClientLock codeLock = _cache.Client.TryLock($"{cacheKey}:Lock", 120);
         if (codeLock == null)
         {
@@ -238,7 +238,7 @@ public class MailService : IMailService, ISingletonDependency
                 : "操作过于频繁，请稍后重试！");
         }
 
-        int retryAfterSeconds = await GetVerificationCodeRetryAfterSeconds(mailType, email);
+        int retryAfterSeconds = await GetVerificationCodeRetryAfterSeconds(templateType, email);
         if (retryAfterSeconds > 0)
         {
             throw new UserFriendlyException($"操作过于频繁，请在 {TimeSpan.FromSeconds(retryAfterSeconds).ToDescription()} 后重试！");
@@ -255,11 +255,12 @@ public class MailService : IMailService, ISingletonDependency
         dto.SendTime = DateTime.Now;
         dto.ErrorCount = 0;
 
-        string mailTypeDescription = mailType.GetDescription();
-        string title = $"【{mailTypeDescription}】邮箱验证码";
+        string templateTypeDescription =
+            templateType == MessageTemplateTypeEnum.MobileVerifyCode ? "邮箱验证码" : templateType.GetDescription();
+        string title = $"【{templateTypeDescription}】邮箱验证码";
         string content = $$"""
                            <p>您好：</p>
-                           <p>您正在进行<strong>{{mailTypeDescription}}</strong>操作，请使用以下验证码完成身份校验。</p>
+                           <p>您正在进行<strong>{{templateTypeDescription}}</strong>操作，请使用以下验证码完成身份校验。</p>
                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin: 24px 0;">
                              <tr>
                                <td align="center" style="padding: 22px 16px; border: 1px solid #bfdbfe; border-radius: 10px; color: #1d4ed8; background-color: #eff6ff; font-size: 32px; font-weight: 700; letter-spacing: 10px; line-height: 1;">
@@ -276,7 +277,7 @@ public class MailService : IMailService, ISingletonDependency
     }
 
     /// <inheritdoc />
-    public async Task VerifyVerificationCode(MailTypeEnum mailType, string email, string verificationCode)
+    public async Task VerifyVerificationCode(MessageTemplateTypeEnum templateType, string email, string verificationCode)
     {
         ArgumentNullException.ThrowIfNull(verificationCode);
 
@@ -288,7 +289,7 @@ public class MailService : IMailService, ISingletonDependency
         email = email.Trim().ToLowerInvariant();
 
         // 获取缓存Key
-        string cacheKey = CacheConst.GetCacheKey(CacheConst.Mail, mailType.ToString(), email);
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.Mail, templateType.ToString(), email);
         using CSRedisClientLock codeLock = _cache.Client.TryLock($"{cacheKey}:Lock", 30);
         if (codeLock == null)
         {

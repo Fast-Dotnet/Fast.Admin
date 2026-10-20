@@ -106,7 +106,7 @@ public class SqlSugarEntityHandler : ISqlSugarEntityHandler
             PureSql = handlerSql,
             DepartmentId = _user.DepartmentId,
             DepartmentName = _user.DepartmentName,
-            CreatedUserId = _user.EmployeeId,
+            CreatedUserId = _user.EmployeeId > 0 ? _user.EmployeeId : null,
             CreatedUserName = _user.EmployeeName,
             CreatedTime = DateTime.Now,
             TenantId = _tenant.TenantId,
@@ -142,7 +142,7 @@ public class SqlSugarEntityHandler : ISqlSugarEntityHandler
             PureSql = handlerSql,
             DepartmentId = _user.DepartmentId,
             DepartmentName = _user.DepartmentName,
-            CreatedUserId = _user.EmployeeId,
+            CreatedUserId = _user.EmployeeId > 0 ? _user.EmployeeId : null,
             CreatedUserName = _user.EmployeeName,
             CreatedTime = DateTime.Now,
             TenantId = _tenant.TenantId,
@@ -189,7 +189,7 @@ public class SqlSugarEntityHandler : ISqlSugarEntityHandler
             PureSql = handlerSql,
             DepartmentId = _user.DepartmentId,
             DepartmentName = _user.DepartmentName,
-            CreatedUserId = _user.EmployeeId,
+            CreatedUserId = _user.EmployeeId > 0 ? _user.EmployeeId : null,
             CreatedUserName = _user.EmployeeName,
             CreatedTime = DateTime.Now,
             TenantId = _tenant.TenantId,
@@ -227,7 +227,7 @@ public class SqlSugarEntityHandler : ISqlSugarEntityHandler
             PureSql = handlerSql,
             DepartmentId = _user.DepartmentId,
             DepartmentName = _user.DepartmentName,
-            CreatedUserId = _user.EmployeeId,
+            CreatedUserId = _user.EmployeeId > 0 ? _user.EmployeeId : null,
             CreatedUserName = _user.EmployeeName,
             CreatedTime = DateTime.Now,
             TenantId = _tenant.TenantId,
@@ -260,7 +260,7 @@ public class SqlSugarEntityHandler : ISqlSugarEntityHandler
     /// <inheritdoc />
     public long? AssignDepartmentId()
     {
-        return _user.DepartmentId;
+        return _user.DepartmentId > 0 ? _user.DepartmentId : null;
     }
 
     /// <inheritdoc />
@@ -272,7 +272,7 @@ public class SqlSugarEntityHandler : ISqlSugarEntityHandler
     /// <inheritdoc />
     public long? AssignUserId()
     {
-        return _user.EmployeeId;
+        return _user.EmployeeId > 0 ? _user.EmployeeId : null;
     }
 
     /// <inheritdoc />

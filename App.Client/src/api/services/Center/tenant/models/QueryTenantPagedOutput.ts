@@ -71,13 +71,9 @@ export interface QueryTenantPagedOutput {
 	 */
 	logoUrl?: string;
 	/**
-	 * 允许删除数据
+	 * 阿里云签名名称
 	 */
-	allowDeleteData?: boolean;
-	/**
-	 * 
-	 */
-	departmentName?: string;
+	aliyunSignName?: string;
 	/**
 	 * 
 	 */

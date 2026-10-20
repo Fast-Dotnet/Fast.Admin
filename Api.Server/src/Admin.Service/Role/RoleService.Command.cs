@@ -54,7 +54,7 @@ public partial class RoleService
         var templateButtonIds = new List<long>();
         if (roleModel.IsSystemMenu)
         {
-            (ApplicationOpenIdModel applicationModel, TenantModel tenantModel) = await GetAuthorizationContext();
+            (ApplicationClientModel applicationModel, TenantModel tenantModel) = await GetAuthorizationContext();
             templateMenuIds = await _centerRepository.Queryable<MenuModel>()
                 .Where(wh => wh.AppId == applicationModel.AppId)
                 .Where(wh => wh.Status == CommonStatusEnum.Enable)

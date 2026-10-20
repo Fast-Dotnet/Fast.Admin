@@ -25,6 +25,14 @@ export interface VisitLogModel {
 	 */
 	visitType?: VisitTypeEnum;
 	/**
+	 * 部门Id
+	 */
+	departmentId?: string;
+	/**
+	 * 部门名称
+	 */
+	departmentName?: string;
+	/**
 	 * 访问时间
 	 */
 	createdTime?: string;
@@ -60,14 +68,6 @@ export interface VisitLogModel {
 	 * 
 	 */
 	ip?: string;
-	/**
-	 * 
-	 */
-	departmentId?: string;
-	/**
-	 * 
-	 */
-	departmentName?: string;
 	/**
 	 * 
 	 */

@@ -249,35 +249,35 @@ const getThemeGradient = (baseColor: string, mode: "light" | "dark" = "light", a
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .help_dropdown {
 	position: fixed;
 	top: max(16px, env(safe-area-inset-top));
 	right: max(16px, env(safe-area-inset-right));
-	cursor: pointer;
 	z-index: 2001;
+	cursor: pointer;
+}
 
-	.help-trigger {
-		width: 40px;
-		height: 40px;
-		color: var(--el-text-color-primary);
-		border: 1px solid rgb(255 255 255 / 58%);
-		background-color: rgb(255 255 255 / 62%);
-		box-shadow: 0 8px 24px rgb(15 23 42 / 12%);
-		backdrop-filter: blur(14px) saturate(1.15);
-		transition:
-			color 180ms ease,
-			background-color 180ms ease,
-			box-shadow 180ms ease,
-			transform 180ms ease;
+.help-trigger {
+	width: 40px;
+	height: 40px;
+	color: var(--el-text-color-primary);
+	border: 1px solid rgb(255 255 255 / 58%);
+	background-color: rgb(255 255 255 / 62%);
+	box-shadow: 0 8px 24px rgb(15 23 42 / 12%);
+	backdrop-filter: blur(14px) saturate(1.15);
+	transition:
+		color 180ms ease,
+		background-color 180ms ease,
+		box-shadow 180ms ease,
+		transform 180ms ease;
 
-		&:hover,
-		&:focus-visible {
-			color: var(--el-color-primary);
-			background-color: rgb(255 255 255 / 82%);
-			box-shadow: 0 12px 28px rgb(15 23 42 / 16%);
-			transform: translateY(-2px) rotate(8deg);
-		}
+	&:hover,
+	&:focus-visible {
+		color: var(--el-color-primary);
+		background-color: rgb(255 255 255 / 82%);
+		box-shadow: 0 12px 28px rgb(15 23 42 / 16%);
+		transform: translateY(-2px) rotate(8deg);
 	}
 }
 

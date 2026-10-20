@@ -65,24 +65,14 @@ public static class ConfigConst
     public const string MailReceiveEmails = "MAIL_RECEIVE_EMAILS";
 
     /// <summary>
-    /// 短信 AccessKeyId
+    /// 阿里云 AccessKey ID
     /// </summary>
-    public const string SmsAccessKeyId = "SMS_ACCESS_KEY_ID";
+    public const string AliyunAccessKeyID = "ALIYUN_ACCESS_KEY_ID";
 
     /// <summary>
-    /// 短信 AccessKey密钥
+    /// 阿里云 AccessKey Secret
     /// </summary>
-    public const string SmsAccessKeySecret = "SMS_ACCESS_KEY_SECRET";
-
-    /// <summary>
-    /// 短信签名
-    /// </summary>
-    public const string SmsSignName = "SMS_SIGN_NAME";
-
-    /// <summary>
-    /// 阿里云短信验证码模板Code
-    /// </summary>
-    public const string SmsVerificationTemplateCode = "SMS_VERIFICATION_TEMPLATE_CODE";
+    public const string AliyunAccessKeySecret = "ALIYUN_ACCESS_KEY_SECRET";
 
     /// <summary>
     /// 高德地图Key

@@ -41,8 +41,7 @@ public class MerchantContext
 
         HttpContext httpContext = FastContext.HttpContext;
         // 优先从 HttpContext.Items 中获取
-        if (httpContext?.Items.TryGetValue($"{nameof(Fast)}.{nameof(MerchantModel.MerchantNo)}.{merchantNo}", out object obj)
-            == true
+        if (httpContext?.Items.TryGetValue($"{nameof(Fast)}.{nameof(MerchantModel)}.{merchantNo}", out object obj) == true
             && obj is MerchantModel merchantModel)
         {
             return merchantModel;
@@ -69,7 +68,7 @@ public class MerchantContext
         if (httpContext != null)
         {
             // 放入 HttpContext.Items 中
-            httpContext.Items[$"{nameof(Fast)}.{nameof(MerchantModel.MerchantNo)}.{merchantNo}"] = merchantModel;
+            httpContext.Items[$"{nameof(Fast)}.{nameof(MerchantModel)}.{merchantNo}"] = merchantModel;
         }
 
         return merchantModel;
@@ -88,8 +87,7 @@ public class MerchantContext
 
         HttpContext httpContext = FastContext.HttpContext;
         // 优先从 HttpContext.Items 中获取
-        if (httpContext?.Items.TryGetValue($"{nameof(Fast)}.{nameof(MerchantModel.MerchantNo)}.{merchantNo}", out object obj)
-            == true
+        if (httpContext?.Items.TryGetValue($"{nameof(Fast)}.{nameof(MerchantModel)}.{merchantNo}", out object obj) == true
             && obj is MerchantModel merchantModel)
         {
             return merchantModel;
@@ -119,7 +117,7 @@ public class MerchantContext
         if (httpContext != null)
         {
             // 放入 HttpContext.Items 中
-            httpContext.Items[$"{nameof(Fast)}.{nameof(MerchantModel.MerchantNo)}.{merchantNo}"] = merchantModel;
+            httpContext.Items[$"{nameof(Fast)}.{nameof(MerchantModel)}.{merchantNo}"] = merchantModel;
         }
 
         return merchantModel;
@@ -139,10 +137,7 @@ public class MerchantContext
         if (httpContext != null)
         {
             // 删除 HttpContext.Items 中的
-            if (httpContext.Items.ContainsKey($"{nameof(Fast)}.{nameof(MerchantModel.MerchantNo)}.{merchantNo}"))
-            {
-                httpContext.Items.Remove($"{nameof(Fast)}.{nameof(MerchantModel.MerchantNo)}.{merchantNo}");
-            }
+            httpContext.Items.Remove($"{nameof(Fast)}.{nameof(MerchantModel)}.{merchantNo}");
         }
 
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.Merchant, merchantNo);
@@ -160,7 +155,7 @@ public class MerchantContext
         {
             // 清空 HttpContext.Items 中的
             var keys = httpContext.Items.Keys
-                .Where(wh => wh is string key && key.StartsWith($"{nameof(Fast)}.{nameof(MerchantModel.MerchantNo)}."))
+                .Where(wh => wh is string key && key.StartsWith($"{nameof(Fast)}.{nameof(MerchantModel)}."))
                 .ToList();
             foreach (object key in keys)
             {

@@ -133,7 +133,7 @@ const state = reactive({
 });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .page {
 	padding-top: 20rpx;
 	padding-bottom: 20rpx;

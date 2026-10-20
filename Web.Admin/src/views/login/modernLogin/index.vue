@@ -96,6 +96,6 @@ const appStore = useApp();
 const chartBars = [32, 48, 42, 64, 58, 78, 70, 92, 84, 100];
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use "./index.scss";
 </style>

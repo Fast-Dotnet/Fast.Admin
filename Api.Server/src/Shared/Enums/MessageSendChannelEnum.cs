@@ -23,5 +23,23 @@ public enum MessageSendChannelEnum : byte
     /// 短信
     /// </summary>
     [Description("短信")]
-    Sms = 2
+    Sms = 2,
+
+    /// <summary>
+    /// 微信服务号订阅消息
+    /// </summary>
+    [Description("微信服务号订阅消息")]
+    WeChatServiceAccountSubscribe = 3,
+
+    /// <summary>
+    /// 微信公众号模板消息
+    /// </summary>
+    [Description("微信公众号模板消息")]
+    WeChatOfficialAccountTemplate = 4,
+
+    /// <summary>
+    /// 微信小程序订阅消息
+    /// </summary>
+    [Description("微信小程序订阅消息")]
+    WeChatMiniProgramSubscribe = 5
 }

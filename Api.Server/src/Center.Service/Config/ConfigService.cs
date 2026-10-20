@@ -19,12 +19,10 @@ namespace Fast.Center.Service.Config;
 [PlatformOnly]
 public class ConfigService : IDynamicApplication
 {
-    private readonly IUser _user;
     private readonly ISqlSugarRepository<ConfigModel> _repository;
 
-    public ConfigService(IUser user, ISqlSugarRepository<ConfigModel> repository)
+    public ConfigService(ISqlSugarRepository<ConfigModel> repository)
     {
-        _user = user;
         _repository = repository;
     }
 
@@ -43,7 +41,6 @@ public class ConfigService : IDynamicApplication
                 ConfigName = sl.ConfigName,
                 ConfigValue = sl.ConfigValue,
                 Remark = sl.Remark,
-                DepartmentName = sl.DepartmentName,
                 CreatedUserName = sl.CreatedUserName,
                 CreatedTime = sl.CreatedTime,
                 UpdatedUserName = sl.UpdatedUserName,
@@ -69,7 +66,6 @@ public class ConfigService : IDynamicApplication
                 ConfigName = sl.ConfigName,
                 ConfigValue = sl.ConfigValue,
                 Remark = sl.Remark,
-                DepartmentName = sl.DepartmentName,
                 CreatedUserName = sl.CreatedUserName,
                 CreatedTime = sl.CreatedTime,
                 UpdatedUserName = sl.UpdatedUserName,
@@ -93,11 +89,6 @@ public class ConfigService : IDynamicApplication
     [ApiInfo("添加配置", HttpRequestActionEnum.Add)]
     public async Task AddConfig(AddConfigInput input)
     {
-        if (_user?.IsSuperAdmin == false)
-        {
-            throw new UserFriendlyException("非超级管理员禁止操作！");
-        }
-
         if (await _repository.AnyAsync(a => a.ConfigCode == input.ConfigCode))
         {
             throw new UserFriendlyException("配置编码重复！");

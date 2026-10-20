@@ -37,7 +37,7 @@ internal static partial class MenuSeedData
             WebComponent = null,
             WebTab = false,
             WebKeepAlive = false,
-            HasMobile = true,
+            HasMobile = false,
             MobileIcon = "fa-icon-terminal",
             MobileRouter = null,
             Visible = true,

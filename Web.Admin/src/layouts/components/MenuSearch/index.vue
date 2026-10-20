@@ -20,7 +20,7 @@
 			/>
 
 			<div class="search-result">
-				<el-scrollbar max-height="400px">
+				<el-scrollbar max-height="min(400px, 50dvh)">
 					<div v-if="state.resultList.length === 0 && state.keyword" class="search-empty">
 						<el-empty description="暂无搜索结果" :image-size="80" />
 					</div>
@@ -249,86 +249,116 @@ defineExpose({
 });
 </script>
 
-<style scoped lang="scss">
-:deep() {
+<style lang="scss" scoped>
+:deep(.el-dialog) {
+	border-radius: 12px;
+
 	.el-dialog__header {
 		display: none;
 	}
+
 	.el-dialog__body {
 		padding: 0;
 	}
-}
-.el-dialog {
-	border-radius: 12px;
+
 	.el-input {
 		padding: 0 16px 14px;
 		border-bottom: var(--el-border);
 	}
-	.search-result {
-		min-height: 80px;
-		.search-empty {
-			padding: 20px 0;
-		}
-		.search-item {
-			display: flex;
-			align-items: center;
-			padding: 10px 16px;
-			cursor: pointer;
-			transition: background-color var(--el-transition-duration);
-			gap: 10px;
-			&:hover,
-			&.is-active {
-				background-color: var(--el-fill-color-light);
-			}
-			.el-icon {
-				font-size: 18px;
-				color: var(--el-text-color-secondary);
-			}
-			.search-item__info {
-				flex: 1;
-				display: flex;
-				flex-direction: column;
-				.search-item__title {
-					font-size: var(--el-font-size-base);
-					color: var(--el-text-color-primary);
-				}
-				.search-item__path {
-					font-size: var(--el-font-size-extra-small);
-					color: var(--el-text-color-secondary);
-				}
-			}
-			.search-item__enter {
-				font-size: 14px;
-				color: var(--el-text-color-placeholder);
-			}
-		}
+}
+
+.search-result {
+	min-height: 80px;
+}
+
+.search-empty {
+	padding: 20px 0;
+}
+
+.search-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 16px;
+	cursor: pointer;
+	transition: background-color var(--el-transition-duration);
+
+	&:hover,
+	&.is-active {
+		background-color: var(--el-fill-color-light);
 	}
-	.search-footer {
-		display: flex;
+
+	.el-icon {
+		flex-shrink: 0;
+		font-size: 18px;
+		color: var(--el-text-color-secondary);
+	}
+}
+
+.search-item__info {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.search-item__title {
+	font-size: var(--el-font-size-base);
+	color: var(--el-text-color-primary);
+}
+
+.search-item__path {
+	font-size: var(--el-font-size-extra-small);
+	color: var(--el-text-color-secondary);
+}
+
+.search-item__title,
+.search-item__path {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.search-item__enter {
+	font-size: 14px;
+	color: var(--el-text-color-placeholder);
+}
+
+.search-footer {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	row-gap: 6px;
+	gap: 16px;
+	padding: 10px 16px 0;
+	border-top: var(--el-border);
+}
+
+.search-footer__tip {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	font-size: var(--el-font-size-extra-small);
+	color: var(--el-text-color-secondary);
+
+	kbd {
+		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		gap: 16px;
-		padding: 10px 16px 0;
-		border-top: var(--el-border);
-		.search-footer__tip {
-			display: flex;
-			align-items: center;
-			gap: 4px;
-			font-size: var(--el-font-size-extra-small);
-			color: var(--el-text-color-secondary);
-			kbd {
-				display: inline-flex;
-				align-items: center;
-				justify-content: center;
-				min-width: 20px;
-				height: 20px;
-				padding: 0 4px;
-				border: 1px solid var(--el-border-color);
-				border-radius: 4px;
-				font-size: 11px;
-				background-color: var(--el-fill-color);
-			}
-		}
+		min-width: 20px;
+		height: 20px;
+		padding: 0 4px;
+		font-size: 11px;
+		border: 1px solid var(--el-border-color);
+		border-radius: 4px;
+		background-color: var(--el-fill-color);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.search-item {
+		transition: none;
 	}
 }
 </style>

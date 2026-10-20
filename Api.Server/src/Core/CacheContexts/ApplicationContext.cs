@@ -13,7 +13,7 @@ using SqlSugar;
 namespace Fast.Core;
 
 /// <summary>
-/// 应用上下文
+/// 应用标识上下文
 /// </summary>
 [SuppressSniffer]
 public class ApplicationContext
@@ -32,37 +32,36 @@ public class ApplicationContext
     /// 获取应用
     /// </summary>
     /// <returns>应用信息；未找到且不要求抛出异常时为 <see langword="null"/></returns>
-    public static ApplicationOpenIdModel GetApplicationSync(string openId, bool throwError = true)
+    public static ApplicationClientModel GetApplicationSync(string appKey, bool throwError = true)
     {
-        if (string.IsNullOrWhiteSpace(openId))
+        if (string.IsNullOrWhiteSpace(appKey))
         {
             throw new UserFriendlyException("应用标识不能为空！");
         }
 
         HttpContext httpContext = FastContext.HttpContext;
         // 优先从 HttpContext.Items 中获取
-        if (httpContext?.Items.TryGetValue($"{nameof(Fast)}.{nameof(ApplicationOpenIdModel.OpenId)}.{openId}", out object obj)
-            == true
-            && obj is ApplicationOpenIdModel applicationOpenIdModel)
+        if (httpContext?.Items.TryGetValue($"{nameof(Fast)}.{nameof(ApplicationClientModel)}.{appKey}", out object obj) == true
+            && obj is ApplicationClientModel applicationClientModel)
         {
-            return applicationOpenIdModel;
+            return applicationClientModel;
         }
 
-        string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.App, openId);
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.App, appKey);
 
-        applicationOpenIdModel = centerCache.GetAndSet(cacheKey, () =>
+        applicationClientModel = centerCache.GetAndSet(cacheKey, () =>
         {
             ISqlSugarClient repository = FastContext.GetService<ISqlSugarClient>();
 
-            ApplicationOpenIdModel result = repository.Queryable<ApplicationOpenIdModel>()
+            ApplicationClientModel result = repository.Queryable<ApplicationClientModel>()
                 .Includes(e => e.Application)
-                .Where(wh => wh.OpenId == openId)
+                .Where(wh => wh.AppKey == appKey)
                 .Single();
 
             if (result == null && throwError)
             {
-                string message = $"未能找到对应应用【{openId}】信息！";
-                logger.LogError($"OpenId：{openId}；{message}");
+                string message = $"未能找到对应应用【{appKey}】信息！";
+                logger.LogError($"AppKey：{appKey}；{message}");
                 throw new UserFriendlyException(message);
             }
 
@@ -72,47 +71,46 @@ public class ApplicationContext
         if (httpContext != null)
         {
             // 放入 HttpContext.Items 中
-            httpContext.Items[$"{nameof(Fast)}.{nameof(ApplicationOpenIdModel.OpenId)}.{openId}"] = applicationOpenIdModel;
+            httpContext.Items[$"{nameof(Fast)}.{nameof(ApplicationClientModel)}.{appKey}"] = applicationClientModel;
         }
 
-        return applicationOpenIdModel;
+        return applicationClientModel;
     }
 
     /// <summary>
     /// 获取应用
     /// </summary>
     /// <returns>应用信息；未找到且不要求抛出异常时为 <see langword="null"/></returns>
-    public static async Task<ApplicationOpenIdModel> GetApplication(string openId, bool throwError = true)
+    public static async Task<ApplicationClientModel> GetApplication(string appKey, bool throwError = true)
     {
-        if (string.IsNullOrWhiteSpace(openId))
+        if (string.IsNullOrWhiteSpace(appKey))
         {
             throw new UserFriendlyException("应用标识不能为空！");
         }
 
         HttpContext httpContext = FastContext.HttpContext;
         // 优先从 HttpContext.Items 中获取
-        if (httpContext?.Items.TryGetValue($"{nameof(Fast)}.{nameof(ApplicationOpenIdModel.OpenId)}.{openId}", out object obj)
-            == true
-            && obj is ApplicationOpenIdModel applicationOpenIdModel)
+        if (httpContext?.Items.TryGetValue($"{nameof(Fast)}.{nameof(ApplicationClientModel)}.{appKey}", out object obj) == true
+            && obj is ApplicationClientModel applicationClientModel)
         {
-            return applicationOpenIdModel;
+            return applicationClientModel;
         }
 
-        string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.App, openId);
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.App, appKey);
 
-        applicationOpenIdModel = await centerCache.GetAndSetAsync(cacheKey, async () =>
+        applicationClientModel = await centerCache.GetAndSetAsync(cacheKey, async () =>
         {
             ISqlSugarClient repository = FastContext.GetService<ISqlSugarClient>();
 
-            ApplicationOpenIdModel result = await repository.Queryable<ApplicationOpenIdModel>()
+            ApplicationClientModel result = await repository.Queryable<ApplicationClientModel>()
                 .Includes(e => e.Application)
-                .Where(wh => wh.OpenId == openId)
+                .Where(wh => wh.AppKey == appKey)
                 .SingleAsync();
 
             if (result == null && throwError)
             {
-                string message = $"未能找到对应应用【{openId}】信息！";
-                logger.LogError($"OpenId：{openId}；{message}");
+                string message = $"未能找到对应应用【{appKey}】信息！";
+                logger.LogError($"AppKey：{appKey}；{message}");
                 throw new UserFriendlyException(message);
             }
 
@@ -122,18 +120,18 @@ public class ApplicationContext
         if (httpContext != null)
         {
             // 放入 HttpContext.Items 中
-            httpContext.Items[$"{nameof(Fast)}.{nameof(ApplicationOpenIdModel.OpenId)}.{openId}"] = applicationOpenIdModel;
+            httpContext.Items[$"{nameof(Fast)}.{nameof(ApplicationClientModel)}.{appKey}"] = applicationClientModel;
         }
 
-        return applicationOpenIdModel;
+        return applicationClientModel;
     }
 
     /// <summary>
     /// 删除应用
     /// </summary>
-    public static async Task DeleteApplication(string openId)
+    public static async Task DeleteApplication(string appKey)
     {
-        if (string.IsNullOrWhiteSpace(openId))
+        if (string.IsNullOrWhiteSpace(appKey))
         {
             throw new UserFriendlyException("应用标识不能为空！");
         }
@@ -142,13 +140,10 @@ public class ApplicationContext
         if (httpContext != null)
         {
             // 删除 HttpContext.Items 中的
-            if (httpContext.Items.ContainsKey($"{nameof(Fast)}.{nameof(ApplicationOpenIdModel.OpenId)}.{openId}"))
-            {
-                httpContext.Items.Remove($"{nameof(Fast)}.{nameof(ApplicationOpenIdModel.OpenId)}.{openId}");
-            }
+            httpContext.Items.Remove($"{nameof(Fast)}.{nameof(ApplicationClientModel)}.{appKey}");
         }
 
-        string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.App, openId);
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.App, appKey);
 
         await centerCache.DelAsync(cacheKey);
     }
@@ -163,7 +158,7 @@ public class ApplicationContext
         {
             // 清空 HttpContext.Items 中的
             var keys = httpContext.Items.Keys.Where(wh =>
-                    wh is string key && key.StartsWith($"{nameof(Fast)}.{nameof(ApplicationOpenIdModel.OpenId)}."))
+                    wh is string key && key.StartsWith($"{nameof(Fast)}.{nameof(ApplicationClientModel)}."))
                 .ToList();
             foreach (object key in keys)
             {

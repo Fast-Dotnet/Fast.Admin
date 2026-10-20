@@ -2,7 +2,7 @@
 	<template v-if="globalSize === 'small'">
 		<div class="footer-small">
 			<div class="footer-row">
-				<a href="http://fastdotnet.com" target="_blank" rel="noopener noreferrer">
+				<a href="https://fastdotnet.com" target="_blank" rel="noopener noreferrer">
 					Copyright © 2018~{{ new Date().getFullYear() }} Fast All rights reserved.
 				</a>
 				<el-text>v{{ state.appVersion }}</el-text>
@@ -13,7 +13,7 @@
 					target="_blank"
 					rel="noopener noreferrer"
 				>
-					<img :src="gonganImage" />
+					<img :src="gonganImage" alt="" width="16" height="16" />
 					{{ state.publicSecurityCode }}
 				</a>
 				<a v-if="state.icpText" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">{{ state.icpText }}</a>
@@ -21,7 +21,7 @@
 		</div>
 	</template>
 	<template v-else>
-		<a href="http://fastdotnet.com" target="_blank" rel="noopener noreferrer">
+		<a href="https://fastdotnet.com" target="_blank" rel="noopener noreferrer">
 			Copyright © 2018~{{ new Date().getFullYear() }} Fast All rights reserved.
 		</a>
 		<a
@@ -30,7 +30,7 @@
 			target="_blank"
 			rel="noopener noreferrer"
 		>
-			<img :src="gonganImage" />
+			<img :src="gonganImage" alt="" width="16" height="16" />
 			{{ state.publicSecurityCode }}
 		</a>
 		<a v-if="state.icpText" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">{{ state.icpText }}</a>
@@ -62,14 +62,14 @@ const state = reactive({
 });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .footer-small {
 	display: flex;
-	width: 100%;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 	gap: 6px;
+	width: 100%;
 }
 
 .footer-row {
@@ -78,18 +78,30 @@ const state = reactive({
 	align-items: center;
 	justify-content: center;
 	row-gap: 2px;
+	min-width: 0;
+	max-width: 100%;
 }
+
 a,
 .el-text {
 	display: flex;
 	align-items: center;
+	justify-content: center;
 	gap: 3px;
+	min-width: 0;
+	max-width: 100%;
 	padding-inline: 5px;
-	color: var(--el-text-color-secondary);
 	text-align: center;
 	text-decoration: none;
 	letter-spacing: 0.5px;
+	overflow-wrap: anywhere;
+	color: var(--el-text-color-secondary);
+
+	img {
+		flex-shrink: 0;
+	}
 }
+
 a:hover {
 	color: var(--el-text-color-primary);
 }

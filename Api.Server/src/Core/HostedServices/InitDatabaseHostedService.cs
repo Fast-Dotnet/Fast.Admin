@@ -80,7 +80,8 @@ public class InitDatabaseHostedService : IHostedService
             db.CodeFirst.SplitTables().InitTables(splitTableTypes);
 
             var dateTime = new DateTime(2025, 01, 01);
-            string initialAdminPassword = CryptoUtil.HashPasswordPBKDF2SHA256(CommonConst.Default.AdminPassword);
+            string initialAdminPassword =
+                CryptoUtil.HashPasswordPBKDF2SHA256(GlobalContext.InitializationSettings.DefaultAdminPassword);
 
             // 表结构创建不参与数据事务；种子数据统一进入事务，失败后下次启动可以安全重试
             await db.Ado.BeginTranAsync();
@@ -104,8 +105,8 @@ public class InitDatabaseHostedService : IHostedService
                     AdminPhone = null,
                     RobotName = "机器人",
                     TenantType = TenantTypeEnum.System,
-                    LogoUrl = CommonConst.DefaultLogo,
-                    AllowDeleteData = true,
+                    LogoUrl = GlobalContext.InitializationSettings.DefaultLogo,
+                    AliyunSignName = "FastDotnet",
                     CreatedTime = dateTime
                 };
                 systemTenantModel = await db.Insertable(systemTenantModel).ExecuteReturnEntityAsync();
@@ -120,7 +121,7 @@ public class InitDatabaseHostedService : IHostedService
                     Email = "2875616188@qq.com",
                     Password = initialAdminPassword,
                     NickName = "小方",
-                    Avatar = CommonConst.DefaultLogo,
+                    Avatar = GlobalContext.InitializationSettings.DefaultLogo,
                     Status = CommonStatusEnum.Enable,
                     CreatedTime = dateTime
                 };
@@ -137,7 +138,7 @@ public class InitDatabaseHostedService : IHostedService
                             AccountId = superAdminAccountModel.AccountId,
                             EmployeeNo = "SuperAdmin",
                             EmployeeName = "超级管理员",
-                            IdPhoto = CommonConst.DefaultLogo,
+                            IdPhoto = GlobalContext.InitializationSettings.DefaultLogo,
                             DepartmentId = null,
                             DepartmentName = null,
                             UserType = UserTypeEnum.SuperAdmin,

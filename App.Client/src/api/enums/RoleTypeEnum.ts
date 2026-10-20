@@ -3,13 +3,13 @@
  */
 export enum RoleTypeEnum {
 	/**
-	 * 管理员
-	 */
-	Admin = 1,
-	/**
 	 * 默认
 	 */
-	Default = 2,
+	Default = 1,
+	/**
+	 * 管理员
+	 */
+	Admin = 2,
 	/**
 	 * 技术
 	 */
@@ -22,4 +22,8 @@ export enum RoleTypeEnum {
 	 * 财务
 	 */
 	Finance = 16,
+	/**
+	 * 审计
+	 */
+	Audit = 32,
 }

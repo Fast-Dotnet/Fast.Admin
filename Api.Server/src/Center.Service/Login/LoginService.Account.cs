@@ -27,7 +27,7 @@ public partial class LoginService
     public async Task<LoginOutput> Login(LoginInput input)
     {
         // 查询应用信息
-        ApplicationOpenIdModel applicationModel = await EnsureApplication();
+        ApplicationClientModel applicationModel = await EnsureApplication();
 
         // 目前只有 Web 端启用了图片验证码
         if (GlobalContext.IsWeb && await IsLoginCaptchaEnabled())
@@ -193,7 +193,7 @@ public partial class LoginService
         }
 
         // 查询应用信息
-        ApplicationOpenIdModel applicationModel = await EnsureApplication();
+        ApplicationClientModel applicationModel = await EnsureApplication();
 
         // 目前只有 Web 端启用了图片验证码，这里登录凭证为空的情况下是存在租户直接登录的
         if (string.IsNullOrWhiteSpace(input.LoginTicket) && GlobalContext.IsWeb && await IsLoginCaptchaEnabled())

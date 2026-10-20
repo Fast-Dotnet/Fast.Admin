@@ -39,10 +39,6 @@ export interface LaunchOutput {
 	 */
 	loginComponent?: string;
 	/**
-	 * WebSocket地址
-	 */
-	webSocketUrl?: string;
-	/**
 	 * 请求超时时间（毫秒）
 	 */
 	requestTimeout?: number;

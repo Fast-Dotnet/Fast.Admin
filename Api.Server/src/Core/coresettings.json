@@ -25,6 +25,29 @@
     // 客户端可获取的响应标头
     "WithExposedHeaders": [ "Fast-Response-Encipher" ]
   },
+  // 初始化配置
+  "InitializationSettings": {
+    // 应用名称
+    "AppName": "Fast.Admin",
+    // 主题色
+    "ThemeColor": "#409EFF",
+    // CenterLog 库命名
+    "DatabaseNaming_CenterLog": "FaCenter_Log",
+    // Gateway 库命名
+    "DatabaseNaming_Gateway": "FaGateway",
+    // Deploy 库命名
+    "DatabaseNaming_Deploy": "FaDeploy",
+    // Admin 库命名
+    "DatabaseNaming_Admin": "FaAdmin",
+    // AdminLog 库命名
+    "DatabaseNaming_AdminLog": "FaAdmin_Log",
+    // 默认管理员密码
+    "DefaultAdminPassword": "fast.2025",
+    // 默认密码
+    "DefaultPassword": "123456",
+    // 默认Logo
+    "DefaultLogo": "https://gitee.com/FastDotnet/Fast.Admin/raw/master/Fast.png"
+  },
   // API 限流配置
   "ApiRateLimitSettingsOptions": {
     // 登录限流，单个Ip与设备Id组合在统计窗口内允许的请求数

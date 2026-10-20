@@ -11,7 +11,7 @@ export interface RefundRecordModel {
 	/**
 	 * 应用标识
 	 */
-	appOpenId?: string;
+	appKey?: string;
 	/**
 	 * 退款商户号
 	 */

@@ -98,7 +98,7 @@ public class QueryTenantPagedOutput : PagedOutput
     public string LogoUrl { get; set; }
 
     /// <summary>
-    /// 允许删除数据
+    /// 阿里云签名名称
     /// </summary>
-    public bool AllowDeleteData { get; set; }
+    public string AliyunSignName { get; set; }
 }

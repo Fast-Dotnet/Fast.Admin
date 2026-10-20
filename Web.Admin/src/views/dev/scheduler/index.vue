@@ -7,11 +7,11 @@
 						<el-text tag="b" size="large" type="primary"> {{ state.schedulerDetail.schedulerName }}</el-text>
 					</div>
 
-					<div v-if="state.tenantName" class="pb10" style="text-align: center">
+					<div v-if="state.tenantName" style="padding-bottom: 10px; text-align: center">
 						<el-text tag="b" size="large" type="primary"> {{ state.tenantName }}</el-text>
 					</div>
 
-					<div class="mb10" style="border-bottom: var(--el-border); text-align: right">
+					<div style="border-bottom: var(--el-border); text-align: right; margin-bottom: 10px !important">
 						<el-text type="info">{{ dayjs(state.lastUpdateTime).format("YYYY-MM-DD HH:mm:ss") }}</el-text>
 					</div>
 
@@ -25,7 +25,7 @@
 								<el-button
 									v-if="state.schedulerDetail.schedulerInStandbyMode"
 									v-auth="'Scheduler:Start'"
-									class="ml10"
+									style="margin-left: 10px"
 									size="small"
 									plain
 									type="primary"
@@ -33,7 +33,15 @@
 								>
 									启动
 								</el-button>
-								<el-button v-else v-auth="'Scheduler:Stop'" class="ml10" size="small" plain type="danger" @click="handleStop">
+								<el-button
+									v-else
+									v-auth="'Scheduler:Stop'"
+									style="margin-left: 10px"
+									size="small"
+									plain
+									type="danger"
+									@click="handleStop"
+								>
 									待机
 								</el-button>
 							</div>
@@ -105,7 +113,7 @@
 				</template>
 				<!-- 表格按钮操作区域 -->
 				<template #header>
-					<TenantSelectPage class="pr12" width="280px" v-model="state.tenantId" />
+					<TenantSelectPage style="padding-right: 12px" width="280px" v-model="state.tenantId" />
 					<el-button v-auth="'Scheduler:Add'" type="primary" :icon="Plus" @click="editFormRef.add(state.tenantId, state.activeJobGroup)">
 						添加作业
 					</el-button>
@@ -207,7 +215,7 @@
 
 				<!-- 表格操作 -->
 				<template #operation="{ row }: { row: SchedulerJobInfoDto }">
-					<div class="mb5">
+					<div style="margin-bottom: 5px !important">
 						<el-button
 							v-auth="'Scheduler:Edit'"
 							size="small"
@@ -360,9 +368,7 @@ const handleJobGroupChange = async (value: SchedulerJobGroupEnum) => {
 
 /** 调度程序启动 */
 const handleStart = () => {
-	ElMessageBox.confirm(`确定要启动【${state.schedulerDetail.schedulerName}】？`, {
-		type: "warning",
-	}).then(async () => {
+	ElMessageBox.confirm(`确定要启动【${state.schedulerDetail.schedulerName}】？`, { type: "warning" }).then(async () => {
 		await schedulerApi.startScheduler(state.tenantId);
 		ElMessage.success("启动成功！");
 		state.schedulerDetail.schedulerInStandbyMode = false;
@@ -372,9 +378,7 @@ const handleStart = () => {
 
 /** 调度程序停止 */
 const handleStop = () => {
-	ElMessageBox.confirm(`确定要待机【${state.schedulerDetail.schedulerName}】？`, {
-		type: "warning",
-	}).then(async () => {
+	ElMessageBox.confirm(`确定要待机【${state.schedulerDetail.schedulerName}】？`, { type: "warning" }).then(async () => {
 		await schedulerApi.stopScheduler(state.tenantId);
 		ElMessage.success("待机成功！");
 		state.schedulerDetail.schedulerInStandbyMode = true;
@@ -391,9 +395,7 @@ const handleShowException = (row: SchedulerJobInfoDto) => {
 
 /** 异常删除 */
 const handleDelException = (row: SchedulerJobInfoDto) => {
-	ElMessageBox.confirm(`确定要删除【${row.jobName}】的异常信息？`, {
-		type: "warning",
-	}).then(async () => {
+	ElMessageBox.confirm(`确定要删除【${row.jobName}】的异常信息？`, { type: "warning" }).then(async () => {
 		await schedulerApi.deleteSchedulerJobException(state.tenantId, {
 			jobName: row.jobName,
 			jobGroup: state.activeJobGroup,
@@ -421,9 +423,7 @@ const handleLogs = async (row: SchedulerJobInfoDto) => {
 
 /** 暂停调度作业 */
 const handleStopJob = (row: SchedulerJobInfoDto) => {
-	ElMessageBox.confirm(`确定要暂停【${row.jobName}】？`, {
-		type: "warning",
-	}).then(async () => {
+	ElMessageBox.confirm(`确定要暂停【${row.jobName}】？`, { type: "warning" }).then(async () => {
 		await schedulerApi.stopSchedulerJob(state.tenantId, {
 			jobName: row.jobName,
 			jobGroup: state.activeJobGroup,
@@ -435,9 +435,7 @@ const handleStopJob = (row: SchedulerJobInfoDto) => {
 
 /** 恢复调度作业 */
 const handleResumeJob = (row: SchedulerJobInfoDto) => {
-	ElMessageBox.confirm(`确定要恢复【${row.jobName}】？`, {
-		type: "warning",
-	}).then(async () => {
+	ElMessageBox.confirm(`确定要恢复【${row.jobName}】？`, { type: "warning" }).then(async () => {
 		await schedulerApi.resumeSchedulerJob(state.tenantId, {
 			jobName: row.jobName,
 			jobGroup: state.activeJobGroup,
@@ -449,9 +447,7 @@ const handleResumeJob = (row: SchedulerJobInfoDto) => {
 
 /** 执行调度作业 */
 const handleTriggerJob = (row: SchedulerJobInfoDto) => {
-	ElMessageBox.confirm(`确定要立即执行【${row.jobName}】？`, {
-		type: "warning",
-	}).then(async () => {
+	ElMessageBox.confirm(`确定要立即执行【${row.jobName}】？`, { type: "warning" }).then(async () => {
 		await schedulerApi.triggerSchedulerJob(state.tenantId, {
 			jobName: row.jobName,
 			jobGroup: state.activeJobGroup,
@@ -463,9 +459,7 @@ const handleTriggerJob = (row: SchedulerJobInfoDto) => {
 
 /** 删除调度作业 */
 const handleDelJob = (row: SchedulerJobInfoDto) => {
-	ElMessageBox.confirm(`确定要删除【${row.jobName}】？`, {
-		type: "warning",
-	}).then(async () => {
+	ElMessageBox.confirm(`确定要删除【${row.jobName}】？`, { type: "warning" }).then(async () => {
 		await schedulerApi.deleteSchedulerJob(state.tenantId, {
 			jobName: row.jobName,
 			jobGroup: state.activeJobGroup,
@@ -509,79 +503,101 @@ onUnmounted(deactivate);
 <style lang="scss" scoped>
 .el-card {
 	padding: 0;
-	:deep(.el-card__body) {
-		height: 100%;
+}
+
+:deep(.el-card__body) {
+	height: 100%;
+	padding-right: 10px;
+
+	.el-scrollbar {
 		padding-right: 10px;
-		.el-scrollbar {
-			padding-right: 10px;
-		}
 	}
 }
+
 .el-main {
 	--el-main-padding: 0 0 0 5px;
 }
+
 .el-form {
 	.el-form-item {
 		margin-bottom: 0;
 	}
-	:deep() {
-		.el-form-item__label {
-			padding: 0 6px 0 0;
-		}
+
+	:deep(.el-form-item__label) {
+		padding: 0 6px 0 0;
 	}
 }
+
 .fa-table {
-	:deep() {
-		.fa-table__header {
-			background-color: var(--el-menu-bg-color);
-			padding: 0 10px;
-			.el-menu {
-				--el-menu-horizontal-height: 50px;
-				width: 100%;
-				border: none;
-			}
+	:deep(.fa-table__header) {
+		padding: 0 10px;
+		background-color: var(--el-menu-bg-color);
+
+		.el-menu {
+			--el-menu-horizontal-height: 50px;
+
+			width: 100%;
+			border: none;
 		}
 	}
 }
-:deep(.el-dialog) {
-	.log_content {
-		padding-bottom: 20px;
-		padding-right: 10px;
-		.logList {
-			padding-left: 10px;
-			border-left: 3px solid var(--el-color-primary);
-			&.error {
-				border-left: 3px solid var(--el-color-danger);
-			}
-			.time {
-				display: inline-block;
-				padding-bottom: 3px;
-				font-weight: 500;
-				color: var(--el-color-success);
-			}
-			.execTime {
-				font-weight: 500;
-				color: var(--el-color-warning);
-			}
-			.url {
-				color: var(--el-color-primary);
-			}
-			.params {
-				font-weight: 500;
-				color: var(--el-color-danger);
-			}
-			.headers {
-				color: var(--el-color-success);
-			}
-			.result {
-				color: var(--el-color-primary);
-				font-weight: 500;
-			}
-			.error {
-				color: var(--el-color-danger);
-				font-weight: 500;
-			}
+
+.log_content {
+	padding-bottom: 20px;
+	padding-right: 10px;
+	overflow-wrap: anywhere;
+
+	:deep(.log-list) {
+		padding-left: 10px;
+		border-left: 3px solid var(--el-color-primary);
+
+		.time {
+			display: inline-block;
+			padding-bottom: 3px;
+			font-weight: 500;
+			color: var(--el-color-success);
 		}
+
+		.execTime {
+			font-weight: 500;
+			color: var(--el-color-warning);
+		}
+
+		.url {
+			color: var(--el-color-primary);
+		}
+
+		.params {
+			font-weight: 500;
+			color: var(--el-color-danger);
+		}
+
+		.headers {
+			color: var(--el-color-success);
+		}
+	}
+
+	:deep(.log-list__error) {
+		border-left: 3px solid var(--el-color-danger);
+	}
+
+	:deep(.log-result) {
+		font-weight: 500;
+		color: var(--el-color-primary);
+	}
+
+	:deep(.log-error) {
+		font-weight: 500;
+		color: var(--el-color-danger);
+	}
+
+	:deep(.log-warn) {
+		font-weight: 500;
+		color: var(--el-color-warning);
+	}
+
+	:deep(pre) {
+		white-space: pre-wrap;
 	}
 }
 </style>

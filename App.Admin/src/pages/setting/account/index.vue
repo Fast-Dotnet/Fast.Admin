@@ -189,7 +189,7 @@ onLoad(() => {
 });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .top-cell-group {
 	--wot-cell-arrow-size: 16px;
 }

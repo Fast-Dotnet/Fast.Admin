@@ -43,6 +43,14 @@ export interface ExceptionLogModel {
 	 */
 	paramsObj?: string;
 	/**
+	 * 部门Id
+	 */
+	departmentId?: string;
+	/**
+	 * 部门名称
+	 */
+	departmentName?: string;
+	/**
 	 * 异常时间
 	 */
 	createdTime?: string;
@@ -78,14 +86,6 @@ export interface ExceptionLogModel {
 	 * 
 	 */
 	ip?: string;
-	/**
-	 * 
-	 */
-	departmentId?: string;
-	/**
-	 * 
-	 */
-	departmentName?: string;
 	/**
 	 * 
 	 */

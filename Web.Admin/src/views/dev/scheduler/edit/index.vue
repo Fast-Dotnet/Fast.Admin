@@ -184,10 +184,10 @@
 					<el-input v-model="state.formData.requestUrl" type="textarea" maxlength="100" placeholder="请输入请求Url" />
 				</el-form-item>
 				<el-form-item prop="requestHeader" label="请求头">
-					<div class="dynamicObj">
+					<div class="dynamic-obj">
 						<el-button type="primary" size="small" @click="handleAddObj('requestHeaderObj')">添加</el-button>
 						<el-scrollbar v-if="state.requestHeaderObj.length > 0">
-							<el-row v-for="(item, index) in state.requestHeaderObj" :key="index" class="mb5">
+							<el-row v-for="(item, index) in state.requestHeaderObj" :key="index" style="margin-bottom: 5px !important">
 								<el-col :span="8">
 									<el-input v-model="item.key" maxlength="20" placeholder="请输入Key" />
 								</el-col>
@@ -202,10 +202,10 @@
 					</div>
 				</el-form-item>
 				<el-form-item prop="requestParams" label="请求参数">
-					<div class="dynamicObj">
+					<div class="dynamic-obj">
 						<el-button type="primary" size="small" @click="handleAddObj('requestParamsObj')">添加</el-button>
 						<el-scrollbar v-if="state.requestParamsObj.length > 0">
-							<el-row v-for="(item, index) in state.requestParamsObj" :key="index" class="mb5">
+							<el-row v-for="(item, index) in state.requestParamsObj" :key="index" style="margin-bottom: 5px !important">
 								<el-col :span="8">
 									<el-input v-model="item.key" maxlength="20" placeholder="请输入Key" />
 								</el-col>
@@ -452,21 +452,24 @@ defineExpose({
 
 <style lang="scss" scoped>
 .cronLogs {
+	height: 100px;
 	padding: 5px 10px;
 	line-height: normal;
-	height: 100px;
 	background-color: var(--el-color-info-light-7);
 }
-.dynamicObj {
+
+.dynamic-obj {
 	display: flex;
 	flex-direction: column;
-	gap: 5px;
 	align-items: start;
+	gap: 5px;
+
 	.el-scrollbar {
+		width: 100%;
 		height: 120px;
 		padding: 5px 10px;
 		border: var(--el-border);
-		width: 100%;
+
 		.el-row {
 			gap: 5px;
 		}

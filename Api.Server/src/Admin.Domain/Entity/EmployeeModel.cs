@@ -15,7 +15,7 @@ namespace Fast.Admin.Domain;
 [SugarDbType(DatabaseTypeEnum.Admin)]
 [SugarIndex($"UX_{{table}}_{nameof(EmployeeNo)}", nameof(EmployeeNo), OrderByType.Asc, true)]
 [SugarIndex($"UX_{{table}}_{nameof(Mobile)}", nameof(Mobile), OrderByType.Asc, true)]
-public class EmployeeModel : IUpdateVersion
+public class EmployeeModel : BaseEntity, IUpdateVersion
 {
     /// <summary>
     /// 职员Id
@@ -92,43 +92,6 @@ public class EmployeeModel : IUpdateVersion
     /// </summary>
     [SugarColumn(ColumnDescription = "备注", Length = 200)]
     public string Remark { get; set; }
-
-    /// <summary>
-    /// 创建者用户Id
-    /// </summary>
-    [SugarColumn(ColumnDescription = "创建者用户Id", CreateTableFieldSort = 991)]
-    public long? CreatedUserId { get; set; }
-
-    /// <summary>
-    /// 创建者用户名称
-    /// </summary>
-    [SugarColumn(ColumnDescription = "创建者用户名称", Length = 20, CreateTableFieldSort = 992)]
-    public string CreatedUserName { get; set; }
-
-    /// <summary>
-    /// 创建时间
-    /// </summary>
-    [Required]
-    [SugarColumn(ColumnDescription = "创建时间", CreateTableFieldSort = 993)]
-    public DateTime? CreatedTime { get; set; }
-
-    /// <summary>
-    /// 更新者用户Id
-    /// </summary>
-    [SugarColumn(ColumnDescription = "更新者用户Id", CreateTableFieldSort = 994)]
-    public long? UpdatedUserId { get; set; }
-
-    /// <summary>
-    /// 更新者用户名称
-    /// </summary>
-    [SugarColumn(ColumnDescription = "更新者用户名称", Length = 20, CreateTableFieldSort = 995)]
-    public string UpdatedUserName { get; set; }
-
-    /// <summary>
-    /// 更新时间
-    /// </summary>
-    [SugarColumn(ColumnDescription = "更新时间", CreateTableFieldSort = 996)]
-    public DateTime? UpdatedTime { get; set; }
 
     /// <summary>
     /// 更新版本控制字段

@@ -71,7 +71,7 @@ internal sealed class LocalJob : JobBase<SchedulerJobLogInfo>
         if (!string.IsNullOrWhiteSpace(result))
         {
             _logInfo.Result =
-                $"<span class='result'>{HttpUtility.HtmlEncode(result).GetSubStringWithEllipsis(1000, true)}</span>";
+                $"<span class='log-result'>{HttpUtility.HtmlEncode(result).GetSubStringWithEllipsis(1000, true)}</span>";
         }
     }
 }

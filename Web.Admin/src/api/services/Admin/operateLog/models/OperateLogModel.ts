@@ -37,6 +37,14 @@ export interface OperateLogModel {
 	 */
 	description?: string;
 	/**
+	 * 部门Id
+	 */
+	departmentId?: string;
+	/**
+	 * 部门名称
+	 */
+	departmentName?: string;
+	/**
 	 * 操作者用户Id
 	 */
 	createdUserId?: string;
@@ -72,13 +80,5 @@ export interface OperateLogModel {
 	 * 
 	 */
 	ip?: string;
-	/**
-	 * 
-	 */
-	departmentId?: string;
-	/**
-	 * 
-	 */
-	departmentName?: string;
 }
 

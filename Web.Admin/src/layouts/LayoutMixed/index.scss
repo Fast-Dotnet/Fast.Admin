@@ -1,186 +1,175 @@
+@use "../styles/common.scss";
+
 .layout {
 	.el-aside {
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;
-		transition: width var(--el-transition-duration);
-		background-color: var(--el-bg-color);
 		border-right: var(--el-border);
+		background-color: var(--el-bg-color);
+		transition: width var(--el-transition-duration);
 	}
-	.el-container {
-		.el-header {
-			--el-header-padding: 0;
-			--el-header-height: auto;
-			transition: height var(--el-transition-duration);
-			background-color: var(--el-bg-color);
-			.nav-bar {
-				transition: height var(--el-transition-duration);
-				height: var(--height);
-				display: flex;
-				flex-direction: row;
-				align-items: center;
-				justify-content: space-between;
-				border-bottom: var(--el-border);
-				overflow: hidden;
-				.left {
-					flex: 1;
-					height: 100%;
-					display: flex;
-					flex-direction: row;
-					align-items: center;
-					overflow: hidden;
-				}
-				.right {
-					height: 100%;
-					display: flex;
-					flex-direction: row;
-					align-items: center;
-					gap: 5px;
-					.screen-full {
-						width: 35px;
-						&:hover {
-							background-color: var(--el-text-color-disabled);
-						}
-					}
-					.menu-search,
-					.logout,
-					.setting {
-						height: 100%;
-						width: 35px;
-						font-size: var(--el-font-size-large);
-						cursor: pointer;
-						&:hover {
-							background-color: var(--el-text-color-disabled);
-						}
-					}
-					.avatar {
-						height: 100%;
-						-webkit-user-select: none;
-						user-select: none;
-						padding: 0 5px;
-						cursor: pointer;
-						&:hover {
-							background-color: var(--el-text-color-disabled);
-						}
-						.user-info {
-							display: flex;
-							flex-direction: row;
-							align-items: center;
-							gap: 5px;
-							.nick-name {
-								max-width: 200px;
-								white-space: nowrap;
-								overflow: hidden;
-								text-overflow: ellipsis;
-							}
-						}
-					}
-				}
-			}
-		}
-		.el-main {
-			overflow-x: hidden;
-			background-color: var(--el-bg-color-page);
-			:deep(.el-scrollbar) {
-				.el-scrollbar__wrap {
-					.el-scrollbar__view {
-						height: 100%;
-						.layout-main {
-							flex: 1;
-							width: 100%;
-							height: 100%;
-						}
-					}
-				}
-			}
-		}
-		.el-footer {
-			--el-footer-padding: 0;
-			font-size: var(--el-font-size-small);
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			transition: height var(--el-transition-duration);
-			overflow: hidden;
-			background-color: var(--el-bg-color);
-			border-top: var(--el-border);
-		}
-	}
-}
 
-.layout.contentFull,
-.layout.contentLarge {
-	.el-aside {
-		--el-aside-width: 0 !important;
-		border-right-width: 0;
+	.el-header {
+		--el-header-padding: 0;
+		--el-header-height: auto;
+
+		background-color: var(--el-bg-color);
+		transition: height var(--el-transition-duration);
 	}
-	.el-container {
-		.el-header {
-			.nav-bar {
-				--height: 0 !important;
-			}
+
+	.el-main {
+		overflow-x: hidden;
+		background-color: var(--el-bg-color-page);
+	}
+
+	.el-footer {
+		--el-footer-padding: 0;
+
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+		font-size: var(--el-font-size-small);
+		border-top: var(--el-border);
+		background-color: var(--el-bg-color);
+		transition: height var(--el-transition-duration);
+	}
+
+	&.contentFull,
+	&.contentLarge {
+		.el-aside {
+			--el-aside-width: 0 !important;
+
+			border-right-width: 0;
 		}
+
 		.el-footer {
 			--el-footer-height: 0 !important;
 		}
-	}
-}
 
-.layout.contentFull {
-	.el-container {
-		.el-header {
-			.nav-tab {
-				--height: 0 !important;
-			}
+		.nav-bar {
+			--height: 0 !important;
+		}
+	}
+
+	&.contentFull {
+		.nav-tab {
+			--height: 0 !important;
 		}
 	}
 }
 
-html.small {
-	.layout {
-		.el-container {
-			.el-header {
-				.nav-bar {
-					.right {
-						.screen-full {
-							width: 30px;
-						}
-						.menu-search,
-						.logout,
-						.setting {
-							width: 30px;
-						}
-						.avatar {
-							font-size: var(--el-font-size-extra-small);
-							.el-avatar {
-								--el-avatar-size: 22px !important;
-							}
-						}
-					}
-				}
-			}
+.layout .nav-bar {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	overflow: hidden;
+	height: var(--height);
+	border-bottom: var(--el-border);
+	transition: height var(--el-transition-duration);
+}
+
+.left {
+	display: flex;
+	flex: 1;
+	flex-direction: row;
+	align-items: center;
+	overflow: hidden;
+	height: 100%;
+}
+
+.right {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 5px;
+	height: 100%;
+}
+
+.screen-full {
+	width: 35px;
+
+	&:hover {
+		background-color: var(--el-text-color-disabled);
+	}
+}
+
+.menu-search,
+.logout,
+.setting {
+	width: 35px;
+	height: 100%;
+	font-size: var(--el-font-size-large);
+	cursor: pointer;
+
+	&:hover {
+		background-color: var(--el-text-color-disabled);
+	}
+}
+
+.avatar {
+	height: 100%;
+	padding: 0 5px;
+	-webkit-user-select: none;
+	user-select: none;
+	cursor: pointer;
+
+	&:hover {
+		background-color: var(--el-text-color-disabled);
+	}
+}
+
+.user-info {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 5px;
+}
+
+.nick-name {
+	overflow: hidden;
+	max-width: 200px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+html.small .layout {
+	.screen-full {
+		width: 30px;
+	}
+
+	.menu-search,
+	.logout,
+	.setting {
+		width: 30px;
+	}
+
+	.avatar {
+		font-size: var(--el-font-size-extra-small);
+
+		.el-avatar {
+			--el-avatar-size: 22px !important;
 		}
 	}
 }
 
 @media (max-width: 1366px) {
 	.layout {
-		.el-container {
-			.el-footer {
-				flex-direction: column;
-				justify-content: space-evenly;
-				height: calc(var(--el-footer-height) * 1.7);
-			}
+		.el-container > .el-footer {
+			flex-direction: column;
+			justify-content: space-evenly;
+			height: auto;
+			min-height: calc(var(--el-footer-height) * 1.7);
 		}
 	}
 }
 
 @media (max-width: 480px) {
 	.layout {
-		.el-container {
-			.el-footer {
-				font-size: var(--el-font-size-extra-small);
-			}
+		.el-footer {
+			font-size: var(--el-font-size-extra-small);
 		}
 	}
 }

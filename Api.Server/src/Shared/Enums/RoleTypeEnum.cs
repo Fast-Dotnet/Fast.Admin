@@ -1,4 +1,4 @@
-﻿// Copyright © 2018-Present 小方
+// Copyright © 2018-Present 小方
 // SPDX-License-Identifier: Apache-2.0
 // 
 // 本文件依据 Apache License 2.0 授权，完整条款见仓库根目录 LICENSE。
@@ -15,18 +15,18 @@ namespace Fast.Shared;
 public enum RoleTypeEnum
 {
     /// <summary>
+    /// 默认
+    /// </summary>
+    [TagType(TagTypeEnum.Success)]
+    [Description("默认")]
+    Default = 1 << 0,
+
+    /// <summary>
     /// 管理员
     /// </summary>
     [TagType(TagTypeEnum.Danger)]
     [Description("管理员")]
-    Admin = 1 << 0,
-
-    /// <summary>
-    /// 默认
-    /// </summary>
-    [TagType(TagTypeEnum.Info)]
-    [Description("默认")]
-    Default = 1 << 1,
+    Admin = 1 << 1,
 
     /// <summary>
     /// 技术
@@ -47,5 +47,12 @@ public enum RoleTypeEnum
     /// </summary>
     [TagType(TagTypeEnum.Primary)]
     [Description("财务")]
-    Finance = 1 << 4
+    Finance = 1 << 4,
+
+    /// <summary>
+    /// 审计
+    /// </summary>
+    [TagType(TagTypeEnum.Primary)]
+    [Description("审计")]
+    Audit = 1 << 5
 }

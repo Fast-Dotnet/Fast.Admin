@@ -34,7 +34,7 @@ public class ClientUserService : IDynamicApplication
     [ApiInfo("客户端用户选择器", HttpRequestActionEnum.Paged)]
     public async Task<PagedResult<ElSelectorOutput<long>>> ClientUserSelector(PagedInput input)
     {
-        ApplicationOpenIdModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
+        ApplicationClientModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
         PagedResult<ClientUserModel> data = await _repository.Entities.Where(wh => wh.AppId == applicationModel.AppId)
             .WhereIF(!string.IsNullOrWhiteSpace(input.SearchValue),
                 wh => wh.Mobile.Contains(input.SearchValue)
@@ -105,7 +105,7 @@ public class ClientUserService : IDynamicApplication
     public async Task<QueryClientUserDetailOutput> QueryClientUserDetail()
     {
         // 查询应用信息
-        ApplicationOpenIdModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
+        ApplicationClientModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
 
         if (applicationModel.AppType != GlobalContext.DeviceType)
         {
@@ -157,7 +157,7 @@ public class ClientUserService : IDynamicApplication
     public async Task EditClientUser(EditClientUserInput input)
     {
         // 查询应用信息
-        ApplicationOpenIdModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
+        ApplicationClientModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
 
         if (applicationModel.AppType != GlobalContext.DeviceType)
         {

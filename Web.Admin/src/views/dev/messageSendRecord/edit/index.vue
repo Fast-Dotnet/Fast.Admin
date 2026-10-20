@@ -102,13 +102,13 @@ defineExpose({
 }
 
 .message-send-record-detail__text {
+	overflow: auto;
 	max-height: 500px;
 	margin: 0;
 	padding: 16px;
-	overflow: auto;
-	border: var(--el-border);
-	border-radius: var(--el-border-radius-base);
 	white-space: pre-wrap;
 	overflow-wrap: anywhere;
+	border: var(--el-border);
+	border-radius: var(--el-border-radius-base);
 }
 </style>

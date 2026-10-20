@@ -1,3 +1,4 @@
+import type { QueryApplicationClientOutput } from "./QueryApplicationClientOutput";
 import type { EditionEnum } from "@/api/enums/EditionEnum";
 
 /**
@@ -37,9 +38,9 @@ export interface QueryApplicationPagedOutput {
 	 */
 	tenantName?: string;
 	/**
-	 * 
+	 * 应用标识列表
 	 */
-	departmentName?: string;
+	clientList?: QueryApplicationClientOutput[];
 	/**
 	 * 
 	 */

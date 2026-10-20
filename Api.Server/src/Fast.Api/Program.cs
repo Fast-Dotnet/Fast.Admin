@@ -34,6 +34,16 @@ builder.Services.AddSerialization();
 // 添加日志服务
 builder.Services.AddLoggingService(builder.Configuration);
 
+// 添加初始化配置
+builder.Services.AddConfigurableOptions<InitializationSettingsOptions>();
+GlobalContext.InitializationSettings = builder.Configuration
+                                           .GetSection(MAppContext.GetOptionName<InitializationSettingsOptions>())
+                                           .Get<InitializationSettingsOptions>()
+                                       ?? throw new InvalidOperationException("缺少 InitializationSettings 初始化配置。");
+
+// 加载菜单、按钮初始化角色权限
+GlobalContext.LoadRolePermissions(builder.Configuration);
+
 // 添加跨域服务
 builder.Services.AddCorsAccessor(builder.Configuration);
 

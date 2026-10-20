@@ -113,10 +113,10 @@ public partial class LoginService : IDynamicApplication
     /// <summary>
     /// 确保应用安全
     /// </summary>
-    private async Task<ApplicationOpenIdModel> EnsureApplication()
+    private async Task<ApplicationClientModel> EnsureApplication()
     {
         // 查询应用信息
-        ApplicationOpenIdModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
+        ApplicationClientModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
 
         if (applicationModel.AppType != GlobalContext.DeviceType)
         {

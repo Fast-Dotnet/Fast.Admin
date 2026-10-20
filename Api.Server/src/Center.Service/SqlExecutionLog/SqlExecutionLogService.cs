@@ -16,14 +16,13 @@ namespace Fast.Center.Service.SqlExecutionLog;
 /// SQL 执行日志服务
 /// </summary>
 [ApiDescriptionSettings(ApiGroupConst.Center, Name = "sqlExecutionLog")]
+[PlatformOnly]
 public class SqlExecutionLogService : IDynamicApplication
 {
-    private readonly IUser _user;
     private readonly ISqlSugarRepository<SqlExecutionLogModel> _repository;
 
-    public SqlExecutionLogService(IUser user, ISqlSugarRepository<SqlExecutionLogModel> repository)
+    public SqlExecutionLogService(ISqlSugarRepository<SqlExecutionLogModel> repository)
     {
-        _user = user;
         _repository = repository;
     }
 
@@ -40,19 +39,9 @@ public class SqlExecutionLogService : IDynamicApplication
             throw new UserFriendlyException("请选择具体的时间范围！");
         }
 
-        ISugarQueryable<SqlExecutionLogModel> queryable =
-            _repository.Entities.WhereIF(input.AccountId != null, wh => wh.AccountId == input.AccountId);
-
-        if (_user.IsSuperAdmin)
-        {
-            queryable = queryable.WhereIF(input.TenantId != null, wh => wh.TenantId == input.TenantId);
-        }
-        else
-        {
-            queryable = queryable.Where(wh => wh.TenantId == _user.TenantId);
-        }
-
-        return await queryable.SplitTable()
+        return await _repository.Entities.WhereIF(input.AccountId != null, wh => wh.AccountId == input.AccountId)
+            .WhereIF(input.TenantId != null, wh => wh.TenantId == input.TenantId)
+            .SplitTable()
             .OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
             .ToPagedListAsync(input);
     }

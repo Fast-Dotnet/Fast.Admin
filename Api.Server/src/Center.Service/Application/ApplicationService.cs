@@ -32,16 +32,10 @@ public class ApplicationService : IDynamicApplication
     /// </summary>
     [HttpGet]
     [ApiInfo("应用选择器", HttpRequestActionEnum.Query)]
+    [PlatformOnly]
     public async Task<List<ElSelectorOutput<long>>> ApplicationSelector()
     {
-        ISugarQueryable<ApplicationModel> queryable = _repository.Entities;
-        TenantModel tenantModel = await TenantContext.GetTenant(_user.TenantNo);
-        if (!_user.IsSuperAdmin && tenantModel.TenantType != TenantTypeEnum.System)
-        {
-            queryable = queryable.Where(wh => wh.TenantId == _user.TenantId);
-        }
-
-        var data = await queryable.OrderBy(ob => ob.AppName)
+        var data = await _repository.Entities.OrderBy(ob => ob.AppName)
             .Select(sl => new
             {
                 sl.AppId,
@@ -66,14 +60,8 @@ public class ApplicationService : IDynamicApplication
     [PlatformOnly]
     public async Task<PagedResult<QueryApplicationPagedOutput>> QueryApplicationPaged(QueryApplicationPagedInput input)
     {
-        ISugarQueryable<ApplicationModel> queryable = _repository.Entities;
-        TenantModel tenantModel = await TenantContext.GetTenant(_user.TenantNo);
-        if (!_user.IsSuperAdmin && tenantModel.TenantType != TenantTypeEnum.System)
-        {
-            queryable = queryable.Where(wh => wh.TenantId == _user.TenantId);
-        }
-
-        return await queryable.WhereIF(input.Edition != null, wh => wh.Edition == input.Edition)
+        PagedResult<QueryApplicationPagedOutput> result = await _repository.Entities
+            .WhereIF(input.Edition != null, wh => wh.Edition == input.Edition)
             .OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
             .Select(sl => new QueryApplicationPagedOutput
             {
@@ -85,7 +73,6 @@ public class ApplicationService : IDynamicApplication
                 ThemeColor = sl.ThemeColor,
                 Remark = sl.Remark,
                 TenantName = sl.TenantName,
-                DepartmentName = sl.DepartmentName,
                 CreatedUserName = sl.CreatedUserName,
                 CreatedTime = sl.CreatedTime,
                 UpdatedUserName = sl.UpdatedUserName,
@@ -93,6 +80,44 @@ public class ApplicationService : IDynamicApplication
                 RowVersion = sl.RowVersion
             })
             .ToPagedListAsync(input);
+
+        var appIds = result.Rows.Select(sl => sl.AppId).ToList();
+        List<QueryApplicationClientOutput> applicationClientList = [];
+        if (appIds.Count > 0)
+        {
+            applicationClientList = await _repository.Queryable<ApplicationClientModel>()
+                .Where(wh => appIds.Contains(wh.AppId))
+                .OrderBy(ob => ob.AppType)
+                .OrderBy(ob => ob.EnvironmentType)
+                .OrderBy(ob => ob.RecordId)
+                .Select(sl => new QueryApplicationClientOutput
+                {
+                    RecordId = sl.RecordId,
+                    AppId = sl.AppId,
+                    AppKey = sl.AppKey,
+                    AppType = sl.AppType,
+                    EnvironmentType = sl.EnvironmentType,
+                    LoginComponent = sl.LoginComponent,
+                    RequestTimeout = sl.RequestTimeout,
+                    RequestEncipher = sl.RequestEncipher,
+                    WeChatMerchantNo = sl.WeChatMerchantNo,
+                    AlipayMerchantNo = sl.AlipayMerchantNo,
+                    Remark = sl.Remark,
+                    CreatedUserName = sl.CreatedUserName,
+                    CreatedTime = sl.CreatedTime,
+                    UpdatedUserName = sl.UpdatedUserName,
+                    UpdatedTime = sl.UpdatedTime,
+                    RowVersion = sl.RowVersion
+                })
+                .ToListAsync();
+        }
+
+        foreach (QueryApplicationPagedOutput item in result.Rows)
+        {
+            item.ClientList = applicationClientList.Where(wh => wh.AppId == item.AppId).ToList();
+        }
+
+        return result;
     }
 
     /// <summary>
@@ -116,7 +141,6 @@ public class ApplicationService : IDynamicApplication
                 Remark = sl.Remark,
                 TenantId = sl.TenantId,
                 TenantName = sl.TenantName,
-                DepartmentName = sl.DepartmentName,
                 CreatedUserName = sl.CreatedUserName,
                 CreatedTime = sl.CreatedTime,
                 UpdatedUserName = sl.UpdatedUserName,
@@ -197,10 +221,10 @@ public class ApplicationService : IDynamicApplication
 
         await _repository.UpdateAsync(applicationModel);
 
-        foreach (string openId in await _repository.Queryable<ApplicationOpenIdModel>().Select(sl => sl.OpenId).ToListAsync())
+        foreach (string appKey in await _repository.Queryable<ApplicationClientModel>().Select(sl => sl.AppKey).ToListAsync())
         {
             // 删除缓存
-            await ApplicationContext.DeleteApplication(openId);
+            await ApplicationContext.DeleteApplication(appKey);
         }
     }
 
@@ -219,9 +243,9 @@ public class ApplicationService : IDynamicApplication
             throw new UserFriendlyException("数据不存在！");
         }
 
-        if (await _repository.Queryable<ApplicationOpenIdModel>().AnyAsync(a => a.AppId == input.AppId))
+        if (await _repository.Queryable<ApplicationClientModel>().AnyAsync(a => a.AppId == input.AppId))
         {
-            throw new UserFriendlyException("应用存在OpenId信息，无法删除！");
+            throw new UserFriendlyException("应用存在应用标识信息，无法删除！");
         }
 
         await _repository.DeleteAsync(applicationModel);

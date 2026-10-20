@@ -96,6 +96,12 @@ public partial class EmployeeService
 
             await _repository.UpdateAsync(employeeModel);
 
+            // 处理职员离职操作
+            foreach (IEmployeeResignedHandler handler in FastContext.GetServices<IEmployeeResignedHandler>())
+            {
+                await handler.HandleAsync(_repository, employeeModel.EmployeeId);
+            }
+
             // 提交事务
             await _repository.Ado.CommitTranAsync();
             await _centerRepository.Ado.CommitTranAsync();
@@ -172,7 +178,7 @@ public partial class EmployeeService
                     throw new UserFriendlyException("邮箱已存在账号信息！");
                 }
 
-                string passwordHash = CryptoUtil.HashPasswordPBKDF2SHA256(CommonConst.Default.Password);
+                string passwordHash = CryptoUtil.HashPasswordPBKDF2SHA256(GlobalContext.InitializationSettings.DefaultPassword);
                 long accountId = YitIdHelper.NextId();
                 accountModel = new AccountModel
                 {

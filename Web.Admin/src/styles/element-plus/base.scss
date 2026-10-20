@@ -1,0 +1,122 @@
+/* 修复 Chrome 浏览器输入框内选中字符行高异常的bug */
+:where(.el-input) .el-input__inner {
+	line-height: calc(var(--el-input-height, 40px) - 4px);
+}
+
+.el-input-number {
+	width: 100%;
+}
+
+.el-divider__text {
+	&.is-center {
+		transform: translateX(-50%) translateY(-62%);
+	}
+}
+
+.el-menu {
+	-webkit-user-select: none;
+	user-select: none;
+
+	.el-sub-menu__title:hover:not(:where(.is-disabled, .is-disabled *)) {
+		background-color: var(--el-color-primary-light-9) !important;
+	}
+}
+
+.el-table {
+	--el-table-border-color: var(--el-border-color);
+}
+
+.el-card {
+	padding: 10px;
+}
+
+:where(.el-card) .el-card__header {
+	border-bottom: 1px solid var(--el-border-color-extra-light);
+}
+
+.el-tabs {
+	.el-tabs__content {
+		padding: 10px;
+	}
+}
+
+.el-textarea__inner {
+	padding: 5px 11px;
+}
+
+.el-form {
+	.el-form-item--small {
+		margin-bottom: 14px;
+	}
+
+	.el-form-item {
+		// 分割线
+		&:has(.el-form-item__content > .el-divider--horizontal) {
+			margin-bottom: 0;
+		}
+	}
+
+	&:not(.fa-form-detail) {
+		.el-form-item {
+			// 表单组件宽度100%
+			.el-form-item__content {
+				> * {
+					width: 100%;
+				}
+			}
+		}
+	}
+}
+
+/* 消息提示框换行 */
+.el-message {
+	white-space: pre-wrap !important;
+}
+
+.el-notification {
+	white-space: pre-wrap !important;
+}
+
+.el-divider--horizontal {
+	margin: 8px 0 18px !important;
+}
+
+.el-divider--vertical {
+	margin: 0 4px !important;
+}
+
+:where(.el-select-dropdown) {
+	.el-select-dropdown__item {
+		padding: 0 20px;
+	}
+}
+
+// 多选勾选图标距右侧 20px、宽 12px，需要额外预留文字空间。
+:where(.el-select-dropdown.is-multiple) {
+	.el-select-dropdown__item {
+		padding-right: 32px;
+	}
+}
+
+:where(.el-tree-select__popper) {
+	.el-select-dropdown__item {
+		padding: 0 20px 0 0;
+	}
+}
+
+.el-dropdown {
+	line-height: normal;
+}
+
+.el-checkbox {
+	&.is-bordered.is-disabled.is-checked {
+		border-color: var(--el-color-primary);
+	}
+}
+
+:where(.el-form) {
+	&:not(.el-form--inline) {
+		// 包含表单项的外边距，同时避免裁剪校验提示和焦点外框。
+		display: flow-root;
+	}
+}

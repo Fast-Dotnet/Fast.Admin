@@ -118,7 +118,7 @@ const handleSubmit = throttle(async () => {
 });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 :deep(.wd-textarea__inner) {
 	height: 150rpx;
 }

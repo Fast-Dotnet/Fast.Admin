@@ -353,7 +353,7 @@ defineExpose({
 });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 #canvas {
 	position: absolute;
 	top: 0;

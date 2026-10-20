@@ -56,20 +56,13 @@ public class RequestActionFilter : IAsyncActionFilter
         HttpRequest httpRequest = httpContext.Request;
         IUser _user = httpContext.RequestServices.GetService<IUser>();
 
-        UserAgentInfo userAgentInfo = null;
-        WanNetIPInfo wanInfo = null;
-
         var stopwatch = new Stopwatch();
         stopwatch.Start();
         // 获取 UserAgent 和 Ip 信息
-        try
-        {
-            userAgentInfo = httpContext.RequestUserAgentInfo();
-            wanInfo = await httpContext.RemoteIpv4InfoAsync();
-        }
-        catch (OperationCanceledException)
-        {
-        }
+        UserAgentInfo userAgentInfo = httpContext.RequestUserAgentInfo();
+        WanNetIPInfo wanInfo = await httpContext.RemoteIpv4InfoAsync();
+        // 请求已取消时终止后续处理
+        httpContext.RequestAborted.ThrowIfCancellationRequested();
 
         ActionExecutedContext actionContext = await next();
         stopwatch.Stop();
@@ -116,9 +109,9 @@ public class RequestActionFilter : IAsyncActionFilter
                 // 成功响应可能包含敏感数据且体积不受控，请求审计仅保存异常详情
                 Result = actionContext.Exception?.ToString(),
                 ElapsedTime = stopwatch.ElapsedMilliseconds,
-                DepartmentId = _user?.DepartmentId,
+                DepartmentId = _user?.DepartmentId > 0 ? _user.DepartmentId : null,
                 DepartmentName = _user?.DepartmentName,
-                CreatedUserId = _user?.EmployeeId,
+                CreatedUserId = _user?.EmployeeId > 0 ? _user.EmployeeId : null,
                 CreatedUserName = _user?.EmployeeName,
                 CreatedTime = dateTime,
                 TenantId = _tenant.TenantId,

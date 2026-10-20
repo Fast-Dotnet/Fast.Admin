@@ -1,12 +1,12 @@
 <template>
 	<div class="screen-lock">
-		<div class="top" @click="state.showDate = false">
+		<button type="button" class="screen-lock__top" @click="state.showDate = false">
 			<el-icon>
 				<Lock />
 			</el-icon>
 			<span>点击解锁</span>
-		</div>
-		<div class="center">
+		</button>
+		<div class="screen-lock__center">
 			<div>
 				<transition name="slide-bottom" mode="out-in">
 					<span :key="state.hour">{{ state.hour }}</span>
@@ -23,7 +23,7 @@
 				</transition>
 			</div>
 		</div>
-		<div class="bottom">
+		<div class="screen-lock__bottom">
 			<transition name="slide-bottom" mode="out-in">
 				<span :key="state.date">{{ state.date }}</span>
 			</transition>
@@ -132,101 +132,133 @@ onUnmounted(() => {
 });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .screen-lock {
 	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100vw;
-	height: 100vh;
-	background: #0a0a0a;
+	inset: 0;
 	z-index: 2001;
-	padding: 20px 100px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+	padding: max(20px, env(safe-area-inset-top)) clamp(12px, 7vw, 100px) max(20px, env(safe-area-inset-bottom));
+	color: #f2f3f5;
+	background: #0a0a0a;
 	-webkit-user-select: none;
 	user-select: none;
-	.top {
-		font-size: 24px;
-		padding: 10px;
+}
+
+.screen-lock__top {
+	display: flex;
+	flex-shrink: 0;
+	flex-direction: column;
+	align-items: center;
+	padding: 10px;
+	font-size: clamp(18px, 2vw, 24px);
+	color: inherit;
+	border: 0;
+	background: transparent;
+	cursor: pointer;
+}
+
+.screen-lock__center {
+	display: flex;
+	flex: 1;
+	flex-direction: row;
+	gap: clamp(8px, 3vw, 50px);
+	width: 100%;
+	min-height: 0;
+	padding: clamp(16px, 8vh, 100px) clamp(0px, 3vw, 50px);
+
+	div {
 		display: flex;
-		flex-direction: column;
-		align-items: center;
-		cursor: pointer;
-	}
-	.center {
-		width: 100%;
-		padding: 100px 50px;
 		flex: 1;
-		display: flex;
-		flex-direction: row;
-		gap: 50px;
-		div {
-			flex: 1;
-			background-color: #141414;
-			border-radius: 40px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			span {
-				font-size: 20vw;
-				font-weight: 600;
-			}
-		}
-	}
-	.bottom {
-		font-size: 32px;
-	}
-	.overlay {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100vw;
-		height: 100vh;
-		background-color: rgba(0, 0, 0, 0.7);
-		backdrop-filter: blur(32px);
-		display: flex;
-		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		font-size: 28px;
-		padding: 20px 0;
-		.overlay__top {
-			flex: 1;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-			.el-avatar {
-				font-size: 36px;
-				margin-bottom: 10px;
-			}
-			.el-input {
-				margin-top: 10px;
-				width: 320px;
-				margin-bottom: 5px;
-			}
-			.error {
-				width: 320px;
-				font-size: 14px;
-				color: #f56c6c;
-			}
-			.btn__warp {
-				width: 320px;
-				line-height: 0;
-				display: flex;
-				justify-content: space-between;
-			}
+		min-width: 0;
+		border-radius: clamp(12px, 3vw, 40px);
+		background-color: #141414;
+
+		span {
+			font-size: min(20vw, 48dvh);
+			font-weight: 600;
+			font-variant-numeric: tabular-nums;
 		}
-		.overlay__bottom {
-			font-size: 24px;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			justify-content: center;
-		}
+	}
+}
+
+.screen-lock__bottom {
+	flex-shrink: 0;
+	font-size: clamp(18px, 3vw, 32px);
+	text-align: center;
+}
+
+.overlay {
+	position: fixed;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	overflow: auto;
+	padding: max(20px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom))
+		max(16px, env(safe-area-inset-left));
+	font-size: clamp(20px, 4vw, 28px);
+	background-color: rgba(0, 0, 0, 0.7);
+	backdrop-filter: blur(32px);
+}
+
+.overlay__top {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: min(320px, 100%);
+	padding-block: 16px;
+	overflow-wrap: anywhere;
+	text-align: center;
+
+	.el-avatar {
+		margin-bottom: 10px;
+		font-size: 36px;
+	}
+
+	.el-input {
+		width: 100%;
+		margin-top: 10px;
+		margin-bottom: 5px;
+	}
+}
+
+.error {
+	width: 100%;
+	font-size: 14px;
+	color: #f56c6c;
+}
+
+.btn__warp {
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+	line-height: 0;
+}
+
+.overlay__bottom {
+	display: flex;
+	flex-shrink: 0;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	font-size: clamp(16px, 3vw, 24px);
+}
+
+@media (max-width: 767px) and (orientation: portrait) {
+	.screen-lock__center {
+		flex: 0 0 auto;
+		height: clamp(140px, 35dvh, 280px);
+		margin-block: auto;
+		padding: 0;
 	}
 }
 </style>

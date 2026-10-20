@@ -102,7 +102,7 @@ const sections = computed(() => [
 ]);
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .page {
 	padding: var(--fa-page-padding);
 }

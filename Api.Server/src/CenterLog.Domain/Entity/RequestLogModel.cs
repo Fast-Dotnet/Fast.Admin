@@ -16,7 +16,7 @@ namespace Fast.CenterLog.Domain;
 [SugarIndex($"IX_{{split_table}}_{nameof(CreatedUserId)}", nameof(CreatedUserId), OrderByType.Asc)]
 [SugarIndex($"IX_{{split_table}}_{nameof(CreatedTime)}", nameof(CreatedTime), OrderByType.Asc)]
 [SugarIndex($"IX_{{split_table}}_{nameof(TenantId)}", nameof(TenantId), OrderByType.Asc)]
-public class RequestLogModel : BaseRecordEntity
+public class RequestLogModel : BaseRecordEntity, IDepartmentEntity
 {
     /// <summary>
     /// 记录Id
@@ -104,6 +104,18 @@ public class RequestLogModel : BaseRecordEntity
     /// </summary>
     [SugarColumn(ColumnDescription = "耗时（毫秒）")]
     public long? ElapsedTime { get; set; }
+
+    /// <summary>
+    /// 部门Id
+    /// </summary>
+    [SugarColumn(ColumnDescription = "部门Id", CreateTableFieldSort = 981)]
+    public long? DepartmentId { get; set; }
+
+    /// <summary>
+    /// 部门名称
+    /// </summary>
+    [SugarColumn(ColumnDescription = "部门名称", Length = 20, IsNullable = true, CreateTableFieldSort = 982)]
+    public string DepartmentName { get; set; }
 
     /// <summary>
     /// 操作者用户Id

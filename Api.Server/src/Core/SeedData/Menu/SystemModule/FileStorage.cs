@@ -21,7 +21,7 @@ internal static partial class MenuSeedData
         var fileMenuModel = new MenuModel
         {
             MenuId = YitIdHelper.NextId(),
-            Edition = EditionEnum.Basic,
+            Edition = EditionEnum.None,
             AppId = applicationModel.AppId,
             MenuCode = PermissionConst.FilePaged,
             MenuName = "文件存储",
@@ -29,7 +29,7 @@ internal static partial class MenuSeedData
             ParentId = 0,
             ParentIds = [0],
             MenuType = MenuTypeEnum.Menu,
-            RoleType = RoleTypeEnum.Admin | RoleTypeEnum.Default | RoleTypeEnum.IT | RoleTypeEnum.HR | RoleTypeEnum.Finance,
+            RoleType = GlobalContext.RolePermissions[PermissionConst.FilePaged],
             HasDesktop = true,
             DesktopIcon = "desktop",
             HasWeb = true,
@@ -52,13 +52,12 @@ internal static partial class MenuSeedData
                 new()
                 {
                     ButtonId = YitIdHelper.NextId(),
-                    Edition = EditionEnum.Basic,
+                    Edition = EditionEnum.None,
                     AppId = applicationModel.AppId,
                     MenuId = fileMenuModel.MenuId,
                     ButtonCode = PermissionConst.FilePaged,
                     ButtonName = "列表",
-                    RoleType =
-                        RoleTypeEnum.Admin | RoleTypeEnum.Default | RoleTypeEnum.IT | RoleTypeEnum.HR | RoleTypeEnum.Finance,
+                    RoleType = GlobalContext.RolePermissions[PermissionConst.FilePaged],
                     HasDesktop = true,
                     HasWeb = true,
                     HasMobile = true,

@@ -153,6 +153,9 @@ public class ChatHub : Hub<IChatClient>
             return;
         }
 
+        // 请求已取消时终止后续处理
+        Context.ConnectionAborted.ThrowIfCancellationRequested();
+
         AuthUserInfo authUserInfo = await GetAuthUserInfo();
 
         HttpContext httpContext = Context.GetHttpContext();
@@ -178,7 +181,10 @@ public class ChatHub : Hub<IChatClient>
         // 获取设备信息
         UserAgentInfo userAgentInfo = httpContext.RequestUserAgentInfo();
         // 获取万网信息
-        WanNetIPInfo wanNetIpInfo = await httpContext.RemoteIpv4InfoAsync();
+        WanNetIPInfo wanNetIpInfo = await httpContext.RemoteIpv4InfoAsync(cancellationToken: Context.ConnectionAborted);
+
+        // 请求已取消时终止后续处理
+        Context.ConnectionAborted.ThrowIfCancellationRequested();
 
         // 更新连接Id
         authUserInfo.ConnectionId = Context.ConnectionId;

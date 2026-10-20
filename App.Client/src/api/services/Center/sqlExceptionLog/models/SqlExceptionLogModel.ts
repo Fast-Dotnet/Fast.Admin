@@ -47,6 +47,14 @@ export interface SqlExceptionLogModel {
 	 */
 	pureSql?: string;
 	/**
+	 * 部门Id
+	 */
+	departmentId?: string;
+	/**
+	 * 部门名称
+	 */
+	departmentName?: string;
+	/**
 	 * 异常时间
 	 */
 	createdTime?: string;
@@ -82,14 +90,6 @@ export interface SqlExceptionLogModel {
 	 * 
 	 */
 	ip?: string;
-	/**
-	 * 
-	 */
-	departmentId?: string;
-	/**
-	 * 
-	 */
-	departmentName?: string;
 	/**
 	 * 
 	 */

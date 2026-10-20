@@ -1,4 +1,4 @@
-﻿// Copyright © 2018-Present 小方
+// Copyright © 2018-Present 小方
 // SPDX-License-Identifier: Apache-2.0
 // 
 // 本文件依据 Apache License 2.0 授权，完整条款见仓库根目录 LICENSE。
@@ -7,8 +7,6 @@
 
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
-using AlibabaCloud.SDK.Dysmsapi20180501;
-using AlibabaCloud.SDK.Dysmsapi20180501.Models;
 using CSRedis;
 using Fast.Center.Domain;
 using Fast.SqlSugar;
@@ -69,15 +67,21 @@ public class SMSService : ISmsService, ISingletonDependency
     }
 
     /// <inheritdoc/>
-    public async Task<int> GetVerificationCodeRetryAfterSeconds(SmsTypeEnum smsType, string mobile)
+    public async Task<int> GetVerificationCodeRetryAfterSeconds(MessageTemplateTypeEnum templateType, string mobile)
     {
-        string cacheKey = CacheConst.GetCacheKey(CacheConst.Sms, smsType.ToString(), mobile.Trim().ToLowerInvariant());
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.Sms, templateType.ToString(), mobile.Trim().ToLowerInvariant());
         return (int)Math.Max(0, await _cache.Client.TtlAsync($"{cacheKey}:SendCooldown"));
     }
 
     /// <inheritdoc />
-    public async Task SendVerificationCode(SmsTypeEnum smsType, string mobile)
+    public async Task SendVerificationCode(MessageTemplateTypeEnum templateType, string signName, string mobile,
+        string appKey = null)
     {
+        if (string.IsNullOrWhiteSpace(signName))
+        {
+            throw new UserFriendlyException("短信签名配置不完整，请联系管理员！");
+        }
+
         if (string.IsNullOrWhiteSpace(mobile) || !Regex.IsMatch(mobile, RegexConst.Mobile))
         {
             throw new UserFriendlyException("手机号码不正确！");
@@ -86,7 +90,7 @@ public class SMSService : ISmsService, ISingletonDependency
         mobile = mobile.Trim();
 
         // 获取缓存Key
-        string cacheKey = CacheConst.GetCacheKey(CacheConst.Sms, smsType.ToString(), mobile);
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.Sms, templateType.ToString(), mobile);
         using CSRedisClientLock codeLock = _cache.Client.TryLock($"{cacheKey}:Lock", 120);
         if (codeLock == null)
         {
@@ -98,7 +102,7 @@ public class SMSService : ISmsService, ISingletonDependency
                 : "操作过于频繁，请稍后重试！");
         }
 
-        int retryAfterSeconds = await GetVerificationCodeRetryAfterSeconds(smsType, mobile);
+        int retryAfterSeconds = await GetVerificationCodeRetryAfterSeconds(templateType, mobile);
         if (retryAfterSeconds > 0)
         {
             throw new UserFriendlyException($"操作过于频繁，请在 {TimeSpan.FromSeconds(retryAfterSeconds).ToDescription()} 后重试！");
@@ -116,14 +120,14 @@ public class SMSService : ISmsService, ISingletonDependency
         dto.ErrorCount = 0;
 
         // 获取模板Code
-        string templateCode = await ConfigContext.GetConfig(ConfigConst.SmsVerificationTemplateCode);
-        await SendSms(mobile, templateCode, new {Code = dto.VerificationCode});
+        MessageTemplateModel messageTemplateModel = await MessageTemplateContext.GetMessageTemplate(templateType, appKey);
+        await SendSms(signName, mobile, messageTemplateModel.TemplateCode, new {code = dto.VerificationCode});
         await _cache.SetAsync(cacheKey, dto, TimeSpan.FromMinutes(5));
         await _cache.Client.SetAsync($"{cacheKey}:SendCooldown", "1", 60);
     }
 
     /// <inheritdoc/>
-    public async Task VerifyVerificationCode(SmsTypeEnum smsType, string mobile, string verificationCode)
+    public async Task VerifyVerificationCode(MessageTemplateTypeEnum templateType, string mobile, string verificationCode)
     {
         ArgumentNullException.ThrowIfNull(verificationCode);
 
@@ -135,7 +139,7 @@ public class SMSService : ISmsService, ISingletonDependency
         mobile = mobile.Trim();
 
         // 获取缓存Key
-        string cacheKey = CacheConst.GetCacheKey(CacheConst.Sms, smsType.ToString(), mobile);
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.Sms, templateType.ToString(), mobile);
         using CSRedisClientLock codeLock = _cache.Client.TryLock($"{cacheKey}:Lock", 30);
         if (codeLock == null)
         {
@@ -171,9 +175,14 @@ public class SMSService : ISmsService, ISingletonDependency
     }
 
     /// <inheritdoc />
-    public async Task SendSms(string mobile, string templateCode, object templateParam, string accessKeyId = null,
-        string accessKeySecret = null, string signName = null)
+    public async Task SendSms(string signName, string mobile, string templateCode, object templateParam,
+        string accessKeyId = null, string accessKeySecret = null)
     {
+        if (string.IsNullOrWhiteSpace(signName))
+        {
+            throw new UserFriendlyException("短信签名配置不完整，请联系管理员！");
+        }
+
         ArgumentNullException.ThrowIfNull(templateCode);
 
         if (string.IsNullOrWhiteSpace(mobile) || !Regex.IsMatch(mobile, RegexConst.Mobile))
@@ -187,40 +196,35 @@ public class SMSService : ISmsService, ISingletonDependency
         bool isSuccess = false;
         try
         {
-            accessKeyId ??= await ConfigContext.GetConfig(ConfigConst.SmsAccessKeyId);
-            accessKeySecret ??= await ConfigContext.GetConfig(ConfigConst.SmsAccessKeySecret);
-            signName ??= await ConfigContext.GetConfig(ConfigConst.SmsSignName);
-            if (string.IsNullOrWhiteSpace(accessKeyId)
-                || string.IsNullOrWhiteSpace(accessKeySecret)
-                || string.IsNullOrWhiteSpace(signName)
-                || string.IsNullOrWhiteSpace(templateCode))
+            accessKeyId ??= await ConfigContext.GetConfig(ConfigConst.AliyunAccessKeyID);
+            accessKeySecret ??= await ConfigContext.GetConfig(ConfigConst.AliyunAccessKeySecret);
+            if (string.IsNullOrWhiteSpace(accessKeyId) || string.IsNullOrWhiteSpace(accessKeySecret))
             {
                 throw new UserFriendlyException("短信发送配置不完整，请联系管理员！");
             }
 
-            var client = new Client(new AlibabaCloud.OpenApiClient.Models.Config
+            var client = new AlibabaCloud.SDK.Dysmsapi20170525.Client(new AlibabaCloud.OpenApiClient.Models.Config
             {
                 AccessKeyId = accessKeyId,
                 AccessKeySecret = accessKeySecret,
-                RegionId = "ap-southeast-1",
-                Endpoint = "dysmsapi.ap-southeast-1.aliyuncs.com",
+                Endpoint = "dysmsapi.aliyuncs.com",
                 ConnectTimeout = 5000,
                 ReadTimeout = 10000
             });
             // 沿用SDK默认不自动重试的行为，避免超时后重复发送计费短信。
-            SendMessageWithTemplateResponse response = await client.SendMessageWithTemplateAsync(
-                new SendMessageWithTemplateRequest
+            AlibabaCloud.SDK.Dysmsapi20170525.Models.SendSmsResponse response =
+                await client.SendSmsAsync(new AlibabaCloud.SDK.Dysmsapi20170525.Models.SendSmsRequest
                 {
-                    To = $"86{mobile}",
-                    From = signName,
+                    PhoneNumbers = mobile,
+                    SignName = signName,
                     TemplateCode = templateCode,
                     TemplateParam = templateParam?.ToJsonString()
                 });
 
-            if (!string.Equals(response.Body.ResponseCode, "OK", StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(response.Body.Code, "OK", StringComparison.OrdinalIgnoreCase))
             {
                 _logger.LogError(
-                    $"短信发送失败。ResponseCode: {response.Body.ResponseCode}, ResponseDescription: {response.Body.ResponseDescription}, RequestId: {response.Body.RequestId}");
+                    $"短信发送失败。Code: {response.Body.Code}, Message: {response.Body.Message}, RequestId: {response.Body.RequestId}");
                 throw new UserFriendlyException("短信发送失败，请稍后重试！");
             }
 

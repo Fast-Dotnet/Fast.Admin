@@ -39,7 +39,6 @@ export const useApp = defineStore(
 			appType: AppEnvironmentEnum.Web,
 			environmentType: EnvironmentTypeEnum.Development,
 			loginComponent: "ClassicLogin",
-			webSocketUrl: "",
 			requestTimeout: 6000,
 			requestEncipher: true,
 			tenantName: "",

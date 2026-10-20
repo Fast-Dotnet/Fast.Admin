@@ -106,6 +106,18 @@ public static class CacheConst
         public const string App = "App:{0}";
 
         /// <summary>
+        /// 应用凭据
+        /// </summary>
+        /// <remarks>{0}应用标识，{1}凭据类型</remarks>
+        public const string ApplicationToken = "ApplicationToken:{0}:{1}";
+
+        /// <summary>
+        /// 消息模板
+        /// </summary>
+        /// <remarks>{0}应用标识，{1}模板类型</remarks>
+        public const string MessageTemplate = "MessageTemplate:{0}:{1}";
+
+        /// <summary>
         /// 商户号
         /// </summary>
         /// <remarks>{0}商户号</remarks>

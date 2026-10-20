@@ -36,12 +36,27 @@
 							v-if="!useDrawerMenu"
 							class="menu-collapse fa__hover__twinkle"
 							:title="configStore.layout.menuCollapse ? '展开' : '折叠'"
+							role="button"
+							tabindex="0"
+							:aria-label="configStore.layout.menuCollapse ? '展开' : '折叠'"
+							@keydown.enter.prevent="handleMenuToggle"
+							@keydown.space.prevent="handleMenuToggle"
 							@click="handleMenuToggle"
 						>
 							<Expand v-if="configStore.layout.menuCollapse" />
 							<Fold v-else />
 						</el-icon>
-						<el-icon v-else class="menu-collapse fa__hover__twinkle" title="打开菜单" @click="handleMenuToggle">
+						<el-icon
+							v-else
+							class="menu-collapse fa__hover__twinkle"
+							title="打开菜单"
+							role="button"
+							tabindex="0"
+							aria-label="打开菜单"
+							@keydown.enter.prevent="handleMenuToggle"
+							@keydown.space.prevent="handleMenuToggle"
+							@click="handleMenuToggle"
+						>
 							<Expand />
 						</el-icon>
 						<LayoutBreadcrumb v-if="configStore.layout.breadcrumb && !useDrawerMenu" />
@@ -78,6 +93,11 @@
 							v-if="configStore.layout.menuSearch"
 							class="menu-search fa__hover__twinkle"
 							title="搜索菜单"
+							role="button"
+							tabindex="0"
+							aria-label="搜索菜单"
+							@keydown.enter.prevent="menuSearchRef?.open()"
+							@keydown.space.prevent="menuSearchRef?.open()"
 							@click="menuSearchRef?.open()"
 						>
 							<Search />
@@ -96,18 +116,46 @@
 							</div>
 							<template #dropdown>
 								<el-dropdown-menu>
-									<el-dropdown-item :icon="User" @click="routerUtil.routePushSafe(router, { path: '/settings/account' })">
-										个人信息
-									</el-dropdown-item>
 									<el-dropdown-item :icon="Key" @click="changePasswordRef.open()">修改密码</el-dropdown-item>
-									<el-dropdown-item :icon="Refresh" @click="handleRefreshSystem">刷新系统</el-dropdown-item>
-									<el-dropdown-item divided :icon="Lock" @click="handleScreenLock">锁定屏幕</el-dropdown-item>
-									<el-dropdown-item :icon="SwitchButton" @click="handleLogout">退出系统</el-dropdown-item>
+									<el-dropdown-item :icon="IdCard" @click="accountEditRef.open()">账号信息</el-dropdown-item>
+									<el-dropdown-item
+										v-if="!userInfoStore.isSuperAdmin && !userInfoStore.isAdmin"
+										:icon="User"
+										@click="employeeEditRef.open()"
+									>
+										职员信息
+									</el-dropdown-item>
+									<el-dropdown-item divided :icon="Iphone" @click="changeMobileRef.open()">修改手机</el-dropdown-item>
+									<el-dropdown-item :icon="Message" @click="changeEmailRef.open()">修改邮箱</el-dropdown-item>
+									<el-dropdown-item divided :icon="Refresh" @click="handleRefreshSystem">刷新系统</el-dropdown-item>
+									<el-dropdown-item :icon="Lock" @click="handleScreenLock">锁定屏幕</el-dropdown-item>
 								</el-dropdown-menu>
 							</template>
 						</el-dropdown>
-						<el-icon class="setting fa__hover__twinkle" title="高级配置" @click="layoutConfigRef.open()"><Setting /></el-icon>
-						<el-icon class="logout fa__hover__twinkle" title="退出登录" @click="handleLogout"><SwitchButton /></el-icon>
+						<el-icon
+							class="setting fa__hover__twinkle"
+							title="高级配置"
+							role="button"
+							tabindex="0"
+							aria-label="高级配置"
+							@keydown.enter.prevent="layoutConfigRef.open()"
+							@keydown.space.prevent="layoutConfigRef.open()"
+							@click="layoutConfigRef.open()"
+						>
+							<Setting />
+						</el-icon>
+						<el-icon
+							class="logout fa__hover__twinkle"
+							title="退出系统"
+							role="button"
+							tabindex="0"
+							aria-label="退出系统"
+							@keydown.enter.prevent="handleLogout"
+							@keydown.space.prevent="handleLogout"
+							@click="handleLogout"
+						>
+							<SwitchButton />
+						</el-icon>
 					</div>
 				</div>
 				<LayoutNavTab />
@@ -138,18 +186,18 @@
 <script setup lang="ts">
 import { computed, inject, ref, useTemplateRef, watch } from "vue";
 import { RouterView, useRouter } from "vue-router";
-import { Expand, Fold, Key, Lock, Refresh, Search, Setting, SwitchButton, User, UserFilled } from "@element-plus/icons-vue";
+import { Expand, Fold, Iphone, Key, Lock, Message, Refresh, Search, Setting, SwitchButton, User, UserFilled } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
+import { IdCard } from "@fast-element-plus/icons-vue";
 import { Local, addCssUnit, useWindowSize } from "@fast-china/utils";
 import { LoginStatusEnum } from "@/api/enums/LoginStatusEnum";
 import { loginApi } from "@/api/services/Auth/login";
-import { changePasswordKey, layoutConfigKey, menuSearchKey } from "@/layouts";
+import { accountEditKey, changeEmailKey, changeMobileKey, changePasswordKey, employeeEditKey, layoutConfigKey, menuSearchKey } from "@/layouts";
 import LayoutBreadcrumb from "@/layouts/components/Breadcrumb/index.vue";
 import LayoutLogo from "@/layouts/components/Logo/index.vue";
 import LayoutNavTab from "@/layouts/components/NavTab/index.vue";
 import LayoutScreenFull from "@/layouts/components/ScreenFull/index.vue";
 import LayoutScreenLock from "@/layouts/components/ScreenLock/index.vue";
-import { routerUtil } from "@/router";
 import { useConfig, useNavTabs, useUserInfo } from "@/stores";
 import LayoutMenu from "./components/menu.vue";
 import type { ElSelectorOutput, FaSelectInstance } from "fast-element-plus";
@@ -167,6 +215,10 @@ const windowSize = useWindowSize();
 const layoutConfigRef = inject(layoutConfigKey);
 const menuSearchRef = inject(menuSearchKey);
 const changePasswordRef = inject(changePasswordKey);
+const accountEditRef = inject(accountEditKey);
+const employeeEditRef = inject(employeeEditKey);
+const changeMobileRef = inject(changeMobileKey);
+const changeEmailRef = inject(changeEmailKey);
 const faTenantSelectRef = useTemplateRef<FaSelectInstance>("faTenantSelectRef");
 
 /** 窄屏设备使用抽屉菜单，避免平板竖屏的内容区被侧栏持续占用。 */
@@ -184,9 +236,7 @@ const handleMenuToggle = () => {
 };
 
 const handleRefreshSystem = () => {
-	ElMessageBox.confirm("此操作会强制刷新当前页面，是否继续操作？", {
-		type: "warning",
-	}).then(() => {
+	ElMessageBox.confirm("此操作会强制刷新当前页面，是否继续操作？", { type: "warning" }).then(() => {
 		// 删除 HTTP 缓存数据
 		Local.removeByPrefix("HTTP_CACHE_");
 		// 刷新App
@@ -246,6 +296,6 @@ watch(
 );
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @use "./index.scss";
 </style>

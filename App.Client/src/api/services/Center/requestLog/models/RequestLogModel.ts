@@ -62,6 +62,14 @@ export interface RequestLogModel {
 	 */
 	elapsedTime?: string;
 	/**
+	 * 部门Id
+	 */
+	departmentId?: string;
+	/**
+	 * 部门名称
+	 */
+	departmentName?: string;
+	/**
 	 * 操作者用户Id
 	 */
 	createdUserId?: string;
@@ -105,13 +113,5 @@ export interface RequestLogModel {
 	 * 
 	 */
 	ip?: string;
-	/**
-	 * 
-	 */
-	departmentId?: string;
-	/**
-	 * 
-	 */
-	departmentName?: string;
 }
 

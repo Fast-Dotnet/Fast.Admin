@@ -239,25 +239,53 @@ public static partial class PermissionConst
 
         /// <summary>应用删除</summary>
         public const string Delete = "App:Delete";
-    }
-
-    /// <summary>应用标识</summary>
-    public static class AppOpenId
-    {
-        /// <summary>应用标识列表</summary>
-        public const string Paged = "AppOpenId:Paged";
 
         /// <summary>应用标识详情</summary>
-        public const string Detail = "AppOpenId:Detail";
+        public const string ClientDetail = "AppClient:Detail";
 
         /// <summary>应用标识新增</summary>
-        public const string Add = "AppOpenId:Add";
+        public const string ClientAdd = "AppClient:Add";
 
         /// <summary>应用标识编辑</summary>
-        public const string Edit = "AppOpenId:Edit";
+        public const string ClientEdit = "AppClient:Edit";
 
         /// <summary>应用标识删除</summary>
-        public const string Delete = "AppOpenId:Delete";
+        public const string ClientDelete = "AppClient:Delete";
+    }
+
+    /// <summary>应用凭据</summary>
+    public static class AppToken
+    {
+        /// <summary>应用凭据列表</summary>
+        public const string Paged = "AppToken:Paged";
+
+        /// <summary>应用凭据新增</summary>
+        public const string Add = "AppToken:Add";
+
+        /// <summary>应用凭据删除</summary>
+        public const string Delete = "AppToken:Delete";
+
+        /// <summary>应用凭据刷新</summary>
+        public const string Refresh = "AppToken:Refresh";
+    }
+
+    /// <summary>消息模板</summary>
+    public static class MessageTemplate
+    {
+        /// <summary>消息模板列表</summary>
+        public const string Paged = "MessageTemplate:Paged";
+
+        /// <summary>消息模板详情</summary>
+        public const string Detail = "MessageTemplate:Detail";
+
+        /// <summary>消息模板新增</summary>
+        public const string Add = "MessageTemplate:Add";
+
+        /// <summary>消息模板编辑</summary>
+        public const string Edit = "MessageTemplate:Edit";
+
+        /// <summary>消息模板删除</summary>
+        public const string Delete = "MessageTemplate:Delete";
     }
 
     /// <summary>账号</summary>

@@ -34,7 +34,7 @@ public class WeChatService : IDynamicApplication
     public async Task<WeChatCode2SessionOutput> WeChatCode2Session(WeChatCode2SessionInput input)
     {
         // 查询应用信息
-        ApplicationOpenIdModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
+        ApplicationClientModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
 
         if (applicationModel.AppType != GlobalContext.DeviceType)
         {
@@ -42,7 +42,7 @@ public class WeChatService : IDynamicApplication
         }
 
         WechatApiClient apiClient = WechatApiClientBuilder
-            .Create(new WechatApiClientOptions {AppId = applicationModel.OpenId, AppSecret = applicationModel.OpenSecret})
+            .Create(new WechatApiClientOptions {AppId = applicationModel.AppKey, AppSecret = applicationModel.AppSecret})
             .Build();
 
         // 解析微信Code，获取OpenId
@@ -104,20 +104,24 @@ public class WeChatService : IDynamicApplication
     public async Task<WeChatCode2PhoneNumberOutput> WeChatCode2PhoneNumber(WeChatCode2PhoneNumberInput input)
     {
         // 查询应用信息
-        ApplicationOpenIdModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
+        ApplicationClientModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
 
         if (applicationModel.AppType != GlobalContext.DeviceType)
         {
             throw new UserFriendlyException("应用类型不匹配！");
         }
 
+        // 获取凭据信息
+        ApplicationTokenModel applicationTokenModel =
+            await ApplicationTokenContext.GetApplicationToken(applicationModel.AppKey, ApplicationTokenTypeEnum.AccessToken);
+
         WechatApiClient apiClient = WechatApiClientBuilder
-            .Create(new WechatApiClientOptions {AppId = applicationModel.OpenId, AppSecret = applicationModel.OpenSecret})
+            .Create(new WechatApiClientOptions {AppId = applicationModel.AppKey, AppSecret = applicationModel.AppSecret})
             .Build();
 
         // 换取用户手机号
         WxaBusinessGetUserPhoneNumberResponse response = await apiClient.ExecuteWxaBusinessGetUserPhoneNumberAsync(
-            new WxaBusinessGetUserPhoneNumberRequest {AccessToken = applicationModel.WeChatAccessToken, Code = input.Code});
+            new WxaBusinessGetUserPhoneNumberRequest {AccessToken = applicationTokenModel.TokenValue, Code = input.Code});
 
         if (!response.IsSuccessful())
         {

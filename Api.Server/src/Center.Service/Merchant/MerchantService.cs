@@ -64,7 +64,6 @@ public class MerchantService : IDynamicApplication
                 MerchantName = sl.MerchantName,
                 MerchantNo = sl.MerchantNo,
                 Remark = sl.Remark,
-                DepartmentName = sl.DepartmentName,
                 CreatedUserName = sl.CreatedUserName,
                 CreatedTime = sl.CreatedTime,
                 UpdatedUserName = sl.UpdatedUserName,
@@ -96,7 +95,6 @@ public class MerchantService : IDynamicApplication
                 Cert = sl.Cert,
                 CertPrivateKey = sl.CertPrivateKey,
                 Remark = sl.Remark,
-                DepartmentName = sl.DepartmentName,
                 CreatedUserName = sl.CreatedUserName,
                 CreatedTime = sl.CreatedTime,
                 UpdatedUserName = sl.UpdatedUserName,
@@ -177,12 +175,12 @@ public class MerchantService : IDynamicApplication
         await _repository.Ado.UseTranAsync(async () =>
         {
             await _repository.UpdateAsync(merchantModel);
-            await _repository.Updateable<ApplicationOpenIdModel>()
-                .SetColumns(_ => new ApplicationOpenIdModel {WeChatMerchantNo = merchantModel.MerchantNo})
+            await _repository.Updateable<ApplicationClientModel>()
+                .SetColumns(_ => new ApplicationClientModel {WeChatMerchantNo = merchantModel.MerchantNo})
                 .Where(wh => wh.WeChatMerchantId == merchantModel.MerchantId)
                 .ExecuteCommandAsync();
-            await _repository.Updateable<ApplicationOpenIdModel>()
-                .SetColumns(_ => new ApplicationOpenIdModel {AlipayMerchantNo = merchantModel.MerchantNo})
+            await _repository.Updateable<ApplicationClientModel>()
+                .SetColumns(_ => new ApplicationClientModel {AlipayMerchantNo = merchantModel.MerchantNo})
                 .Where(wh => wh.AlipayMerchantId == merchantModel.MerchantId)
                 .ExecuteCommandAsync();
         }, ex => throw ex);
@@ -199,7 +197,7 @@ public class MerchantService : IDynamicApplication
     [Permission(PermissionConst.Merchant.Delete)]
     public async Task DeleteMerchant(MerchantIdInput input)
     {
-        if (await _repository.Queryable<ApplicationOpenIdModel>()
+        if (await _repository.Queryable<ApplicationClientModel>()
                 .AnyAsync(a => a.WeChatMerchantId == input.MerchantId || a.AlipayMerchantId == input.MerchantId))
         {
             throw new UserFriendlyException("商户号存在绑定应用，无法删除！");

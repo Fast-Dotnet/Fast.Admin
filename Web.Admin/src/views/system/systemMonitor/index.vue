@@ -1,6 +1,6 @@
 <template>
 	<div v-loading="state.loading" element-loading-text="加载中...">
-		<el-row class="monitor-overview w100 mb10" :gutter="10">
+		<el-row class="monitor-overview w100" style="margin-bottom: 10px !important" :gutter="10">
 			<el-col :span="12" :xs="24" :sm="24" :md="12">
 				<el-card shadow="hover" header="系统信息">
 					<el-progress :width="150" type="dashboard" :percentage="state.machineDetail.ramRate" :color="state.colors">
@@ -80,7 +80,7 @@
 				</el-card>
 			</el-col>
 		</el-row>
-		<el-card class="mb10" shadow="hover" header="CPU信息">
+		<el-card style="margin-bottom: 10px !important" shadow="hover" header="CPU信息">
 			<el-progress
 				v-for="(item, index) in state.machineDetail.cpuRate"
 				:key="index"
@@ -96,7 +96,7 @@
 				</template>
 			</el-progress>
 		</el-card>
-		<el-card class="mb10" shadow="hover" header="硬盘信息">
+		<el-card style="margin-bottom: 10px !important" shadow="hover" header="硬盘信息">
 			<div class="diskInfo">
 				<el-progress
 					v-for="(item, index) in state.machineDetail.diskInfos"
@@ -339,10 +339,12 @@ onUnmounted(deactivate);
 		font-size: 15px;
 		font-weight: 600;
 	}
+
 	:deep(.el-card__body) {
 		--el-card-padding: 20px 10px;
 	}
 }
+
 .el-form {
 	.el-form-item {
 		margin-bottom: 0;
@@ -350,36 +352,41 @@ onUnmounted(deactivate);
 		padding-bottom: 5px;
 		border-bottom: var(--el-border);
 	}
-	:deep() {
-		.el-form-item__label {
-			padding: 0 6px 0 0;
-			flex: 0.3;
-		}
-		.el-form-item__content {
-			text-align: center;
-			font-weight: var(--el-font-weight-primary);
-		}
+
+	:deep(.el-form-item__label) {
+		flex: 0.3;
+		padding: 0 6px 0 0;
+	}
+
+	:deep(.el-form-item__content) {
+		font-weight: var(--el-font-weight-primary);
+		text-align: center;
 	}
 }
+
 .el-progress {
 	display: flex;
 	justify-content: center;
-}
-:deep(.el-progress__text) {
-	display: flex;
-	flex-direction: column;
-	font-size: 11px !important;
-	gap: 5px;
-	.percentage_value {
-		font-size: 16px !important;
-		font-weight: 600;
-		padding-bottom: 2px;
-	}
-	.percentage_label {
-		font-weight: 600;
-		font-size: 12px !important;
+
+	:deep(.el-progress__text) {
+		display: flex;
+		flex-direction: column;
+		gap: 5px;
+		font-size: 11px !important;
 	}
 }
+
+.percentage_value {
+	padding-bottom: 2px;
+	font-size: 16px !important;
+	font-weight: 600;
+}
+
+.percentage_label {
+	font-weight: 600;
+	font-size: 12px !important;
+}
+
 .diskInfo {
 	display: flex;
 	flex-wrap: wrap;
@@ -387,9 +394,11 @@ onUnmounted(deactivate);
 	justify-content: space-evenly;
 	gap: 10px;
 }
+
 .monitor-overview {
 	row-gap: 10px;
 }
+
 .assemblys {
 	max-width: 100%;
 	margin-right: 20px;

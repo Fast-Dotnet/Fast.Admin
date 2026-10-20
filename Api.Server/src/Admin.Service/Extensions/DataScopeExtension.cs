@@ -68,11 +68,11 @@ public static class DataScopeExtension
         if (departmentIdFieldSelector == null)
         {
             // 未指定部门字段时，按实体约定使用 DepartmentId
-            PropertyInfo property = entityType.GetProperty(nameof(IBaseEntity.DepartmentId),
+            PropertyInfo property = entityType.GetProperty(nameof(IDepartmentEntity.DepartmentId),
                 BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
             if (property == null)
             {
-                throw new NullReferenceException($"【{nameof(IBaseEntity.DepartmentId)}】不存在类型中！");
+                throw new NullReferenceException($"【{nameof(IDepartmentEntity.DepartmentId)}】不存在类型中！");
             }
 
             ParameterExpression parameter = Expression.Parameter(entityType);

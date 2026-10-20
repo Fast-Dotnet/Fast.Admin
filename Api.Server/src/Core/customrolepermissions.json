@@ -1,0 +1,4 @@
+{
+  // 自己的业务权限放这里
+  "CustomRolePermissions": {}
+}

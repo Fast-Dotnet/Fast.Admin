@@ -243,7 +243,7 @@ public partial class AccountService
     {
         VerifyPasswordComplexity(input.NewPassword, input.ConfirmPassword);
 
-        ApplicationOpenIdModel applicationModel = await EnsureApplication();
+        ApplicationClientModel applicationModel = await EnsureApplication();
         if (applicationModel.AppType != AppEnvironmentEnum.WeChatMiniProgram)
         {
             throw new UserFriendlyException("当前应用不支持此方法！");
@@ -277,7 +277,7 @@ public partial class AccountService
 
         // 解析微信Code，获取OpenId
         WechatApiClient apiClient = WechatApiClientBuilder
-            .Create(new WechatApiClientOptions {AppId = applicationModel.OpenId, AppSecret = applicationModel.OpenSecret})
+            .Create(new WechatApiClientOptions {AppId = applicationModel.AppKey, AppSecret = applicationModel.AppSecret})
             .Build();
         SnsJsCode2SessionResponse response =
             await apiClient.ExecuteSnsJsCode2SessionAsync(new SnsJsCode2SessionRequest {JsCode = input.WeChatCode});
@@ -374,7 +374,7 @@ public partial class AccountService
         }
 
         // 更新密码
-        accountModel.Password = CryptoUtil.HashPasswordPBKDF2SHA256(CommonConst.Default.Password);
+        accountModel.Password = CryptoUtil.HashPasswordPBKDF2SHA256(GlobalContext.InitializationSettings.DefaultPassword);
         accountModel.RowVersion = input.RowVersion;
 
         await _repository.Ado.UseTranAsync(async () =>
@@ -484,11 +484,16 @@ public partial class AccountService
             VerificationKey = verificationKey, Message = "如账号存在且验证通道可用，验证码将发送至账号绑定的联系方式。"
         };
 
+        // 这里只能用平台的短信
+        TenantModel tenantModel = await _repository.Queryable<TenantModel>()
+            .Where(wh => wh.TenantType == TenantTypeEnum.System)
+            .SingleAsync();
+
         AccountModel accountModel = await _repository.Queryable<AccountModel>()
             .WhereIF(sendChannel == MessageSendChannelEnum.Sms, wh => wh.Mobile == account)
             .WhereIF(sendChannel == MessageSendChannelEnum.Email, wh => wh.Email == account)
             .SingleAsync();
-        if (accountModel != null && accountModel.Status != CommonStatusEnum.Disable)
+        if (tenantModel != null && accountModel != null && accountModel.Status != CommonStatusEnum.Disable)
         {
             try
             {
@@ -500,10 +505,12 @@ public partial class AccountService
                 switch (sendChannel)
                 {
                     case MessageSendChannelEnum.Email:
-                        await _mailService.SendVerificationCode(MailTypeEnum.ChangePassword, accountModel.Email);
+                        await _mailService.SendVerificationCode(MessageTemplateTypeEnum.PasswordOperationVerifyCode,
+                            accountModel.Email);
                         break;
                     case MessageSendChannelEnum.Sms:
-                        await _smsService.SendVerificationCode(SmsTypeEnum.ChangePassword, accountModel.Mobile);
+                        await _smsService.SendVerificationCode(MessageTemplateTypeEnum.PasswordOperationVerifyCode,
+                            tenantModel.AliyunSignName, accountModel.Mobile);
                         break;
                 }
             }
@@ -566,11 +573,12 @@ public partial class AccountService
         switch (dto.Channel)
         {
             case MessageSendChannelEnum.Email:
-                await _mailService.VerifyVerificationCode(MailTypeEnum.ChangePassword, accountModel.Email,
+                await _mailService.VerifyVerificationCode(MessageTemplateTypeEnum.PasswordOperationVerifyCode, accountModel.Email,
                     input.VerificationCode);
                 break;
             case MessageSendChannelEnum.Sms:
-                await _smsService.VerifyVerificationCode(SmsTypeEnum.ChangePassword, accountModel.Mobile, input.VerificationCode);
+                await _smsService.VerifyVerificationCode(MessageTemplateTypeEnum.PasswordOperationVerifyCode, accountModel.Mobile,
+                    input.VerificationCode);
                 break;
         }
 

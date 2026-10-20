@@ -7,38 +7,60 @@
 .slide-top-leave-active,
 .slide-bottom-enter-active,
 .slide-bottom-leave-active {
-	will-change: transform;
 	transition:
 		opacity var(--el-transition-duration) ease,
 		transform var(--el-transition-duration) ease;
+	will-change: transform;
 }
+
 /* 左右切换 */
 .slide-right-enter-from {
 	opacity: 0;
 	transform: translateX(-20px);
 }
+
 .slide-right-leave-to {
 	opacity: 0;
 	transform: translateX(20px);
 }
+
 .slide-left-enter-from {
 	@extend .slide-right-leave-to;
 }
+
 .slide-left-leave-to {
 	@extend .slide-right-enter-from;
 }
+
 /* 上下切换 */
 .slide-bottom-enter-from {
 	opacity: 0;
 	transform: translateY(-20px);
 }
+
 .slide-bottom-leave-to {
 	opacity: 0;
 	transform: translateY(20px);
 }
+
 .slide-top-enter-from {
 	@extend .slide-bottom-leave-to;
 }
+
 .slide-top-leave-to {
 	@extend .slide-bottom-enter-from;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.slide-right-enter-active,
+	.slide-right-leave-active,
+	.slide-left-enter-active,
+	.slide-left-leave-active,
+	.slide-top-enter-active,
+	.slide-top-leave-active,
+	.slide-bottom-enter-active,
+	.slide-bottom-leave-active {
+		transition: none;
+		will-change: auto;
+	}
 }

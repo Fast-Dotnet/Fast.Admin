@@ -163,10 +163,10 @@ public sealed class Tenant : ITenant, IScopedDependency
 
             // 独立客户端不加载 AOP，避免记录写入再次触发 SQL 审计
             using var db = new SqlSugarClient(SqlSugarContext.GetConnectionConfig(SqlSugarContext.ConnectionSettings));
-            var data = db.Queryable<ApplicationOpenIdModel>()
+            var data = db.Queryable<ApplicationClientModel>()
                 .InnerJoin<ApplicationModel>((t1, t2) => t1.AppId == t2.AppId)
                 .LeftJoin<TenantModel>((t1, t2, t3) => t2.TenantId == t3.TenantId)
-                .Where(t1 => t1.OpenId == GlobalContext.Origin)
+                .Where((t1, t2) => t1.AppKey == GlobalContext.Origin && t2.TenantId != null)
                 .Select((t1, t2, t3) => new
                 {
                     t1.AppType,
@@ -175,14 +175,11 @@ public sealed class Tenant : ITenant, IScopedDependency
                     t3.TenantNo,
                     t3.TenantName,
                     t3.TenantCode,
-                    t3.TenantType,
+                    TenantType = (TenantTypeEnum?)t3.TenantType,
                     Status = (CommonStatusEnum?)t3.Status,
                     Edition = (EditionEnum?)t3.Edition
                 })
                 .Single();
-
-            // 请求已取消时终止后续处理
-            _httpContext.RequestAborted.ThrowIfCancellationRequested();
 
             // 找不到租户直接返回为空
             if (data == null)

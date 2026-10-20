@@ -182,7 +182,7 @@ onLoad(() => {
 });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .btn__avatar,
 .btn__mobile {
 	width: 100%;

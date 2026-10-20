@@ -63,28 +63,28 @@ export interface QueryDepartmentPagedOutput {
 	 */
 	remark?: string;
 	/**
-	 * 创建者用户名称
-	 */
-	createdUserName?: string;
-	/**
-	 * 创建时间
-	 */
-	createdTime?: string;
-	/**
-	 * 更新者用户名称
-	 */
-	updatedUserName?: string;
-	/**
-	 * 更新时间
-	 */
-	updatedTime?: string;
-	/**
-	 * 更新版本控制字段
-	 */
-	rowVersion?: string;
-	/**
 	 * 子级
 	 */
 	children?: QueryDepartmentPagedOutput[];
+	/**
+	 * 
+	 */
+	createdUserName?: string;
+	/**
+	 * 
+	 */
+	createdTime?: string;
+	/**
+	 * 
+	 */
+	updatedUserName?: string;
+	/**
+	 * 
+	 */
+	updatedTime?: string;
+	/**
+	 * 
+	 */
+	rowVersion?: string;
 }
 

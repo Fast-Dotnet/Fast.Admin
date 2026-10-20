@@ -75,7 +75,7 @@ onLoad(() => {
 });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .page {
 	display: flex;
 	flex-direction: column;

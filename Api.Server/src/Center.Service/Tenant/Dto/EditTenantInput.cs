@@ -91,4 +91,9 @@ public class EditTenantInput : UpdateVersionInput
     /// </summary>
     [StringRequired(ErrorMessage = "LogoUrl不能为空")]
     public string LogoUrl { get; set; }
+
+    /// <summary>
+    /// 阿里云签名名称
+    /// </summary>
+    public string AliyunSignName { get; set; }
 }

@@ -29,16 +29,6 @@ public static class CommonConst
     public static class Default
     {
         /// <summary>
-        /// 管理员密码
-        /// </summary>
-        public const string AdminPassword = "fast.2025";
-
-        /// <summary>
-        /// 密码
-        /// </summary>
-        public const string Password = "123456";
-
-        /// <summary>
         /// 超级管理员账户Id
         /// </summary>
         public const long SuperAdminAccountId = 10086;
@@ -53,11 +43,6 @@ public static class CommonConst
         /// </summary>
         public const string TenantNo = "Fast2018";
     }
-
-    /// <summary>
-    /// 默认Logo
-    /// </summary>
-    public const string DefaultLogo = "https://gitee.com/FastDotnet/Fast.Admin/raw/master/Fast.png";
 
     /// <summary>
     /// 默认头像

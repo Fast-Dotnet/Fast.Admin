@@ -108,8 +108,8 @@ public class UnifyResponseProvider : IUnifyResponseProvider
         if (responseEncipherAttribute == null)
         {
             // 获取应用信息
-            ApplicationOpenIdModel applicationOpenIdModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
-            responseEncipher = applicationOpenIdModel.RequestEncipher;
+            ApplicationClientModel applicationClientModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
+            responseEncipher = applicationClientModel.RequestEncipher;
         }
         else if (responseEncipherAttribute.Enable)
         {

@@ -4,7 +4,6 @@ import { ElMessage } from "element-plus";
 import { mixHexColors, parseHexColor, withDefineType } from "@fast-china/utils";
 import { useApp } from "../app";
 import type { componentSizes } from "element-plus";
-import type { FaTableDataRange } from "fast-element-plus";
 
 /** 布局模式 */
 export type IModeName = "Classic" | "Horizontal" | "Mixed";
@@ -99,20 +98,6 @@ export const useConfig = defineStore(
 			footer: true,
 			/** 是否显示水印 */
 			watermark: true,
-		});
-
-		/** 表格配置 */
-		const tableLayout = reactive({
-			/** 是否显示表格搜索区域 */
-			showSearch: true,
-			/** 是否使用抽屉式高级搜索 */
-			advancedSearchDrawer: false,
-			/** 高级搜索是否默认折叠 */
-			defaultCollapsedSearch: true,
-			/** 是否默认隐藏表格图片 */
-			hideImage: true,
-			/** 默认时间搜索范围 */
-			dataSearchRange: withDefineType<FaTableDataRange>("Past3D"),
 		});
 
 		/** 屏幕 */
@@ -237,16 +222,10 @@ export const useConfig = defineStore(
 			layout.watermark = true;
 			setDefaultLayoutSize();
 			initTheme();
-			tableLayout.showSearch = true;
-			tableLayout.advancedSearchDrawer = false;
-			tableLayout.defaultCollapsedSearch = true;
-			tableLayout.hideImage = true;
-			tableLayout.dataSearchRange = "Past3D";
 		};
 
 		return {
 			layout,
-			tableLayout,
 			screen,
 			setLayoutMode,
 			setTheme,

@@ -49,7 +49,7 @@ public class MetadataContext
             (string publicIp, _) = await RemoteRequestUtil.GetAsync("http://100.100.100.200/latest/meta-data/eipv4", timeout: 1);
             return new ServerMetadataInfo
             {
-                Provider = "AliYun",
+                Provider = "Aliyun",
                 InstanceName = instanceName,
                 Region = region,
                 Zone = zone,

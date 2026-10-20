@@ -3,7 +3,7 @@ import { ElDropdownItem, ElMessage, ElMessageBox, dayjs } from "element-plus";
 import { FaTable, faTableEmits, faTableProps } from "fast-element-plus";
 import { debounce, makeSlots, useEmits, useExpose, useProps, useRender, useWindowSize, withDefineType } from "@fast-china/utils";
 import { tableApi } from "@/api/services/Center/table";
-import { useApp, useConfig } from "@/stores";
+import { useApp } from "@/stores";
 import type { FaTableColumnCtx, FaTableInstance, FaTableSlots } from "fast-element-plus";
 
 /**
@@ -17,6 +17,11 @@ export default defineComponent({
 	name: "FastTable",
 	props: {
 		...faTableProps,
+		/** 表格Key */
+		tableKey: {
+			type: String,
+			required: true,
+		},
 		/** 是否显示列配置按钮；传入静态 columns 时不显示 */
 		columnSettingBtn: {
 			type: Boolean,
@@ -32,7 +37,6 @@ export default defineComponent({
 		const faTableRef = shallowRef<FaTableInstance | null>(null);
 
 		const appStore = useApp();
-		const configStore = useConfig();
 		const { width: windowWidth } = useWindowSize();
 
 		const state = shallowReactive({
@@ -146,9 +150,7 @@ export default defineComponent({
 		/** 清除当前用户的表格列缓存并重新加载配置。 */
 		const clearColumnsCache = () => {
 			if (props.columns) return;
-			ElMessageBox.confirm("确认重置列缓存配置？此操作无法撤销。", {
-				type: "warning",
-			}).then(async () => {
+			ElMessageBox.confirm("确认重置列缓存配置？此操作无法撤销。", { type: "warning" }).then(async () => {
 				await faTableRef.value.doLoading(async () => {
 					try {
 						await tableApi.clearUserTableConfig({ tableKey: props.tableKey });
@@ -233,7 +235,7 @@ export default defineComponent({
 		const responsiveColumns = computed(() => {
 			if (!isSmallScreen.value) return state.columns;
 
-			const componentColumnTypes = new Set(["selection", "index", "expand"]);
+			const componentColumnTypes = new Set(["expand", "selection", "index"]);
 			const cancelBusinessColumnFixed = (columns: FaTableColumnCtx[]): FaTableColumnCtx[] =>
 				columns.map((column) => ({
 					...column,
@@ -297,15 +299,7 @@ export default defineComponent({
 		});
 
 		// 透传给基础 FaTable 的属性
-		const tableProps = useProps(props, faTableProps, [
-			"columns",
-			"hideImage",
-			"collapsedSearch",
-			"advancedSearchDrawer",
-			"dataSearchRange",
-			"columnSettingBtn",
-			"columnsChange",
-		]);
+		const tableProps = useProps(props, faTableProps, ["columns", "columnSettingBtn", "columnsChange"]);
 
 		// 透传基础 FaTable 事件
 		const tableEmits = useEmits(faTableEmits, emit);
@@ -334,11 +328,6 @@ export default defineComponent({
 				v-loading={state.loading}
 				element-loading-text={state.loadingText}
 				columns={responsiveColumns.value}
-				searchForm={props.searchForm && configStore.tableLayout.showSearch}
-				hideImage={configStore.tableLayout.hideImage}
-				collapsedSearch={configStore.tableLayout.defaultCollapsedSearch}
-				advancedSearchDrawer={configStore.tableLayout.advancedSearchDrawer}
-				dataSearchRange={props.dataSearchRange || configStore.tableLayout.dataSearchRange}
 				columnSettingBtn={props.columnSettingBtn && !props.columns}
 				columnsChange={saveColumnsCache}
 			/>

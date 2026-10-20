@@ -15,7 +15,7 @@ using SqlSugar;
 namespace Fast.Core;
 
 /// <summary>
-/// 租户数据库初始化托管服务
+/// 系统租户数据库初始化托管服务
 /// </summary>
 [Order(104)]
 public class InitTenantDatabaseHostedService : IHostedService
@@ -31,7 +31,7 @@ public class InitTenantDatabaseHostedService : IHostedService
     private readonly ILogger _logger;
 
     /// <summary>
-    /// 初始化租户数据库托管服务
+    /// 初始化系统租户数据库托管服务
     /// </summary>
     public InitTenantDatabaseHostedService(IServiceProvider serviceProvider, ILogger<InitTenantDatabaseHostedService> logger)
     {
@@ -48,15 +48,19 @@ public class InitTenantDatabaseHostedService : IHostedService
 
             // 创建请求作用域
             using IServiceScope scope = _serviceProvider.CreateScope();
-            ITenantDatabaseService tenantDatabaseService = scope.ServiceProvider.GetService<ITenantDatabaseService>();
+            var handlers = scope.ServiceProvider.GetServices<IInitTenantDatabaseHandler>()
+                .OrderBy(handler => handler.Order)
+                .ToList();
 
-            // 初始化租户数据库
+            // 初始化系统租户数据库
             foreach (TenantModel tenantModel in await db.Queryable<TenantModel>()
                          .Where(wh => wh.TenantType == TenantTypeEnum.System)
                          .ToListAsync(cancellationToken))
             {
-                await tenantDatabaseService.InitDatabase(tenantModel.TenantId, DatabaseTypeEnum.Admin);
-                await tenantDatabaseService.InitDatabase(tenantModel.TenantId, DatabaseTypeEnum.AdminLog);
+                foreach (IInitTenantDatabaseHandler handler in handlers)
+                {
+                    await handler.HandleAsync(tenantModel.TenantId);
+                }
             }
 
             await Task.CompletedTask;

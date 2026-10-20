@@ -16,14 +16,13 @@ namespace Fast.Center.Service.SqlExceptionLog;
 /// SQL 异常日志服务
 /// </summary>
 [ApiDescriptionSettings(ApiGroupConst.Center, Name = "sqlExceptionLog")]
+[PlatformOnly]
 public class SqlExceptionLogModelService : IDynamicApplication
 {
-    private readonly IUser _user;
     private readonly ISqlSugarRepository<SqlExceptionLogModel> _repository;
 
-    public SqlExceptionLogModelService(IUser user, ISqlSugarRepository<SqlExceptionLogModel> repository)
+    public SqlExceptionLogModelService(ISqlSugarRepository<SqlExceptionLogModel> repository)
     {
-        _user = user;
         _repository = repository;
     }
 
@@ -40,18 +39,9 @@ public class SqlExceptionLogModelService : IDynamicApplication
             throw new UserFriendlyException("请选择具体的时间范围！");
         }
 
-        ISugarQueryable<SqlExceptionLogModel> queryable =
-            _repository.Entities.WhereIF(input.AccountId != null, wh => wh.AccountId == input.AccountId);
-
-        if (_user.IsSuperAdmin)
-        {
-            queryable = queryable.WhereIF(input.TenantId != null, wh => wh.TenantId == input.TenantId);
-        }
-        else
-        {
-            queryable = queryable.Where(wh => wh.TenantId == _user.TenantId);
-        }
-
-        return await queryable.OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc).ToPagedListAsync(input);
+        return await _repository.Entities.WhereIF(input.AccountId != null, wh => wh.AccountId == input.AccountId)
+            .WhereIF(input.TenantId != null, wh => wh.TenantId == input.TenantId)
+            .OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
+            .ToPagedListAsync(input);
     }
 }

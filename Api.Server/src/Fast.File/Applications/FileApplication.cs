@@ -79,17 +79,20 @@ public class FileApplication : IDynamicApplication
     [Permission(PermissionConst.FilePaged)]
     public async Task<PagedResult<QueryFilePagedOutput>> QueryFilePaged(QueryFilePagedInput input)
     {
-        TenantModel tenantModel = await TenantContext.GetTenant(_user.TenantNo);
-
         ISugarQueryable<FileModel, TenantModel> queryable =
             _repository.Entities.LeftJoin<TenantModel>((t1, t2) => t1.TenantId == t2.TenantId);
 
-        if (tenantModel.TenantType == TenantTypeEnum.System)
+        if (_user.IsSystemTenant)
         {
             queryable = queryable.ClearFilter<IBaseTEntity>()
                 .WhereIF(input.TenantId != null, t1 => t1.TenantId == input.TenantId);
         }
-        else if (!_user.IsAdmin)
+        else
+        {
+            queryable = queryable.ClearFilter<IBaseTEntity>().Where(t1 => t1.TenantId == _user.TenantId);
+        }
+
+        if (!_user.IsSuperAdmin && !_user.IsAdmin)
         {
             queryable = queryable.Where(t1 => t1.CreatedUserId == _user.EmployeeId);
         }

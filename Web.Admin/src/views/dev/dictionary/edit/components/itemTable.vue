@@ -71,14 +71,12 @@ const props = defineProps({
 });
 
 // v-model绑定值
-const modelValue = defineModel<EditDictionaryItemInput[]>({ required: true });
+const modelValue = defineModel<EditDictionaryItemInput[]>({ default: () => [], required: true });
 
 const editFormRef = useTemplateRef<InstanceType<typeof DictionaryEditItemEdit>>("editFormRef");
 
 const handleDelete = (_row: EditDictionaryItemInput, index: number) => {
-	ElMessageBox.confirm("确定要删除数据字典项？", {
-		type: "warning",
-	}).then(() => {
+	ElMessageBox.confirm("确定要删除数据字典项？", { type: "warning" }).then(() => {
 		modelValue.value.splice(index, 1);
 	});
 };

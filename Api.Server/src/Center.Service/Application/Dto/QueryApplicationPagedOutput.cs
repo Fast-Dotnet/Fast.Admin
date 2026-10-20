@@ -53,4 +53,9 @@ public class QueryApplicationPagedOutput : PagedOutput
     /// 租户名称
     /// </summary>
     public string TenantName { get; set; }
+
+    /// <summary>
+    /// 应用标识列表
+    /// </summary>
+    public List<QueryApplicationClientOutput> ClientList { get; set; } = [];
 }

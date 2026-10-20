@@ -1,4 +1,4 @@
-﻿// Copyright © 2018-Present 小方
+// Copyright © 2018-Present 小方
 // SPDX-License-Identifier: Apache-2.0
 // 
 // 本文件依据 Apache License 2.0 授权，完整条款见仓库根目录 LICENSE。
@@ -13,7 +13,7 @@ namespace Fast.Center.Domain;
 [SugarTable("Merchant", "商户号表")]
 [SugarDbType(DatabaseTypeEnum.Center)]
 [SugarIndex($"UX_{{table}}_{nameof(MerchantNo)}", nameof(MerchantNo), OrderByType.Asc, true)]
-public class MerchantModel : BaseTEntity, IUpdateVersion
+public class MerchantModel : BaseEntity, IUpdateVersion
 {
     /// <summary>
     /// 商户号Id

@@ -15,7 +15,7 @@ namespace Fast.CenterLog.Domain;
 [SugarDbType(DatabaseTypeEnum.CenterLog)]
 [SugarIndex($"IX_{{split_table}}_{nameof(CreatedTime)}", nameof(CreatedTime), OrderByType.Asc)]
 [SugarIndex($"IX_{{split_table}}_{nameof(TenantId)}", nameof(TenantId), OrderByType.Asc)]
-public class SqlExecutionLogModel : BaseRecordEntity
+public class SqlExecutionLogModel : BaseRecordEntity, IDepartmentEntity
 {
     /// <summary>
     /// 记录Id
@@ -53,6 +53,18 @@ public class SqlExecutionLogModel : BaseRecordEntity
     /// </summary>
     [SugarColumn(ColumnDescription = "纯SQL，参数化后的SQL", ColumnDataType = StaticConfig.CodeFirst_BigString)]
     public string PureSql { get; set; }
+
+    /// <summary>
+    /// 部门Id
+    /// </summary>
+    [SugarColumn(ColumnDescription = "部门Id", CreateTableFieldSort = 981)]
+    public long? DepartmentId { get; set; }
+
+    /// <summary>
+    /// 部门名称
+    /// </summary>
+    [SugarColumn(ColumnDescription = "部门名称", Length = 20, IsNullable = true, CreateTableFieldSort = 982)]
+    public string DepartmentName { get; set; }
 
     /// <summary>
     /// 执行时间

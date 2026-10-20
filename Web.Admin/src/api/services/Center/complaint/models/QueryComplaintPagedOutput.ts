@@ -15,7 +15,7 @@ export interface QueryComplaintPagedOutput {
 	/**
 	 * 应用标识
 	 */
-	openId?: string;
+	appKey?: string;
 	/**
 	 * 昵称
 	 */

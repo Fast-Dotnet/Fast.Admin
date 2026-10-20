@@ -48,5 +48,9 @@ export interface AddTenantInput {
 	 * Logo URL
 	 */
 	logoUrl?: string;
+	/**
+	 * 阿里云签名名称
+	 */
+	aliyunSignName?: string;
 }
 

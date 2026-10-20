@@ -20,37 +20,41 @@ defineOptions({
 });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .mobile-blocked {
-	width: 100%;
-	height: 100%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: var(--el-bg-color-page);
+	width: 100%;
+	height: 100%;
 	padding: 20px;
-	.mobile-blocked__card {
-		text-align: center;
-		max-width: 360px;
-		padding: 40px 30px;
-		background: var(--el-bg-color);
-		border-radius: 16px;
-		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-	}
-	.mobile-blocked__icon {
-		margin-bottom: 20px;
-	}
-	.mobile-blocked__title {
-		font-size: 20px;
-		font-weight: 600;
-		color: var(--el-text-color-primary);
-		margin: 0 0 12px;
-	}
-	.mobile-blocked__desc {
-		font-size: 14px;
-		color: var(--el-text-color-secondary);
-		line-height: 1.6;
-		margin: 0;
-	}
+	background: var(--el-bg-color-page);
+}
+
+.mobile-blocked__card {
+	max-width: 360px;
+	padding: 40px 30px;
+	text-align: center;
+	border-radius: 16px;
+	background: var(--el-bg-color);
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-blocked__icon {
+	margin-bottom: 20px;
+}
+
+.mobile-blocked__title {
+	margin: 0 0 12px;
+	font-size: 20px;
+	font-weight: 600;
+	color: var(--el-text-color-primary);
+}
+
+.mobile-blocked__desc {
+	margin: 0;
+	font-size: 14px;
+	line-height: 1.6;
+	color: var(--el-text-color-secondary);
 }
 </style>

@@ -35,26 +35,25 @@ public class AppService : IDynamicApplication
     [ResponseEncipher]
     public async Task<LaunchOutput> Launch()
     {
-        ApplicationOpenIdModel applicationOpenIdModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
-        if (applicationOpenIdModel == null || applicationOpenIdModel.AppType != GlobalContext.DeviceType)
+        ApplicationClientModel applicationClientModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
+        if (applicationClientModel == null || applicationClientModel.AppType != GlobalContext.DeviceType)
         {
             throw new UserFriendlyException("非法访问！");
         }
 
         return new LaunchOutput
         {
-            Edition = applicationOpenIdModel.Application.Edition,
-            AppNo = applicationOpenIdModel.Application.AppNo,
-            AppName = applicationOpenIdModel.Application.AppName,
-            LogoUrl = applicationOpenIdModel.Application.LogoUrl,
-            ThemeColor = applicationOpenIdModel.Application.ThemeColor,
-            AppType = applicationOpenIdModel.AppType,
-            EnvironmentType = applicationOpenIdModel.EnvironmentType,
-            LoginComponent = applicationOpenIdModel.LoginComponent,
-            WebSocketUrl = applicationOpenIdModel.WebSocketUrl,
-            RequestTimeout = applicationOpenIdModel.RequestTimeout,
-            RequestEncipher = applicationOpenIdModel.RequestEncipher,
-            TenantName = applicationOpenIdModel.Application.TenantName
+            Edition = applicationClientModel.Application.Edition,
+            AppNo = applicationClientModel.Application.AppNo,
+            AppName = applicationClientModel.Application.AppName,
+            LogoUrl = applicationClientModel.Application.LogoUrl,
+            ThemeColor = applicationClientModel.Application.ThemeColor,
+            AppType = applicationClientModel.AppType,
+            EnvironmentType = applicationClientModel.EnvironmentType,
+            LoginComponent = applicationClientModel.LoginComponent,
+            RequestTimeout = applicationClientModel.RequestTimeout,
+            RequestEncipher = applicationClientModel.RequestEncipher,
+            TenantName = applicationClientModel.Application.TenantName
         };
     }
 }

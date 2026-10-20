@@ -40,7 +40,7 @@ public class AuthService : IDynamicApplication
     public async Task<GetLoginUserInfoOutput> GetLoginUserInfo()
     {
         // 查询应用信息
-        ApplicationOpenIdModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
+        ApplicationClientModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
 
         if (applicationModel.AppType != GlobalContext.DeviceType)
         {

@@ -18,6 +18,7 @@ namespace Fast.Scheduler;
 /// 调度作业
 /// </summary>
 [ApiDescriptionSettings(ApiGroupConst.Scheduler, Name = "scheduler")]
+[PlatformOnly]
 public class SchedulerApplication : IDynamicApplication
 {
     /// <summary>

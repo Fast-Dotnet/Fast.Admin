@@ -212,9 +212,7 @@ const handleOrderChange = () => {
 
 /** 处理保存 */
 const handleSave = () => {
-	ElMessageBox.confirm("确认要保存表格配置？", {
-		type: "warning",
-	}).then(async () => {
+	ElMessageBox.confirm("确认要保存表格配置？", { type: "warning" }).then(async () => {
 		await tableApi.editTableColumnConfig({
 			tableId: state.tableId,
 			columns: state.tableData,
