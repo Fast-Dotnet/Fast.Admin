@@ -162,7 +162,7 @@ public class AdminDatabaseHandler : IInitTenantDatabaseHandler
                     RoleCode = "manager_role",
                     Sort = 2,
                     DataScopeType = DataScopeTypeEnum.All,
-                    AssignableRoleIds = [],
+                    AssignableRoleIds = [defaultRoleId, itRoleId, hrRoleId, financeRoleId, auditRoleId],
                     Remark = null
                 },
                 new()

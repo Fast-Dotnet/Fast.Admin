@@ -31,7 +31,7 @@
 			<FaFormItem v-if="state.formData.dataScopeType === DataScopeTypeEnum.CustomDept" prop="dataScopeDepartmentIds" label="自定义部门">
 				<DepartmentTreeSelect v-model="state.formData.dataScopeDepartmentIds" multiple collapse-tags collapse-tags-tooltip />
 			</FaFormItem>
-			<FaFormItem prop="assignableRoleIds" label="可分配角色" tips="为空则代表可分配所有角色，有值则只能分配勾选的角色">
+			<FaFormItem prop="assignableRoleIds" label="可分配角色" tips="为空则代表此角色不提供角色分配权限；普通账号仅可分配勾选且自己未持有的角色">
 				<el-checkbox-group v-model="state.formData.assignableRoleIds">
 					<el-checkbox v-for="(item, index) of state.roleList" :key="index" :value="item.value">
 						{{ item.label }}
