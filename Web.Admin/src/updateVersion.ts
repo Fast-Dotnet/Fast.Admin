@@ -3,6 +3,9 @@ import { logger } from "@fast-china/utils";
 
 // 防止定时检测重复弹出版本更新确认框。
 let versionUpdateDialogVisible = false;
+const cancelledVersionReminderTimes = new Map<string, number>();
+const visibilityCheckInterval = 10 * 60 * 1000;
+const reminderCooldown = 60 * 60 * 1000;
 
 /**
  * 获取当前部署环境中的最新版本号。
@@ -45,8 +48,11 @@ const loadLatestVersion = async (): Promise<string> => {
 const detectVersionUpdate = async (currentVersion: string): Promise<void> => {
 	const latestVersion = await loadLatestVersion();
 
-	// 未获取到版本、版本未变化或提示框已打开时无需继续处理。
-	if (!latestVersion || latestVersion === currentVersion || versionUpdateDialogVisible) return;
+	// 请求期间页面可能已隐藏，此时不弹出更新提示。
+	if (document.hidden || !latestVersion || latestVersion === currentVersion || versionUpdateDialogVisible) return;
+
+	if (Date.now() < (cancelledVersionReminderTimes.get(latestVersion) ?? 0)) return;
+	cancelledVersionReminderTimes.delete(latestVersion);
 
 	versionUpdateDialogVisible = true;
 
@@ -59,10 +65,13 @@ const detectVersionUpdate = async (currentVersion: string): Promise<void> => {
 
 		// 重新加载页面，获取最新的入口文件和静态资源。
 		window.location.reload();
-	} catch {
-		// 用户取消更新后恢复检测状态，允许下一轮定时任务再次提示。
+	} catch (error) {
 		versionUpdateDialogVisible = false;
-		ElMessage.warning("您取消了更新，将在十分钟后再次进行提示！");
+		if (error !== "cancel" && error !== "close") throw error;
+
+		// 取消和关闭均从操作发生时计时，其他版本不受此提醒间隔影响。
+		cancelledVersionReminderTimes.set(latestVersion, Date.now() + reminderCooldown);
+		ElMessage.warning("您取消了更新，同一版本将在一小时内不再提醒！");
 	}
 };
 
@@ -70,16 +79,40 @@ const detectVersionUpdate = async (currentVersion: string): Promise<void> => {
  * 启动版本更新检测。
  *
  * @remarks
- * 启动时立即检测一次，之后按照指定间隔持续检测；此方法不返回清理句柄，应在应用启动时调用一次。
+ * 页面可见时启动即检测，之后按照指定间隔检测；页面隐藏时跳过，恢复可见且距上次检测超过十分钟时补查。
+ * 用户取消后，同一版本一小时内不再提醒。此方法不返回清理句柄，应在应用启动时调用一次。
  *
  * @param currentVersion - 当前页面构建时使用的版本号
- * @param delay - 检测间隔，单位为毫秒，默认十分钟
+ * @param delay - 检测间隔，单位为毫秒，默认三十分钟
  */
-export const checkVersionUpdate = (currentVersion: string, delay = 10 * 60 * 1000): void => {
+export const checkVersionUpdate = (currentVersion: string, delay = 30 * 60 * 1000): void => {
+	let lastCheckedAt = 0;
+	let isChecking = false;
+
+	const check = async (): Promise<void> => {
+		if (document.hidden || isChecking || versionUpdateDialogVisible) return;
+
+		isChecking = true;
+		lastCheckedAt = Date.now();
+		try {
+			await detectVersionUpdate(currentVersion);
+		} catch (error) {
+			logger.error("App", "版本更新检测失败", error);
+		} finally {
+			isChecking = false;
+		}
+	};
+
 	logger.log("App", `当前版本 ${currentVersion}`);
-	detectVersionUpdate(currentVersion);
+	check();
 
 	window.setInterval(() => {
-		detectVersionUpdate(currentVersion);
+		check();
 	}, delay);
+
+	document.addEventListener("visibilitychange", () => {
+		if (!document.hidden && Date.now() - lastCheckedAt > visibilityCheckInterval) {
+			check();
+		}
+	});
 };
