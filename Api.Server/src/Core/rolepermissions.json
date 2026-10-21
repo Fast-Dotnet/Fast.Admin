@@ -7,30 +7,35 @@
     "Api:Paged": [ "Admin", "IT" ],
     "Api:Swagger": [ "Admin", "IT" ],
     "Api:Knife4j": [ "Admin", "IT" ],
-    // 开发管理
+    // 配置
     "Config:Paged": [ "Admin", "IT" ],
     "Config:Detail": [ "Admin", "IT" ],
     "Config:Edit": [ "Admin", "IT" ],
+    // 菜单
     "Menu:Paged": [ "Admin", "IT" ],
     "Menu:Detail": [ "Admin", "IT" ],
     "Menu:Add": [ "Admin", "IT" ],
     "Menu:Edit": [ "Admin", "IT" ],
     "Menu:Delete": [ "Admin", "IT" ],
     "Menu:Status": [ "Admin", "IT" ],
+    // 单号
     "SysSerial:Paged": [ "Admin", "IT" ],
     "SysSerial:Detail": [ "Admin", "IT" ],
     "SysSerial:Add": [ "Admin", "IT" ],
     "SysSerial:Edit": [ "Admin", "IT" ],
+    // 数据字典
     "Dictionary:Paged": [ "Admin", "IT" ],
     "Dictionary:Detail": [ "Admin", "IT" ],
     "Dictionary:Add": [ "Admin", "IT" ],
     "Dictionary:Edit": [ "Admin", "IT" ],
     "Dictionary:Delete": [ "Admin", "IT" ],
+    // 表格
     "Table:Paged": [ "Admin", "IT" ],
     "Table:Detail": [ "Admin", "IT" ],
     "Table:Add": [ "Admin", "IT" ],
     "Table:Edit": [ "Admin", "IT" ],
     "Table:Delete": [ "Admin", "IT" ],
+    // 调度程序
     "Scheduler:Paged": [ "Admin", "IT" ],
     "Scheduler:Detail": [ "Admin", "IT" ],
     "Scheduler:Add": [ "Admin", "IT" ],
@@ -41,7 +46,9 @@
     "Scheduler:Trigger": [ "Admin", "IT" ],
     "Scheduler:ResumeJob": [ "Admin", "IT" ],
     "Scheduler:StopJob": [ "Admin", "IT" ],
+    // 密码记录
     "PasswordRecord:Paged": [ "Admin", "IT", "Finance", "Audit" ],
+    // 消息记录
     "MessageSendRecord:Paged": [ "Admin", "IT", "Finance", "Audit" ],
     "MessageSendRecord:Detail": [ "Admin", "IT", "Finance", "Audit" ],
     // 系统日志
@@ -58,17 +65,19 @@
     "Account:Unlock": [ "Admin", "IT" ],
     "Account:ResetPassword": [ "Admin", "IT" ],
     "Account:Status": [ "Admin", "IT" ],
-    // 系统管理
+    // 租户
     "Tenant:Paged": [ "Admin", "IT" ],
     "Tenant:Detail": [ "Admin", "IT" ],
     "Tenant:Add": [ "Admin", "IT" ],
     "Tenant:Edit": [ "Admin", "IT" ],
     "Tenant:Status": [ "Admin", "IT" ],
+    // 数据库
     "Database:Paged": [ "Admin", "IT" ],
     "Database:Detail": [ "Admin", "IT" ],
     "Database:Add": [ "Admin", "IT" ],
     "Database:Edit": [ "Admin", "IT" ],
     "Database:Delete": [ "Admin", "IT" ],
+    // 应用
     "App:Paged": [ "Admin", "IT" ],
     "App:Detail": [ "Admin", "IT" ],
     "App:Add": [ "Admin", "IT" ],
@@ -82,23 +91,26 @@
     "AppToken:Add": [ "Admin", "IT" ],
     "AppToken:Delete": [ "Admin", "IT" ],
     "AppToken:Refresh": [ "Admin", "IT" ],
+    // 消息模板
     "MessageTemplate:Paged": [ "Admin", "IT" ],
     "MessageTemplate:Detail": [ "Admin", "IT" ],
     "MessageTemplate:Add": [ "Admin", "IT" ],
     "MessageTemplate:Edit": [ "Admin", "IT" ],
     "MessageTemplate:Delete": [ "Admin", "IT" ],
-    // 配置管理
+    // 单号
     "Serial:Paged": [ "Admin", "IT" ],
     "Serial:Detail": [ "Admin", "IT" ],
     "Serial:Add": [ "Admin", "IT" ],
     "Serial:Edit": [ "Admin", "IT" ],
-    // 财务管理
+    // 商户号
     "Merchant:Paged": [ "Admin", "IT", "Finance" ],
     "Merchant:Detail": [ "Admin", "IT", "Finance" ],
     "Merchant:Add": [ "Admin", "IT" ],
     "Merchant:Edit": [ "Admin", "IT" ],
     "Merchant:Delete": [ "Admin", "IT" ],
+    // 支付记录
     "PayRecord:Paged": [ "Admin", "IT", "Finance", "Audit" ],
+    // 退款记录
     "RefundRecord:Paged": [ "Admin", "IT", "Finance", "Audit" ],
     // 平台管理
     "ClientUser:Paged": [ "Admin", "IT", "Finance", "Audit" ],
