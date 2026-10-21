@@ -33,24 +33,5 @@ export const layoutRoute: RouteRecordRaw = {
 				keepAlive: false,
 			},
 		},
-		{
-			path: "/settings",
-			name: "Settings",
-			redirect: "/settings/account",
-			meta: {
-				title: "设置",
-				hide: true,
-			},
-			children: [
-				{
-					path: "/settings/account",
-					name: "SettingsAccount",
-					component: () => import("@/views/settings/account/index.vue"),
-					meta: {
-						title: "个人信息",
-					},
-				},
-			],
-		},
 	],
 };
