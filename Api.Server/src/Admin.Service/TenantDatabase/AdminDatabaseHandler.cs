@@ -21,7 +21,7 @@ public class AdminDatabaseHandler : IInitTenantDatabaseHandler
     public int Order => 100;
 
     /// <inheritdoc />
-    public async Task HandleAsync(long tenantId, DatabaseTypeEnum? databaseType = null)
+    public async Task HandleAsync(TenantModel tenantModel, DatabaseTypeEnum? databaseType = null)
     {
         if (databaseType != null && databaseType != DatabaseTypeEnum.Admin)
         {
@@ -30,16 +30,9 @@ public class AdminDatabaseHandler : IInitTenantDatabaseHandler
 
         using var db = new SqlSugarClient(SqlSugarContext.GetConnectionConfig(SqlSugarContext.ConnectionSettings));
 
-        TenantModel tenantModel = await db.Queryable<TenantModel>().Where(wh => wh.TenantId == tenantId).SingleAsync();
-
-        if (tenantModel == null)
-        {
-            throw new UserFriendlyException("租户不存在！");
-        }
-
         MainDatabaseModel databaseModel = await db.Queryable<MainDatabaseModel>()
             .Includes(e => e.SlaveDatabaseList)
-            .Where(wh => wh.TenantId == tenantId && wh.DatabaseType == DatabaseTypeEnum.Admin)
+            .Where(wh => wh.TenantId == tenantModel.TenantId && wh.DatabaseType == DatabaseTypeEnum.Admin)
             .SingleAsync();
         if (databaseModel == null)
         {

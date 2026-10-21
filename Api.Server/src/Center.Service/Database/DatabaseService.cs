@@ -392,10 +392,32 @@ public class DatabaseService : IDynamicApplication
     [Permission(PermissionConst.Database.Edit)]
     public async Task InitDatabase(InitDatabaseInput input)
     {
+        TenantModel tenantModel =
+            await _repository.Queryable<TenantModel>().Where(wh => wh.TenantId == input.TenantId).SingleAsync();
+
+        if (tenantModel == null)
+        {
+            throw new UserFriendlyException("租户不存在！");
+        }
+
+        MainDatabaseModel databaseModel = await _repository.Queryable<MainDatabaseModel>()
+            .Includes(e => e.SlaveDatabaseList)
+            .Where(wh => wh.TenantId == input.TenantId && wh.DatabaseType == input.DatabaseType)
+            .SingleAsync();
+        if (databaseModel == null)
+        {
+            throw new UserFriendlyException($"未能找到对应 {input.DatabaseType} 库所存在的 Database 信息！");
+        }
+
+        if (databaseModel.IsInitialized)
+        {
+            return;
+        }
+
         foreach (IInitTenantDatabaseHandler handler in FastContext.GetServices<IInitTenantDatabaseHandler>()
                      .OrderBy(handler => handler.Order))
         {
-            await handler.HandleAsync(input.TenantId, input.DatabaseType);
+            await handler.HandleAsync(tenantModel, input.DatabaseType);
         }
     }
 }

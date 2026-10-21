@@ -59,7 +59,7 @@ public class InitTenantDatabaseHostedService : IHostedService
             {
                 foreach (IInitTenantDatabaseHandler handler in handlers)
                 {
-                    await handler.HandleAsync(tenantModel.TenantId);
+                    await handler.HandleAsync(tenantModel);
                 }
             }
 

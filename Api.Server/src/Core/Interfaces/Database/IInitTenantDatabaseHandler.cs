@@ -5,6 +5,8 @@
 // 本软件按“原样”提供，相关免责声明及责任限制以许可证及适用法律为准。
 // 版权来源、合法使用与二次开发责任说明见仓库根目录 README.md。
 
+using Fast.Center.Domain;
+
 namespace Fast.Core;
 
 /// <summary>
@@ -27,8 +29,8 @@ public interface IInitTenantDatabaseHandler : IScopedDependency
     /// <summary>
     /// 初始化指定租户中由当前处理器负责的数据库；已初始化时直接返回。
     /// </summary>
-    /// <param name="tenantId">租户Id</param>
+    /// <param name="tenantModel">租户信息</param>
     /// <param name="databaseType">指定时仅处理匹配的数据库类型；为 <see langword="null"/> 时处理当前实现负责的数据库。</param>
     /// <exception cref="UserFriendlyException">租户或当前实现负责的数据库配置不存在时抛出。</exception>
-    Task HandleAsync(long tenantId, DatabaseTypeEnum? databaseType = null);
+    Task HandleAsync(TenantModel tenantModel, DatabaseTypeEnum? databaseType = null);
 }
