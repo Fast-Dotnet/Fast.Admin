@@ -2,8 +2,8 @@
 	<el-container class="login-page classic-login-page" :style="{ '--login-theme-gradient': props.background }">
 		<slot name="help" />
 		<div class="login-grid"></div>
-		<div class="login-orb classic-orb classic-orb--one"></div>
-		<div class="login-orb classic-orb classic-orb--two"></div>
+		<div class="login-orb classic-orb--one"></div>
+		<div class="login-orb classic-orb--two"></div>
 
 		<el-main>
 			<div class="classic-shell">

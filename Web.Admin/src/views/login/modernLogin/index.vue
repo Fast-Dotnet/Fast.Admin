@@ -4,8 +4,8 @@
 		<div class="login-grid"></div>
 		<div class="modern-beam modern-beam--one"></div>
 		<div class="modern-beam modern-beam--two"></div>
-		<div class="login-orb modern-orb modern-orb--one"></div>
-		<div class="login-orb modern-orb modern-orb--two"></div>
+		<div class="login-orb modern-orb--one"></div>
+		<div class="login-orb modern-orb--two"></div>
 
 		<el-main>
 			<div class="modern-shell">

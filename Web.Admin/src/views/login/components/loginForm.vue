@@ -1,5 +1,5 @@
 <template>
-	<section class="login-form" :class="`login-form--${props.variant}`">
+	<section class="login-form">
 		<header class="login-form__header">
 			<div class="login-form__eyebrow">
 				<span class="eyebrow-dot"></span>

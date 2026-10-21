@@ -4,7 +4,7 @@
 			<svg>
 				<circle cx="25" cy="25" r="20" fill="none" />
 			</svg>
-			<p class="loading-text">{{ props.loadingText }}</p>
+			<p>{{ props.loadingText }}</p>
 		</div>
 	</div>
 </template>
