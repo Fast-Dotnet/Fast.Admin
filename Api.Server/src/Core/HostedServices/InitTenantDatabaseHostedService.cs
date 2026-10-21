@@ -62,9 +62,7 @@ public class InitTenantDatabaseHostedService : IHostedService
                              .Where(wh => !wh.IsInitialized)
                              .ToListAsync(cancellationToken))
                 {
-                    var matchedHandlers = handlers
-                        .Where(handler => handler.CanHandle(databaseModel.DatabaseType))
-                        .ToList();
+                    var matchedHandlers = handlers.Where(handler => handler.CanHandle(databaseModel.DatabaseType)).ToList();
 
                     if (matchedHandlers.Count == 0)
                     {
