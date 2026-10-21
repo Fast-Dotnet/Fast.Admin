@@ -57,9 +57,27 @@ public class InitTenantDatabaseHostedService : IHostedService
                          .Where(wh => wh.TenantType == TenantTypeEnum.System)
                          .ToListAsync(cancellationToken))
             {
-                foreach (IInitTenantDatabaseHandler handler in handlers)
+                foreach (MainDatabaseModel databaseModel in await db.Queryable<MainDatabaseModel>()
+                             .Where(wh => wh.TenantId == tenantModel.TenantId)
+                             .Where(wh => !wh.IsInitialized)
+                             .ToListAsync(cancellationToken))
                 {
-                    await handler.HandleAsync(tenantModel);
+                    var matchedHandlers = handlers
+                        .Where(handler => handler.CanHandle(databaseModel.DatabaseType))
+                        .ToList();
+
+                    if (matchedHandlers.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    foreach (IInitTenantDatabaseHandler handler in matchedHandlers)
+                    {
+                        await handler.HandleAsync(tenantModel, databaseModel);
+                    }
+
+                    databaseModel.IsInitialized = true;
+                    await db.Updateable(databaseModel).ExecuteCommandAsync(cancellationToken);
                 }
             }
 

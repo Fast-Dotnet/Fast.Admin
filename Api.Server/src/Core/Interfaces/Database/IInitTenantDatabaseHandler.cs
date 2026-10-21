@@ -15,7 +15,8 @@ namespace Fast.Core;
 /// <remarks>
 /// 实现类按作用域注册，负责各自数据库的初始化；下游可增加新的实现。
 /// 实现可创建数据库、初始化表结构并写入种子数据。
-/// 调用方按 <see cref="Order"/> 升序依次等待执行，任一实现失败时中止后续处理并向外传播异常。
+/// 调用方先通过 <see cref="CanHandle"/> 筛选处理器，再按 <see cref="Order"/> 升序依次等待执行；任一实现失败时中止后续处理并向外传播异常。
+/// 至少匹配一个处理器且全部执行成功后，由调用方更新数据库初始化标记。
 /// 各实现自行管理初始化操作的事务，多个处理器之间没有统一事务。
 /// </remarks>
 public interface IInitTenantDatabaseHandler : IScopedDependency
@@ -27,10 +28,17 @@ public interface IInitTenantDatabaseHandler : IScopedDependency
     int Order { get; }
 
     /// <summary>
-    /// 初始化指定租户中由当前处理器负责的数据库；已初始化时直接返回。
+    /// 判断当前处理器是否负责指定类型的数据库。
+    /// </summary>
+    /// <param name="databaseType">数据库类型</param>
+    /// <returns>是否负责初始化</returns>
+    bool CanHandle(DatabaseTypeEnum databaseType);
+
+    /// <summary>
+    /// 初始化指定租户中由当前处理器负责的未初始化的数据库。
     /// </summary>
     /// <param name="tenantModel">租户信息</param>
-    /// <param name="databaseType">指定时仅处理匹配的数据库类型；为 <see langword="null"/> 时处理当前实现负责的数据库。</param>
+    /// <param name="databaseModel">数据库信息</param>
     /// <exception cref="UserFriendlyException">租户或当前实现负责的数据库配置不存在时抛出。</exception>
-    Task HandleAsync(TenantModel tenantModel, DatabaseTypeEnum? databaseType = null);
+    Task HandleAsync(TenantModel tenantModel, MainDatabaseModel databaseModel);
 }

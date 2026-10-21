@@ -21,27 +21,20 @@ public class AdminDatabaseHandler : IInitTenantDatabaseHandler
     public int Order => 100;
 
     /// <inheritdoc />
-    public async Task HandleAsync(TenantModel tenantModel, DatabaseTypeEnum? databaseType = null)
+    public bool CanHandle(DatabaseTypeEnum databaseType)
     {
-        if (databaseType != null && databaseType != DatabaseTypeEnum.Admin)
+        return databaseType == DatabaseTypeEnum.Admin;
+    }
+
+    /// <inheritdoc />
+    public async Task HandleAsync(TenantModel tenantModel, MainDatabaseModel databaseModel)
+    {
+        if (!CanHandle(databaseModel.DatabaseType))
         {
             return;
         }
 
         using var db = new SqlSugarClient(SqlSugarContext.GetConnectionConfig(SqlSugarContext.ConnectionSettings));
-
-        MainDatabaseModel databaseModel = await db.Queryable<MainDatabaseModel>()
-            .Where(wh => wh.TenantId == tenantModel.TenantId && wh.DatabaseType == DatabaseTypeEnum.Admin)
-            .SingleAsync();
-        if (databaseModel == null)
-        {
-            throw new UserFriendlyException("未能找到对应 Admin 库所存在的 Database 信息！");
-        }
-
-        if (databaseModel.IsInitialized)
-        {
-            return;
-        }
 
         // 加载Aop
         SugarEntityFilter.LoadSugarAop(FastContext.HostEnvironment.IsDevelopment(), db);
@@ -295,9 +288,6 @@ public class AdminDatabaseHandler : IInitTenantDatabaseHandler
         }
 
         await db.Updateable(tenantModel).ExecuteCommandAsync();
-
-        databaseModel.IsInitialized = true;
-        await db.Updateable(databaseModel).ExecuteCommandAsync();
 
         MAppContext.ConsoleWrite(console =>
         {

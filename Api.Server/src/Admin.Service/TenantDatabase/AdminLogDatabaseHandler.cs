@@ -19,27 +19,20 @@ public class AdminLogDatabaseHandler : IInitTenantDatabaseHandler
     public int Order => 200;
 
     /// <inheritdoc />
-    public async Task HandleAsync(TenantModel tenantModel, DatabaseTypeEnum? databaseType = null)
+    public bool CanHandle(DatabaseTypeEnum databaseType)
     {
-        if (databaseType != null && databaseType != DatabaseTypeEnum.AdminLog)
+        return databaseType == DatabaseTypeEnum.AdminLog;
+    }
+
+    /// <inheritdoc />
+    public async Task HandleAsync(TenantModel tenantModel, MainDatabaseModel databaseModel)
+    {
+        if (!CanHandle(databaseModel.DatabaseType))
         {
             return;
         }
 
         using var db = new SqlSugarClient(SqlSugarContext.GetConnectionConfig(SqlSugarContext.ConnectionSettings));
-
-        MainDatabaseModel databaseModel = await db.Queryable<MainDatabaseModel>()
-            .Where(wh => wh.TenantId == tenantModel.TenantId && wh.DatabaseType == DatabaseTypeEnum.AdminLog)
-            .SingleAsync();
-        if (databaseModel == null)
-        {
-            throw new UserFriendlyException("未能找到对应 AdminLog 库所存在的 Database 信息！");
-        }
-
-        if (databaseModel.IsInitialized)
-        {
-            return;
-        }
 
         // 加载Aop
         SugarEntityFilter.LoadSugarAop(FastContext.HostEnvironment.IsDevelopment(), db);
@@ -96,9 +89,6 @@ public class AdminLogDatabaseHandler : IInitTenantDatabaseHandler
         // 创建表
         newDb.CodeFirst.InitTables(tableTypes);
         newDb.CodeFirst.SplitTables().InitTables(splitTableTypes);
-
-        databaseModel.IsInitialized = true;
-        await db.Updateable(databaseModel).ExecuteCommandAsync();
 
         MAppContext.ConsoleWrite(console =>
         {

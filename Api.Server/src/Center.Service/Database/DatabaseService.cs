@@ -414,10 +414,22 @@ public class DatabaseService : IDynamicApplication
             return;
         }
 
-        foreach (IInitTenantDatabaseHandler handler in FastContext.GetServices<IInitTenantDatabaseHandler>()
-                     .OrderBy(handler => handler.Order))
+        var handlers = FastContext.GetServices<IInitTenantDatabaseHandler>()
+            .Where(handler => handler.CanHandle(databaseModel.DatabaseType))
+            .OrderBy(handler => handler.Order)
+            .ToList();
+
+        if (handlers.Count == 0)
         {
-            await handler.HandleAsync(tenantModel, input.DatabaseType);
+            throw new UserFriendlyException($"未找到负责 {databaseModel.DatabaseType} 数据库的初始化处理器！");
         }
+
+        foreach (IInitTenantDatabaseHandler handler in handlers)
+        {
+            await handler.HandleAsync(tenantModel, databaseModel);
+        }
+
+        databaseModel.IsInitialized = true;
+        await _repository.Updateable(databaseModel).ExecuteCommandAsync();
     }
 }
