@@ -51,29 +51,13 @@
 				small-width="80"
 				sortable
 				tag
-				:enum="appStore.getDictionary('BooleanEnum')"
+				:enum="booleanEnum"
 				:show-overflow-tooltip="false"
 			/>
 			<FaTableColumn prop="operationName" label="操作名称" width="200" small-width="180" sortable />
-			<FaTableColumn
-				prop="operationAction"
-				label="操作方式"
-				width="120"
-				small-width="100"
-				sortable
-				tag
-				:enum="appStore.getDictionary('HttpRequestActionEnum')"
-			/>
+			<FaTableColumn prop="operationAction" label="操作方式" width="120" small-width="100" sortable tag :enum="httpRequestActionEnum" />
 			<FaTableColumn prop="location" label="请求地址" width="200" small-width="180" sortable :show-overflow-tooltip="false" />
-			<FaTableColumn
-				prop="requestMethod"
-				label="请求方式"
-				width="120"
-				small-width="100"
-				sortable
-				tag
-				:enum="appStore.getDictionary('HttpRequestMethodEnum')"
-			/>
+			<FaTableColumn prop="requestMethod" label="请求方式" width="120" small-width="100" sortable tag :enum="httpRequestMethodEnum" />
 			<FaTableColumn prop="param" label="请求参数" width="120" small-width="100" sortable>
 				<template #default="{ row }: { row: RequestLogModel }">
 					<el-tag
@@ -157,6 +141,9 @@ defineOptions({
 });
 
 const appStore = useApp();
+const booleanEnum = appStore.getDictionary("BooleanEnum");
+const httpRequestActionEnum = appStore.getDictionary("HttpRequestActionEnum");
+const httpRequestMethodEnum = appStore.getDictionary("HttpRequestMethodEnum");
 
 const configStore = useConfig();
 const userInfoStore = useUserInfo();
@@ -212,21 +199,21 @@ const searchColumns: FaTableColumnCtx[] = [
 		pureSearch: true,
 		prop: "isSuccess",
 		label: "成功",
-		enum: appStore.getDictionary("BooleanEnum"),
+		enum: booleanEnum,
 		search: { el: "el-select" },
 	},
 	{
 		pureSearch: true,
 		prop: "operationAction",
 		label: "操作方式",
-		enum: appStore.getDictionary("HttpRequestActionEnum"),
+		enum: httpRequestActionEnum,
 		search: { el: "el-select" },
 	},
 	{
 		pureSearch: true,
 		prop: "requestMethod",
 		label: "请求方式",
-		enum: appStore.getDictionary("HttpRequestMethodEnum"),
+		enum: httpRequestMethodEnum,
 		search: { el: "el-select" },
 	},
 ];

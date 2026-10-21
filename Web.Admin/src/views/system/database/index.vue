@@ -7,17 +7,8 @@
 			</template>
 
 			<FaTableColumn prop="tenantName" label="租户名称" fixed="left" width="200" small-width="180" sortable />
-			<FaTableColumn
-				prop="databaseType"
-				label="数据库类型"
-				fixed="left"
-				width="150"
-				small-width="130"
-				sortable
-				tag
-				:enum="appStore.getDictionary('DatabaseTypeEnum')"
-			/>
-			<FaTableColumn prop="dbType" label="Db类型" width="150" small-width="130" sortable tag :enum="appStore.getDictionary('SugarDbType')" />
+			<FaTableColumn prop="databaseType" label="数据库类型" fixed="left" width="150" small-width="130" sortable tag :enum="databaseTypeEnum" />
+			<FaTableColumn prop="dbType" label="Db类型" width="150" small-width="130" sortable tag :enum="sugarDbType" />
 			<FaTableColumn prop="publicIp" label="公网Ip地址" width="150" small-width="130" copy sortable />
 			<FaTableColumn prop="intranetIp" label="内网Ip地址" width="150" small-width="130" sortable />
 			<FaTableColumn prop="port" label="端口号" width="100" small-width="80" sortable />
@@ -42,25 +33,9 @@
 					<el-tag>{{ row.sugarSqlExecMaxSeconds }}秒</el-tag>
 				</template>
 			</FaTableColumn>
-			<FaTableColumn prop="diffLog" label="差异日志" width="120" small-width="100" sortable tag :enum="appStore.getDictionary('BooleanEnum')" />
-			<FaTableColumn
-				prop="disableAop"
-				label="禁用Aop"
-				width="120"
-				small-width="100"
-				sortable
-				tag
-				:enum="appStore.getDictionary('BooleanEnum')"
-			/>
-			<FaTableColumn
-				prop="isInitialized"
-				label="初始化"
-				width="100"
-				small-width="80"
-				sortable
-				tag
-				:enum="appStore.getDictionary('BooleanEnum')"
-			/>
+			<FaTableColumn prop="diffLog" label="差异日志" width="120" small-width="100" sortable tag :enum="booleanEnum" />
+			<FaTableColumn prop="disableAop" label="禁用Aop" width="120" small-width="100" sortable tag :enum="booleanEnum" />
+			<FaTableColumn prop="isInitialized" label="初始化" width="100" small-width="80" sortable tag :enum="booleanEnum" />
 			<FaTableColumn prop="createdTime" label="创建时间" width="240" small-width="220" sortable type="timeInfo" />
 			<FaTableColumn
 				prop="updatedTime"
@@ -101,6 +76,9 @@ defineOptions({
 });
 
 const appStore = useApp();
+const databaseTypeEnum = appStore.getDictionary("DatabaseTypeEnum");
+const sugarDbType = appStore.getDictionary("SugarDbType");
+const booleanEnum = appStore.getDictionary("BooleanEnum");
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
 const editFormRef = useTemplateRef<InstanceType<typeof DatabaseEdit>>("editFormRef");
@@ -137,14 +115,14 @@ const searchColumns: FaTableColumnCtx[] = [
 		pureSearch: true,
 		prop: "databaseType",
 		label: "数据库类型",
-		enum: appStore.getDictionary("DatabaseTypeEnum"),
+		enum: databaseTypeEnum,
 		search: { el: "el-select" },
 	},
 	{
 		pureSearch: true,
 		prop: "dbType",
 		label: "Db类型",
-		enum: appStore.getDictionary("SugarDbType"),
+		enum: sugarDbType,
 		search: { el: "el-select" },
 	},
 ];

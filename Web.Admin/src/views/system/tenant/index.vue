@@ -20,17 +20,9 @@
 			/>
 			<FaTableColumn prop="tenantNo" label="租户编号" width="150" small-width="130" copy sortable />
 			<FaTableColumn prop="tenantCode" label="租户编码" width="120" small-width="100" sortable />
-			<FaTableColumn
-				prop="tenantType"
-				label="租户类型"
-				width="120"
-				small-width="100"
-				sortable
-				tag
-				:enum="appStore.getDictionary('TenantTypeEnum')"
-			/>
-			<FaTableColumn prop="status" label="状态" width="100" small-width="80" sortable tag :enum="appStore.getDictionary('CommonStatusEnum')" />
-			<FaTableColumn prop="edition" label="版本" width="100" small-width="80" sortable tag :enum="appStore.getDictionary('EditionEnum')" />
+			<FaTableColumn prop="tenantType" label="租户类型" width="120" small-width="100" sortable tag :enum="tenantTypeEnum" />
+			<FaTableColumn prop="status" label="状态" width="100" small-width="80" sortable tag :enum="commonStatusEnum" />
+			<FaTableColumn prop="edition" label="版本" width="100" small-width="80" sortable tag :enum="editionEnum" />
 			<FaTableColumn prop="shortName" label="租户简称" width="150" small-width="130" sortable />
 			<FaTableColumn prop="spellName" label="租户英文名称" width="200" small-width="180" sortable />
 			<FaTableColumn prop="adminName" label="管理员名称" width="150" small-width="130" sortable />
@@ -87,6 +79,9 @@ defineOptions({
 });
 
 const appStore = useApp();
+const tenantTypeEnum = appStore.getDictionary("TenantTypeEnum");
+const commonStatusEnum = appStore.getDictionary("CommonStatusEnum");
+const editionEnum = appStore.getDictionary("EditionEnum");
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
 const editFormRef = useTemplateRef<InstanceType<typeof TenantEdit>>("editFormRef");
@@ -109,14 +104,14 @@ const searchColumns: FaTableColumnCtx[] = [
 		pureSearch: true,
 		prop: "status",
 		label: "状态",
-		enum: appStore.getDictionary("CommonStatusEnum"),
+		enum: commonStatusEnum,
 		search: { el: "el-select" },
 	},
 	{
 		pureSearch: true,
 		prop: "edition",
 		label: "版本",
-		enum: appStore.getDictionary("EditionEnum"),
+		enum: editionEnum,
 		search: { el: "el-select" },
 	},
 	{
@@ -135,7 +130,7 @@ const searchColumns: FaTableColumnCtx[] = [
 		pureSearch: true,
 		prop: "tenantType",
 		label: "租户类型",
-		enum: appStore.getDictionary("TenantTypeEnum"),
+		enum: tenantTypeEnum,
 		search: { el: "el-select" },
 	},
 ];

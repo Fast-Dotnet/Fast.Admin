@@ -46,15 +46,7 @@
 					编号：<span v-iconCopy="row.appNo">{{ row.appNo }}</span>
 				</template>
 			</FaTableColumn>
-			<FaTableColumn
-				prop="deviceType"
-				label="设备类型"
-				width="120"
-				small-width="100"
-				sortable
-				tag
-				:enum="appStore.getDictionary('AppEnvironmentEnum')"
-			/>
+			<FaTableColumn prop="deviceType" label="设备类型" width="120" small-width="100" sortable tag :enum="appEnvironmentEnum" />
 			<FaTableColumn
 				prop="deviceId"
 				label="设备Id/会话Id"
@@ -69,17 +61,9 @@
 					<span>{{ row.sessionId }}</span>
 				</template>
 			</FaTableColumn>
-			<FaTableColumn
-				prop="isSuperAdmin"
-				label="超级管理员"
-				width="120"
-				small-width="100"
-				sortable
-				tag
-				:enum="appStore.getDictionary('BooleanEnum')"
-			/>
-			<FaTableColumn prop="isAdmin" label="管理员" width="100" small-width="80" sortable tag :enum="appStore.getDictionary('BooleanEnum')" />
-			<FaTableColumn prop="isOnline" label="在线" width="100" small-width="80" sortable tag :enum="appStore.getDictionary('BooleanEnum')" />
+			<FaTableColumn prop="isSuperAdmin" label="超级管理员" width="120" small-width="100" sortable tag :enum="booleanEnum" />
+			<FaTableColumn prop="isAdmin" label="管理员" width="100" small-width="80" sortable tag :enum="booleanEnum" />
+			<FaTableColumn prop="isOnline" label="在线" width="100" small-width="80" sortable tag :enum="booleanEnum" />
 			<FaTableColumn
 				prop="lastLoginTime"
 				label="最后登录信息"
@@ -142,6 +126,8 @@ defineOptions({
 });
 
 const appStore = useApp();
+const appEnvironmentEnum = appStore.getDictionary("AppEnvironmentEnum");
+const booleanEnum = appStore.getDictionary("BooleanEnum");
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
 
@@ -162,7 +148,7 @@ const searchColumns: FaTableColumnCtx[] = [
 		pureSearch: true,
 		prop: "deviceType",
 		label: "设备类型",
-		enum: appStore.getDictionary("AppEnvironmentEnum"),
+		enum: appEnvironmentEnum,
 		search: { el: "el-select" },
 	},
 	{

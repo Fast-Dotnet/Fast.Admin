@@ -46,15 +46,7 @@
 			</FaTableColumn>
 			<FaTableColumn prop="tableName" label="表名称" width="200" small-width="180" sortable />
 			<FaTableColumn prop="tableDescription" label="表描述" width="200" small-width="180" sortable />
-			<FaTableColumn
-				prop="diffType"
-				label="差异类型"
-				width="120"
-				small-width="100"
-				sortable
-				tag
-				:enum="appStore.getDictionary('DiffLogTypeEnum')"
-			/>
+			<FaTableColumn prop="diffType" label="差异类型" width="120" small-width="100" sortable tag :enum="diffLogTypeEnum" />
 			<FaTableColumn prop="executeSeconds" label="执行秒数" width="120" small-width="100" sortable>
 				<template #default="{ row }: { row: SqlDiffLogModel }">
 					{{ row.executeSeconds == null ? "--" : `${row.executeSeconds.toFixed(4)}秒` }}
@@ -155,6 +147,7 @@ defineOptions({
 });
 
 const appStore = useApp();
+const diffLogTypeEnum = appStore.getDictionary("DiffLogTypeEnum");
 const configStore = useConfig();
 
 const state = reactive({
@@ -188,7 +181,7 @@ const searchColumns: FaTableColumnCtx[] = [
 		pureSearch: true,
 		prop: "diffType",
 		label: "差异类型",
-		enum: appStore.getDictionary("DiffLogTypeEnum"),
+		enum: diffLogTypeEnum,
 		search: { el: "el-select" },
 	},
 ];

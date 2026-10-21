@@ -6,16 +6,8 @@
 			<FaTableColumn prop="openId" label="唯一用户标识" width="200" small-width="180" sortable :show-overflow-tooltip="false" />
 			<FaTableColumn prop="unionId" label="统一用户标识" width="200" small-width="180" sortable :show-overflow-tooltip="false" />
 			<FaTableColumn prop="nickName" label="昵称" width="150" small-width="130" sortable />
-			<FaTableColumn
-				prop="userType"
-				label="用户类型"
-				width="120"
-				small-width="100"
-				sortable
-				tag
-				:enum="appStore.getDictionary('ClientUserTypeEnum')"
-			/>
-			<FaTableColumn prop="sex" label="性别" width="100" small-width="80" sortable tag :enum="appStore.getDictionary('GenderEnum')" />
+			<FaTableColumn prop="userType" label="用户类型" width="120" small-width="100" sortable tag :enum="clientUserTypeEnum" />
+			<FaTableColumn prop="sex" label="性别" width="100" small-width="80" sortable tag :enum="genderEnum" />
 			<FaTableColumn
 				prop="lastLoginTime"
 				label="最后登录信息"
@@ -71,6 +63,8 @@ defineOptions({
 });
 
 const appStore = useApp();
+const clientUserTypeEnum = appStore.getDictionary("ClientUserTypeEnum");
+const genderEnum = appStore.getDictionary("GenderEnum");
 const searchColumns: FaTableColumnCtx[] = [
 	{
 		pureSearch: true,
@@ -82,14 +76,14 @@ const searchColumns: FaTableColumnCtx[] = [
 		pureSearch: true,
 		prop: "userType",
 		label: "用户类型",
-		enum: appStore.getDictionary("ClientUserTypeEnum"),
+		enum: clientUserTypeEnum,
 		search: { el: "el-select" },
 	},
 	{
 		pureSearch: true,
 		prop: "sex",
 		label: "性别",
-		enum: appStore.getDictionary("GenderEnum"),
+		enum: genderEnum,
 		search: { el: "el-select" },
 	},
 ];

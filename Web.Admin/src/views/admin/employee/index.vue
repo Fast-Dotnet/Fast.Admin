@@ -81,16 +81,8 @@
 					角色：<span>{{ row.roleNames }}</span>
 				</template>
 			</FaTableColumn>
-			<FaTableColumn prop="sex" label="性别" width="100" small-width="80" sortable tag :enum="appStore.getDictionary('GenderEnum')" />
-			<FaTableColumn
-				prop="status"
-				label="状态"
-				width="100"
-				small-width="80"
-				sortable
-				tag
-				:enum="appStore.getDictionary('EmployeeStatusEnum')"
-			/>
+			<FaTableColumn prop="sex" label="性别" width="100" small-width="80" sortable tag :enum="genderEnum" />
+			<FaTableColumn prop="status" label="状态" width="100" small-width="80" sortable tag :enum="employeeStatusEnum" />
 			<FaTableColumn prop="entryDate" label="入职日期" width="180" small-width="160" sortable type="dateTime" date-fix />
 			<FaTableColumn prop="resignDate" label="离职日期" width="180" small-width="160" sortable type="dateTime" date-fix />
 			<FaTableColumn prop="remark" label="备注" width="200" small-width="180" sortable />
@@ -222,6 +214,8 @@ defineOptions({
 });
 
 const appStore = useApp();
+const genderEnum = appStore.getDictionary("GenderEnum");
+const employeeStatusEnum = appStore.getDictionary("EmployeeStatusEnum");
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
 const editFormRef = useTemplateRef<InstanceType<typeof EmployeeEdit>>("editFormRef");
@@ -274,14 +268,14 @@ const searchColumns: FaTableColumnCtx[] = [
 		pureSearch: true,
 		prop: "status",
 		label: "状态",
-		enum: appStore.getDictionary("EmployeeStatusEnum"),
+		enum: employeeStatusEnum,
 		search: { el: "el-select" },
 	},
 	{
 		pureSearch: true,
 		prop: "sex",
 		label: "性别",
-		enum: appStore.getDictionary("GenderEnum"),
+		enum: genderEnum,
 		search: { el: "el-select" },
 	},
 ];

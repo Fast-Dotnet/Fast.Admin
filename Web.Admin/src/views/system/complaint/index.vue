@@ -3,15 +3,7 @@
 		<FaTable ref="faTableRef" row-key="complaintId" :request-api="complaintApi.queryComplaintPaged" :columns="searchColumns" hide-search-time>
 			<FaTableColumn prop="appName" label="应用名称" width="200" small-width="180" sortable />
 			<FaTableColumn prop="appKey" label="应用标识" width="200" small-width="180" sortable />
-			<FaTableColumn
-				prop="complaintType"
-				label="投诉类型"
-				width="120"
-				small-width="100"
-				sortable
-				tag
-				:enum="appStore.getDictionary('ComplaintTypeEnum')"
-			/>
+			<FaTableColumn prop="complaintType" label="投诉类型" width="120" small-width="100" sortable tag :enum="complaintTypeEnum" />
 			<FaTableColumn prop="nickName" label="昵称" width="150" small-width="130" sortable />
 			<FaTableColumn prop="mobile" label="手机" width="150" small-width="130" sortable />
 			<FaTableColumn prop="contactPhone" label="联系电话" width="150" small-width="130" sortable />
@@ -75,6 +67,7 @@ defineOptions({
 });
 
 const appStore = useApp();
+const complaintTypeEnum = appStore.getDictionary("ComplaintTypeEnum");
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
 const editFormRef = useTemplateRef<InstanceType<typeof ComplaintEdit>>("editFormRef");
@@ -88,7 +81,7 @@ const searchColumns: FaTableColumnCtx[] = [
 		pureSearch: true,
 		prop: "complaintType",
 		label: "投诉类型",
-		enum: appStore.getDictionary("ComplaintTypeEnum"),
+		enum: complaintTypeEnum,
 		search: { el: "el-select" },
 	},
 ];

@@ -126,7 +126,7 @@
 				:click="({ row }) => editFormRef.detail(row.appId)"
 			/>
 			<FaTableColumn prop="appNo" label="应用编号" width="150" small-width="130" copy sortable />
-			<FaTableColumn prop="edition" label="版本" width="120" small-width="100" sortable tag :enum="appStore.getDictionary('EditionEnum')" />
+			<FaTableColumn prop="edition" label="版本" width="120" small-width="100" sortable tag :enum="editionEnum" />
 			<FaTableColumn prop="themeColor" label="主题色" width="120" small-width="100" sortable>
 				<template #default="{ row }: { row: QueryApplicationPagedOutput }">
 					<el-tag v-if="row?.themeColor" effect="dark" :color="row.themeColor" :style="{ borderColor: row.themeColor }">
@@ -177,6 +177,7 @@ defineOptions({
 });
 
 const appStore = useApp();
+const editionEnum = appStore.getDictionary("EditionEnum");
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
 const editFormRef = useTemplateRef<InstanceType<typeof ApplicationEdit>>("editFormRef");
@@ -217,7 +218,7 @@ const searchColumns: FaTableColumnCtx[] = [
 		pureSearch: true,
 		prop: "edition",
 		label: "版本",
-		enum: appStore.getDictionary("EditionEnum"),
+		enum: editionEnum,
 		search: { el: "el-select" },
 	},
 ];

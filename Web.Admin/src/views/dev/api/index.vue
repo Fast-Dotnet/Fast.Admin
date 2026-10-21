@@ -26,16 +26,8 @@
 				tag
 				:enum="appStore.getDictionary('HttpRequestActionEnum')"
 			/>
-			<FaTableColumn prop="hasAuth" label="授权检测" width="120" small-width="100" sortable tag :enum="appStore.getDictionary('BooleanEnum')" />
-			<FaTableColumn
-				prop="hasPermission"
-				label="权限检测"
-				width="120"
-				small-width="100"
-				sortable
-				tag
-				:enum="appStore.getDictionary('BooleanEnum')"
-			/>
+			<FaTableColumn prop="hasAuth" label="授权检测" width="120" small-width="100" sortable tag :enum="booleanEnum" />
+			<FaTableColumn prop="hasPermission" label="权限检测" width="120" small-width="100" sortable tag :enum="booleanEnum" />
 			<FaTableColumn prop="tags" label="标签" width="200" small-width="180" sortable>
 				<template #default="{ row }: { row: ApiInfoModel }">
 					<el-tag v-for="(item, index) in row.tags" :key="index" type="info" effect="dark">{{ item }}</el-tag>
@@ -63,4 +55,5 @@ defineOptions({
 });
 
 const appStore = useApp();
+const booleanEnum = appStore.getDictionary("BooleanEnum");
 </script>

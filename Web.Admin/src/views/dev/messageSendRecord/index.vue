@@ -6,18 +6,10 @@
 			:columns="searchColumns"
 			data-search-range="Past3M"
 		>
-			<FaTableColumn
-				prop="channel"
-				label="渠道"
-				width="120"
-				small-width="100"
-				sortable
-				tag
-				:enum="appStore.getDictionary('MessageSendChannelEnum')"
-			/>
+			<FaTableColumn prop="channel" label="渠道" width="120" small-width="100" sortable tag :enum="messageSendChannelEnum" />
 			<FaTableColumn prop="receiver" label="收件人" width="200" small-width="180" sortable :show-overflow-tooltip="false" />
 			<FaTableColumn prop="title" label="标题" width="300" small-width="280" sortable :show-overflow-tooltip="false" />
-			<FaTableColumn prop="isSuccess" label="成功" width="100" small-width="80" sortable tag :enum="appStore.getDictionary('BooleanEnum')" />
+			<FaTableColumn prop="isSuccess" label="成功" width="100" small-width="80" sortable tag :enum="booleanEnum" />
 			<FaTableColumn
 				prop="createdTime"
 				label="发送时间"
@@ -70,6 +62,8 @@ defineOptions({
 });
 
 const appStore = useApp();
+const messageSendChannelEnum = appStore.getDictionary("MessageSendChannelEnum");
+const booleanEnum = appStore.getDictionary("BooleanEnum");
 
 const editFormRef = useTemplateRef<InstanceType<typeof MessageSendRecordEdit>>("editFormRef");
 
@@ -78,14 +72,14 @@ const searchColumns: FaTableColumnCtx[] = [
 		pureSearch: true,
 		prop: "isSuccess",
 		label: "成功",
-		enum: appStore.getDictionary("BooleanEnum"),
+		enum: booleanEnum,
 		search: { el: "el-select" },
 	},
 	{
 		pureSearch: true,
 		prop: "channel",
 		label: "渠道",
-		enum: appStore.getDictionary("MessageSendChannelEnum"),
+		enum: messageSendChannelEnum,
 		search: { el: "el-select" },
 	},
 ];

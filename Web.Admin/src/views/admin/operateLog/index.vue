@@ -53,7 +53,7 @@
 				small-width="100"
 				sortable
 				tag
-				:enum="appStore.getDictionary('OperateLogTypeEnum')"
+				:enum="operateLogTypeEnum"
 				:show-overflow-tooltip="false"
 			/>
 			<FaTableColumn prop="title" label="标题" width="200" small-width="180" sortable />
@@ -77,6 +77,7 @@ defineOptions({
 });
 
 const appStore = useApp();
+const operateLogTypeEnum = appStore.getDictionary("OperateLogTypeEnum");
 
 const searchColumns: FaTableColumnCtx[] = [
 	{
@@ -89,7 +90,7 @@ const searchColumns: FaTableColumnCtx[] = [
 		pureSearch: true,
 		prop: "operateType",
 		label: "类型",
-		enum: appStore.getDictionary("OperateLogTypeEnum"),
+		enum: operateLogTypeEnum,
 		search: { el: "el-select" },
 	},
 ];

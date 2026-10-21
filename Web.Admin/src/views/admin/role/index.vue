@@ -18,24 +18,8 @@
 				:click="({ row }) => editFormRef.detail(row.roleId)"
 			/>
 			<FaTableColumn prop="roleCode" label="角色编码" width="200" small-width="180" copy sortable />
-			<FaTableColumn
-				prop="roleType"
-				label="角色类型"
-				width="120"
-				small-width="100"
-				sortable
-				tag
-				:enum="appStore.getDictionary('RoleTypeEnum')"
-			/>
-			<FaTableColumn
-				prop="dataScopeType"
-				label="数据范围"
-				width="150"
-				small-width="130"
-				sortable
-				tag
-				:enum="appStore.getDictionary('DataScopeTypeEnum')"
-			/>
+			<FaTableColumn prop="roleType" label="角色类型" width="120" small-width="100" sortable tag :enum="roleTypeEnum" />
+			<FaTableColumn prop="dataScopeType" label="数据范围" width="150" small-width="130" sortable tag :enum="dataScopeTypeEnum" />
 			<FaTableColumn prop="sort" label="排序" width="100" small-width="80" sortable />
 			<FaTableColumn prop="remark" label="备注" width="200" small-width="180" sortable />
 			<FaTableColumn prop="createdTime" label="创建时间" width="240" small-width="220" sortable type="timeInfo" />
@@ -80,6 +64,8 @@ defineOptions({
 });
 
 const appStore = useApp();
+const roleTypeEnum = appStore.getDictionary("RoleTypeEnum");
+const dataScopeTypeEnum = appStore.getDictionary("DataScopeTypeEnum");
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
 const editFormRef = useTemplateRef<InstanceType<typeof RoleEdit>>("editFormRef");
@@ -100,14 +86,14 @@ const searchColumns: FaTableColumnCtx[] = [
 		pureSearch: true,
 		prop: "roleType",
 		label: "角色类型",
-		enum: appStore.getDictionary("RoleTypeEnum"),
+		enum: roleTypeEnum,
 		search: { el: "el-select" },
 	},
 	{
 		pureSearch: true,
 		prop: "dataScopeType",
 		label: "数据范围",
-		enum: appStore.getDictionary("DataScopeTypeEnum"),
+		enum: dataScopeTypeEnum,
 		search: { el: "el-select" },
 	},
 ];

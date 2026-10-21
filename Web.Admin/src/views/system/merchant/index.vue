@@ -6,16 +6,7 @@
 				<el-button v-auth="'Merchant:Add'" type="primary" :icon="Plus" @click="editFormRef.add()">新增</el-button>
 			</template>
 
-			<FaTableColumn
-				prop="merchantType"
-				label="商户类型"
-				fixed="left"
-				width="120"
-				small-width="100"
-				sortable
-				tag
-				:enum="appStore.getDictionary('PaymentChannelEnum')"
-			/>
+			<FaTableColumn prop="merchantType" label="商户类型" fixed="left" width="120" small-width="100" sortable tag :enum="paymentChannelEnum" />
 			<FaTableColumn prop="merchantName" label="商户名称" fixed="left" width="200" small-width="180" sortable />
 			<FaTableColumn
 				prop="merchantNo"
@@ -66,6 +57,7 @@ defineOptions({
 });
 
 const appStore = useApp();
+const paymentChannelEnum = appStore.getDictionary("PaymentChannelEnum");
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
 const editFormRef = useTemplateRef<InstanceType<typeof ConfigEdit>>("editFormRef");
@@ -85,7 +77,7 @@ const searchColumns: FaTableColumnCtx[] = [
 		pureSearch: true,
 		prop: "merchantType",
 		label: "商户类型",
-		enum: appStore.getDictionary("PaymentChannelEnum"),
+		enum: paymentChannelEnum,
 		search: { el: "el-select" },
 	},
 ];

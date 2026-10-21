@@ -51,7 +51,7 @@
 				small-width="80"
 				sortable
 				tag
-				:enum="appStore.getDictionary('VisitTypeEnum')"
+				:enum="visitTypeEnum"
 				:show-overflow-tooltip="false"
 			/>
 			<FaTableColumn prop="tenantName" label="租户" width="200" small-width="180" sortable />
@@ -73,6 +73,7 @@ defineOptions({
 });
 
 const appStore = useApp();
+const visitTypeEnum = appStore.getDictionary("VisitTypeEnum");
 const searchColumns: FaTableColumnCtx[] = [
 	{
 		pureSearch: true,
@@ -90,7 +91,7 @@ const searchColumns: FaTableColumnCtx[] = [
 		pureSearch: true,
 		prop: "visitType",
 		label: "类型",
-		enum: appStore.getDictionary("VisitTypeEnum"),
+		enum: visitTypeEnum,
 		search: { el: "el-select" },
 	},
 ];
