@@ -63,7 +63,7 @@ public class MessageTemplateContext
             ISqlSugarClient repository = FastContext.GetService<ISqlSugarClient>();
 
             MessageTemplateModel result = repository.Queryable<MessageTemplateModel>()
-                .Where(wh => wh.TenantId == tenantId && wh.AppKey == appKey && wh.TemplateType == templateType)
+                .Where(wh => wh.AppKey == appKey && wh.TenantId == tenantId && wh.TemplateType == templateType)
                 .Single();
 
             if (result == null && throwError)
@@ -121,7 +121,7 @@ public class MessageTemplateContext
             ISqlSugarClient repository = FastContext.GetService<ISqlSugarClient>();
 
             MessageTemplateModel result = await repository.Queryable<MessageTemplateModel>()
-                .Where(wh => wh.TenantId == tenantId && wh.AppKey == appKey && wh.TemplateType == templateType)
+                .Where(wh => wh.AppKey == appKey && wh.TenantId == tenantId && wh.TemplateType == templateType)
                 .SingleAsync();
 
             if (result == null && throwError)
