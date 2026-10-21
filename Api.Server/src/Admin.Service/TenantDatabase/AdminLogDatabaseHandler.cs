@@ -29,7 +29,6 @@ public class AdminLogDatabaseHandler : IInitTenantDatabaseHandler
         using var db = new SqlSugarClient(SqlSugarContext.GetConnectionConfig(SqlSugarContext.ConnectionSettings));
 
         MainDatabaseModel databaseModel = await db.Queryable<MainDatabaseModel>()
-            .Includes(e => e.SlaveDatabaseList)
             .Where(wh => wh.TenantId == tenantModel.TenantId && wh.DatabaseType == DatabaseTypeEnum.AdminLog)
             .SingleAsync();
         if (databaseModel == null)
@@ -62,23 +61,7 @@ public class AdminLogDatabaseHandler : IInitTenantDatabaseHandler
             CommandTimeOut = databaseModel.CommandTimeOut,
             SugarSqlExecMaxSeconds = databaseModel.SugarSqlExecMaxSeconds,
             DiffLog = databaseModel.DiffLog,
-            DisableAop = databaseModel.DisableAop,
-            SlaveConnectionList = databaseModel.SlaveDatabaseList.Select(dSl => new SlaveConnectionInfo
-                {
-                    ServiceIp = FastContext.HostEnvironment.IsDevelopment()
-                        // 开发环境使用公网地址
-                        ? string.IsNullOrWhiteSpace(dSl.PublicIp) ? databaseModel.PublicIp : dSl.PublicIp
-                        // 生产环境使用内网地址
-                        :
-                        string.IsNullOrWhiteSpace(dSl.IntranetIp) ? databaseModel.IntranetIp : dSl.IntranetIp,
-                    Port = dSl.Port ?? databaseModel.Port,
-                    DbName = string.IsNullOrWhiteSpace(dSl.DbName) ? databaseModel.DbName : dSl.DbName,
-                    DbUser = string.IsNullOrWhiteSpace(dSl.DbUser) ? databaseModel.DbUser : dSl.DbUser,
-                    DbPwd = string.IsNullOrWhiteSpace(dSl.DbPwd) ? databaseModel.DbPwd : dSl.DbPwd,
-                    CustomConnectionStr = databaseModel.CustomConnectionStr,
-                    HitRate = dSl.HitRate
-                })
-                .ToList()
+            DisableAop = databaseModel.DisableAop
         }));
 
         MAppContext.ConsoleWrite(console =>
