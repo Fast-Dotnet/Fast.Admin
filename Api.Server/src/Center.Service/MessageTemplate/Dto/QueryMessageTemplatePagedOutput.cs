@@ -18,28 +18,6 @@ public class QueryMessageTemplatePagedOutput : PagedOutput
     public long RecordId { get; set; }
 
     /// <summary>
-    /// 应用名称
-    /// </summary>
-    [SugarSearchValue]
-    public string AppName { get; set; }
-
-    /// <summary>
-    /// 应用标识
-    /// </summary>
-    [SugarSearchValue]
-    public string AppKey { get; set; }
-
-    /// <summary>
-    /// 应用类型
-    /// </summary>
-    public AppEnvironmentEnum AppType { get; set; }
-
-    /// <summary>
-    /// 环境类型
-    /// </summary>
-    public EnvironmentTypeEnum EnvironmentType { get; set; }
-
-    /// <summary>
     /// 模板类型
     /// </summary>
     public MessageTemplateTypeEnum TemplateType { get; set; }
@@ -49,4 +27,9 @@ public class QueryMessageTemplatePagedOutput : PagedOutput
     /// </summary>
     [SugarSearchValue]
     public string TemplateCode { get; set; }
+
+    /// <summary>
+    /// 租户名称
+    /// </summary>
+    public string TenantName { get; set; }
 }

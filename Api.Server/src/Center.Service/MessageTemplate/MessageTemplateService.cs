@@ -32,26 +32,23 @@ public class MessageTemplateService : IDynamicApplication
     [HttpPost]
     [ApiInfo("获取消息模板分页列表", HttpRequestActionEnum.Paged)]
     [Permission(PermissionConst.MessageTemplate.Paged)]
-    public async Task<PagedResult<QueryMessageTemplatePagedOutput>> QueryMessageTemplatePaged(PagedInput input)
+    public async Task<PagedResult<QueryMessageTemplatePagedOutput>> QueryMessageTemplatePaged(
+        QueryMessageTemplatePagedInput input)
     {
-        return await _repository.Entities.LeftJoin<ApplicationClientModel>((t1, t2) => t1.AppKey == t2.AppKey)
-            .LeftJoin<ApplicationModel>((t1, t2, t3) => t2.AppId == t3.AppId)
-            .SelectMergeTable((t1, t2, t3) => new QueryMessageTemplatePagedOutput
-            {
-                RecordId = t1.RecordId,
-                AppName = t3.AppName,
-                AppKey = t1.AppKey,
-                AppType = t2.AppType,
-                EnvironmentType = t2.EnvironmentType,
-                TemplateType = t1.TemplateType,
-                TemplateCode = t1.TemplateCode,
-                CreatedUserName = t1.CreatedUserName,
-                CreatedTime = t1.CreatedTime,
-                UpdatedUserName = t1.UpdatedUserName,
-                UpdatedTime = t1.UpdatedTime,
-                RowVersion = t1.RowVersion
-            })
+        return await _repository.Entities.WhereIF(input.TenantId != null, wh => wh.TenantId == input.TenantId)
             .OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
+            .Select(sl => new QueryMessageTemplatePagedOutput
+            {
+                RecordId = sl.RecordId,
+                TemplateType = sl.TemplateType,
+                TemplateCode = sl.TemplateCode,
+                TenantName = sl.TenantName,
+                CreatedUserName = sl.CreatedUserName,
+                CreatedTime = sl.CreatedTime,
+                UpdatedUserName = sl.UpdatedUserName,
+                UpdatedTime = sl.UpdatedTime,
+                RowVersion = sl.RowVersion
+            })
             .ToPagedListAsync(input);
     }
 
@@ -64,22 +61,19 @@ public class MessageTemplateService : IDynamicApplication
     public async Task<QueryMessageTemplateDetailOutput> QueryMessageTemplateDetail(
         [Required(ErrorMessage = "记录Id不能为空")] long? recordId)
     {
-        QueryMessageTemplateDetailOutput result = await _repository.Entities
-            .LeftJoin<ApplicationClientModel>((t1, t2) => t1.AppKey == t2.AppKey)
-            .Where(t1 => t1.RecordId == recordId)
-            .Select((t1, t2) => new QueryMessageTemplateDetailOutput
+        QueryMessageTemplateDetailOutput result = await _repository.Entities.Where(wh => wh.RecordId == recordId)
+            .Select(sl => new QueryMessageTemplateDetailOutput
             {
-                RecordId = t1.RecordId,
-                AppKey = t1.AppKey,
-                AppType = t2.AppType,
-                EnvironmentType = t2.EnvironmentType,
-                TemplateType = t1.TemplateType,
-                TemplateCode = t1.TemplateCode,
-                CreatedUserName = t1.CreatedUserName,
-                CreatedTime = t1.CreatedTime,
-                UpdatedUserName = t1.UpdatedUserName,
-                UpdatedTime = t1.UpdatedTime,
-                RowVersion = t1.RowVersion
+                RecordId = sl.RecordId,
+                TemplateType = sl.TemplateType,
+                TemplateCode = sl.TemplateCode,
+                TenantId = sl.TenantId,
+                TenantName = sl.TenantName,
+                CreatedUserName = sl.CreatedUserName,
+                CreatedTime = sl.CreatedTime,
+                UpdatedUserName = sl.UpdatedUserName,
+                UpdatedTime = sl.UpdatedTime,
+                RowVersion = sl.RowVersion
             })
             .SingleAsync();
 
@@ -99,25 +93,22 @@ public class MessageTemplateService : IDynamicApplication
     [Permission(PermissionConst.MessageTemplate.Add)]
     public async Task AddMessageTemplate(AddMessageTemplateInput input)
     {
-        if (await _repository.AnyAsync(a => a.AppKey == input.AppKey && a.TemplateType == input.TemplateType))
+        if (await _repository.AnyAsync(a => a.TenantId == input.TenantId && a.TemplateType == input.TemplateType))
         {
             throw new UserFriendlyException("模板类型重复！");
         }
 
-        if (!string.IsNullOrWhiteSpace(input.AppKey)
-            && !await _repository.Queryable<ApplicationClientModel>().AnyAsync(a => a.AppKey == input.AppKey))
-        {
-            throw new UserFriendlyException("数据不存在！");
-        }
-
         var messageTemplateModel = new MessageTemplateModel
         {
-            AppKey = input.AppKey, TemplateType = input.TemplateType, TemplateCode = input.TemplateCode
+            TemplateType = input.TemplateType,
+            TemplateCode = input.TemplateCode,
+            TenantId = input.TenantId,
+            TenantName = input.TenantName
         };
 
         await _repository.InsertAsync(messageTemplateModel);
         // 删除缓存
-        await MessageTemplateContext.DeleteMessageTemplate(messageTemplateModel.TemplateType, messageTemplateModel.AppKey);
+        await MessageTemplateContext.DeleteMessageTemplate(messageTemplateModel.TemplateType, messageTemplateModel.TenantId);
     }
 
     /// <summary>
@@ -129,7 +120,7 @@ public class MessageTemplateService : IDynamicApplication
     public async Task EditMessageTemplate(EditMessageTemplateInput input)
     {
         if (await _repository.AnyAsync(a =>
-                a.AppKey == input.AppKey && a.TemplateType == input.TemplateType && a.RecordId != input.RecordId))
+                a.TenantId == input.TenantId && a.TemplateType == input.TemplateType && a.RecordId != input.RecordId))
         {
             throw new UserFriendlyException("模板类型重复！");
         }
@@ -140,23 +131,18 @@ public class MessageTemplateService : IDynamicApplication
             throw new UserFriendlyException("数据不存在！");
         }
 
-        if (!string.IsNullOrWhiteSpace(input.AppKey)
-            && !await _repository.Queryable<ApplicationClientModel>().AnyAsync(a => a.AppKey == input.AppKey))
-        {
-            throw new UserFriendlyException("数据不存在！");
-        }
-
         // 删除旧的缓存
-        await MessageTemplateContext.DeleteMessageTemplate(messageTemplateModel.TemplateType, messageTemplateModel.AppKey);
+        await MessageTemplateContext.DeleteMessageTemplate(messageTemplateModel.TemplateType, messageTemplateModel.TenantId);
 
-        messageTemplateModel.AppKey = input.AppKey;
         messageTemplateModel.TemplateType = input.TemplateType;
         messageTemplateModel.TemplateCode = input.TemplateCode;
+        messageTemplateModel.TenantId = input.TenantId;
+        messageTemplateModel.TenantName = input.TenantName;
         messageTemplateModel.RowVersion = input.RowVersion;
 
         await _repository.UpdateAsync(messageTemplateModel);
         // 删除缓存
-        await MessageTemplateContext.DeleteMessageTemplate(messageTemplateModel.TemplateType, messageTemplateModel.AppKey);
+        await MessageTemplateContext.DeleteMessageTemplate(messageTemplateModel.TemplateType, messageTemplateModel.TenantId);
     }
 
     /// <summary>
@@ -175,6 +161,6 @@ public class MessageTemplateService : IDynamicApplication
 
         await _repository.DeleteAsync(messageTemplateModel);
         // 删除缓存
-        await MessageTemplateContext.DeleteMessageTemplate(messageTemplateModel.TemplateType, messageTemplateModel.AppKey);
+        await MessageTemplateContext.DeleteMessageTemplate(messageTemplateModel.TemplateType, messageTemplateModel.TenantId);
     }
 }

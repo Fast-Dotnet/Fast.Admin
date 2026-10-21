@@ -19,12 +19,6 @@ public class EditMessageTemplateInput : UpdateVersionInput
     public long RecordId { get; set; }
 
     /// <summary>
-    /// 应用标识，留空表示全局模板
-    /// </summary>
-    [MaxLength(50, ErrorMessage = "应用标识不能超过50位字符")]
-    public string AppKey { get; set; }
-
-    /// <summary>
     /// 模板类型
     /// </summary>
     [EnumRequired(ErrorMessage = "模板类型无效")]
@@ -36,4 +30,14 @@ public class EditMessageTemplateInput : UpdateVersionInput
     [StringRequired(ErrorMessage = "模板Code不能为空")]
     [MaxLength(50, ErrorMessage = "模板Code不能超过50位字符")]
     public string TemplateCode { get; set; }
+
+    /// <summary>
+    /// 租户Id
+    /// </summary>
+    public long? TenantId { get; set; }
+
+    /// <summary>
+    /// 租户名称
+    /// </summary>
+    public string TenantName { get; set; }
 }

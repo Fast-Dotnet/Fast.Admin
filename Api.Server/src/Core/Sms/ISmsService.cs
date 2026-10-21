@@ -26,10 +26,10 @@ public interface ISmsService
     /// <param name="templateType">消息模板类型</param>
     /// <param name="signName">短信签名</param>
     /// <param name="mobile">手机号</param>
-    /// <param name="appKey">应用标识，为 <see langword="null"/> 时查询全局模板</param>
+    /// <param name="tenantId">租户Id，为 <see langword="null"/> 时查询全局模板</param>
     /// <remarks>验证码有效期为 5 分钟，发送冷却为 60 秒；发送失败也会保留本次冷却限制。</remarks>
     /// <exception cref="UserFriendlyException">接收地址不合法、仍在冷却期或发送配置不可用时抛出。</exception>
-    Task SendVerificationCode(MessageTemplateTypeEnum templateType, string signName, string mobile, string appKey = null);
+    Task SendVerificationCode(MessageTemplateTypeEnum templateType, string signName, string mobile, long? tenantId = null);
 
     /// <summary>
     /// 校验验证码，并在校验成功后删除对应记录。

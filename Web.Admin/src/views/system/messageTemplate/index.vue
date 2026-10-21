@@ -1,36 +1,23 @@
 <template>
 	<div>
-		<FaTable ref="faTableRef" row-key="recordId" :request-api="messageTemplateApi.queryMessageTemplatePaged" hide-search-time>
+		<FaTable
+			ref="faTableRef"
+			row-key="recordId"
+			:request-api="messageTemplateApi.queryMessageTemplatePaged"
+			:columns="searchColumns"
+			hide-search-time
+		>
 			<!-- 表格按钮操作区域 -->
 			<template #header>
 				<el-button v-auth="'MessageTemplate:Add'" type="primary" :icon="Plus" @click="editFormRef.add()">新增</el-button>
 			</template>
 
-			<FaTableColumn prop="appKey" label="应用标识" fixed="left" width="240" small-width="220" sortable>
+			<FaTableColumn prop="tenantName" label="租户名称" fixed="left" width="240" small-width="220" sortable>
 				<template #default="{ row }: { row: QueryMessageTemplatePagedOutput }">
-					<span v-if="row.appKey" v-iconCopy="row.appKey">{{ row.appKey }}</span>
+					<span v-if="row.tenantName" v-iconCopy="row.tenantName">{{ row.tenantName }}</span>
 					<el-tag v-else type="info">全局模板</el-tag>
 				</template>
 			</FaTableColumn>
-			<FaTableColumn prop="appName" label="应用名称" width="200" small-width="180" copy sortable />
-			<FaTableColumn
-				prop="appType"
-				label="应用类型"
-				width="150"
-				small-width="130"
-				sortable
-				tag
-				:enum="appStore.getDictionary('AppEnvironmentEnum')"
-			/>
-			<FaTableColumn
-				prop="environmentType"
-				label="环境类型"
-				width="120"
-				small-width="100"
-				sortable
-				tag
-				:enum="appStore.getDictionary('EnvironmentTypeEnum')"
-			/>
 			<FaTableColumn
 				prop="templateType"
 				label="模板类型"
@@ -78,7 +65,7 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import { messageTemplateApi } from "@/api/services/Center/messageTemplate";
 import { useApp } from "@/stores";
 import MessageTemplateEdit from "./edit/index.vue";
-import type { FaTableInstance } from "fast-element-plus";
+import type { FaTableColumnCtx, FaTableInstance } from "fast-element-plus";
 import type { QueryMessageTemplatePagedOutput } from "@/api/services/Center/messageTemplate/models/QueryMessageTemplatePagedOutput";
 
 defineOptions({
@@ -99,4 +86,13 @@ const handleDelete = (row: QueryMessageTemplatePagedOutput) => {
 		await faTableRef.value.refresh();
 	});
 };
+
+const searchColumns: FaTableColumnCtx[] = [
+	{
+		pureSearch: true,
+		prop: "tenantId",
+		label: "租户",
+		search: { el: "TenantSelectPage" },
+	},
+];
 </script>

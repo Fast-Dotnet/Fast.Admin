@@ -75,7 +75,7 @@ public class SMSService : ISmsService, ISingletonDependency
 
     /// <inheritdoc />
     public async Task SendVerificationCode(MessageTemplateTypeEnum templateType, string signName, string mobile,
-        string appKey = null)
+        long? tenantId = null)
     {
         if (string.IsNullOrWhiteSpace(signName))
         {
@@ -120,7 +120,7 @@ public class SMSService : ISmsService, ISingletonDependency
         dto.ErrorCount = 0;
 
         // 获取模板Code
-        MessageTemplateModel messageTemplateModel = await MessageTemplateContext.GetMessageTemplate(templateType, appKey);
+        MessageTemplateModel messageTemplateModel = await MessageTemplateContext.GetMessageTemplate(templateType, tenantId);
         await SendSms(signName, mobile, messageTemplateModel.TemplateCode, new {code = dto.VerificationCode});
         await _cache.SetAsync(cacheKey, dto, TimeSpan.FromMinutes(5));
         await _cache.Client.SetAsync($"{cacheKey}:SendCooldown", "1", 60);

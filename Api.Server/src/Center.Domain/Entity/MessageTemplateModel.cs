@@ -1,4 +1,4 @@
-﻿// Copyright © 2018-Present 小方
+// Copyright © 2018-Present 小方
 // SPDX-License-Identifier: Apache-2.0
 // 
 // 本文件依据 Apache License 2.0 授权，完整条款见仓库根目录 LICENSE。
@@ -12,7 +12,8 @@ namespace Fast.Center.Domain;
 /// </summary>
 [SugarTable("MessageTemplate", "消息模板表")]
 [SugarDbType(DatabaseTypeEnum.Center)]
-[SugarIndex($"UX_{{table}}_{nameof(TemplateType)}", nameof(AppKey), OrderByType.Asc, nameof(TemplateType), OrderByType.Asc, true)]
+[SugarIndex($"UX_{{table}}_{nameof(TemplateType)}", nameof(TenantId), OrderByType.Asc, nameof(TemplateType), OrderByType.Asc,
+    true)]
 public class MessageTemplateModel : BaseEntity, IUpdateVersion
 {
     /// <summary>
@@ -20,12 +21,6 @@ public class MessageTemplateModel : BaseEntity, IUpdateVersion
     /// </summary>
     [SugarColumn(ColumnDescription = "记录Id", IsPrimaryKey = true)]
     public long RecordId { get; set; }
-
-    /// <summary>
-    /// 应用标识
-    /// </summary>
-    [SugarColumn(ColumnDescription = "应用标识", Length = 50)]
-    public string AppKey { get; set; }
 
     /// <summary>
     /// 模板类型
@@ -39,6 +34,18 @@ public class MessageTemplateModel : BaseEntity, IUpdateVersion
     [Required]
     [SugarColumn(ColumnDescription = "模板Code", Length = 50)]
     public string TemplateCode { get; set; }
+
+    /// <summary>
+    /// 租户Id
+    /// </summary>
+    [SugarColumn(ColumnDescription = "租户Id", CreateTableFieldSort = 997)]
+    public long? TenantId { get; set; }
+
+    /// <summary>
+    /// 租户名称
+    /// </summary>
+    [SugarColumn(ColumnDescription = "租户名称", Length = 30, CreateTableFieldSort = 997)]
+    public string TenantName { get; set; }
 
     /// <summary>
     /// 更新版本控制字段

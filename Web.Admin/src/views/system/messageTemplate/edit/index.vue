@@ -10,8 +10,8 @@
 		@close="faFormRef.resetFields()"
 	>
 		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" :disabled="state.formDisabled">
-			<FaFormItem prop="appKey" label="应用标识" tips="留空表示全局模板">
-				<el-input v-model="state.formData.appKey" maxlength="50" clearable placeholder="请输入应用标识" />
+			<FaFormItem prop="tenantId" label="租户" tips="留空表示全局模板">
+				<TenantSelectPage v-model="state.formData.tenantId" v-model:tenant-name="state.formData.tenantName" />
 			</FaFormItem>
 			<FaFormItem prop="templateType" label="模板类型">
 				<RadioGroup name="MessageTemplateTypeEnum" v-model="state.formData.templateType" />

@@ -13,11 +13,6 @@ namespace Fast.Center.Service.MessageTemplate.Dto;
 public class AddMessageTemplateInput
 {
     /// <summary>
-    /// 应用标识
-    /// </summary>
-    public string AppKey { get; set; }
-
-    /// <summary>
     /// 模板类型
     /// </summary>
     [EnumRequired(ErrorMessage = "模板类型不能为空")]
@@ -28,4 +23,14 @@ public class AddMessageTemplateInput
     /// </summary>
     [StringRequired(ErrorMessage = "模板Code不能为空")]
     public string TemplateCode { get; set; }
+
+    /// <summary>
+    /// 租户Id
+    /// </summary>
+    public long? TenantId { get; set; }
+
+    /// <summary>
+    /// 租户名称
+    /// </summary>
+    public string TenantName { get; set; }
 }

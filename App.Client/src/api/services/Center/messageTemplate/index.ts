@@ -3,6 +3,7 @@ import type { AddMessageTemplateInput } from "./models/AddMessageTemplateInput";
 import type { DeleteMessageTemplateInput } from "./models/DeleteMessageTemplateInput";
 import type { EditMessageTemplateInput } from "./models/EditMessageTemplateInput";
 import type { QueryMessageTemplateDetailOutput } from "./models/QueryMessageTemplateDetailOutput";
+import type { QueryMessageTemplatePagedInput } from "./models/QueryMessageTemplatePagedInput";
 import type { QueryMessageTemplatePagedOutput } from "./models/QueryMessageTemplatePagedOutput";
 
 /**
@@ -12,7 +13,7 @@ export const messageTemplateApi = {
 	/**
 	 * 获取消息模板分页列表
 	 */
-	queryMessageTemplatePaged(data: PagedInput): Promise<PagedResult<QueryMessageTemplatePagedOutput>> {
+	queryMessageTemplatePaged(data: QueryMessageTemplatePagedInput): Promise<PagedResult<QueryMessageTemplatePagedOutput>> {
 		return axiosUtil.request<PagedResult<QueryMessageTemplatePagedOutput>>({
 			url: "/messageTemplate/queryMessageTemplatePaged",
 			method: "post",

@@ -1,5 +1,3 @@
-import type { AppEnvironmentEnum } from "@/api/enums/AppEnvironmentEnum";
-import type { EnvironmentTypeEnum } from "@/api/enums/EnvironmentTypeEnum";
 import type { MessageTemplateTypeEnum } from "@/api/enums/MessageTemplateTypeEnum";
 
 /**
@@ -11,22 +9,6 @@ export interface QueryMessageTemplatePagedOutput {
 	 */
 	recordId?: string;
 	/**
-	 * 应用名称
-	 */
-	appName?: string;
-	/**
-	 * 应用标识
-	 */
-	appKey?: string;
-	/**
-	 * 
-	 */
-	appType?: AppEnvironmentEnum;
-	/**
-	 * 
-	 */
-	environmentType?: EnvironmentTypeEnum;
-	/**
 	 * 
 	 */
 	templateType?: MessageTemplateTypeEnum;
@@ -34,6 +16,10 @@ export interface QueryMessageTemplatePagedOutput {
 	 * 模板Code
 	 */
 	templateCode?: string;
+	/**
+	 * 租户名称
+	 */
+	tenantName?: string;
 	/**
 	 * 
 	 */

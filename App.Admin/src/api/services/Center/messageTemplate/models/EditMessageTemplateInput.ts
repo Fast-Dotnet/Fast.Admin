@@ -9,10 +9,6 @@ export interface EditMessageTemplateInput {
 	 */
 	recordId?: string;
 	/**
-	 * 应用标识，留空表示全局模板
-	 */
-	appKey?: string;
-	/**
 	 * 
 	 */
 	templateType?: MessageTemplateTypeEnum;
@@ -20,6 +16,14 @@ export interface EditMessageTemplateInput {
 	 * 模板Code
 	 */
 	templateCode?: string;
+	/**
+	 * 租户Id
+	 */
+	tenantId?: string;
+	/**
+	 * 租户名称
+	 */
+	tenantName?: string;
 	/**
 	 * 
 	 */
