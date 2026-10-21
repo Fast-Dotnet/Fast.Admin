@@ -5,6 +5,10 @@ import type { MessageTemplateTypeEnum } from "@/api/enums/MessageTemplateTypeEnu
  */
 export interface EditMessageTemplateInput {
 	/**
+	 * 应用标识
+	 */
+	appKey?: string;
+	/**
 	 * 记录Id
 	 */
 	recordId?: string;

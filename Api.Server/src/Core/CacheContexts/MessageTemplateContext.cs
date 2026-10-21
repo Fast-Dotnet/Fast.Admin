@@ -31,42 +31,45 @@ public class MessageTemplateContext
     /// <summary>
     /// 获取消息模板
     /// </summary>
-    /// <remarks>租户Id为 <see langword="null"/> 时仅查询全局模板</remarks>
+    /// <remarks>租户与应用标识均精确匹配；应用标识为空时仅查询不区分应用的模板，不自动回退。</remarks>
     /// <returns>模板信息；未找到且不要求抛出异常时为 <see langword="null"/></returns>
     public static MessageTemplateModel GetMessageTemplateSync(MessageTemplateTypeEnum templateType, long? tenantId = null,
-        bool throwError = true)
+        bool throwError = true, string appKey = null)
     {
         if (!Enum.IsDefined(templateType))
         {
             throw new UserFriendlyException("消息模板类型不正确！");
         }
 
+        appKey = string.IsNullOrWhiteSpace(appKey) ? null : appKey;
         string tenantKey = tenantId == null ? "Global" : tenantId.ToString();
+        string appCacheKey = appKey ?? "Shared";
 
         HttpContext httpContext = FastContext.HttpContext;
         // 优先从 HttpContext.Items 中获取
-        if (httpContext?.Items.TryGetValue($"{nameof(Fast)}.{nameof(MessageTemplateModel)}.{(long)templateType}.{tenantKey}",
-                out object obj)
+        if (httpContext?.Items.TryGetValue(
+                $"{nameof(Fast)}.{nameof(MessageTemplateModel)}.{(long)templateType}.{tenantKey}.{appCacheKey}", out object obj)
             == true
             && obj is MessageTemplateModel messageTemplateModel)
         {
             return messageTemplateModel;
         }
 
-        string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.MessageTemplate, tenantKey, templateType.ToString());
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.MessageTemplate, tenantKey, appCacheKey,
+            templateType.ToString());
 
         messageTemplateModel = centerCache.GetAndSet(cacheKey, () =>
         {
             ISqlSugarClient repository = FastContext.GetService<ISqlSugarClient>();
 
             MessageTemplateModel result = repository.Queryable<MessageTemplateModel>()
-                .Where(wh => wh.TenantId == tenantId && wh.TemplateType == templateType)
+                .Where(wh => wh.TenantId == tenantId && wh.AppKey == appKey && wh.TemplateType == templateType)
                 .Single();
 
             if (result == null && throwError)
             {
-                string message = $"租户【{tenantKey}】的消息模板【{templateType}】不存在！";
-                logger.LogError($"消息模板不可用，TenantId：{tenantKey}；TemplateType：{templateType}；{message}");
+                string message = $"租户【{tenantKey}】应用【{appCacheKey}】的消息模板【{templateType}】不存在！";
+                logger.LogError($"消息模板不可用，TenantId：{tenantKey}；AppKey：{appKey}；TemplateType：{templateType}；{message}");
                 throw new UserFriendlyException(message);
             }
 
@@ -76,7 +79,7 @@ public class MessageTemplateContext
         if (httpContext != null)
         {
             // 放入 HttpContext.Items 中
-            httpContext.Items[$"{nameof(Fast)}.{nameof(MessageTemplateModel)}.{(long)templateType}.{tenantKey}"] =
+            httpContext.Items[$"{nameof(Fast)}.{nameof(MessageTemplateModel)}.{(long)templateType}.{tenantKey}.{appCacheKey}"] =
                 messageTemplateModel;
         }
 
@@ -86,42 +89,45 @@ public class MessageTemplateContext
     /// <summary>
     /// 获取消息模板
     /// </summary>
-    /// <remarks>租户Id为 <see langword="null"/> 时仅查询全局模板</remarks>
+    /// <remarks>租户与应用标识均精确匹配；应用标识为空时仅查询不区分应用的模板，不自动回退。</remarks>
     /// <returns>模板信息；未找到且不要求抛出异常时为 <see langword="null"/></returns>
     public static async Task<MessageTemplateModel> GetMessageTemplate(MessageTemplateTypeEnum templateType, long? tenantId = null,
-        bool throwError = true)
+        bool throwError = true, string appKey = null)
     {
         if (!Enum.IsDefined(templateType))
         {
             throw new UserFriendlyException("消息模板类型不正确！");
         }
 
+        appKey = string.IsNullOrWhiteSpace(appKey) ? null : appKey;
         string tenantKey = tenantId == null ? "Global" : tenantId.ToString();
+        string appCacheKey = appKey ?? "Shared";
 
         HttpContext httpContext = FastContext.HttpContext;
         // 优先从 HttpContext.Items 中获取
-        if (httpContext?.Items.TryGetValue($"{nameof(Fast)}.{nameof(MessageTemplateModel)}.{(long)templateType}.{tenantKey}",
-                out object obj)
+        if (httpContext?.Items.TryGetValue(
+                $"{nameof(Fast)}.{nameof(MessageTemplateModel)}.{(long)templateType}.{tenantKey}.{appCacheKey}", out object obj)
             == true
             && obj is MessageTemplateModel messageTemplateModel)
         {
             return messageTemplateModel;
         }
 
-        string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.MessageTemplate, tenantKey, templateType.ToString());
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.MessageTemplate, tenantKey, appCacheKey,
+            templateType.ToString());
 
         messageTemplateModel = await centerCache.GetAndSetAsync(cacheKey, async () =>
         {
             ISqlSugarClient repository = FastContext.GetService<ISqlSugarClient>();
 
             MessageTemplateModel result = await repository.Queryable<MessageTemplateModel>()
-                .Where(wh => wh.TenantId == tenantId && wh.TemplateType == templateType)
+                .Where(wh => wh.TenantId == tenantId && wh.AppKey == appKey && wh.TemplateType == templateType)
                 .SingleAsync();
 
             if (result == null && throwError)
             {
-                string message = $"租户【{tenantKey}】的消息模板【{templateType}】不存在！";
-                logger.LogError($"消息模板不可用，TenantId：{tenantKey}；TemplateType：{templateType}；{message}");
+                string message = $"租户【{tenantKey}】应用【{appCacheKey}】的消息模板【{templateType}】不存在！";
+                logger.LogError($"消息模板不可用，TenantId：{tenantKey}；AppKey：{appKey}；TemplateType：{templateType}；{message}");
                 throw new UserFriendlyException(message);
             }
 
@@ -131,7 +137,7 @@ public class MessageTemplateContext
         if (httpContext != null)
         {
             // 放入 HttpContext.Items 中
-            httpContext.Items[$"{nameof(Fast)}.{nameof(MessageTemplateModel)}.{(long)templateType}.{tenantKey}"] =
+            httpContext.Items[$"{nameof(Fast)}.{nameof(MessageTemplateModel)}.{(long)templateType}.{tenantKey}.{appCacheKey}"] =
                 messageTemplateModel;
         }
 
@@ -141,24 +147,29 @@ public class MessageTemplateContext
     /// <summary>
     /// 清除指定消息模板的请求缓存与共享缓存，不删除数据库记录。
     /// </summary>
-    /// <remarks>租户Id为 <see langword="null"/> 时清除全局模板缓存</remarks>
-    public static async Task DeleteMessageTemplate(MessageTemplateTypeEnum templateType, long? tenantId = null)
+    /// <remarks>仅清除指定租户、应用标识与模板类型对应的缓存。</remarks>
+    public static async Task DeleteMessageTemplate(MessageTemplateTypeEnum templateType, long? tenantId = null,
+        string appKey = null)
     {
         if (!Enum.IsDefined(templateType))
         {
             throw new UserFriendlyException("消息模板类型不正确！");
         }
 
+        appKey = string.IsNullOrWhiteSpace(appKey) ? null : appKey;
         string tenantKey = tenantId == null ? "Global" : tenantId.ToString();
+        string appCacheKey = appKey ?? "Shared";
 
         HttpContext httpContext = FastContext.HttpContext;
         if (httpContext != null)
         {
             // 删除 HttpContext.Items 中的
-            httpContext.Items.Remove($"{nameof(Fast)}.{nameof(MessageTemplateModel)}.{(long)templateType}.{tenantKey}");
+            httpContext.Items.Remove(
+                $"{nameof(Fast)}.{nameof(MessageTemplateModel)}.{(long)templateType}.{tenantKey}.{appCacheKey}");
         }
 
-        string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.MessageTemplate, tenantKey, templateType.ToString());
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.MessageTemplate, tenantKey, appCacheKey,
+            templateType.ToString());
 
         await centerCache.DelAsync(cacheKey);
     }
@@ -181,7 +192,7 @@ public class MessageTemplateContext
             }
         }
 
-        string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.MessageTemplate, "*", "*");
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.MessageTemplate, "*", "*", "*");
         await centerCache.DelByPatternAsync(cacheKey);
     }
 }

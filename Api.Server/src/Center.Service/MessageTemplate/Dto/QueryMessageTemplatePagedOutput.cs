@@ -13,6 +13,28 @@ namespace Fast.Center.Service.MessageTemplate.Dto;
 public class QueryMessageTemplatePagedOutput : PagedOutput
 {
     /// <summary>
+    /// 应用标识
+    /// </summary>
+    [SugarSearchValue]
+    public string AppKey { get; set; }
+
+    /// <summary>
+    /// 应用名称
+    /// </summary>
+    [SugarSearchValue]
+    public string AppName { get; set; }
+
+    /// <summary>
+    /// 应用类型
+    /// </summary>
+    public AppEnvironmentEnum? AppType { get; set; }
+
+    /// <summary>
+    /// 环境类型
+    /// </summary>
+    public EnvironmentTypeEnum? EnvironmentType { get; set; }
+
+    /// <summary>
     /// 记录Id
     /// </summary>
     public long RecordId { get; set; }

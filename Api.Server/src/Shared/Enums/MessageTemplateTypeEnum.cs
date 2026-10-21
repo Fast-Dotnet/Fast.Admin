@@ -11,37 +11,37 @@ namespace Fast.Shared;
 /// 消息模板类型枚举
 /// </summary>
 [FastEnum("消息模板类型枚举")]
-public enum MessageTemplateTypeEnum : long
+public enum MessageTemplateTypeEnum
 {
     /// <summary>
     /// 用户注册验证码
     /// </summary>
     [Description("注册验证码")]
-    RegisterVerifyCode = 1L,
+    RegisterVerifyCode = 1,
 
     /// <summary>
     /// 用户登录验证码
     /// </summary>
     [Description("登录验证码")]
-    LoginVerifyCode = 2L,
+    LoginVerifyCode = 2,
 
     /// <summary>
     /// 密码操作验证码
     /// </summary>
     [Description("密码操作验证码")]
-    PasswordOperationVerifyCode = 3L,
+    PasswordOperationVerifyCode = 3,
 
     /// <summary>
     /// 手机号验证码
     /// </summary>
     [Description("手机号验证码")]
-    MobileVerifyCode = 4L,
+    MobileVerifyCode = 4,
 
     /// <summary>
     /// 注销账号验证码
     /// </summary>
     [Description("注销账号验证码")]
-    AccountCancellationVerifyCode = 5L
+    AccountCancellationVerifyCode = 5
 
-    /* 业务模板类型，建议从 1001L 开始 */
+    /* 业务模板类型，建议从 101 开始 */
 }

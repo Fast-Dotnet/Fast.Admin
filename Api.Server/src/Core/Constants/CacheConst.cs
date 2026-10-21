@@ -114,8 +114,8 @@ public static class CacheConst
         /// <summary>
         /// 消息模板
         /// </summary>
-        /// <remarks>{0}应用标识，{1}模板类型</remarks>
-        public const string MessageTemplate = "MessageTemplate:{0}:{1}";
+        /// <remarks>{0}租户，{1}应用标识，{2}模板类型</remarks>
+        public const string MessageTemplate = "MessageTemplate:{0}:{1}:{2}";
 
         /// <summary>
         /// 商户号

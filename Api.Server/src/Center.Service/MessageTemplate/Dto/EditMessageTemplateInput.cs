@@ -13,6 +13,11 @@ namespace Fast.Center.Service.MessageTemplate.Dto;
 public class EditMessageTemplateInput : UpdateVersionInput
 {
     /// <summary>
+    /// 应用标识
+    /// </summary>
+    public string AppKey { get; set; }
+
+    /// <summary>
     /// 记录Id
     /// </summary>
     [LongRequired(ErrorMessage = "记录Id不能为空")]

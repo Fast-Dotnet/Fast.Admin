@@ -12,8 +12,8 @@ namespace Fast.Center.Domain;
 /// </summary>
 [SugarTable("MessageTemplate", "消息模板表")]
 [SugarDbType(DatabaseTypeEnum.Center)]
-[SugarIndex($"UX_{{table}}_{nameof(TemplateType)}", nameof(TenantId), OrderByType.Asc, nameof(TemplateType), OrderByType.Asc,
-    true)]
+[SugarIndex($"UX_{{table}}_{nameof(TemplateType)}", nameof(AppKey), OrderByType.Asc, nameof(TenantId), OrderByType.Asc,
+    nameof(TemplateType), OrderByType.Asc, true)]
 public class MessageTemplateModel : BaseEntity, IUpdateVersion
 {
     /// <summary>
@@ -21,6 +21,12 @@ public class MessageTemplateModel : BaseEntity, IUpdateVersion
     /// </summary>
     [SugarColumn(ColumnDescription = "记录Id", IsPrimaryKey = true)]
     public long RecordId { get; set; }
+
+    /// <summary>
+    /// 应用标识
+    /// </summary>
+    [SugarColumn(ColumnDescription = "应用标识", Length = 50)]
+    public string AppKey { get; set; }
 
     /// <summary>
     /// 模板类型

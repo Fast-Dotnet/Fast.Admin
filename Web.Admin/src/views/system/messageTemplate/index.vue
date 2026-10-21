@@ -12,20 +12,46 @@
 				<el-button v-auth="'MessageTemplate:Add'" type="primary" :icon="Plus" @click="editFormRef.add()">新增</el-button>
 			</template>
 
-			<FaTableColumn prop="tenantName" label="租户名称" fixed="left" width="240" small-width="220" sortable>
-				<template #default="{ row }: { row: QueryMessageTemplatePagedOutput }">
-					<span v-if="row.tenantName" v-iconCopy="row.tenantName">{{ row.tenantName }}</span>
-					<el-tag v-else type="info">全局模板</el-tag>
-				</template>
-			</FaTableColumn>
 			<FaTableColumn
 				prop="templateType"
 				label="模板类型"
+				fixed="left"
 				width="180"
 				small-width="160"
 				sortable
 				tag
 				:enum="appStore.getDictionary('MessageTemplateTypeEnum')"
+			/>
+			<FaTableColumn prop="tenantName" label="租户名称" width="240" small-width="220" sortable>
+				<template #default="{ row }: { row: QueryMessageTemplatePagedOutput }">
+					<span v-if="row.tenantName" v-iconCopy="row.tenantName">{{ row.tenantName }}</span>
+					<el-tag v-else type="info">未指定租户</el-tag>
+				</template>
+			</FaTableColumn>
+			<FaTableColumn prop="appKey" label="应用标识" width="240" small-width="220" sortable>
+				<template #default="{ row }: { row: QueryMessageTemplatePagedOutput }">
+					<span v-if="row.appKey" v-iconCopy="row.appKey">{{ row.appKey }}</span>
+					<el-tag v-else type="info">{{ row.tenantName ? "不区分应用" : "全局模板" }}</el-tag>
+				</template>
+			</FaTableColumn>
+			<FaTableColumn prop="appName" label="应用名称" width="200" small-width="180" sortable />
+			<FaTableColumn
+				prop="appType"
+				label="应用类型"
+				width="150"
+				small-width="130"
+				sortable
+				tag
+				:enum="appStore.getDictionary('AppEnvironmentEnum')"
+			/>
+			<FaTableColumn
+				prop="environmentType"
+				label="环境类型"
+				width="120"
+				small-width="100"
+				sortable
+				tag
+				:enum="appStore.getDictionary('EnvironmentTypeEnum')"
 			/>
 			<FaTableColumn
 				prop="templateCode"
