@@ -131,7 +131,6 @@ public class AdminDatabaseHandler : IInitTenantDatabaseHandler
         long itRoleId = YitIdHelper.NextId();
         long hrRoleId = YitIdHelper.NextId();
         long financeRoleId = YitIdHelper.NextId();
-        long auditRoleId = YitIdHelper.NextId();
         await newDb.Insertable(new List<RoleModel>
             {
                 new()
@@ -155,7 +154,7 @@ public class AdminDatabaseHandler : IInitTenantDatabaseHandler
                     RoleCode = "manager_role",
                     Sort = 2,
                     DataScopeType = DataScopeTypeEnum.All,
-                    AssignableRoleIds = [defaultRoleId, itRoleId, hrRoleId, financeRoleId, auditRoleId],
+                    AssignableRoleIds = [defaultRoleId, itRoleId, hrRoleId, financeRoleId],
                     Remark = null
                 },
                 new()
@@ -190,18 +189,6 @@ public class AdminDatabaseHandler : IInitTenantDatabaseHandler
                     RoleName = "财务",
                     RoleCode = "finance_role",
                     Sort = 5,
-                    DataScopeType = DataScopeTypeEnum.DeptWithChild,
-                    AssignableRoleIds = [defaultRoleId, auditRoleId],
-                    Remark = null
-                },
-                new()
-                {
-                    RoleId = auditRoleId,
-                    RoleType = RoleTypeEnum.Audit,
-                    IsSystemMenu = true,
-                    RoleName = "审计",
-                    RoleCode = "audit_role",
-                    Sort = 6,
                     DataScopeType = DataScopeTypeEnum.DeptWithChild,
                     AssignableRoleIds = [defaultRoleId],
                     Remark = null

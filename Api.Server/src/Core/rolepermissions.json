@@ -47,10 +47,10 @@
     "Scheduler:ResumeJob": [ "Admin", "IT" ],
     "Scheduler:StopJob": [ "Admin", "IT" ],
     // 密码记录
-    "PasswordRecord:Paged": [ "Admin", "IT", "Finance", "Audit" ],
+    "PasswordRecord:Paged": [ "Admin", "IT", "Finance" ],
     // 消息记录
-    "MessageSendRecord:Paged": [ "Admin", "IT", "Finance", "Audit" ],
-    "MessageSendRecord:Detail": [ "Admin", "IT", "Finance", "Audit" ],
+    "MessageSendRecord:Paged": [ "Admin", "IT", "Finance" ],
+    "MessageSendRecord:Detail": [ "Admin", "IT", "Finance" ],
     // 系统日志
     "ExceptionLog:Paged": [ "Admin", "IT" ],
     "SqlExceptionLog:Paged": [ "Admin", "IT" ],
@@ -58,7 +58,7 @@
     "SqlExecutionLog:Paged": [ "Admin", "IT" ],
     "SqlDiffLog:Paged": [ "Admin", "IT" ],
     // 文件存储
-    "File:Paged": [ "Admin", "Default", "IT", "HR", "Finance", "Audit" ],
+    "File:Paged": [ "Admin", "Default", "IT", "HR", "Finance" ],
     // 账号管理
     "Account:Paged": [ "Admin", "IT" ],
     "Account:Detail": [ "Admin", "IT" ],
@@ -109,16 +109,16 @@
     "Merchant:Edit": [ "Admin", "IT" ],
     "Merchant:Delete": [ "Admin", "IT" ],
     // 支付记录
-    "PayRecord:Paged": [ "Admin", "IT", "Finance", "Audit" ],
+    "PayRecord:Paged": [ "Admin", "IT", "Finance" ],
     // 退款记录
-    "RefundRecord:Paged": [ "Admin", "IT", "Finance", "Audit" ],
+    "RefundRecord:Paged": [ "Admin", "IT", "Finance" ],
     // 平台管理
-    "ClientUser:Paged": [ "Admin", "IT", "Finance", "Audit" ],
+    "ClientUser:Paged": [ "Admin", "IT", "Finance" ],
     "Complaint:Paged": [ "Admin", "IT" ],
     "Complaint:Detail": [ "Admin", "IT" ],
     "Complaint:Handle": [ "Admin", "IT" ],
-    "Complaint:TenantPaged": [ "Admin", "IT", "Finance", "Audit" ],
-    "Complaint:TenantDetail": [ "Admin", "IT", "Finance", "Audit" ],
+    "Complaint:TenantPaged": [ "Admin", "IT", "Finance" ],
+    "Complaint:TenantDetail": [ "Admin", "IT", "Finance" ],
     "Complaint:TenantHandle": [ "Admin", "IT", "Finance" ],
     // 组织架构
     "Position:Paged": [ "Admin", "IT" ],
@@ -141,16 +141,16 @@
     "Department:Add": [ "Admin", "IT" ],
     "Department:Edit": [ "Admin", "IT" ],
     "Department:Delete": [ "Admin", "IT" ],
-    "Employee:Paged": [ "Admin", "Default", "IT", "HR", "Finance", "Audit" ],
-    "Employee:Detail": [ "Admin", "Default", "IT", "HR", "Finance", "Audit" ],
+    "Employee:Paged": [ "Admin", "Default", "IT", "HR", "Finance" ],
+    "Employee:Detail": [ "Admin", "Default", "IT", "HR", "Finance" ],
     "Employee:Add": [ "Admin", "IT", "HR", "Finance" ],
     "Employee:Edit": [ "Admin", "IT", "HR", "Finance" ],
     "Employee:Status": [ "Admin", "IT", "HR", "Finance" ],
-    "TenantOnlineUser:Paged": [ "Admin", "IT", "HR", "Finance", "Audit" ],
+    "TenantOnlineUser:Paged": [ "Admin", "IT", "HR", "Finance" ],
     "TenantOnlineUser:ForceOffline": [ "Admin", "IT", "HR", "Finance" ],
     // 日志管理
-    "VisitLog:Paged": [ "Admin", "Default", "IT", "HR", "Finance", "Audit" ],
-    "OperateLog:Paged": [ "Admin", "Default", "IT", "HR", "Finance", "Audit" ],
-    "RequestLog:Paged": [ "Admin", "IT", "Finance", "Audit" ]
+    "VisitLog:Paged": [ "Admin", "Default", "IT", "HR", "Finance" ],
+    "OperateLog:Paged": [ "Admin", "Default", "IT", "HR", "Finance" ],
+    "RequestLog:Paged": [ "Admin", "IT", "Finance" ]
   }
 }

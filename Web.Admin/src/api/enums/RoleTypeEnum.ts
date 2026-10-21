@@ -22,8 +22,4 @@ export enum RoleTypeEnum {
 	 * 财务
 	 */
 	Finance = 16,
-	/**
-	 * 审计
-	 */
-	Audit = 32,
 }
