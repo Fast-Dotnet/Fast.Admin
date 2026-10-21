@@ -153,8 +153,11 @@ public partial class TableService
         }, ex => throw ex);
 
         // 清除缓存
-        string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.UserTableConfigCache, tableConfigModel.TableKey, "*", "*");
-        await _centerCache.DelByPatternAsync(cacheKey);
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.TableConfig, tableConfigModel.TableKey);
+        await _centerCache.DelAsync(cacheKey);
+        // 清除用户缓存
+        string userCacheKey = CacheConst.GetCacheKey(CacheConst.Center.UserTableConfigCache, tableConfigModel.TableKey, "*", "*");
+        await _centerCache.DelByPatternAsync(userCacheKey);
     }
 
     /// <summary>
