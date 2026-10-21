@@ -187,7 +187,7 @@
 					<div class="dynamic-obj">
 						<el-button type="primary" size="small" @click="handleAddObj('requestHeaderObj')">添加</el-button>
 						<el-scrollbar v-if="state.requestHeaderObj.length > 0">
-							<el-row v-for="(item, index) in state.requestHeaderObj" :key="index" style="margin-bottom: 5px !important">
+							<el-row v-for="(item, index) in state.requestHeaderObj" :key="index" style="margin-bottom: 5px">
 								<el-col :span="8">
 									<el-input v-model="item.key" maxlength="20" placeholder="请输入Key" />
 								</el-col>
@@ -205,7 +205,7 @@
 					<div class="dynamic-obj">
 						<el-button type="primary" size="small" @click="handleAddObj('requestParamsObj')">添加</el-button>
 						<el-scrollbar v-if="state.requestParamsObj.length > 0">
-							<el-row v-for="(item, index) in state.requestParamsObj" :key="index" style="margin-bottom: 5px !important">
+							<el-row v-for="(item, index) in state.requestParamsObj" :key="index" style="margin-bottom: 5px">
 								<el-col :span="8">
 									<el-input v-model="item.key" maxlength="20" placeholder="请输入Key" />
 								</el-col>

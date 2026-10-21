@@ -37,7 +37,7 @@
 						<br />
 						<span>
 							登陆时间：{{ row.lastLoginTime ?? "" }}
-							<el-tag v-if="row.lastLoginTime" type="info" round effect="light" style="margin-left: 5px !important">
+							<el-tag v-if="row.lastLoginTime" type="info" round effect="light" style="margin-left: 5px">
 								{{ formatChineseRelativeTime(row.lastLoginTime) }}
 							</el-tag>
 						</span>
@@ -99,7 +99,7 @@
 
 			<!-- 表格操作 -->
 			<template #operation="{ row }: { row: QueryEmployeePagedOutput }">
-				<div style="margin-bottom: 5px !important">
+				<div style="margin-bottom: 5px">
 					<el-button v-auth="'Employee:Detail'" size="small" plain @click="editFormRef.detail(row.employeeId)">详情</el-button>
 					<el-button
 						v-if="row.status !== EmployeeStatusEnum.Resigned"
@@ -111,7 +111,7 @@
 					>
 						编辑
 					</el-button>
-					<el-dropdown v-auth="'Employee:Status'" style="padding-left: 12px !important" trigger="click">
+					<el-dropdown v-auth="'Employee:Status'" style="padding-left: 12px" trigger="click">
 						<el-button size="small" plain type="primary">
 							更多
 							<el-icon class="el-icon--right"><ArrowDown /></el-icon>

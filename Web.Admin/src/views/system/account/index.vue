@@ -35,7 +35,7 @@
 					<span>Ip：{{ row.firstLoginIp }}</span>
 					<br />
 					<span>时间：{{ dayjs(row.firstLoginTime).format("YYYY-MM-DD HH:mm:ss") }}</span>
-					<el-tag v-if="row.firstLoginTime" type="info" round effect="light" size="small" style="margin-left: 5px !important">
+					<el-tag v-if="row.firstLoginTime" type="info" round effect="light" size="small" style="margin-left: 5px">
 						{{ formatChineseRelativeTime(row.firstLoginTime) }}
 					</el-tag>
 				</template>
@@ -71,7 +71,7 @@
 					<span>Ip：{{ row.lastLoginIp }}</span>
 					<br />
 					<span>时间：{{ dayjs(row.lastLoginTime).format("YYYY-MM-DD HH:mm:ss") }}</span>
-					<el-tag v-if="row.lastLoginTime" type="info" round effect="light" size="small" style="margin-left: 5px !important">
+					<el-tag v-if="row.lastLoginTime" type="info" round effect="light" size="small" style="margin-left: 5px">
 						{{ formatChineseRelativeTime(row.lastLoginTime) }}
 					</el-tag>
 				</template>

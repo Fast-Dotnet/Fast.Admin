@@ -11,7 +11,7 @@
 						<el-text tag="b" size="large" type="primary"> {{ state.tenantName }}</el-text>
 					</div>
 
-					<div style="border-bottom: var(--el-border); text-align: right; margin-bottom: 10px !important">
+					<div style="border-bottom: var(--el-border); text-align: right; margin-bottom: 10px">
 						<el-text type="info">{{ dayjs(state.lastUpdateTime).format("YYYY-MM-DD HH:mm:ss") }}</el-text>
 					</div>
 
@@ -215,7 +215,7 @@
 
 				<!-- 表格操作 -->
 				<template #operation="{ row }: { row: SchedulerJobInfoDto }">
-					<div style="margin-bottom: 5px !important">
+					<div style="margin-bottom: 5px">
 						<el-button
 							v-auth="'Scheduler:Edit'"
 							size="small"

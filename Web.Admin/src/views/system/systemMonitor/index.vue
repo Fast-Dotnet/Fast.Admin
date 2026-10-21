@@ -1,6 +1,6 @@
 <template>
 	<div v-loading="state.loading" element-loading-text="加载中...">
-		<el-row class="monitor-overview w100" style="margin-bottom: 10px !important" :gutter="10">
+		<el-row class="monitor-overview w100" style="margin-bottom: 10px" :gutter="10">
 			<el-col :span="12" :xs="24" :sm="24" :md="12">
 				<el-card shadow="hover" header="系统信息">
 					<el-progress :width="150" type="dashboard" :percentage="state.machineDetail.ramRate" :color="state.colors">
@@ -80,7 +80,7 @@
 				</el-card>
 			</el-col>
 		</el-row>
-		<el-card style="margin-bottom: 10px !important" shadow="hover" header="CPU信息">
+		<el-card style="margin-bottom: 10px" shadow="hover" header="CPU信息">
 			<el-progress
 				v-for="(item, index) in state.machineDetail.cpuRate"
 				:key="index"
@@ -96,7 +96,7 @@
 				</template>
 			</el-progress>
 		</el-card>
-		<el-card style="margin-bottom: 10px !important" shadow="hover" header="硬盘信息">
+		<el-card style="margin-bottom: 10px" shadow="hover" header="硬盘信息">
 			<div class="diskInfo">
 				<el-progress
 					v-for="(item, index) in state.machineDetail.diskInfos"
