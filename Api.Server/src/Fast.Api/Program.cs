@@ -41,9 +41,6 @@ GlobalContext.InitializationSettings = builder.Configuration
                                            .Get<InitializationSettingsOptions>()
                                        ?? throw new InvalidOperationException("缺少 InitializationSettings 初始化配置。");
 
-// 加载菜单、按钮初始化角色权限
-GlobalContext.LoadRolePermissions(builder.Configuration);
-
 // 添加跨域服务
 builder.Services.AddCorsAccessor(builder.Configuration);
 

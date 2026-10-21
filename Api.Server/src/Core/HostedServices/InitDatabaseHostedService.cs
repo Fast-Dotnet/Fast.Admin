@@ -7,6 +7,7 @@
 
 using Fast.Center.Domain;
 using Fast.SqlSugar;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SqlSugar;
@@ -21,6 +22,11 @@ namespace Fast.Core;
 public class InitDatabaseHostedService : IHostedService
 {
     /// <summary>
+    /// 应用配置
+    /// </summary>
+    private readonly IConfiguration _configuration;
+
+    /// <summary>
     /// 日志
     /// </summary>
     private readonly ILogger _logger;
@@ -28,8 +34,9 @@ public class InitDatabaseHostedService : IHostedService
     /// <summary>
     /// 初始化数据库托管服务
     /// </summary>
-    public InitDatabaseHostedService(ILogger<InitDatabaseHostedService> logger)
+    public InitDatabaseHostedService(IConfiguration configuration, ILogger<InitDatabaseHostedService> logger)
     {
+        _configuration = configuration;
         _logger = logger;
     }
 
@@ -48,6 +55,9 @@ public class InitDatabaseHostedService : IHostedService
             {
                 return;
             }
+
+            // 仅首次初始化核心库时加载菜单、按钮权限配置，已有数据库无需加载。
+            GlobalContext.LoadRolePermissions(_configuration);
 
             // 加载Aop
             SugarEntityFilter.LoadSugarAop(FastContext.HostEnvironment.IsDevelopment(), db);
