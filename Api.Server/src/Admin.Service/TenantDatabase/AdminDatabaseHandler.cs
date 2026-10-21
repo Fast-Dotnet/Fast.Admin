@@ -133,11 +133,17 @@ public class AdminDatabaseHandler : IInitTenantDatabaseHandler
             .ExecuteCommandAsync();
 
         // 初始化租户默认角色
+        long defaultRoleId = YitIdHelper.NextId();
+        long managerRoleId = YitIdHelper.NextId();
+        long itRoleId = YitIdHelper.NextId();
+        long hrRoleId = YitIdHelper.NextId();
+        long financeRoleId = YitIdHelper.NextId();
+        long auditRoleId = YitIdHelper.NextId();
         await newDb.Insertable(new List<RoleModel>
             {
                 new()
                 {
-                    RoleId = YitIdHelper.NextId(),
+                    RoleId = defaultRoleId,
                     RoleType = RoleTypeEnum.Default,
                     IsSystemMenu = true,
                     RoleName = "默认",
@@ -149,7 +155,7 @@ public class AdminDatabaseHandler : IInitTenantDatabaseHandler
                 },
                 new()
                 {
-                    RoleId = YitIdHelper.NextId(),
+                    RoleId = managerRoleId,
                     RoleType = RoleTypeEnum.Admin,
                     IsSystemMenu = true,
                     RoleName = "管理员",
@@ -161,50 +167,50 @@ public class AdminDatabaseHandler : IInitTenantDatabaseHandler
                 },
                 new()
                 {
-                    RoleId = YitIdHelper.NextId(),
+                    RoleId = itRoleId,
                     RoleType = RoleTypeEnum.IT,
                     IsSystemMenu = true,
                     RoleName = "技术",
                     RoleCode = "it_role",
                     Sort = 3,
                     DataScopeType = DataScopeTypeEnum.OrgWithChild,
-                    AssignableRoleIds = [],
+                    AssignableRoleIds = [defaultRoleId],
                     Remark = null
                 },
                 new()
                 {
-                    RoleId = YitIdHelper.NextId(),
+                    RoleId = hrRoleId,
                     RoleType = RoleTypeEnum.HR,
                     IsSystemMenu = true,
                     RoleName = "人事",
                     RoleCode = "hr_role",
                     Sort = 4,
                     DataScopeType = DataScopeTypeEnum.DeptWithChild,
-                    AssignableRoleIds = [],
+                    AssignableRoleIds = [defaultRoleId],
                     Remark = null
                 },
                 new()
                 {
-                    RoleId = YitIdHelper.NextId(),
+                    RoleId = financeRoleId,
                     RoleType = RoleTypeEnum.Finance,
                     IsSystemMenu = true,
                     RoleName = "财务",
                     RoleCode = "finance_role",
                     Sort = 5,
                     DataScopeType = DataScopeTypeEnum.DeptWithChild,
-                    AssignableRoleIds = [],
+                    AssignableRoleIds = [defaultRoleId, auditRoleId],
                     Remark = null
                 },
                 new()
                 {
-                    RoleId = YitIdHelper.NextId(),
+                    RoleId = auditRoleId,
                     RoleType = RoleTypeEnum.Audit,
                     IsSystemMenu = true,
                     RoleName = "审计",
                     RoleCode = "audit_role",
                     Sort = 6,
                     DataScopeType = DataScopeTypeEnum.DeptWithChild,
-                    AssignableRoleIds = [],
+                    AssignableRoleIds = [defaultRoleId],
                     Remark = null
                 }
             })
