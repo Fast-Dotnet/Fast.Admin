@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <ProjectReference Include="$(SolutionDir)src\Scheduler.Service\Fast.Scheduler.Service.csproj" />
+        <ProjectReference Include="$(SolutionDir)src\Admin.Domain\Fast.Admin.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
