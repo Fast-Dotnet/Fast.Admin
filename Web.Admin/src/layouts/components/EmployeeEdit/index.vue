@@ -47,10 +47,10 @@
 				<FaTable :data="state.formData.orgList" :pagination="false" :header-card="false">
 					<FaTableColumn prop="orgName" label="机构" width="280" />
 					<FaTableColumn prop="departmentName" label="部门" width="280" />
-					<FaTableColumn prop="isPrimary" label="主部门" width="80" tag :enum="appStore.getDictionary('BooleanEnum')" />
+					<FaTableColumn prop="isPrimary" label="主部门" width="80" tag :enum="booleanEnum" />
 					<FaTableColumn prop="positionName" label="职位" width="280" />
 					<FaTableColumn prop="jobLevelName" label="职级" width="280" />
-					<FaTableColumn prop="isPrincipal" label="负责人" width="80" tag :enum="appStore.getDictionary('BooleanEnum')" />
+					<FaTableColumn prop="isPrincipal" label="负责人" width="80" tag :enum="booleanEnum" />
 				</FaTable>
 			</FaLayoutGridItem>
 		</FaForm>
@@ -74,6 +74,7 @@ defineOptions({
 });
 
 const appStore = useApp();
+const booleanEnum = appStore.getDictionary("BooleanEnum");
 const userInfoStore = useUserInfo();
 
 const faDialogRef = useTemplateRef<FaDialogInstance>("faDialogRef");
