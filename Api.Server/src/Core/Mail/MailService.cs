@@ -216,7 +216,7 @@ public class MailService : IMailService, ISingletonDependency
     }
 
     /// <inheritdoc />
-    public async Task<bool> SendVerificationCode(MessageTemplateTypeEnum templateType, string email)
+    public async Task SendVerificationCode(MessageTemplateTypeEnum templateType, string email)
     {
         if (string.IsNullOrWhiteSpace(email) || !Regex.IsMatch(email, RegexConst.EmailAddress))
         {
@@ -271,11 +271,9 @@ public class MailService : IMailService, ISingletonDependency
                            <p style="color: #64748b;">验证码 5 分钟内有效，请勿向任何人泄露。如非本人操作，请忽略此邮件。</p>
                            """;
 
-        bool isSuccess = await SendEmail(title, await GetEmailTemplate(title, content), [email]);
+        await SendEmail(title, await GetEmailTemplate(title, content), [email]);
         await _cache.SetAsync(cacheKey, dto, TimeSpan.FromMinutes(5));
         await _cache.Client.SetAsync($"{cacheKey}:SendCooldown", "1", 60);
-
-        return isSuccess;
     }
 
     /// <inheritdoc />
@@ -327,15 +325,14 @@ public class MailService : IMailService, ISingletonDependency
     }
 
     /// <inheritdoc />
-    public async Task<bool> SendEmail(string title, string content, List<string> receiveEmails = null, string smtp = null,
+    public async Task SendEmail(string title, string content, List<string> receiveEmails = null, string smtp = null,
         int? port = null, string email = null, string authCode = null, string displayName = null)
     {
-        return await SendEmail(title, new BodyBuilder {HtmlBody = content}, receiveEmails, smtp, port, email, authCode,
-            displayName);
+        await SendEmail(title, new BodyBuilder {HtmlBody = content}, receiveEmails, smtp, port, email, authCode, displayName);
     }
 
     /// <inheritdoc />
-    public async Task<bool> SendEmail(string title, BodyBuilder content, List<string> receiveEmails = null, string smtp = null,
+    public async Task SendEmail(string title, BodyBuilder content, List<string> receiveEmails = null, string smtp = null,
         int? port = null, string email = null, string authCode = null, string displayName = null)
     {
         ArgumentNullException.ThrowIfNull(content);
@@ -348,7 +345,7 @@ public class MailService : IMailService, ISingletonDependency
 
         if (receiveEmails is not {Count: > 0})
         {
-            return false;
+            return;
         }
 
         DateTime sendTime = DateTime.Now;
@@ -470,7 +467,5 @@ public class MailService : IMailService, ISingletonDependency
                 _logger.LogError(ex, $"邮件发送记录写入失败。ReceiveEmails：{string.Join(",", receiveEmails)}");
             }
         }
-
-        return true;
     }
 }
