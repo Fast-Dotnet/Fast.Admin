@@ -74,7 +74,7 @@ public class SMSService : ISmsService, ISingletonDependency
     }
 
     /// <inheritdoc />
-    public async Task SendVerificationCode(MessageTemplateTypeEnum templateType, string signName, string mobile,
+    public async Task<bool> SendVerificationCode(MessageTemplateTypeEnum templateType, string signName, string mobile,
         long? tenantId = null)
     {
         if (string.IsNullOrWhiteSpace(signName))
@@ -121,9 +121,11 @@ public class SMSService : ISmsService, ISingletonDependency
 
         // 获取模板Code
         MessageTemplateModel messageTemplateModel = await MessageTemplateContext.GetMessageTemplate(templateType, tenantId);
-        await SendSms(signName, mobile, messageTemplateModel.TemplateCode, new {code = dto.VerificationCode});
+        bool isSuccess = await SendSms(signName, mobile, messageTemplateModel.TemplateCode, new {code = dto.VerificationCode});
         await _cache.SetAsync(cacheKey, dto, TimeSpan.FromMinutes(5));
         await _cache.Client.SetAsync($"{cacheKey}:SendCooldown", "1", 60);
+
+        return isSuccess;
     }
 
     /// <inheritdoc/>
@@ -175,7 +177,7 @@ public class SMSService : ISmsService, ISingletonDependency
     }
 
     /// <inheritdoc />
-    public async Task SendSms(string signName, string mobile, string templateCode, object templateParam,
+    public async Task<bool> SendSms(string signName, string mobile, string templateCode, object templateParam,
         string accessKeyId = null, string accessKeySecret = null)
     {
         if (string.IsNullOrWhiteSpace(signName))
@@ -263,5 +265,7 @@ public class SMSService : ISmsService, ISingletonDependency
                 _logger.LogError(ex, $"短信发送记录写入失败。Mobile：{mobile}");
             }
         }
+
+        return true;
     }
 }

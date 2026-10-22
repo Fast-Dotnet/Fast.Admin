@@ -27,9 +27,10 @@ public interface ISmsService
     /// <param name="signName">短信签名</param>
     /// <param name="mobile">手机号</param>
     /// <param name="tenantId">租户Id，为 <see langword="null"/> 时查询全局模板</param>
+    /// <returns>验证码发送结果</returns>
     /// <remarks>验证码有效期为 5 分钟，发送冷却为 60 秒；发送失败也会保留本次冷却限制。</remarks>
     /// <exception cref="UserFriendlyException">接收地址不合法、仍在冷却期或发送配置不可用时抛出。</exception>
-    Task SendVerificationCode(MessageTemplateTypeEnum templateType, string signName, string mobile, long? tenantId = null);
+    Task<bool> SendVerificationCode(MessageTemplateTypeEnum templateType, string signName, string mobile, long? tenantId = null);
 
     /// <summary>
     /// 校验验证码，并在校验成功后删除对应记录。
@@ -51,6 +52,8 @@ public interface ISmsService
     /// <param name="templateParam">模板参数对象</param>
     /// <param name="accessKeyId">访问密钥Id，为 <see langword="null"/> 时读取配置</param>
     /// <param name="accessKeySecret">访问密钥Secret，为 <see langword="null"/> 时读取配置</param>
-    Task SendSms(string signName, string mobile, string templateCode, object templateParam, string accessKeyId = null,
+    /// <returns>短信发送结果</returns>
+    /// <remarks>参数校验或发送失败时抛出异常。</remarks>
+    Task<bool> SendSms(string signName, string mobile, string templateCode, object templateParam, string accessKeyId = null,
         string accessKeySecret = null);
 }

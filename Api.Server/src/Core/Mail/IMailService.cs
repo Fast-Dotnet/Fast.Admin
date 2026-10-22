@@ -41,9 +41,10 @@ public interface IMailService
     /// </summary>
     /// <param name="templateType">消息模板类型</param>
     /// <param name="email">邮箱</param>
+    /// <returns>验证码发送结果</returns>
     /// <remarks>验证码有效期为 5 分钟，发送冷却为 60 秒；发送失败也会保留本次冷却限制。</remarks>
     /// <exception cref="UserFriendlyException">接收地址不合法、仍在冷却期或发送配置不可用时抛出。</exception>
-    Task SendVerificationCode(MessageTemplateTypeEnum templateType, string email);
+    Task<bool> SendVerificationCode(MessageTemplateTypeEnum templateType, string email);
 
     /// <summary>
     /// 校验验证码，并在校验成功后删除对应记录。
@@ -67,7 +68,9 @@ public interface IMailService
     /// <param name="email">发件邮箱，为 <see langword="null"/> 时读取配置</param>
     /// <param name="authCode">发件邮箱授权码，为 <see langword="null"/> 时读取配置</param>
     /// <param name="displayName">发件人显示名称，为 <see langword="null"/> 时读取配置</param>
-    Task SendEmail(string title, string content, List<string> receiveEmails = null, string smtp = null, int? port = null,
+    /// <returns>邮件发送结果；没有收件人时为 <see langword="false"/></returns>
+    /// <remarks>参数校验或发送失败时抛出异常。</remarks>
+    Task<bool> SendEmail(string title, string content, List<string> receiveEmails = null, string smtp = null, int? port = null,
         string email = null, string authCode = null, string displayName = null);
 
 
@@ -82,6 +85,8 @@ public interface IMailService
     /// <param name="email">发件邮箱，为 <see langword="null"/> 时读取配置</param>
     /// <param name="authCode">发件邮箱授权码，为 <see langword="null"/> 时读取配置</param>
     /// <param name="displayName">发件人显示名称，为 <see langword="null"/> 时读取配置</param>
-    Task SendEmail(string title, BodyBuilder content, List<string> receiveEmails = null, string smtp = null, int? port = null,
-        string email = null, string authCode = null, string displayName = null);
+    /// <returns>邮件发送结果；没有收件人时为 <see langword="false"/></returns>
+    /// <remarks>参数校验或发送失败时抛出异常。</remarks>
+    Task<bool> SendEmail(string title, BodyBuilder content, List<string> receiveEmails = null, string smtp = null,
+        int? port = null, string email = null, string authCode = null, string displayName = null);
 }
