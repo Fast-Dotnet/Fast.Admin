@@ -34,7 +34,7 @@ public class MessageTemplateContext
     /// <remarks>租户与应用标识均精确匹配；应用标识为空时仅查询不区分应用的模板，不自动回退。</remarks>
     /// <returns>模板信息；未找到且不要求抛出异常时为 <see langword="null"/></returns>
     public static MessageTemplateModel GetMessageTemplateSync(MessageTemplateTypeEnum templateType, long? tenantId = null,
-        bool throwError = true, string appKey = null)
+        string appKey = null, bool throwError = true)
     {
         if (!Enum.IsDefined(templateType))
         {
@@ -92,7 +92,7 @@ public class MessageTemplateContext
     /// <remarks>租户与应用标识均精确匹配；应用标识为空时仅查询不区分应用的模板，不自动回退。</remarks>
     /// <returns>模板信息；未找到且不要求抛出异常时为 <see langword="null"/></returns>
     public static async Task<MessageTemplateModel> GetMessageTemplate(MessageTemplateTypeEnum templateType, long? tenantId = null,
-        bool throwError = true, string appKey = null)
+        string appKey = null, bool throwError = true)
     {
         if (!Enum.IsDefined(templateType))
         {
