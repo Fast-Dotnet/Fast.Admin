@@ -1,4 +1,4 @@
-﻿// Copyright © 2018-Present 小方
+// Copyright © 2018-Present 小方
 // SPDX-License-Identifier: Apache-2.0
 // 
 // 本文件依据 Apache License 2.0 授权，完整条款见仓库根目录 LICENSE。
@@ -88,7 +88,7 @@ public class UploadFileSettingsOptions : IPostConfigure
         };
         Package ??= new UploadFileInfoSettings
         {
-            Path = "Upload/ApplicationPackage",
+            Path = "Upload/Package",
             MaxSize = 512 * 1024,
             BaseUrl = "/package",
             UseTypeFolder = true,
