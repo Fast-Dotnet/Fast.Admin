@@ -105,7 +105,7 @@ public class UploadFileSettingsOptions : IPostConfigure
         Editor ??= new UploadFileInfoSettings
         {
             Path = "Upload/Editor",
-            MaxSize = 10240,
+            MaxSize = 10 * 1024,
             UseTypeFolder = true,
             ContentType =
             [
@@ -119,7 +119,7 @@ public class UploadFileSettingsOptions : IPostConfigure
         Default ??= new UploadFileInfoSettings
         {
             Path = "Upload/Default",
-            MaxSize = 102400,
+            MaxSize = 100 * 1024,
             UseTypeFolder = true,
             ContentType =
             [

@@ -85,7 +85,7 @@ public class FileContext
     /// 将存储配置中的路径解析为当前操作系统使用的绝对路径。
     /// </summary>
     /// <param name="rootPath">应用根目录</param>
-    /// <param name="filePath">配置或数据库中的存储目录，可为相对或绝对路径，兼容两种目录分隔符</param>
+    /// <param name="filePath">配置或数据库中的存储目录，可为相对或绝对路径，目录分隔符统一使用 /</param>
     /// <param name="fileName">可选文件名</param>
     /// <returns>绝对配置保持原位置；相对配置基于 rootPath 解析</returns>
     /// <remarks>仅进行路径组合与规范化，不保证结果位于 rootPath 内；调用方须负责目录访问边界。</remarks>
@@ -97,10 +97,9 @@ public class FileContext
         }
 
         rootPath = Path.GetFullPath(rootPath);
-        string localPath = filePath.Replace('\\', Path.DirectorySeparatorChar).Replace('/', Path.DirectorySeparatorChar);
         string fullPath = string.IsNullOrEmpty(fileName)
-            ? Path.GetFullPath(Path.Combine(rootPath, localPath))
-            : Path.GetFullPath(Path.Combine(rootPath, localPath, fileName));
+            ? Path.GetFullPath(Path.Combine(rootPath, filePath))
+            : Path.GetFullPath(Path.Combine(rootPath, filePath, fileName));
 
         return fullPath;
     }

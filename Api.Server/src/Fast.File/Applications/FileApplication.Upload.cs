@@ -608,7 +608,7 @@ public partial class FileApplication
         }
 
         // 默认使用年份和月份拆分文件夹
-        filePath = Path.Combine(filePath, dateTime.ToString("yyyy/MM"));
+        filePath = Path.Combine(filePath, dateTime.ToString("yyyy'/'MM"));
 
         // 数据库存储统一使用“/”，保证路径记录可以在 Windows、Linux 和 macOS 之间迁移
         filePath = filePath.Replace('\\', '/');
