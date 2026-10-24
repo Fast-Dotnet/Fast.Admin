@@ -1,5 +1,5 @@
 import { axiosUtil } from "@fast-china/axios";
-import type { AxiosProgressEvent } from "axios";
+import type { AxiosProgressEvent, AxiosResponse } from "axios";
 import type { DownloadFileInput } from "./models/DownloadFileInput";
 import type { QueryFilePagedInput } from "./models/QueryFilePagedInput";
 import type { QueryFilePagedOutput } from "./models/QueryFilePagedOutput";
@@ -22,13 +22,13 @@ export const fileApi = {
 	/**
 	 * 下载文件
 	 */
-	download(data: DownloadFileInput): Promise<unknown> {
-		return axiosUtil.request({
+	download(data: DownloadFileInput, autoDownloadFile = true): Promise<AxiosResponse<Blob | ArrayBuffer | string>> {
+		return axiosUtil.request<AxiosResponse<Blob | ArrayBuffer | string>>({
 			url: "/file/download",
 			method: "post",
 			data,
 			responseType: "blob",
-			autoDownloadFile: true,
+			autoDownloadFile,
 			requestType: "download",
 		});
 	},
@@ -66,6 +66,20 @@ export const fileApi = {
 	uploadIdPhoto(filePath: string, onUploadProgress?: (progressEvent: AxiosProgressEvent) => void): Promise<string> {
 		return axiosUtil.request<string>({
 			url: "/file/uploadIdPhoto",
+			method: "upload",
+			name: "file",
+			filePath,
+			onUploadProgress,
+			cancelDuplicateRequest: false,
+			requestType: "upload",
+		});
+	},
+	/**
+	 * 上传安装包
+	 */
+	uploadPackage(filePath: string, onUploadProgress?: (progressEvent: AxiosProgressEvent) => void): Promise<string> {
+		return axiosUtil.request<string>({
+			url: "/file/uploadPackage",
 			method: "upload",
 			name: "file",
 			filePath,

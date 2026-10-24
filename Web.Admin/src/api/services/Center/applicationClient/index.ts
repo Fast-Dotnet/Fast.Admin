@@ -1,6 +1,6 @@
 import { axiosUtil } from "@fast-china/axios";
 import type { AddApplicationClientInput } from "./models/AddApplicationClientInput";
-import type { DeleteApplicationClientInput } from "./models/DeleteApplicationClientInput";
+import type { ApplicationClientIdInput } from "./models/ApplicationClientIdInput";
 import type { EditApplicationClientInput } from "./models/EditApplicationClientInput";
 import type { QueryApplicationClientDetailOutput } from "./models/QueryApplicationClientDetailOutput";
 
@@ -46,7 +46,7 @@ export const applicationClientApi = {
 	/**
 	 * 删除应用标识
 	 */
-	deleteApplicationClient(data: DeleteApplicationClientInput): Promise<void> {
+	deleteApplicationClient(data: ApplicationClientIdInput): Promise<void> {
 		return axiosUtil.request<void>({
 			url: "/applicationClient/deleteApplicationClient",
 			method: "post",

@@ -23,7 +23,10 @@
       "http://127.0.0.1:2001"
     ],
     // 客户端可获取的响应标头
-    "WithExposedHeaders": [ "Fast-Response-Encipher" ]
+    "WithExposedHeaders": [
+      "Content-Disposition",
+      "Fast-Response-Encipher"
+    ]
   },
   // 初始化配置
   "InitializationSettings": {

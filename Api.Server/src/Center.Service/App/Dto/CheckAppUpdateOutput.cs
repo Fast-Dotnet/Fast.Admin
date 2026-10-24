@@ -5,16 +5,20 @@
 // 本软件按“原样”提供，相关免责声明及责任限制以许可证及适用法律为准。
 // 版权来源、合法使用与二次开发责任说明见仓库根目录 README.md。
 
-namespace Fast.Center.Service.ApplicationToken.Dto;
+namespace Fast.Center.Service.App.Dto;
 
 /// <summary>
-/// 删除删除应用凭据输入
+/// 检查应用更新输出
 /// </summary>
-public class DeleteApplicationTokenInput
+public class CheckAppUpdateOutput
 {
     /// <summary>
-    /// 记录Id
+    /// 是否存在可用更新
     /// </summary>
-    [StringRequired(ErrorMessage = "记录Id不能为空")]
-    public long RecordId { get; set; }
+    public bool HasUpdate { get; set; }
+
+    /// <summary>
+    /// 更新包信息
+    /// </summary>
+    public CheckAppUpdatePackageOutput Package { get; set; }
 }

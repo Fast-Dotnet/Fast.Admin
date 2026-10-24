@@ -162,7 +162,7 @@ public class ApplicationClientService : IDynamicApplication
     [HttpPost]
     [ApiInfo("删除应用标识", HttpRequestActionEnum.Delete)]
     [Permission(PermissionConst.App.ClientDelete)]
-    public async Task DeleteApplicationClient(DeleteApplicationClientInput input)
+    public async Task DeleteApplicationClient(ApplicationClientIdInput input)
     {
         ApplicationClientModel applicationClientModel = await _repository.SingleOrDefaultAsync(input.RecordId);
         if (applicationClientModel == null)

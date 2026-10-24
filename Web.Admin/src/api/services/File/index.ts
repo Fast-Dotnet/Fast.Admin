@@ -73,6 +73,19 @@ export const fileApi = {
 		});
 	},
 	/**
+	 * 上传安装包
+	 */
+	uploadPackage(data: FormData, onUploadProgress?: (progressEvent: AxiosProgressEvent) => void): Promise<string> {
+		return axiosUtil.request<string>({
+			url: "/file/uploadPackage",
+			method: "post",
+			data,
+			onUploadProgress,
+			cancelDuplicateRequest: false,
+			requestType: "upload",
+		});
+	},
+	/**
 	 * 上传富文本
 	 */
 	uploadEditor(data: FormData, onUploadProgress?: (progressEvent: AxiosProgressEvent) => void): Promise<string> {

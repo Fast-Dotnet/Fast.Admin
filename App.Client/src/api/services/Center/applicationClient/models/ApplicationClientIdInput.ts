@@ -1,7 +1,7 @@
 /**
- * 删除应用标识输入
+ * 应用标识Id输入
  */
-export interface DeleteApplicationClientInput {
+export interface ApplicationClientIdInput {
 	/**
 	 * 记录Id
 	 */

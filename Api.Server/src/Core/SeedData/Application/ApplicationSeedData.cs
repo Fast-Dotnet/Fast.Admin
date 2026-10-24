@@ -53,8 +53,8 @@ internal static class ApplicationSeedData
                 new()
                 {
                     AppId = applicationModel.AppId,
-                    AppKey = "DesktopOpenId",
-                    AppType = AppEnvironmentEnum.Desktop,
+                    AppKey = "WindowsOpenId",
+                    AppType = AppEnvironmentEnum.Windows,
                     EnvironmentType =
                         FastContext.HostEnvironment.IsDevelopment()
                             ? EnvironmentTypeEnum.Development

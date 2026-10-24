@@ -76,6 +76,12 @@ public class FileContext
         ["application/zip", "application/x-rar-compressed", "application/x-7z-compressed", "application/gzip"];
 
     /// <summary>
+    /// 安装包
+    /// </summary>
+    public static readonly HashSet<string> Packages =
+        ["application/vnd.android.package-archive", "application/vnd.microsoft.portable-executable", "application/octet-stream"];
+
+    /// <summary>
     /// 将存储配置中的路径解析为当前操作系统使用的绝对路径。
     /// </summary>
     /// <param name="rootPath">应用根目录</param>

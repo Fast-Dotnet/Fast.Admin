@@ -5,8 +5,6 @@
 // 本软件按“原样”提供，相关免责声明及责任限制以许可证及适用法律为准。
 // 版权来源、合法使用与二次开发责任说明见仓库根目录 README.md。
 
-using System.ComponentModel.DataAnnotations;
-
 namespace Fast.File.Applications.Dto;
 
 /// <summary>
@@ -17,6 +15,10 @@ public class DownloadFileInput
     /// <summary>
     /// 文件Id
     /// </summary>
-    [LongRequired(ErrorMessage = "文件Id不能为空")]
-    public long FileId { get; set; }
+    public long? FileId { get; set; }
+
+    /// <summary>
+    /// 文件地址
+    /// </summary>
+    public string FileUrl { get; set; }
 }

@@ -91,6 +91,10 @@
     "AppToken:Add": [ "Admin", "IT" ],
     "AppToken:Delete": [ "Admin", "IT" ],
     "AppToken:Refresh": [ "Admin", "IT" ],
+    "AppVersion:Paged": [ "Admin", "IT" ],
+    "AppVersion:Detail": [ "Admin", "IT" ],
+    "AppVersion:Add": [ "Admin", "IT" ],
+    "AppVersion:Edit": [ "Admin", "IT" ],
     // 消息模板
     "MessageTemplate:Paged": [ "Admin", "IT" ],
     "MessageTemplate:Detail": [ "Admin", "IT" ],

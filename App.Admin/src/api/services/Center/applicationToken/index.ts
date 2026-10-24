@@ -1,6 +1,6 @@
 import { axiosUtil } from "@fast-china/axios";
 import type { AddApplicationTokenInput } from "./models/AddApplicationTokenInput";
-import type { DeleteApplicationTokenInput } from "./models/DeleteApplicationTokenInput";
+import type { ApplicationTokenIdInput } from "./models/ApplicationTokenIdInput";
 import type { QueryApplicationTokenPagedOutput } from "./models/QueryApplicationTokenPagedOutput";
 
 /**
@@ -32,7 +32,7 @@ export const applicationTokenApi = {
 	/**
 	 * 删除应用凭据
 	 */
-	deleteApplicationToken(data: DeleteApplicationTokenInput): Promise<void> {
+	deleteApplicationToken(data: ApplicationTokenIdInput): Promise<void> {
 		return axiosUtil.request<void>({
 			url: "/applicationToken/deleteApplicationToken",
 			method: "post",
@@ -43,7 +43,7 @@ export const applicationTokenApi = {
 	/**
 	 * 刷新应用凭据
 	 */
-	refreshApplicationToken(data: DeleteApplicationTokenInput): Promise<void> {
+	refreshApplicationToken(data: ApplicationTokenIdInput): Promise<void> {
 		return axiosUtil.request<void>({
 			url: "/applicationToken/refreshApplicationToken",
 			method: "post",

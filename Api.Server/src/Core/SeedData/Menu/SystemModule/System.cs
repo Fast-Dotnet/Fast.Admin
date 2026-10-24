@@ -51,6 +51,7 @@ internal static partial class MenuSeedData
         await SeedDatabases(db, applicationModel, dateTime, systemCLMenuModel);
         await SeedApplications(db, applicationModel, dateTime, systemCLMenuModel);
         await SeedApplicationTokens(db, applicationModel, dateTime, systemCLMenuModel);
+        await SeedApplicationVersions(db, applicationModel, dateTime, systemCLMenuModel);
         await SeedMessageTemplates(db, applicationModel, dateTime, systemCLMenuModel);
     }
 }

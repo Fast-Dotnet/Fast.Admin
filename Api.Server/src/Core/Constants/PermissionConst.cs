@@ -253,6 +253,22 @@ public static partial class PermissionConst
         public const string ClientDelete = "AppClient:Delete";
     }
 
+    /// <summary>应用版本</summary>
+    public static class AppVersion
+    {
+        /// <summary>应用版本列表</summary>
+        public const string Paged = "AppVersion:Paged";
+
+        /// <summary>应用版本详情</summary>
+        public const string Detail = "AppVersion:Detail";
+
+        /// <summary>应用版本新增</summary>
+        public const string Add = "AppVersion:Add";
+
+        /// <summary>应用版本编辑</summary>
+        public const string Edit = "AppVersion:Edit";
+    }
+
     /// <summary>应用凭据</summary>
     public static class AppToken
     {

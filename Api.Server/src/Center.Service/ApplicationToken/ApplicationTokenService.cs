@@ -1,4 +1,4 @@
-﻿// Copyright © 2018-Present 小方
+// Copyright © 2018-Present 小方
 // SPDX-License-Identifier: Apache-2.0
 // 
 // 本文件依据 Apache License 2.0 授权，完整条款见仓库根目录 LICENSE。
@@ -140,7 +140,7 @@ public class ApplicationTokenService : IDynamicApplication
     [HttpPost]
     [ApiInfo("删除应用凭据", HttpRequestActionEnum.Delete)]
     [Permission(PermissionConst.AppToken.Delete)]
-    public async Task DeleteApplicationToken(DeleteApplicationTokenInput input)
+    public async Task DeleteApplicationToken(ApplicationTokenIdInput input)
     {
         ApplicationTokenModel applicationTokenModel = await _repository.SingleOrDefaultAsync(input.RecordId);
         if (applicationTokenModel == null)
@@ -159,7 +159,7 @@ public class ApplicationTokenService : IDynamicApplication
     [HttpPost]
     [ApiInfo("刷新应用凭据", HttpRequestActionEnum.Edit)]
     [Permission(PermissionConst.AppToken.Refresh)]
-    public async Task RefreshApplicationToken(DeleteApplicationTokenInput input)
+    public async Task RefreshApplicationToken(ApplicationTokenIdInput input)
     {
         ApplicationTokenModel applicationTokenModel = await _repository.SingleOrDefaultAsync(input.RecordId);
         if (applicationTokenModel == null)
