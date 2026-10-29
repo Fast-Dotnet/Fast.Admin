@@ -1,4 +1,4 @@
-﻿// Copyright © 2018-Present 小方
+// Copyright © 2018-Present 小方
 // SPDX-License-Identifier: Apache-2.0
 // 
 // 本文件依据 Apache License 2.0 授权，完整条款见仓库根目录 LICENSE。
@@ -12,8 +12,8 @@ namespace Fast.Center.Domain;
 /// </summary>
 [SugarTable("ApplicationVersion", "应用版本表")]
 [SugarDbType(DatabaseTypeEnum.Center)]
-[SugarIndex($"UX_{{table}}_{nameof(VersionCode)}", nameof(AppKey), OrderByType.Asc, nameof(PackageType), OrderByType.Asc,
-    nameof(VersionCode), OrderByType.Asc, true)]
+[SugarIndex($"UX_{{table}}_{nameof(VersionCode)}", nameof(AppKey), OrderByType.Asc, nameof(AppType), OrderByType.Asc,
+    nameof(PackageType), OrderByType.Asc, nameof(VersionCode), OrderByType.Asc, true)]
 public class ApplicationVersionModel : BaseEntity, IUpdateVersion
 {
     /// <summary>
@@ -28,6 +28,12 @@ public class ApplicationVersionModel : BaseEntity, IUpdateVersion
     [Required]
     [SugarColumn(ColumnDescription = "应用标识", Length = 50)]
     public string AppKey { get; set; }
+
+    /// <summary>
+    /// 应用类型
+    /// </summary>
+    [SugarColumn(ColumnDescription = "应用类型")]
+    public AppEnvironmentEnum AppType { get; set; }
 
     /// <summary>
     /// 包类型

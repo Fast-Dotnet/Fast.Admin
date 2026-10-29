@@ -53,19 +53,6 @@ internal static class ApplicationSeedData
                 new()
                 {
                     AppId = applicationModel.AppId,
-                    AppKey = "WindowsOpenId",
-                    AppType = AppEnvironmentEnum.Windows,
-                    EnvironmentType =
-                        FastContext.HostEnvironment.IsDevelopment()
-                            ? EnvironmentTypeEnum.Development
-                            : EnvironmentTypeEnum.Production,
-                    RequestTimeout = 60000,
-                    RequestEncipher = false,
-                    CreatedTime = dateTime
-                },
-                new()
-                {
-                    AppId = applicationModel.AppId,
                     AppKey = "WeChatMiniProgramOpenId",
                     AppType = AppEnvironmentEnum.WeChatMiniProgram,
                     EnvironmentType =
@@ -79,21 +66,8 @@ internal static class ApplicationSeedData
                 new()
                 {
                     AppId = applicationModel.AppId,
-                    AppKey = "AndroidOpenId",
-                    AppType = AppEnvironmentEnum.Android,
-                    EnvironmentType =
-                        FastContext.HostEnvironment.IsDevelopment()
-                            ? EnvironmentTypeEnum.Development
-                            : EnvironmentTypeEnum.Production,
-                    RequestTimeout = 60000,
-                    RequestEncipher = true,
-                    CreatedTime = dateTime
-                },
-                new()
-                {
-                    AppId = applicationModel.AppId,
-                    AppKey = "IOSOpenId",
-                    AppType = AppEnvironmentEnum.IOS,
+                    AppKey = "BundleName",
+                    AppType = AppEnvironmentEnum.Android | AppEnvironmentEnum.HarmonyOS | AppEnvironmentEnum.IOS,
                     EnvironmentType =
                         FastContext.HostEnvironment.IsDevelopment()
                             ? EnvironmentTypeEnum.Development
