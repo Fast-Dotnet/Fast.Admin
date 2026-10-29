@@ -129,7 +129,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 // 启用静态文件
-app.UseStaticFiles();
+app.UseStaticFiles(app.Configuration);
 
 // 启用 Body 重复读功能
 app.EnableBuffering();

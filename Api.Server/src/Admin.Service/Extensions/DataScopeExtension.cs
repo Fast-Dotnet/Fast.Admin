@@ -35,7 +35,7 @@ public static class DataScopeExtension
         Expression<Func<TEntity, long?>> userIdFieldSelector = null, string menuCode = null, bool allowPublicData = true)
         where TEntity : class, new()
     {
-        IUser _user = FastContext.GetService<IUser>();
+        IUser _user = FastContext.GetRequiredService<IUser>();
 
         // 超级管理员直接跳过
         if (_user.IsSuperAdmin || _user.IsAdmin)

@@ -147,7 +147,13 @@ public class UploadFileSettingsOptions : IPostConfigure
                 "application/vnd.ms-powerpoint",
                 "application/vnd.openxmlformats-officedocument.presentationml.presentation",
                 // 压缩包
-                "application/zip", "application/x-rar-compressed", "application/x-7z-compressed", "application/gzip"
+                "application/zip", "application/x-rar-compressed", "application/x-7z-compressed", "application/gzip",
+                // Windows 安装包
+                "application/vnd.microsoft.portable-executable",
+                // Android 安装包
+                "application/vnd.android.package-archive",
+                // IPA、WGT 和以通用二进制类型上传的 Windows 安装包
+                "application/octet-stream"
             ]
         };
     }

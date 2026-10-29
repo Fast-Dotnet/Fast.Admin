@@ -27,7 +27,7 @@ public class WeChatMessageService : IWeChatMessageService, ISingletonDependency
     /// <summary>
     /// 初始化微信消息服务
     /// </summary>
-    public WeChatMessageService(ILogger<IMailService> logger)
+    public WeChatMessageService(ILogger<IWeChatMessageService> logger)
     {
         _logger = logger;
     }

@@ -21,12 +21,12 @@ public class ApplicationTokenContext
     /// <summary>
     /// 缓存
     /// </summary>
-    internal static ICache<CenterCCL> centerCache = FastContext.GetService<ICache<CenterCCL>>();
+    internal static ICache<CenterCCL> centerCache = FastContext.GetRequiredService<ICache<CenterCCL>>();
 
     /// <summary>
     /// 日志
     /// </summary>
-    internal static ILogger logger = FastContext.GetService<ILogger<ApplicationTokenContext>>();
+    internal static ILogger logger = FastContext.GetRequiredService<ILogger<ApplicationTokenContext>>();
 
     /// <summary>
     /// 获取应用凭据
@@ -55,25 +55,17 @@ public class ApplicationTokenContext
             return applicationTokenModel;
         }
 
+        ISqlSugarClient db = FastContext.GetRequiredService<ISqlSugarClient>();
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.ApplicationToken, appKey, tokenType.ToString());
+        applicationTokenModel = centerCache.GetAndSet(cacheKey,
+            () => db.Queryable<ApplicationTokenModel>().Where(wh => wh.AppKey == appKey && wh.TokenType == tokenType).Single());
 
-        applicationTokenModel = centerCache.GetAndSet(cacheKey, () =>
+        if (applicationTokenModel == null && throwError)
         {
-            ISqlSugarClient repository = FastContext.GetService<ISqlSugarClient>();
-
-            ApplicationTokenModel result = repository.Queryable<ApplicationTokenModel>()
-                .Where(wh => wh.AppKey == appKey && wh.TokenType == tokenType)
-                .Single();
-
-            if (result == null && throwError)
-            {
-                string message = $"应用【{appKey}】的凭据【{tokenType}】不存在！";
-                logger.LogError($"应用凭据不可用，AppKey：{appKey}；TokenType：{tokenType}；{message}");
-                throw new UserFriendlyException(message);
-            }
-
-            return result;
-        });
+            string message = $"应用【{appKey}】的凭据【{tokenType}】不存在！";
+            logger.LogError($"应用凭据不可用，AppKey：{appKey}；TokenType：{tokenType}；{message}");
+            throw new UserFriendlyException(message);
+        }
 
         if (httpContext != null)
         {
@@ -112,25 +104,19 @@ public class ApplicationTokenContext
             return applicationTokenModel;
         }
 
+        ISqlSugarClient db = FastContext.GetRequiredService<ISqlSugarClient>();
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.ApplicationToken, appKey, tokenType.ToString());
-
-        applicationTokenModel = await centerCache.GetAndSetAsync(cacheKey, async () =>
-        {
-            ISqlSugarClient repository = FastContext.GetService<ISqlSugarClient>();
-
-            ApplicationTokenModel result = await repository.Queryable<ApplicationTokenModel>()
+        applicationTokenModel = await centerCache.GetAndSetAsync(cacheKey,
+            async () => await db.Queryable<ApplicationTokenModel>()
                 .Where(wh => wh.AppKey == appKey && wh.TokenType == tokenType)
-                .SingleAsync();
+                .SingleAsync());
 
-            if (result == null && throwError)
-            {
-                string message = $"应用【{appKey}】的凭据【{tokenType}】不存在！";
-                logger.LogError($"应用凭据不可用，AppKey：{appKey}；TokenType：{tokenType}；{message}");
-                throw new UserFriendlyException(message);
-            }
-
-            return result;
-        });
+        if (applicationTokenModel == null && throwError)
+        {
+            string message = $"应用【{appKey}】的凭据【{tokenType}】不存在！";
+            logger.LogError($"应用凭据不可用，AppKey：{appKey}；TokenType：{tokenType}；{message}");
+            throw new UserFriendlyException(message);
+        }
 
         if (httpContext != null)
         {

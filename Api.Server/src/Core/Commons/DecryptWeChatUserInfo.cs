@@ -35,7 +35,6 @@ public class DecryptWeChatUserInfo
     /// </summary>
     [JsonPropertyName("country")]
     [JsonProperty("country")]
-
     public string Country { get; set; }
 
     /// <summary>

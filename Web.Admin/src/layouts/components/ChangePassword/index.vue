@@ -13,7 +13,7 @@
 			<FaFormItem label="旧密码" prop="oldPassword">
 				<el-input
 					type="password"
-					v-model.trim="state.formData.oldPassword"
+					v-model="state.formData.oldPassword"
 					maxlength="20"
 					placeholder="请输入旧密码"
 					:show-word-limit="false"
@@ -23,7 +23,7 @@
 			<FaFormItem label="新密码" prop="newPassword">
 				<el-input
 					type="password"
-					v-model.trim="state.formData.newPassword"
+					v-model="state.formData.newPassword"
 					placeholder="新密码8~20位，包含大小写字母和数字"
 					maxlength="20"
 					show-password
@@ -34,7 +34,7 @@
 			<FaFormItem label="确认密码" prop="confirmPassword">
 				<el-input
 					type="password"
-					v-model.trim="state.formData.confirmPassword"
+					v-model="state.formData.confirmPassword"
 					placeholder="确认密码8~20位，包含大小写字母和数字"
 					maxlength="20"
 					show-password
@@ -86,9 +86,9 @@ const state = reactive({
 	}),
 });
 
-const handleConfirm = async () => {
-	await faFormRef.value.validateScrollToField();
+const handleConfirm = () => {
 	faDialogRef.value.close(async () => {
+		await faFormRef.value.validateScrollToField();
 		await accountApi.changePassword(state.formData);
 		await ElMessageBox.alert("修改成功，请重新登录！", {
 			type: "success",

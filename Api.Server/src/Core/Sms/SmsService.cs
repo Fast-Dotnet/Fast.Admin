@@ -192,17 +192,17 @@ public class SmsService : ISmsService, ISingletonDependency
 
         mobile = mobile.Trim();
 
+        accessKeyId ??= await ConfigContext.GetConfig(ConfigConst.AliyunAccessKeyID);
+        accessKeySecret ??= await ConfigContext.GetConfig(ConfigConst.AliyunAccessKeySecret);
+        if (string.IsNullOrWhiteSpace(accessKeyId) || string.IsNullOrWhiteSpace(accessKeySecret))
+        {
+            throw new UserFriendlyException("短信发送配置不完整，请联系管理员！");
+        }
+
         DateTime sendTime = DateTime.Now;
         bool isSuccess = false;
         try
         {
-            accessKeyId ??= await ConfigContext.GetConfig(ConfigConst.AliyunAccessKeyID);
-            accessKeySecret ??= await ConfigContext.GetConfig(ConfigConst.AliyunAccessKeySecret);
-            if (string.IsNullOrWhiteSpace(accessKeyId) || string.IsNullOrWhiteSpace(accessKeySecret))
-            {
-                throw new UserFriendlyException("短信发送配置不完整，请联系管理员！");
-            }
-
             var client = new AlibabaCloud.SDK.Dysmsapi20170525.Client(new AlibabaCloud.OpenApiClient.Models.Config
             {
                 AccessKeyId = accessKeyId,

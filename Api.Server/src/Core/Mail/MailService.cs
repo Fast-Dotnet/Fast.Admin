@@ -348,15 +348,15 @@ public class MailService : IMailService, ISingletonDependency
             return;
         }
 
+        smtp ??= await ConfigContext.GetConfig(ConfigConst.MailSmtp);
+        email ??= await ConfigContext.GetConfig(ConfigConst.MailEmail);
+        authCode ??= await ConfigContext.GetConfig(ConfigConst.MailAuthCode);
+        displayName ??= await ConfigContext.GetConfig(ConfigConst.MailDisplayName);
+
         DateTime sendTime = DateTime.Now;
         bool isSuccess = false;
         try
         {
-            smtp ??= await ConfigContext.GetConfig(ConfigConst.MailSmtp);
-            email ??= await ConfigContext.GetConfig(ConfigConst.MailEmail);
-            authCode ??= await ConfigContext.GetConfig(ConfigConst.MailAuthCode);
-            displayName ??= await ConfigContext.GetConfig(ConfigConst.MailDisplayName);
-
             if (string.IsNullOrWhiteSpace(smtp))
             {
                 throw new UserFriendlyException("发件服务器地址为空！");

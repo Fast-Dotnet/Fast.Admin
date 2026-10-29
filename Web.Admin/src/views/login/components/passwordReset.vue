@@ -12,10 +12,10 @@
 		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" cols="1">
 			<FaFormItem label="找回方式" prop="channel">
 				<template #label>
-					<FaFormItemTip label="找回方式" tips="没买短信服务，暂且不支持手机号重置密码" />
+					<FaFormItemTip label="找回方式" />
 				</template>
 				<el-radio-group v-model="state.formData.channel" @change="handleChannelChange">
-					<el-radio disabled value="mobile">手机号</el-radio>
+					<el-radio value="mobile">手机号</el-radio>
 					<el-radio value="email">邮箱</el-radio>
 				</el-radio-group>
 			</FaFormItem>
@@ -30,7 +30,7 @@
 				]"
 			>
 				<el-input
-					v-model.trim="state.formData.account"
+					v-model="state.formData.account"
 					placeholder="请输入账号绑定的手机号"
 					maxlength="11"
 					:show-word-limit="false"
@@ -57,7 +57,7 @@
 				]"
 			>
 				<el-input
-					v-model.trim="state.formData.account"
+					v-model="state.formData.account"
 					placeholder="请输入账号绑定的邮箱"
 					maxlength="50"
 					:show-word-limit="false"
@@ -86,7 +86,7 @@
 			<el-divider content-position="left">验证码5分钟内有效；未收到或已失效时，请重新获取。</el-divider>
 			<FaFormItem v-if="state.formData.channel === 'mobile'" label="验证码" prop="verificationCode">
 				<el-input
-					v-model.trim="state.formData.verificationCode"
+					v-model="state.formData.verificationCode"
 					maxlength="6"
 					placeholder="请输入 6 位短信验证码"
 					:show-word-limit="false"
@@ -96,7 +96,7 @@
 			</FaFormItem>
 			<FaFormItem v-else label="验证码" prop="verificationCode">
 				<el-input
-					v-model.trim="state.formData.verificationCode"
+					v-model="state.formData.verificationCode"
 					maxlength="6"
 					placeholder="请输入 6 位邮箱验证码"
 					:show-word-limit="false"
@@ -108,7 +108,7 @@
 			<FaFormItem label="新密码" prop="newPassword">
 				<el-input
 					type="password"
-					v-model.trim="state.formData.newPassword"
+					v-model="state.formData.newPassword"
 					placeholder="新密码8~20位，包含大小写字母和数字"
 					maxlength="20"
 					show-password
@@ -119,7 +119,7 @@
 			<FaFormItem label="确认密码" prop="confirmPassword">
 				<el-input
 					type="password"
-					v-model.trim="state.formData.confirmPassword"
+					v-model="state.formData.confirmPassword"
 					placeholder="确认密码8~20位，包含大小写字母和数字"
 					maxlength="20"
 					show-password

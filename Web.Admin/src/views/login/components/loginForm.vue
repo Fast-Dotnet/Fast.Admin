@@ -74,7 +74,7 @@
 							<span v-else>账号</span>
 						</template>
 						<el-input
-							v-model.trim="formData.account"
+							v-model="formData.account"
 							placeholder="请输入登录账号"
 							:prefix-icon="User"
 							:show-word-limit="false"
@@ -90,7 +90,7 @@
 					<el-form-item label="密码" prop="password">
 						<el-input
 							type="password"
-							v-model.trim="formData.password"
+							v-model="formData.password"
 							placeholder="请输入登录密码"
 							:prefix-icon="Lock"
 							show-password

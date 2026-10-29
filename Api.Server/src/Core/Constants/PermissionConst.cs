@@ -177,7 +177,6 @@ public static partial class PermissionConst
     /// <summary>SQL 差异日志列表</summary>
     public const string SqlDiffLogPaged = "SqlDiffLog:Paged";
 
-
     /// <summary>系统监控</summary>
     public const string SystemMonitor = "System:Monitor";
 

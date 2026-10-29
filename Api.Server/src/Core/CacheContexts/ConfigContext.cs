@@ -6,9 +6,9 @@
 // 版权来源、合法使用与二次开发责任说明见仓库根目录 README.md。
 
 using Fast.Center.Domain;
-using Fast.SqlSugar;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using SqlSugar;
 
 namespace Fast.Core;
 
@@ -21,12 +21,12 @@ public class ConfigContext
     /// <summary>
     /// 缓存
     /// </summary>
-    internal static ICache<CenterCCL> centerCache = FastContext.GetService<ICache<CenterCCL>>();
+    internal static ICache<CenterCCL> centerCache = FastContext.GetRequiredService<ICache<CenterCCL>>();
 
     /// <summary>
     /// 日志
     /// </summary>
-    internal static ILogger logger = FastContext.GetService<ILogger<ConfigContext>>();
+    internal static ILogger logger = FastContext.GetRequiredService<ILogger<ConfigContext>>();
 
     /// <summary>
     /// 获取非空配置值，依次查询当前请求缓存、共享缓存和数据库。
@@ -50,23 +50,17 @@ public class ConfigContext
             return configValue;
         }
 
+        ISqlSugarClient db = FastContext.GetRequiredService<ISqlSugarClient>();
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.Config, configCode);
+        ConfigModel configModel = centerCache.GetAndSet(cacheKey,
+            () => db.Queryable<ConfigModel>().Where(wh => wh.ConfigCode == configCode).Single());
 
-        ConfigModel configModel = centerCache.GetAndSet(cacheKey, () =>
+        if (configModel == null)
         {
-            ISqlSugarRepository<ConfigModel> repository = FastContext.GetService<ISqlSugarRepository<ConfigModel>>();
-
-            ConfigModel result = repository.Entities.Where(wh => wh.ConfigCode == configCode).Single();
-
-            if (result == null)
-            {
-                string message = $"未能找到对应配置【{configCode}】信息！";
-                logger.LogError($"ConfigCode：{configCode}；{message}");
-                throw new UserFriendlyException(message);
-            }
-
-            return result;
-        });
+            string message = $"未能找到对应配置【{configCode}】信息！";
+            logger.LogError($"ConfigCode：{configCode}；{message}");
+            throw new UserFriendlyException(message);
+        }
 
         if (httpContext != null)
         {
@@ -106,23 +100,17 @@ public class ConfigContext
             return configValue;
         }
 
+        ISqlSugarClient db = FastContext.GetRequiredService<ISqlSugarClient>();
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.Config, configCode);
+        ConfigModel configModel = await centerCache.GetAndSetAsync(cacheKey,
+            async () => await db.Queryable<ConfigModel>().Where(wh => wh.ConfigCode == configCode).SingleAsync());
 
-        ConfigModel configModel = await centerCache.GetAndSetAsync(cacheKey, async () =>
+        if (configModel == null)
         {
-            ISqlSugarRepository<ConfigModel> repository = FastContext.GetService<ISqlSugarRepository<ConfigModel>>();
-
-            ConfigModel result = await repository.Entities.Where(wh => wh.ConfigCode == configCode).SingleAsync();
-
-            if (result == null)
-            {
-                string message = $"未能找到对应配置【{configCode}】信息！";
-                logger.LogError($"ConfigCode：{configCode}；{message}");
-                throw new UserFriendlyException(message);
-            }
-
-            return result;
-        });
+            string message = $"未能找到对应配置【{configCode}】信息！";
+            logger.LogError($"ConfigCode：{configCode}；{message}");
+            throw new UserFriendlyException(message);
+        }
 
         if (httpContext != null)
         {

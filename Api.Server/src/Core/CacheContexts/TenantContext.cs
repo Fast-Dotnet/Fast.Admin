@@ -21,12 +21,12 @@ public class TenantContext
     /// <summary>
     /// 缓存
     /// </summary>
-    internal static ICache<CenterCCL> centerCache = FastContext.GetService<ICache<CenterCCL>>();
+    internal static ICache<CenterCCL> centerCache = FastContext.GetRequiredService<ICache<CenterCCL>>();
 
     /// <summary>
     /// 日志
     /// </summary>
-    internal static ILogger logger = FastContext.GetService<ILogger<TenantContext>>();
+    internal static ILogger logger = FastContext.GetRequiredService<ILogger<TenantContext>>();
 
     /// <summary>
     /// 获取租户
@@ -47,23 +47,18 @@ public class TenantContext
             return tenantModel;
         }
 
+        ISqlSugarClient db = FastContext.GetRequiredService<ISqlSugarClient>();
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.Tenant, tenantNo);
 
-        tenantModel = centerCache.GetAndSet(cacheKey, () =>
+        tenantModel = centerCache.GetAndSet(cacheKey,
+            () => db.Queryable<TenantModel>().Where(wh => wh.TenantNo == tenantNo).Single());
+
+        if (tenantModel == null && throwError)
         {
-            ISqlSugarClient repository = FastContext.GetService<ISqlSugarClient>();
-
-            TenantModel result = repository.Queryable<TenantModel>().Where(wh => wh.TenantNo == tenantNo).Single();
-
-            if (result == null && throwError)
-            {
-                string message = $"未能找到对应租户【{tenantNo}】信息！";
-                logger.LogError($"TenantNo：{tenantNo}；{message}");
-                throw new UserFriendlyException(message);
-            }
-
-            return result;
-        });
+            string message = $"未能找到对应租户【{tenantNo}】信息！";
+            logger.LogError($"TenantNo：{tenantNo}；{message}");
+            throw new UserFriendlyException(message);
+        }
 
         if (httpContext != null)
         {
@@ -93,23 +88,17 @@ public class TenantContext
             return tenantModel;
         }
 
+        ISqlSugarClient db = FastContext.GetRequiredService<ISqlSugarClient>();
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.Tenant, tenantNo);
+        tenantModel = await centerCache.GetAndSetAsync(cacheKey,
+            async () => await db.Queryable<TenantModel>().Where(wh => wh.TenantNo == tenantNo).SingleAsync());
 
-        tenantModel = await centerCache.GetAndSetAsync(cacheKey, async () =>
+        if (tenantModel == null && throwError)
         {
-            ISqlSugarClient repository = FastContext.GetService<ISqlSugarClient>();
-
-            TenantModel result = await repository.Queryable<TenantModel>().Where(wh => wh.TenantNo == tenantNo).SingleAsync();
-
-            if (result == null && throwError)
-            {
-                string message = $"未能找到对应租户【{tenantNo}】信息！";
-                logger.LogError($"TenantNo：{tenantNo}；{message}");
-                throw new UserFriendlyException(message);
-            }
-
-            return result;
-        });
+            string message = $"未能找到对应租户【{tenantNo}】信息！";
+            logger.LogError($"TenantNo：{tenantNo}；{message}");
+            throw new UserFriendlyException(message);
+        }
 
         if (httpContext != null)
         {

@@ -33,7 +33,7 @@
 				<div class="overlay__top">
 					<FaAvatar original :size="64" :src="userInfoStore.avatar" :icon="UserFilled" />
 					<span>{{ userInfoStore.employeeName || userInfoStore.nickName }}</span>
-					<el-input v-model.trim="state.password" placeholder="请输入锁屏密码" type="password" :prefix-icon="Lock" autocomplete="off" />
+					<el-input v-model="state.password" placeholder="请输入锁屏密码" type="password" :prefix-icon="Lock" autocomplete="off" />
 					<span v-show="state.passwordError" class="error">锁屏密码错误</span>
 					<div class="btn__warp">
 						<el-button type="primary" size="default" link @click="state.showDate = true">返回</el-button>

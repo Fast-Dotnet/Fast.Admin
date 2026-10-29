@@ -21,12 +21,12 @@ public class ApplicationContext
     /// <summary>
     /// 缓存
     /// </summary>
-    internal static ICache<CenterCCL> centerCache = FastContext.GetService<ICache<CenterCCL>>();
+    internal static ICache<CenterCCL> centerCache = FastContext.GetRequiredService<ICache<CenterCCL>>();
 
     /// <summary>
     /// 日志
     /// </summary>
-    internal static ILogger logger = FastContext.GetService<ILogger<ApplicationContext>>();
+    internal static ILogger logger = FastContext.GetRequiredService<ILogger<ApplicationContext>>();
 
     /// <summary>
     /// 获取应用
@@ -47,26 +47,17 @@ public class ApplicationContext
             return applicationClientModel;
         }
 
+        ISqlSugarClient db = FastContext.GetRequiredService<ISqlSugarClient>();
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.App, appKey);
+        applicationClientModel = centerCache.GetAndSet(cacheKey,
+            () => db.Queryable<ApplicationClientModel>().Includes(e => e.Application).Where(wh => wh.AppKey == appKey).Single());
 
-        applicationClientModel = centerCache.GetAndSet(cacheKey, () =>
+        if (applicationClientModel == null && throwError)
         {
-            ISqlSugarClient repository = FastContext.GetService<ISqlSugarClient>();
-
-            ApplicationClientModel result = repository.Queryable<ApplicationClientModel>()
-                .Includes(e => e.Application)
-                .Where(wh => wh.AppKey == appKey)
-                .Single();
-
-            if (result == null && throwError)
-            {
-                string message = $"未能找到对应应用【{appKey}】信息！";
-                logger.LogError($"AppKey：{appKey}；{message}");
-                throw new UserFriendlyException(message);
-            }
-
-            return result;
-        });
+            string message = $"未能找到对应应用【{appKey}】信息！";
+            logger.LogError($"AppKey：{appKey}；{message}");
+            throw new UserFriendlyException(message);
+        }
 
         if (httpContext != null)
         {
@@ -96,26 +87,20 @@ public class ApplicationContext
             return applicationClientModel;
         }
 
+        ISqlSugarClient db = FastContext.GetRequiredService<ISqlSugarClient>();
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.App, appKey);
-
-        applicationClientModel = await centerCache.GetAndSetAsync(cacheKey, async () =>
-        {
-            ISqlSugarClient repository = FastContext.GetService<ISqlSugarClient>();
-
-            ApplicationClientModel result = await repository.Queryable<ApplicationClientModel>()
+        applicationClientModel = await centerCache.GetAndSetAsync(cacheKey,
+            async () => await db.Queryable<ApplicationClientModel>()
                 .Includes(e => e.Application)
                 .Where(wh => wh.AppKey == appKey)
-                .SingleAsync();
+                .SingleAsync());
 
-            if (result == null && throwError)
-            {
-                string message = $"未能找到对应应用【{appKey}】信息！";
-                logger.LogError($"AppKey：{appKey}；{message}");
-                throw new UserFriendlyException(message);
-            }
-
-            return result;
-        });
+        if (applicationClientModel == null && throwError)
+        {
+            string message = $"未能找到对应应用【{appKey}】信息！";
+            logger.LogError($"AppKey：{appKey}；{message}");
+            throw new UserFriendlyException(message);
+        }
 
         if (httpContext != null)
         {

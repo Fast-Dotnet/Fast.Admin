@@ -11,5 +11,5 @@ namespace Fast.Shared;
 /// 禁用请求日志特性
 /// </summary>
 [SuppressSniffer]
-[AttributeUsage(AttributeTargets.Method)]
+[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
 public sealed class DisabledRequestLogAttribute : Attribute;

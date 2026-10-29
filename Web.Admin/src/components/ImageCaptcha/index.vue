@@ -10,7 +10,7 @@
 	>
 		<div class="image-captcha">
 			<el-input
-				v-model.trim="modelValue"
+				v-model="modelValue"
 				autocapitalize="off"
 				autocomplete="off"
 				:disabled="props.disabled || state.loading || state.loadFailed"

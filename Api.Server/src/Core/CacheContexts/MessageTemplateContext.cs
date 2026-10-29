@@ -21,12 +21,12 @@ public class MessageTemplateContext
     /// <summary>
     /// 缓存
     /// </summary>
-    internal static ICache<CenterCCL> centerCache = FastContext.GetService<ICache<CenterCCL>>();
+    internal static ICache<CenterCCL> centerCache = FastContext.GetRequiredService<ICache<CenterCCL>>();
 
     /// <summary>
     /// 日志
     /// </summary>
-    internal static ILogger logger = FastContext.GetService<ILogger<MessageTemplateContext>>();
+    internal static ILogger logger = FastContext.GetRequiredService<ILogger<MessageTemplateContext>>();
 
     /// <summary>
     /// 获取消息模板
@@ -55,26 +55,20 @@ public class MessageTemplateContext
             return messageTemplateModel;
         }
 
+        ISqlSugarClient db = FastContext.GetRequiredService<ISqlSugarClient>();
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.MessageTemplate, tenantKey, appCacheKey,
             templateType.ToString());
-
-        messageTemplateModel = centerCache.GetAndSet(cacheKey, () =>
-        {
-            ISqlSugarClient repository = FastContext.GetService<ISqlSugarClient>();
-
-            MessageTemplateModel result = repository.Queryable<MessageTemplateModel>()
+        messageTemplateModel = centerCache.GetAndSet(cacheKey,
+            () => db.Queryable<MessageTemplateModel>()
                 .Where(wh => wh.AppKey == appKey && wh.TenantId == tenantId && wh.TemplateType == templateType)
-                .Single();
+                .Single());
 
-            if (result == null && throwError)
-            {
-                string message = $"租户【{tenantKey}】应用【{appCacheKey}】的消息模板【{templateType}】不存在！";
-                logger.LogError($"消息模板不可用，TenantId：{tenantKey}；AppKey：{appKey}；TemplateType：{templateType}；{message}");
-                throw new UserFriendlyException(message);
-            }
-
-            return result;
-        });
+        if (messageTemplateModel == null && throwError)
+        {
+            string message = $"租户【{tenantKey}】应用【{appCacheKey}】的消息模板【{templateType}】不存在！";
+            logger.LogError($"消息模板不可用，TenantId：{tenantKey}；AppKey：{appKey}；TemplateType：{templateType}；{message}");
+            throw new UserFriendlyException(message);
+        }
 
         if (httpContext != null)
         {
@@ -113,26 +107,21 @@ public class MessageTemplateContext
             return messageTemplateModel;
         }
 
+        ISqlSugarClient db = FastContext.GetRequiredService<ISqlSugarClient>();
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.MessageTemplate, tenantKey, appCacheKey,
             templateType.ToString());
 
-        messageTemplateModel = await centerCache.GetAndSetAsync(cacheKey, async () =>
-        {
-            ISqlSugarClient repository = FastContext.GetService<ISqlSugarClient>();
-
-            MessageTemplateModel result = await repository.Queryable<MessageTemplateModel>()
+        messageTemplateModel = await centerCache.GetAndSetAsync(cacheKey,
+            async () => await db.Queryable<MessageTemplateModel>()
                 .Where(wh => wh.AppKey == appKey && wh.TenantId == tenantId && wh.TemplateType == templateType)
-                .SingleAsync();
+                .SingleAsync());
 
-            if (result == null && throwError)
-            {
-                string message = $"租户【{tenantKey}】应用【{appCacheKey}】的消息模板【{templateType}】不存在！";
-                logger.LogError($"消息模板不可用，TenantId：{tenantKey}；AppKey：{appKey}；TemplateType：{templateType}；{message}");
-                throw new UserFriendlyException(message);
-            }
-
-            return result;
-        });
+        if (messageTemplateModel == null && throwError)
+        {
+            string message = $"租户【{tenantKey}】应用【{appCacheKey}】的消息模板【{templateType}】不存在！";
+            logger.LogError($"消息模板不可用，TenantId：{tenantKey}；AppKey：{appKey}；TemplateType：{templateType}；{message}");
+            throw new UserFriendlyException(message);
+        }
 
         if (httpContext != null)
         {

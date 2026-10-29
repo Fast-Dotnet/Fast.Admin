@@ -14,7 +14,7 @@
 			</FaFormItem>
 			<FaFormItem prop="mobile" label="手机">
 				<el-input
-					v-model.trim="state.formData.mobile"
+					v-model="state.formData.mobile"
 					maxlength="11"
 					placeholder="请输入手机"
 					autocapitalize="off"
@@ -39,7 +39,7 @@
 			/>
 			<FaFormItem prop="mobileVerificationCode" label="验证码" row style="max-width: 450px">
 				<el-input
-					v-model.trim="state.formData.mobileVerificationCode"
+					v-model="state.formData.mobileVerificationCode"
 					maxlength="6"
 					placeholder="请输入 6 位短信验证码"
 					:show-word-limit="false"

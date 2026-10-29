@@ -71,7 +71,7 @@ public class JwtBearerHandle : IJwtBearerHandle
         httpContext.RequestAborted.ThrowIfCancellationRequested();
 
         // 获取 IUser，当前请求生命周期，只会解析一次
-        IUser _user = httpContext.RequestServices.GetService<IUser>();
+        IUser _user = httpContext.RequestServices.GetRequiredService<IUser>();
         // 获取授权用户信息
         AuthUserInfo authUserInfo = await _user.GetAuthUserInfo(deviceType, appNo, tenantNo, employeeNo, sessionId);
         if (authUserInfo == null)

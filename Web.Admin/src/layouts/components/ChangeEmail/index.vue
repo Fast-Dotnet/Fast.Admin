@@ -13,7 +13,7 @@
 				<el-text type="info">{{ state.formData.nickName }}</el-text>
 			</FaFormItem>
 			<FaFormItem prop="email" label="邮箱">
-				<el-input v-model.trim="state.formData.email" maxlength="50" placeholder="请输入邮箱">
+				<el-input v-model="state.formData.email" maxlength="50" placeholder="请输入邮箱">
 					<template #append>
 						<FaButton ref="emailButtonRef" :disabled="!emailChanged || emailCountdown > 0" @click="handleSendVerificationCode">
 							{{ emailCountdown > 0 ? emailCountdown + " 秒后重发" : "发送验证码" }}
@@ -31,7 +31,7 @@
 			/>
 			<FaFormItem prop="emailVerificationCode" label="验证码" row style="max-width: 450px">
 				<el-input
-					v-model.trim="state.formData.emailVerificationCode"
+					v-model="state.formData.emailVerificationCode"
 					maxlength="6"
 					placeholder="请输入 6 位邮箱验证码"
 					:show-word-limit="false"

@@ -17,7 +17,7 @@
 			<el-divider content-position="left">账号校验，可修改手机号</el-divider>
 			<FaFormItem label="手机号" prop="mobile">
 				<el-input
-					v-model.trim="state.formData.mobile"
+					v-model="state.formData.mobile"
 					placeholder="请输入账号绑定的手机号"
 					maxlength="11"
 					:show-word-limit="false"
@@ -43,7 +43,7 @@
 			/>
 			<FaFormItem label="短信验证码" prop="mobileVerificationCode">
 				<el-input
-					v-model.trim="state.formData.mobileVerificationCode"
+					v-model="state.formData.mobileVerificationCode"
 					placeholder="请输入 6 位短信验证码"
 					maxlength="6"
 					:show-word-limit="false"
@@ -55,7 +55,7 @@
 			<el-divider content-position="left">邮箱校验，可修改邮箱</el-divider>
 			<FaFormItem label="邮箱" prop="email">
 				<el-input
-					v-model.trim="state.formData.email"
+					v-model="state.formData.email"
 					placeholder="请输入邮箱"
 					maxlength="50"
 					:show-word-limit="false"
@@ -81,7 +81,7 @@
 			/>
 			<FaFormItem label="邮箱验证码" prop="emailVerificationCode">
 				<el-input
-					v-model.trim="state.formData.emailVerificationCode"
+					v-model="state.formData.emailVerificationCode"
 					maxlength="6"
 					placeholder="请输入 6 位邮箱验证码"
 					:show-word-limit="false"

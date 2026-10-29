@@ -11,6 +11,7 @@ using Fast.Center.Domain;
 using Fast.SqlSugar;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
+using SqlSugar;
 
 namespace Fast.Core;
 
@@ -137,8 +138,8 @@ public class FileContext
             throw new UserFriendlyException("文件地址不受支持！");
         }
 
-        ISqlSugarRepository<FileModel> repository = FastContext.GetService<ISqlSugarRepository<FileModel>>();
-        bool fileExists = await repository.Entities.AnyAsync(wh =>
+        ISqlSugarClient db = FastContext.GetRequiredService<ISqlSugarClient>();
+        bool fileExists = await db.Queryable<FileModel>().AnyAsync(wh =>
             wh.FileId == fileId && (wh.FileMimeType.StartsWith("audio/") || wh.FileMimeType.StartsWith("video/")));
         if (!fileExists)
         {
@@ -195,15 +196,15 @@ public class FileContext
             throw new UserFriendlyException("文件地址不受支持！");
         }
 
-        ISqlSugarRepository<FileModel> repository = FastContext.GetService<ISqlSugarRepository<FileModel>>();
-        bool fileExists = await repository.Entities.AnyAsync(wh =>
+        ISqlSugarClient db = FastContext.GetRequiredService<ISqlSugarClient>();
+        bool fileExists = await db.Queryable<FileModel>().AnyAsync(wh =>
             wh.FileId == fileId && (wh.FileMimeType.StartsWith("audio/") || wh.FileMimeType.StartsWith("video/")));
         if (!fileExists)
         {
             throw new UserFriendlyException("文件不存在或存储地址不受支持！");
         }
 
-        IUser _user = FastContext.GetService<IUser>();
+        IUser _user = FastContext.GetRequiredService<IUser>();
         var payload = new MediaAssetTokenPayload
         {
             IsAnonymous = false,
@@ -366,7 +367,7 @@ public class FileContext
     /// </summary>
     private static byte[] GetMediaAssetEncryptionKey()
     {
-        IConfiguration configuration = FastContext.GetService<IConfiguration>();
+        IConfiguration configuration = FastContext.GetRequiredService<IConfiguration>();
         string issuerSigningKey = configuration["JWTSettings:IssuerSigningKey"];
         if (string.IsNullOrWhiteSpace(issuerSigningKey))
         {
