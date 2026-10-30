@@ -3,6 +3,7 @@
 		ref="faDialogRef"
 		width="1000"
 		:title="state.dialogTitle"
+		:show-fullscreen="false"
 		:show-confirm-button="!state.formDisabled"
 		:show-before-close="!state.formDisabled"
 		confirm-button-text="保存"

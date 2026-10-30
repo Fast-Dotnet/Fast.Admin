@@ -1,5 +1,9 @@
 <template>
-	<el-sub-menu v-if="props.menu.children?.length > 0" :index="props.menu.children[0].router" :title="props.menu.menuTitle || props.menu.menuName">
+	<el-sub-menu
+		v-if="props.menu.children?.length > 0"
+		:index="props.menu.children[0].router || props.menu.children[0].link"
+		:title="props.menu.menuTitle || props.menu.menuName"
+	>
 		<template #title>
 			<FaIcon v-if="props.menu.icon" :name="props.menu.icon" />
 			<span>{{ props.menu.menuName }}</span>

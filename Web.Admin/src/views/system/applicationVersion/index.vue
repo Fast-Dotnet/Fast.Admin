@@ -14,15 +14,11 @@
 
 			<FaTableColumn prop="appKey" label="应用标识" fixed="left" width="240" small-width="220" copy sortable />
 			<FaTableColumn prop="appName" label="应用名称" width="200" small-width="180" sortable />
-			<FaTableColumn
-				prop="appType"
-				label="应用类型"
-				width="150"
-				small-width="130"
-				sortable
-				tag
-				:enum="appStore.getDictionary('AppEnvironmentEnum')"
-			/>
+			<FaTableColumn prop="appType" label="应用类型" width="150" small-width="130" sortable>
+				<template #default="{ row }: { row: QueryApplicationVersionPagedOutput }">
+					<TagFlag name="AppEnvironmentEnum" :value="row.appType" />
+				</template>
+			</FaTableColumn>
 			<FaTableColumn
 				prop="environmentType"
 				label="环境类型"

@@ -1,15 +1,12 @@
 <template>
 	<ElTag
-		v-if="props.name && dictionary?.show"
 		v-bind="elTagProps"
 		:type="dictionary?.type ?? props.type"
 		:title="dictionary?.tips"
 		@click="(evt: MouseEvent) => emit('click', evt)"
 		@close="(evt: MouseEvent) => emit('close', evt)"
 	>
-		<slot :label="dictionary?.label" :tips="dictionary?.tips">
-			{{ dictionary?.label }}
-		</slot>
+		{{ dictionary?.label }}
 	</ElTag>
 </template>
 
@@ -48,7 +45,7 @@ const emit = defineEmits({
 const appStore = useApp();
 
 // 指定名称对应的字典项列表
-const dictionaries = computed(() => (props.name ? appStore.getDictionary(props.name) : []));
+const dictionaries = computed(() => (props.name ? appStore.getDictionary(props.name).filter((f) => f.show) : []));
 // 与当前值匹配的字典项
 const dictionary = computed(() => (props.value == null ? null : dictionaries.value.find((f) => f.value === props.value)));
 </script>

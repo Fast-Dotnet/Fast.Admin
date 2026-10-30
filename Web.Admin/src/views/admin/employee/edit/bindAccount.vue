@@ -1,6 +1,13 @@
 <template>
-	<FaDialog ref="faDialogRef" width="500" :title="state.dialogTitle" @confirm-click="handleConfirm" @close="faFormRef.resetFields()">
-		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules">
+	<FaDialog
+		ref="faDialogRef"
+		width="600"
+		:title="state.dialogTitle"
+		:show-fullscreen="false"
+		@confirm-click="handleConfirm"
+		@close="faFormRef.resetFields()"
+	>
+		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" cols="1">
 			<FaFormItem prop="mobile" label="手机">
 				<el-input
 					v-model="state.formData.mobile"

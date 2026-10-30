@@ -46,7 +46,7 @@ const loadComponentName = (name: string) => {
 	}
 };
 
-/** 递归组装目录和菜单路由，按钮权限不参与页面路由注册。 */
+/** 递归组装目录和页面路由，内外链由菜单点击逻辑处理。 */
 const packageMenu = (menuList: AuthMenuInfoDto[]) => {
 	const routeList: RouteRecordRaw[] = [];
 
@@ -73,7 +73,7 @@ const packageMenu = (menuList: AuthMenuInfoDto[]) => {
 		if (item.children && item.children.length > 0) {
 			const childrenRoutes = packageMenu(item.children);
 			routeInfo.children.push(...childrenRoutes);
-			routeInfo.redirect = childrenRoutes[0].path;
+			routeInfo.redirect = childrenRoutes[0]?.path;
 			delete routeInfo.component;
 			routeInfo.meta.keepAlive = false;
 		}

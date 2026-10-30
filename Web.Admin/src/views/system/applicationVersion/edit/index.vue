@@ -3,6 +3,7 @@
 		ref="faDialogRef"
 		width="1000"
 		:title="state.dialogTitle"
+		:show-fullscreen="false"
 		:show-confirm-button="!state.formDisabled"
 		:show-before-close="!state.formDisabled"
 		confirm-button-text="保存"
@@ -15,6 +16,20 @@
 			</FaFormItem>
 			<FaFormItem prop="packageType" label="包类型">
 				<RadioGroup name="ApplicationPackageTypeEnum" v-model="state.formData.packageType" @change="handlePackageTypeChange" />
+			</FaFormItem>
+			<FaFormItem prop="appType" label="应用类型" span="2">
+				<el-radio-group v-if="state.formData.packageType === ApplicationPackageTypeEnum.FullPackage" v-model="state.formData.appType">
+					<el-radio :value="AppEnvironmentEnum.Windows">Windows</el-radio>
+					<el-radio :value="AppEnvironmentEnum.Android">Android</el-radio>
+					<el-radio :value="AppEnvironmentEnum.HarmonyOS">鸿蒙</el-radio>
+					<el-radio :value="AppEnvironmentEnum.IOS">IOS</el-radio>
+				</el-radio-group>
+				<el-checkbox-group v-else v-model="appTypes">
+					<el-checkbox :value="AppEnvironmentEnum.Windows">Windows</el-checkbox>
+					<el-checkbox :value="AppEnvironmentEnum.Android">Android</el-checkbox>
+					<el-checkbox :value="AppEnvironmentEnum.HarmonyOS">鸿蒙</el-checkbox>
+					<el-checkbox :value="AppEnvironmentEnum.IOS">IOS</el-checkbox>
+				</el-checkbox-group>
 			</FaFormItem>
 			<FaFormItem prop="versionName" label="版本名称" tips="例如：1.0.1">
 				<el-input v-model="state.formData.versionName" maxlength="30" placeholder="请输入版本名称" />
@@ -68,9 +83,11 @@
 import { computed, reactive, useTemplateRef } from "vue";
 import { ElMessage } from "element-plus";
 import { withDefineType } from "@fast-china/utils";
+import { AppEnvironmentEnum } from "@/api/enums/AppEnvironmentEnum";
 import { ApplicationPackageTypeEnum } from "@/api/enums/ApplicationPackageTypeEnum";
 import { applicationVersionApi } from "@/api/services/Center/applicationVersion";
 import { fileApi } from "@/api/services/File";
+import { useApp } from "@/stores";
 import type { FormRules, UploadRawFile } from "element-plus";
 import type { FaDialogInstance, FaFormInstance } from "fast-element-plus";
 import type { EditApplicationVersionInput } from "@/api/services/Center/applicationVersion/models/EditApplicationVersionInput";
@@ -81,13 +98,21 @@ defineOptions({
 
 const emit = defineEmits(["ok"]);
 
+const appStore = useApp();
+
 const faDialogRef = useTemplateRef<FaDialogInstance>("faDialogRef");
 const faFormRef = useTemplateRef<FaFormInstance>("faFormRef");
+
+const appEnvironmentEnum = appStore.getDictionary("AppEnvironmentEnum").filter((item) => {
+	const flag = BigInt(item.value);
+	return (flag & (flag - 1n)) === 0n;
+});
 
 const state = reactive({
 	formData: withDefineType<EditApplicationVersionInput>({}),
 	formRules: withDefineType<FormRules<EditApplicationVersionInput>>({
 		appKey: [{ required: true, message: "请输入应用标识", trigger: "blur" }],
+		appType: [{ required: true, message: "请选择应用类型", trigger: "change" }],
 		packageType: [{ required: true, message: "请选择包类型", trigger: "blur" }],
 		versionName: [{ required: true, message: "请输入版本名称", trigger: "blur" }],
 		versionCode: [{ required: true, type: "integer", min: 1, max: 2147483647, message: "版本号必须是有效的正整数", trigger: "change" }],
@@ -116,13 +141,25 @@ const state = reactive({
 	uploadProgress: 0,
 });
 
+const appTypes = computed({
+	get: () => {
+		const value = BigInt(state.formData.appType || 0n);
+		return appEnvironmentEnum.filter((item) => (value & BigInt(item.value)) !== 0n).map((item) => String(item.value));
+	},
+	set: (values: string[]) => {
+		state.formData.appType = values.length
+			? (values.reduce((value, item) => value | BigInt(item), 0n).toString() as AppEnvironmentEnum)
+			: undefined;
+	},
+});
 const packageAccept = computed(() => (state.formData.packageType === ApplicationPackageTypeEnum.Wgt ? ".wgt" : ".apk,.app,.hap,.ipa,.exe,.msi"));
 
 const handlePackageTypeChange = () => {
+	state.formData.appType = undefined;
 	state.formData.fileUrl = undefined;
 	state.formData.minNativeVersionCode = undefined;
 	state.formData.maxNativeVersionCode = undefined;
-	faFormRef.value?.clearValidate(["fileUrl", "minNativeVersionCode", "maxNativeVersionCode"]);
+	faFormRef.value?.clearValidate(["appType", "fileUrl", "minNativeVersionCode", "maxNativeVersionCode"]);
 };
 
 const handleBeforeUpload = (file: UploadRawFile) => {

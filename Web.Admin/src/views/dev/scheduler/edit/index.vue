@@ -3,12 +3,13 @@
 		ref="faDialogRef"
 		width="1000"
 		full-height
+		:show-fullscreen="false"
 		:title="state.dialogTitle"
 		confirm-button-text="保存"
 		@confirm-click="handleConfirm"
 		@close="handleClose"
 	>
-		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" :grid="false">
+		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" :grid="false" label-width="120px">
 			<el-row>
 				<el-col :span="16">
 					<el-form-item prop="jobName" label="作业名称">
@@ -235,12 +236,12 @@ import { MailMessageEnum } from "@/api/enums/MailMessageEnum";
 import { SchedulerJobTypeEnum } from "@/api/enums/SchedulerJobTypeEnum";
 import { TriggerTypeEnum } from "@/api/enums/TriggerTypeEnum";
 import { WeekEnum } from "@/api/enums/WeekEnum";
-import { schedulerApi } from "@/api/services/Scheduler/scheduler";
+import { schedulerApi } from "@/api/services/Scheduler";
 import { useApp } from "@/stores";
 import type { FormRules } from "element-plus";
 import type { FaDialogInstance, FaFormInstance } from "fast-element-plus";
 import type { SchedulerJobGroupEnum } from "@/api/enums/SchedulerJobGroupEnum";
-import type { EditSchedulerJobInput } from "@/api/services/Scheduler/scheduler/models/EditSchedulerJobInput";
+import type { EditSchedulerJobInput } from "@/api/services/Scheduler/models/EditSchedulerJobInput";
 
 defineOptions({
 	name: "DevSchedulerEdit",
@@ -402,12 +403,14 @@ const handleDelObj = (name: "requestHeaderObj" | "requestParamsObj", index: numb
 };
 
 const add = (tenantId: string, jobGroup: SchedulerJobGroupEnum) => {
-	state.dialogState = "add";
-	state.dialogTitle = "添加调度作业";
-	state.formData.tenantId = tenantId;
-	state.formData.jobGroup = jobGroup;
-	state.formData.oldJobName = undefined;
-	state.formData.oldJobGroup = undefined;
+	faDialogRef.value.open(() => {
+		state.dialogState = "add";
+		state.dialogTitle = "添加调度作业";
+		state.formData.tenantId = tenantId;
+		state.formData.jobGroup = jobGroup;
+		state.formData.oldJobName = undefined;
+		state.formData.oldJobGroup = undefined;
+	});
 };
 
 const edit = (tenantId: string, jobName: string, jobGroup: SchedulerJobGroupEnum) => {

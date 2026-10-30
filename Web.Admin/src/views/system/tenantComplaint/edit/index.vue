@@ -1,6 +1,13 @@
 <template>
-	<FaDialog ref="faDialogRef" width="500" :title="state.dialogTitle" @confirm-click="handleConfirm" @close="faFormRef.resetFields()">
-		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules">
+	<FaDialog
+		ref="faDialogRef"
+		width="600"
+		:title="state.dialogTitle"
+		:show-fullscreen="false"
+		@confirm-click="handleConfirm"
+		@close="faFormRef.resetFields()"
+	>
+		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" cols="1">
 			<FaFormItem prop="handleDescription" label="处理描述">
 				<el-input type="textarea" v-model="state.formData.handleDescription" :rows="2" maxlength="200" placeholder="请输入处理描述" />
 			</FaFormItem>

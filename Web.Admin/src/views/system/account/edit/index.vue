@@ -1,5 +1,5 @@
 <template>
-	<FaDialog ref="faDialogRef" width="1000" :title="state.dialogTitle" :show-confirm-button="false">
+	<FaDialog ref="faDialogRef" width="1000" :title="state.dialogTitle" :show-fullscreen="false" :show-confirm-button="false">
 		<el-row>
 			<el-col :span="4" style="text-align: center">
 				<FaImage style="height: 100px; width: 100px" :src="state.formData.avatar" />

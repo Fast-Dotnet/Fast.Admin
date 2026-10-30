@@ -47,56 +47,6 @@ internal static partial class MenuSeedData
         };
         apiCLMenuModel = await db.Insertable(apiCLMenuModel).ExecuteReturnEntityAsync();
 
-        #region Api
-
-        var apiMenuModel = new MenuModel
-        {
-            MenuId = YitIdHelper.NextId(),
-            Edition = EditionEnum.Internal,
-            AppId = applicationModel.AppId,
-            MenuCode = PermissionConst.ApiPaged,
-            MenuName = "接口管理",
-            MenuTitle = "接口管理",
-            ParentId = apiCLMenuModel.MenuId,
-            ParentIds = [0, apiCLMenuModel.MenuId],
-            MenuType = MenuTypeEnum.Menu,
-            RoleType = GlobalContext.RolePermissions[PermissionConst.ApiPaged],
-            HasDesktop = true,
-            DesktopRouter = null,
-            DesktopIcon = "api",
-            HasWeb = true,
-            WebIcon = "fa-icon-Gateway",
-            WebRouter = "/dev/api",
-            WebComponent = "dev/api/index",
-            WebTab = true,
-            WebKeepAlive = true,
-            HasMobile = true,
-            MobileIcon = null,
-            MobileRouter = null,
-            Visible = true,
-            Sort = menuSort,
-            Status = CommonStatusEnum.Enable,
-            CreatedTime = dateTime
-        };
-        apiMenuModel = await db.Insertable(apiMenuModel).ExecuteReturnEntityAsync();
-        await db.Insertable(new ButtonModel
-            {
-                ButtonId = YitIdHelper.NextId(),
-                Edition = EditionEnum.Internal,
-                AppId = applicationModel.AppId,
-                MenuId = apiMenuModel.MenuId,
-                ButtonCode = PermissionConst.ApiPaged,
-                ButtonName = "列表",
-                RoleType = GlobalContext.RolePermissions[PermissionConst.ApiPaged],
-                HasDesktop = true,
-                HasWeb = true,
-                HasMobile = true,
-                Sort = 1,
-                Status = CommonStatusEnum.Enable,
-                CreatedTime = dateTime
-            })
-            .ExecuteCommandAsync();
-
         await db.Insertable(new List<MenuModel>
             {
                 new()
@@ -161,7 +111,5 @@ internal static partial class MenuSeedData
                 }
             })
             .ExecuteCommandAsync();
-
-        #endregion
     }
 }

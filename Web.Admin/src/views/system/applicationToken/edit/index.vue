@@ -3,11 +3,12 @@
 		ref="faDialogRef"
 		width="500"
 		title="添加应用凭据"
+		:show-fullscreen="false"
 		confirm-button-text="保存"
 		@confirm-click="handleConfirm"
 		@close="faFormRef.resetFields()"
 	>
-		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules">
+		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" cols="1">
 			<FaFormItem prop="appKey" label="应用标识">
 				<el-input v-model="state.formData.appKey" maxlength="50" placeholder="请输入应用标识" />
 			</FaFormItem>

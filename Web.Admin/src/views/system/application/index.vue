@@ -40,14 +40,11 @@
 						link
 						:click="({ row }) => clientEditFormRef.detail(row.recordId)"
 					/>
-					<FaTableColumn
-						prop="appType"
-						label="应用类型"
-						width="160"
-						small-width="140"
-						tag
-						:enum="appStore.getDictionary('AppEnvironmentEnum')"
-					/>
+					<FaTableColumn prop="appType" label="应用类型" width="200" small-width="180">
+						<template #default="{ row: clientRow }: { row: QueryApplicationClientOutput }">
+							<TagFlag name="AppEnvironmentEnum" :value="clientRow.appType" />
+						</template>
+					</FaTableColumn>
 					<FaTableColumn
 						prop="environmentType"
 						label="环境类型"

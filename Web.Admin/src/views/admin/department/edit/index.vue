@@ -1,15 +1,16 @@
 <template>
 	<FaDialog
 		ref="faDialogRef"
-		width="500"
+		width="600"
 		:title="state.dialogTitle"
+		:show-fullscreen="false"
 		:show-confirm-button="!state.formDisabled"
 		:show-before-close="!state.formDisabled"
 		confirm-button-text="保存"
 		@confirm-click="handleConfirm"
 		@close="faFormRef.resetFields()"
 	>
-		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" :disabled="state.formDisabled">
+		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" :disabled="state.formDisabled" cols="1">
 			<FaFormItem prop="orgId" label="机构">
 				<FaTreeSelect
 					:request-api="organizationApi.organizationSelector"

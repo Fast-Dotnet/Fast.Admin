@@ -3,6 +3,7 @@
 		ref="faDialogRef"
 		width="1000"
 		:title="state.dialogTitle"
+		:show-fullscreen="false"
 		:show-confirm-button="!state.formDisabled"
 		:show-before-close="!state.formDisabled"
 		confirm-button-text="保存"
@@ -20,7 +21,15 @@
 				<el-input v-model="state.formData.appSecret" maxlength="50" placeholder="请输入应用密钥" />
 			</FaFormItem>
 			<FaFormItem prop="appType" label="应用类型" span="2">
-				<RadioGroup name="AppEnvironmentEnum" v-model="state.formData.appType" />
+				<el-checkbox-group v-model="appTypes">
+					<el-checkbox :value="AppEnvironmentEnum.Web">Web</el-checkbox>
+					<el-checkbox :value="AppEnvironmentEnum.Windows">Windows</el-checkbox>
+					<el-checkbox :value="AppEnvironmentEnum.Mac">Mac</el-checkbox>
+					<el-checkbox :value="AppEnvironmentEnum.Android">Android</el-checkbox>
+					<el-checkbox :value="AppEnvironmentEnum.HarmonyOS">鸿蒙</el-checkbox>
+					<el-checkbox :value="AppEnvironmentEnum.IOS">IOS</el-checkbox>
+					<el-checkbox :value="AppEnvironmentEnum.WeChatMiniProgram">微信小程序</el-checkbox>
+				</el-checkbox-group>
 			</FaFormItem>
 			<FaFormItem prop="environmentType" label="环境类型" span="2">
 				<RadioGroup name="EnvironmentTypeEnum" v-model="state.formData.environmentType" />
@@ -70,13 +79,14 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, useTemplateRef } from "vue";
+import { computed, reactive, useTemplateRef } from "vue";
 import { ElMessage } from "element-plus";
 import { withDefineType } from "@fast-china/utils";
 import { AppEnvironmentEnum } from "@/api/enums/AppEnvironmentEnum";
 import { EnvironmentTypeEnum } from "@/api/enums/EnvironmentTypeEnum";
 import { PaymentChannelEnum } from "@/api/enums/PaymentChannelEnum";
 import { applicationClientApi } from "@/api/services/Center/applicationClient";
+import { useApp } from "@/stores";
 import type { FormRules } from "element-plus";
 import type { FaDialogInstance, FaFormInstance } from "fast-element-plus";
 import type { AddApplicationClientInput } from "@/api/services/Center/applicationClient/models/AddApplicationClientInput";
@@ -95,8 +105,15 @@ const props = defineProps<{
 
 const emit = defineEmits(["ok"]);
 
+const appStore = useApp();
+
 const faDialogRef = useTemplateRef<FaDialogInstance>("faDialogRef");
 const faFormRef = useTemplateRef<FaFormInstance>("faFormRef");
+
+const appEnvironmentEnum = appStore.getDictionary("AppEnvironmentEnum").filter((item) => {
+	const flag = BigInt(item.value);
+	return (flag & (flag - 1n)) === 0n;
+});
 
 const state = reactive({
 	formData: withDefineType<EditApplicationClientInput & AddApplicationClientInput>({}),
@@ -109,6 +126,18 @@ const state = reactive({
 	formDisabled: false,
 	dialogState: withDefineType<IPageStateType>("detail"),
 	dialogTitle: "应用标识",
+});
+
+const appTypes = computed({
+	get: () => {
+		const value = BigInt(state.formData.appType || 0n);
+		return appEnvironmentEnum.filter((item) => (value & BigInt(item.value)) !== 0n).map((item) => String(item.value));
+	},
+	set: (values: string[]) => {
+		state.formData.appType = values.length
+			? (values.reduce((value, item) => value | BigInt(item), 0n).toString() as AppEnvironmentEnum)
+			: undefined;
+	},
 });
 
 const handleConfirm = () => {

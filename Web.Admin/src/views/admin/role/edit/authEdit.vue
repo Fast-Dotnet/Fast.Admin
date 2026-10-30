@@ -4,6 +4,7 @@
 		width="1000"
 		full-height
 		:title="state.dialogTitle"
+		:show-fullscreen="false"
 		confirm-button-text="保存"
 		@confirm-click="handleConfirm"
 		@close="

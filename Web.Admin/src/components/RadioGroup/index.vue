@@ -5,21 +5,19 @@
 				v-for="(item, index) in dictionaries"
 				:key="index"
 				:value="item.value"
+				:label="item.label"
 				:disabled="item.disabled === false ? undefined : item.disabled"
 				border
-			>
-				{{ item.label }}
-			</ElRadioButton>
+			/>
 		</template>
 		<template v-else>
 			<ElRadio
 				v-for="(item, index) in dictionaries"
 				:key="index"
 				:value="item.value"
+				:label="item.label"
 				:disabled="item.disabled === false ? undefined : item.disabled"
-			>
-				{{ item.label }}
-			</ElRadio>
+			/>
 		</template>
 	</ElRadioGroup>
 </template>
@@ -28,7 +26,6 @@
 import { computed } from "vue";
 import { radioGroupEmits, radioGroupProps } from "element-plus";
 import { useProps } from "@fast-china/utils";
-import { CommonStatusEnum } from "@/api/enums/CommonStatusEnum";
 import { useApp } from "@/stores";
 
 defineOptions({
@@ -57,8 +54,8 @@ const emit = defineEmits({
 	...radioGroupEmits,
 });
 
-/** 当前选中的字典值，默认使用启用状态对应的值 */
-const modelValue = defineModel<string | number | boolean>({ default: CommonStatusEnum.Enable });
+/** 当前选中的字典值 */
+const modelValue = defineModel<string | number | boolean>();
 
 const appStore = useApp();
 // 当前字典中允许显示的选项

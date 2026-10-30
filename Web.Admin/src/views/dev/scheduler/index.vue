@@ -269,11 +269,11 @@ import { ElMessage, ElMessageBox, dayjs } from "element-plus";
 import { logger, withDefineType } from "@fast-china/utils";
 import { SchedulerJobGroupEnum } from "@/api/enums/SchedulerJobGroupEnum";
 import { TriggerState } from "@/api/enums/TriggerState";
-import { schedulerApi } from "@/api/services/Scheduler/scheduler";
+import { schedulerApi } from "@/api/services/Scheduler";
 import { useApp } from "@/stores";
 import SchedulerEdit from "./edit/index.vue";
-import type { QuerySchedulerDetailOutput } from "@/api/services/Scheduler/scheduler/models/QuerySchedulerDetailOutput";
-import type { SchedulerJobInfoDto } from "@/api/services/Scheduler/scheduler/models/SchedulerJobInfoDto";
+import type { QuerySchedulerDetailOutput } from "@/api/services/Scheduler/models/QuerySchedulerDetailOutput";
+import type { SchedulerJobInfoDto } from "@/api/services/Scheduler/models/SchedulerJobInfoDto";
 
 defineOptions({
 	name: "DevScheduler",

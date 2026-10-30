@@ -1,9 +1,10 @@
 <template>
 	<FaDialog
 		ref="faDialogRef"
-		:width="state.dialogState !== 'add' ? 1200 : 500"
+		:width="state.dialogState !== 'add' ? 1200 : 600"
 		:full-height="state.dialogState !== 'add'"
 		:title="state.dialogTitle"
+		:show-fullscreen="state.dialogState !== 'add'"
 		:show-confirm-button="!state.formDisabled"
 		:show-before-close="!state.formDisabled"
 		confirm-button-text="保存"
@@ -11,7 +12,14 @@
 		@close="faFormRef.resetFields()"
 	>
 		<div :class="{ 'fa__display_tb-b': state.dialogState !== 'add' }">
-			<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" :disabled="state.formDisabled" cols="2">
+			<FaForm
+				ref="faFormRef"
+				:model="state.formData"
+				:rules="state.formRules"
+				:disabled="state.formDisabled"
+				:cols="state.dialogState !== 'add' ? 2 : 1"
+				label-width="100px"
+			>
 				<FaFormItem prop="dictionaryKey" label="字典Key">
 					<el-input v-model="state.formData.dictionaryKey" maxlength="50" placeholder="请输入字典Key" />
 				</FaFormItem>
