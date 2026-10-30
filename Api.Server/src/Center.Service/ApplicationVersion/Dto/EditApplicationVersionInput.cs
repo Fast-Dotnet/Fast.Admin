@@ -27,6 +27,13 @@ public class EditApplicationVersionInput : UpdateVersionInput
     public string AppKey { get; set; }
 
     /// <summary>
+    /// 应用类型
+    /// </summary>
+    /// <remarks>整包仅支持单个平台，热更新包支持 Flag 组合。</remarks>
+    [EnumRequired(ErrorMessage = "应用类型不能为空", FlagEnum = true)]
+    public AppEnvironmentEnum AppType { get; set; }
+
+    /// <summary>
     /// 包类型
     /// </summary>
     [EnumRequired(ErrorMessage = "包类型不能为空")]

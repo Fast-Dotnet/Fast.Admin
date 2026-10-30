@@ -221,7 +221,7 @@ public partial class RoleService
         // 查询应用信息
         ApplicationClientModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
 
-        if (applicationModel.AppType != GlobalContext.DeviceType)
+        if (!applicationModel.AppType.HasFlag(GlobalContext.DeviceType))
         {
             throw new UserFriendlyException("应用类型不匹配！");
         }

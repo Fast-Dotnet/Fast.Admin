@@ -44,7 +44,7 @@ public class ApplicationVersionService : IDynamicApplication
                 RecordId = t1.RecordId,
                 AppName = t3.AppName,
                 AppKey = t1.AppKey,
-                AppType = t2.AppType,
+                AppType = t1.AppType,
                 EnvironmentType = t2.EnvironmentType,
                 PackageType = t1.PackageType,
                 VersionName = t1.VersionName,
@@ -84,7 +84,7 @@ public class ApplicationVersionService : IDynamicApplication
                 RecordId = t1.RecordId,
                 AppName = t3.AppName,
                 AppKey = t1.AppKey,
-                AppType = t2.AppType,
+                AppType = t1.AppType,
                 EnvironmentType = t2.EnvironmentType,
                 PackageType = t1.PackageType,
                 VersionName = t1.VersionName,
@@ -120,6 +120,26 @@ public class ApplicationVersionService : IDynamicApplication
     [Permission(PermissionConst.AppVersion.Add)]
     public async Task AddApplicationVersion(AddApplicationVersionInput input)
     {
+        if ((input.AppType
+             & ~(AppEnvironmentEnum.Android | AppEnvironmentEnum.HarmonyOS | AppEnvironmentEnum.IOS | AppEnvironmentEnum.Windows))
+            != 0)
+        {
+            throw new UserFriendlyException("请选择支持的应用类型！");
+        }
+
+        if (input.PackageType == ApplicationPackageTypeEnum.FullPackage && ((long)input.AppType & ((long)input.AppType - 1)) != 0)
+        {
+            throw new UserFriendlyException("整包只能选择一种应用类型！");
+        }
+
+        ApplicationClientModel applicationClientModel = await _repository.Queryable<ApplicationClientModel>()
+            .Where(wh => wh.AppKey == input.AppKey)
+            .SingleAsync();
+        if (applicationClientModel == null || !applicationClientModel.AppType.HasFlag(input.AppType))
+        {
+            throw new UserFriendlyException("应用类型必须在应用标识支持的范围内！");
+        }
+
         if (input.PackageType == ApplicationPackageTypeEnum.Wgt)
         {
             if (input.MinNativeVersionCode is not > 0
@@ -139,14 +159,20 @@ public class ApplicationVersionService : IDynamicApplication
         }
 
         if (await _repository.AnyAsync(a =>
-                a.AppKey == input.AppKey && a.PackageType == input.PackageType && a.VersionCode == input.VersionCode))
+                a.AppKey == input.AppKey
+                && (a.AppType & input.AppType) != 0
+                && a.PackageType == input.PackageType
+                && a.VersionCode == input.VersionCode))
         {
             throw new UserFriendlyException("应用版本重复！");
         }
 
-        // 同版本整包和 WGT 共用展示版本
+        // 平台重叠的同版本整包和 WGT 共用展示版本
         if (await _repository.AnyAsync(a =>
-                a.AppKey == input.AppKey && a.VersionCode == input.VersionCode && a.VersionName != input.VersionName))
+                a.AppKey == input.AppKey
+                && (a.AppType & input.AppType) != 0
+                && a.VersionCode == input.VersionCode
+                && a.VersionName != input.VersionName))
         {
             throw new UserFriendlyException("同一版本号的整包与 WGT 必须使用相同版本名称！");
         }
@@ -154,6 +180,7 @@ public class ApplicationVersionService : IDynamicApplication
         var applicationVersionModel = new ApplicationVersionModel
         {
             AppKey = input.AppKey,
+            AppType = input.AppType,
             PackageType = input.PackageType,
             VersionName = input.VersionName,
             VersionCode = input.VersionCode,
@@ -177,6 +204,26 @@ public class ApplicationVersionService : IDynamicApplication
     [Permission(PermissionConst.AppVersion.Edit)]
     public async Task EditApplicationVersion(EditApplicationVersionInput input)
     {
+        if ((input.AppType
+             & ~(AppEnvironmentEnum.Android | AppEnvironmentEnum.HarmonyOS | AppEnvironmentEnum.IOS | AppEnvironmentEnum.Windows))
+            != 0)
+        {
+            throw new UserFriendlyException("请选择支持的应用类型！");
+        }
+
+        if (input.PackageType == ApplicationPackageTypeEnum.FullPackage && ((long)input.AppType & ((long)input.AppType - 1)) != 0)
+        {
+            throw new UserFriendlyException("整包只能选择一种应用类型！");
+        }
+
+        ApplicationClientModel applicationClientModel = await _repository.Queryable<ApplicationClientModel>()
+            .Where(wh => wh.AppKey == input.AppKey)
+            .SingleAsync();
+        if (applicationClientModel == null || !applicationClientModel.AppType.HasFlag(input.AppType))
+        {
+            throw new UserFriendlyException("应用类型必须在应用标识支持的范围内！");
+        }
+
         if (input.PackageType == ApplicationPackageTypeEnum.Wgt)
         {
             if (input.MinNativeVersionCode is not > 0
@@ -197,6 +244,7 @@ public class ApplicationVersionService : IDynamicApplication
 
         if (await _repository.AnyAsync(a =>
                 a.AppKey == input.AppKey
+                && (a.AppType & input.AppType) != 0
                 && a.PackageType == input.PackageType
                 && a.VersionCode == input.VersionCode
                 && a.RecordId != input.RecordId))
@@ -204,9 +252,10 @@ public class ApplicationVersionService : IDynamicApplication
             throw new UserFriendlyException("应用版本重复！");
         }
 
-        // 同版本整包和 WGT 共用展示版本
+        // 平台重叠的同版本整包和 WGT 共用展示版本
         if (await _repository.AnyAsync(a =>
                 a.AppKey == input.AppKey
+                && (a.AppType & input.AppType) != 0
                 && a.VersionCode == input.VersionCode
                 && a.VersionName != input.VersionName
                 && a.RecordId != input.RecordId))
@@ -221,6 +270,7 @@ public class ApplicationVersionService : IDynamicApplication
         }
 
         applicationVersionModel.AppKey = input.AppKey;
+        applicationVersionModel.AppType = input.AppType;
         applicationVersionModel.PackageType = input.PackageType;
         applicationVersionModel.VersionName = input.VersionName;
         applicationVersionModel.VersionCode = input.VersionCode;

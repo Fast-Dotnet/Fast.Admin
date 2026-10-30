@@ -33,7 +33,7 @@ public class EditApplicationClientInput : UpdateVersionInput
     /// <summary>
     /// 应用类型
     /// </summary>
-    [EnumRequired(ErrorMessage = "应用类型不能为空")]
+    [EnumRequired(ErrorMessage = "应用类型不能为空", FlagEnum = true)]
     public AppEnvironmentEnum AppType { get; set; }
 
     /// <summary>

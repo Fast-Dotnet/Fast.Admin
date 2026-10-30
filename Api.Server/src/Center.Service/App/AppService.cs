@@ -36,7 +36,7 @@ public class AppService : IDynamicApplication
     public async Task<LaunchOutput> Launch()
     {
         ApplicationClientModel applicationClientModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
-        if (applicationClientModel == null || applicationClientModel.AppType != GlobalContext.DeviceType)
+        if (applicationClientModel == null || !applicationClientModel.AppType.HasFlag(GlobalContext.DeviceType))
         {
             throw new UserFriendlyException("非法访问！");
         }
@@ -84,7 +84,7 @@ public class AppService : IDynamicApplication
         ApplicationClientModel applicationClientModel = await db.Queryable<ApplicationClientModel>()
             .Where(wh => wh.AppKey == appKey)
             .SingleAsync();
-        if (applicationClientModel == null || applicationClientModel.AppType != GlobalContext.DeviceType)
+        if (applicationClientModel == null || !applicationClientModel.AppType.HasFlag(GlobalContext.DeviceType))
         {
             throw new UserFriendlyException("非法的应用客户端！");
         }
@@ -92,6 +92,7 @@ public class AppService : IDynamicApplication
         // 获取所有版本号
         List<ApplicationVersionModel> applicationVersionList = await db.Queryable<ApplicationVersionModel>()
             .Where(wh => wh.AppKey == appKey && wh.Status == CommonStatusEnum.Enable && wh.VersionCode >= input.NativeVersionCode)
+            .Where(wh => (wh.AppType & GlobalContext.DeviceType) != 0)
             .ToListAsync();
 
         // 选择已启用且兼容的最高版本；目标版本相同时优先 WGT。

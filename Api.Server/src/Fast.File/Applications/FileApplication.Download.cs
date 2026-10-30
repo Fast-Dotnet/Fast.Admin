@@ -75,10 +75,10 @@ public partial class FileApplication
         }
 
         // 判断文件类型是否使用平台和更新方式
-        if (applicationClientModel.AppType is not (AppEnvironmentEnum.Android
-            or AppEnvironmentEnum.HarmonyOS
-            or AppEnvironmentEnum.IOS
-            or AppEnvironmentEnum.Windows))
+        if ((applicationVersionModel.AppType
+             & ~(AppEnvironmentEnum.Android | AppEnvironmentEnum.HarmonyOS | AppEnvironmentEnum.IOS | AppEnvironmentEnum.Windows))
+            != 0
+            || !applicationClientModel.AppType.HasFlag(applicationVersionModel.AppType))
         {
             // 不支持的平台
             return new NotFoundResult();
@@ -86,7 +86,7 @@ public partial class FileApplication
 
         if (applicationVersionModel.PackageType == ApplicationPackageTypeEnum.FullPackage)
         {
-            if (applicationClientModel.AppType == AppEnvironmentEnum.Android)
+            if (applicationVersionModel.AppType == AppEnvironmentEnum.Android)
             {
                 if (!string.Equals(fileInfoModel.FileSuffix, "apk", StringComparison.OrdinalIgnoreCase))
                 {
@@ -94,7 +94,7 @@ public partial class FileApplication
                     return new NotFoundResult();
                 }
             }
-            else if (applicationClientModel.AppType == AppEnvironmentEnum.HarmonyOS)
+            else if (applicationVersionModel.AppType == AppEnvironmentEnum.HarmonyOS)
             {
                 if (!string.Equals(fileInfoModel.FileSuffix, "app", StringComparison.OrdinalIgnoreCase)
                     && !string.Equals(fileInfoModel.FileSuffix, "hap", StringComparison.OrdinalIgnoreCase))
@@ -103,7 +103,7 @@ public partial class FileApplication
                     return new NotFoundResult();
                 }
             }
-            else if (applicationClientModel.AppType == AppEnvironmentEnum.IOS)
+            else if (applicationVersionModel.AppType == AppEnvironmentEnum.IOS)
             {
                 if (!string.Equals(fileInfoModel.FileSuffix, "ipa", StringComparison.OrdinalIgnoreCase))
                 {
@@ -111,7 +111,7 @@ public partial class FileApplication
                     return new NotFoundResult();
                 }
             }
-            else if (applicationClientModel.AppType == AppEnvironmentEnum.Windows)
+            else if (applicationVersionModel.AppType == AppEnvironmentEnum.Windows)
             {
                 if (!string.Equals(fileInfoModel.FileSuffix, "exe", StringComparison.OrdinalIgnoreCase)
                     && !string.Equals(fileInfoModel.FileSuffix, "msi", StringComparison.OrdinalIgnoreCase))

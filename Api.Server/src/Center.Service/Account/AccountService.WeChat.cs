@@ -27,7 +27,7 @@ public partial class AccountService
     public async Task BindWeChat(BindWeChatInput input)
     {
         ApplicationClientModel applicationModel = await EnsureApplication();
-        if (applicationModel.AppType != AppEnvironmentEnum.WeChatMiniProgram)
+        if (GlobalContext.DeviceType != AppEnvironmentEnum.WeChatMiniProgram)
         {
             throw new UserFriendlyException("当前应用不支持此方法！");
         }
@@ -131,7 +131,7 @@ public partial class AccountService
     public async Task UnBindWeChat(BindWeChatInput input)
     {
         ApplicationClientModel applicationModel = await EnsureApplication();
-        if (applicationModel.AppType != AppEnvironmentEnum.WeChatMiniProgram)
+        if (GlobalContext.DeviceType != AppEnvironmentEnum.WeChatMiniProgram)
         {
             throw new UserFriendlyException("当前应用不支持此方法！");
         }

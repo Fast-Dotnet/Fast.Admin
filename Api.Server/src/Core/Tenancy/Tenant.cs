@@ -188,7 +188,7 @@ public sealed class Tenant : ITenant, IScopedDependency
                 return;
             }
 
-            if (data.AppType != GlobalContext.DeviceType)
+            if (!data.AppType.HasFlag(GlobalContext.DeviceType))
             {
                 throw new UserFriendlyException("未知的客户端信息！", HttpStatusCode.Forbidden);
             }

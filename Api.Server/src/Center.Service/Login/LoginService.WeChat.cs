@@ -327,7 +327,7 @@ public partial class LoginService
         ClientUserModel clientUserModel = null;
 
         // 微信小程序
-        if (applicationModel.AppType == AppEnvironmentEnum.WeChatMiniProgram)
+        if (GlobalContext.DeviceType == AppEnvironmentEnum.WeChatMiniProgram)
         {
             // 解析微信Code，获取OpenId
             SnsJsCode2SessionResponse response =
@@ -395,7 +395,7 @@ public partial class LoginService
             }
         }
         // 微信服务号
-        else if (applicationModel.AppType == AppEnvironmentEnum.WeChatServiceAccount)
+        else if (GlobalContext.DeviceType == AppEnvironmentEnum.WeChatServiceAccount)
         {
             // 根据 Code 换取用户 AccessToken
             SnsOAuth2AccessTokenResponse tokenResponse =
