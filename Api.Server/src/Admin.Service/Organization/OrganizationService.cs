@@ -111,7 +111,8 @@ public class OrganizationService : IDynamicApplication
     [Permission(PermissionConst.Department.Detail)]
     public async Task<QueryOrganizationDetailOutput> QueryOrganizationDetail([Required(ErrorMessage = "机构Id不能为空")] long? orgId)
     {
-        QueryOrganizationDetailOutput result = await _repository.Queryable<OrganizationModel>().Where(wh => wh.OrgId == orgId)
+        QueryOrganizationDetailOutput result = await _repository.Queryable<OrganizationModel>()
+            .Where(wh => wh.OrgId == orgId)
             .Select(sl => new QueryOrganizationDetailOutput
             {
                 OrgId = sl.OrgId,

@@ -39,7 +39,8 @@ public class TenantService : IDynamicApplication
     [ApiInfo("租户选择器", HttpRequestActionEnum.Query)]
     public async Task<PagedResult<ElSelectorOutput<long>>> TenantSelector(PagedInput input)
     {
-        PagedResult<TenantModel> data = await _repository.Queryable<TenantModel>().OrderBy(ob => ob.TenantName)
+        PagedResult<TenantModel> data = await _repository.Queryable<TenantModel>()
+            .OrderBy(ob => ob.TenantName)
             .Select(sl => new TenantModel
             {
                 TenantId = sl.TenantId,
@@ -75,7 +76,8 @@ public class TenantService : IDynamicApplication
     [Permission(PermissionConst.Tenant.Paged)]
     public async Task<PagedResult<QueryTenantPagedOutput>> QueryTenantPaged(QueryTenantPagedInput input)
     {
-        return await _repository.Queryable<TenantModel>().WhereIF(input.Status != null, wh => wh.Status == input.Status)
+        return await _repository.Queryable<TenantModel>()
+            .WhereIF(input.Status != null, wh => wh.Status == input.Status)
             .WhereIF(input.Edition != null, wh => (wh.Edition & input.Edition) != 0)
             .WhereIF(!string.IsNullOrWhiteSpace(input.AdminMobile), wh => wh.AdminMobile.Contains(input.AdminMobile))
             .WhereIF(!string.IsNullOrWhiteSpace(input.AdminEmail), wh => wh.AdminEmail.Contains(input.AdminEmail))

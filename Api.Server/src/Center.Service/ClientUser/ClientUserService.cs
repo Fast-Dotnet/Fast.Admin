@@ -35,7 +35,8 @@ public class ClientUserService : IDynamicApplication
     public async Task<PagedResult<ElSelectorOutput<long>>> ClientUserSelector(PagedInput input)
     {
         ApplicationClientModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
-        PagedResult<ClientUserModel> data = await _repository.Queryable<ClientUserModel>().Where(wh => wh.AppId == applicationModel.AppId)
+        PagedResult<ClientUserModel> data = await _repository.Queryable<ClientUserModel>()
+            .Where(wh => wh.AppId == applicationModel.AppId)
             .WhereIF(!string.IsNullOrWhiteSpace(input.SearchValue),
                 wh => wh.Mobile.Contains(input.SearchValue)
                       || wh.OpenId.Contains(input.SearchValue)
@@ -67,7 +68,8 @@ public class ClientUserService : IDynamicApplication
     [Permission(PermissionConst.ClientUser.Paged)]
     public async Task<PagedResult<QueryClientUserPagedOutput>> QueryClientUserPaged(QueryClientUserPagedInput input)
     {
-        return await _repository.Queryable<ClientUserModel>().WhereIF(input.AppId != null, wh => wh.AppId == input.AppId)
+        return await _repository.Queryable<ClientUserModel>()
+            .WhereIF(input.AppId != null, wh => wh.AppId == input.AppId)
             .WhereIF(input.Sex != null, wh => wh.Sex == input.Sex)
             .OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
             .Select(sl => new QueryClientUserPagedOutput
@@ -111,7 +113,8 @@ public class ClientUserService : IDynamicApplication
         }
 
         // 获取当前客户端用户信息
-        QueryClientUserDetailOutput result = await _repository.Queryable<ClientUserModel>().Where(wh => wh.AppId == applicationModel.AppId)
+        QueryClientUserDetailOutput result = await _repository.Queryable<ClientUserModel>()
+            .Where(wh => wh.AppId == applicationModel.AppId)
             .Where(wh => wh.UserId == _user.ClientUserId)
             .Select(sl => new QueryClientUserDetailOutput
             {
@@ -161,7 +164,8 @@ public class ClientUserService : IDynamicApplication
             throw new UserFriendlyException("应用类型不匹配！");
         }
 
-        ClientUserModel userModel = await _repository.Queryable<ClientUserModel>().Where(wh => wh.AppId == applicationModel.AppId)
+        ClientUserModel userModel = await _repository.Queryable<ClientUserModel>()
+            .Where(wh => wh.AppId == applicationModel.AppId)
             .Where(wh => wh.UserId == _user.ClientUserId)
             .SingleAsync();
 

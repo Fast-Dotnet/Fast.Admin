@@ -24,7 +24,8 @@ public partial class TableService
 
         return await _centerCache.GetAndSetAsync(cacheKey, async () =>
         {
-            return await _tableRepository.Queryable<TableConfigModel>().Includes(e => e.TableColumnConfigList.OrderBy(ob => ob.Order).ToList())
+            return await _tableRepository.Queryable<TableConfigModel>()
+                .Includes(e => e.TableColumnConfigList.OrderBy(ob => ob.Order).ToList())
                 .Where(wh => wh.TableKey == tableKey)
                 .SingleAsync();
         });

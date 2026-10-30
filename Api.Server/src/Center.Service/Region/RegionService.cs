@@ -81,7 +81,8 @@ public class RegionService : IDynamicApplication
     {
         return await _cache.GetAndSetAsync(CacheConst.Center.Province, async () =>
         {
-            var data = await _repository.Queryable<RegionModel>().Where(wh => wh.RegionLevel == RegionLevelEnum.Province)
+            var data = await _repository.Queryable<RegionModel>()
+                .Where(wh => wh.RegionLevel == RegionLevelEnum.Province)
                 .OrderBy(ob => ob.RegionName)
                 .Select(sl => new
                 {

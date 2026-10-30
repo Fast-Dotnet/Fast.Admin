@@ -42,7 +42,8 @@ public class TenantOnlineUserService : IDynamicApplication
     [Permission(PermissionConst.TenantOnlineUser.Paged)]
     public async Task<PagedResult<TenantOnlineUserModel>> QueryTenantOnlineUserPaged(QueryTenantOnlineUserPagedInput input)
     {
-        return await _repository.Queryable<TenantOnlineUserModel>().WhereIF(input.DeviceType != null, wh => wh.DeviceType == input.DeviceType)
+        return await _repository.Queryable<TenantOnlineUserModel>()
+            .WhereIF(input.DeviceType != null, wh => wh.DeviceType == input.DeviceType)
             .WhereIF(input.AccountId != null, wh => wh.AccountId == input.AccountId)
             .WhereIF(input.EmployeeId != null, wh => wh.EmployeeId == input.EmployeeId)
             .OrderByIF(input.IsOrderBy, ob => ob.IsOnline, OrderByType.Desc)
@@ -58,8 +59,8 @@ public class TenantOnlineUserService : IDynamicApplication
     [Permission(PermissionConst.TenantOnlineUser.ForceOffline)]
     public async Task ForceOffline(ForceOfflineInput input)
     {
-        TenantOnlineUserModel onlineUser = await _repository
-            .Queryable<TenantOnlineUserModel>().Where(wh => wh.ConnectionId == input.ConnectionId)
+        TenantOnlineUserModel onlineUser = await _repository.Queryable<TenantOnlineUserModel>()
+            .Where(wh => wh.ConnectionId == input.ConnectionId)
             .SingleAsync();
         if (onlineUser == null)
         {
@@ -67,7 +68,8 @@ public class TenantOnlineUserService : IDynamicApplication
         }
 
         // 同一次登录可能建立多个 SignalR 连接，按会话统一下线，不影响关闭单点登录后的其他独立会话。
-        List<TenantOnlineUserModel> onlineUsers = await _repository.Queryable<TenantOnlineUserModel>().Where(wh => wh.IsOnline)
+        List<TenantOnlineUserModel> onlineUsers = await _repository.Queryable<TenantOnlineUserModel>()
+            .Where(wh => wh.IsOnline)
             .WhereIF(!string.IsNullOrWhiteSpace(onlineUser.SessionId), wh => wh.SessionId == onlineUser.SessionId)
             .WhereIF(string.IsNullOrWhiteSpace(onlineUser.SessionId), wh => wh.ConnectionId == input.ConnectionId)
             .ToListAsync();

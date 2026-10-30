@@ -39,7 +39,8 @@ public class DepartmentService : IDynamicApplication
     [ApiInfo("部门选择器", HttpRequestActionEnum.Query)]
     public async Task<List<ElSelectorOutput<long>>> DepartmentSelector(long? orgId)
     {
-        ISugarQueryable<DepartmentModel> queryable = _repository.Queryable<DepartmentModel>().WhereIF(orgId != null, wh => wh.OrgId == orgId);
+        ISugarQueryable<DepartmentModel> queryable =
+            _repository.Queryable<DepartmentModel>().WhereIF(orgId != null, wh => wh.OrgId == orgId);
         List<long> customDepartmentIds = _user.DataScopeDepartmentIdList ?? [];
 
         // 管理员，全部权限
@@ -200,7 +201,8 @@ public class DepartmentService : IDynamicApplication
     [Permission(PermissionConst.Department.Detail)]
     public async Task<QueryDepartmentDetailOutput> QueryDepartmentDetail([Required(ErrorMessage = "部门Id不能为空")] long? departmentId)
     {
-        QueryDepartmentDetailOutput result = await _repository.Queryable<DepartmentModel>().Where(wh => wh.DepartmentId == departmentId)
+        QueryDepartmentDetailOutput result = await _repository.Queryable<DepartmentModel>()
+            .Where(wh => wh.DepartmentId == departmentId)
             .Select(sl => new QueryDepartmentDetailOutput
             {
                 DepartmentId = sl.DepartmentId,

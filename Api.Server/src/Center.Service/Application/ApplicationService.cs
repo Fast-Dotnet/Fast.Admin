@@ -33,7 +33,8 @@ public class ApplicationService : IDynamicApplication
     [PlatformOnly]
     public async Task<List<ElSelectorOutput<long>>> ApplicationSelector()
     {
-        var data = await _repository.Queryable<ApplicationModel>().OrderBy(ob => ob.AppName)
+        var data = await _repository.Queryable<ApplicationModel>()
+            .OrderBy(ob => ob.AppName)
             .Select(sl => new
             {
                 sl.AppId,
@@ -127,7 +128,8 @@ public class ApplicationService : IDynamicApplication
     [PlatformOnly]
     public async Task<QueryApplicationDetailOutput> QueryApplicationDetail([Required(ErrorMessage = "应用Id不能为空")] long? appId)
     {
-        QueryApplicationDetailOutput result = await _repository.Queryable<ApplicationModel>().Where(wh => wh.AppId == appId)
+        QueryApplicationDetailOutput result = await _repository.Queryable<ApplicationModel>()
+            .Where(wh => wh.AppId == appId)
             .Select(sl => new QueryApplicationDetailOutput
             {
                 AppId = sl.AppId,

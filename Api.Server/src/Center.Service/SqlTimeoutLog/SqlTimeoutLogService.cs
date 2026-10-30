@@ -34,7 +34,8 @@ public class SqlTimeoutLogModelService : IDynamicApplication
     [Permission(PermissionConst.SqlTimeoutLogPaged)]
     public async Task<PagedResult<SqlTimeoutLogModel>> QuerySqlTimeoutLogPaged(QuerySqlTimeoutLogPagedInput input)
     {
-        return await _repository.Queryable<SqlTimeoutLogModel>().WhereIF(input.AccountId != null, wh => wh.AccountId == input.AccountId)
+        return await _repository.Queryable<SqlTimeoutLogModel>()
+            .WhereIF(input.AccountId != null, wh => wh.AccountId == input.AccountId)
             .WhereIF(input.TenantId != null, wh => wh.TenantId == input.TenantId)
             .OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
             .ToPagedListAsync(input);

@@ -5,8 +5,6 @@
 // 本软件按“原样”提供，相关免责声明及责任限制以许可证及适用法律为准。
 // 版权来源、合法使用与二次开发责任说明见仓库根目录 README.md。
 
-using Fast.Center.Domain;
-
 namespace Fast.Center.Service.ClientUser.Dto;
 
 /// <summary>

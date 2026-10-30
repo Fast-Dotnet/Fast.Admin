@@ -39,7 +39,8 @@ public class SqlDiffLogService : IDynamicApplication
             throw new UserFriendlyException("请选择具体的时间范围！");
         }
 
-        return await _repository.Queryable<SqlDiffLogModel>().WhereIF(input.AccountId != null, wh => wh.AccountId == input.AccountId)
+        return await _repository.Queryable<SqlDiffLogModel>()
+            .WhereIF(input.AccountId != null, wh => wh.AccountId == input.AccountId)
             .WhereIF(input.DiffType != null, wh => wh.DiffType == input.DiffType)
             .WhereIF(input.TenantId != null, wh => wh.TenantId == input.TenantId)
             .SplitTable()

@@ -35,7 +35,8 @@ public class MenuService : IDynamicApplication
     [Permission(PermissionConst.Menu.Paged)]
     public async Task<List<ElSelectorOutput<long>>> MenuSelector()
     {
-        var data = await _repository.Queryable<MenuModel>().OrderBy(ob => ob.Sort)
+        var data = await _repository.Queryable<MenuModel>()
+            .OrderBy(ob => ob.Sort)
             .Select(sl => new {sl.MenuId, sl.MenuName, sl.MenuCode, sl.ParentId})
             .ToListAsync();
 
@@ -56,7 +57,8 @@ public class MenuService : IDynamicApplication
     [Permission(PermissionConst.Menu.Paged)]
     public async Task<List<QueryMenuPagedOutput>> QueryMenuPaged(QueryMenuPagedInput input)
     {
-        List<QueryMenuPagedOutput> data = await _repository.Queryable<MenuModel>().LeftJoin<ApplicationModel>((t1, t2) => t1.AppId == t2.AppId)
+        List<QueryMenuPagedOutput> data = await _repository.Queryable<MenuModel>()
+            .LeftJoin<ApplicationModel>((t1, t2) => t1.AppId == t2.AppId)
             .WhereIF(input.Edition != null, t1 => t1.Edition == input.Edition)
             .WhereIF(input.AppId != null, t1 => t1.AppId == input.AppId)
             .WhereIF(input.MenuType != null, t1 => t1.MenuType == input.MenuType)
@@ -114,7 +116,8 @@ public class MenuService : IDynamicApplication
     [Permission(PermissionConst.Menu.Detail)]
     public async Task<QueryMenuDetailOutput> QueryMenuDetail([Required(ErrorMessage = "菜单Id不能为为空")] long? menuId)
     {
-        QueryMenuDetailOutput result = await _repository.Queryable<MenuModel>().LeftJoin<ApplicationModel>((t1, t2) => t1.AppId == t2.AppId)
+        QueryMenuDetailOutput result = await _repository.Queryable<MenuModel>()
+            .LeftJoin<ApplicationModel>((t1, t2) => t1.AppId == t2.AppId)
             .Where(t1 => t1.MenuId == menuId)
             .Select((t1, t2) => new QueryMenuDetailOutput
             {

@@ -39,7 +39,8 @@ public class SqlExecutionLogService : IDynamicApplication
             throw new UserFriendlyException("请选择具体的时间范围！");
         }
 
-        return await _repository.Queryable<SqlExecutionLogModel>().WhereIF(input.AccountId != null, wh => wh.AccountId == input.AccountId)
+        return await _repository.Queryable<SqlExecutionLogModel>()
+            .WhereIF(input.AccountId != null, wh => wh.AccountId == input.AccountId)
             .WhereIF(input.TenantId != null, wh => wh.TenantId == input.TenantId)
             .SplitTable()
             .OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)

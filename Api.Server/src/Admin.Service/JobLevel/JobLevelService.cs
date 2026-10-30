@@ -33,7 +33,8 @@ public class JobLevelService : IDynamicApplication
     [ApiInfo("职级选择器", HttpRequestActionEnum.Query)]
     public async Task<List<ElSelectorOutput<long>>> JobLevelSelector()
     {
-        var data = await _repository.Queryable<JobLevelModel>().OrderByDescending(ob => ob.Level)
+        var data = await _repository.Queryable<JobLevelModel>()
+            .OrderByDescending(ob => ob.Level)
             .Select(sl => new {sl.JobLevelId, sl.JobLevelName, sl.Level})
             .ToListAsync();
 
@@ -50,7 +51,8 @@ public class JobLevelService : IDynamicApplication
     [Permission(PermissionConst.JobLevel.Paged)]
     public async Task<PagedResult<QueryJobLevelPagedOutput>> QueryJobLevelPaged(PagedInput input)
     {
-        return await _repository.Queryable<JobLevelModel>().OrderByIF(input.IsOrderBy, ob => ob.Level, OrderByType.Desc)
+        return await _repository.Queryable<JobLevelModel>()
+            .OrderByIF(input.IsOrderBy, ob => ob.Level, OrderByType.Desc)
             .Select(sl => new QueryJobLevelPagedOutput
             {
                 JobLevelId = sl.JobLevelId,
@@ -74,7 +76,8 @@ public class JobLevelService : IDynamicApplication
     [Permission(PermissionConst.JobLevel.Detail)]
     public async Task<QueryJobLevelDetailOutput> QueryJobLevelDetail([Required(ErrorMessage = "职级Id不能为空")] long? jobLevelId)
     {
-        QueryJobLevelDetailOutput result = await _repository.Queryable<JobLevelModel>().Where(wh => wh.JobLevelId == jobLevelId)
+        QueryJobLevelDetailOutput result = await _repository.Queryable<JobLevelModel>()
+            .Where(wh => wh.JobLevelId == jobLevelId)
             .Select(sl => new QueryJobLevelDetailOutput
             {
                 JobLevelId = sl.JobLevelId,

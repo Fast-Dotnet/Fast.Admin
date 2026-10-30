@@ -35,7 +35,8 @@ public class ApplicationClientService : IDynamicApplication
     public async Task<QueryApplicationClientDetailOutput> QueryApplicationClientDetail(
         [Required(ErrorMessage = "记录Id不能为空")] long? recordId)
     {
-        QueryApplicationClientDetailOutput result = await _repository.Queryable<ApplicationClientModel>().Includes(e => e.Application)
+        QueryApplicationClientDetailOutput result = await _repository.Queryable<ApplicationClientModel>()
+            .Includes(e => e.Application)
             .Where(wh => wh.RecordId == recordId)
             .Select(sl => new QueryApplicationClientDetailOutput
             {

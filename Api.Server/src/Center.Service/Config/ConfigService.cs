@@ -34,7 +34,8 @@ public class ConfigService : IDynamicApplication
     [Permission(PermissionConst.Config.Paged)]
     public async Task<PagedResult<QueryConfigPagedOutput>> QueryConfigPaged(PagedInput input)
     {
-        return await _repository.Queryable<ConfigModel>().Select(sl => new QueryConfigPagedOutput
+        return await _repository.Queryable<ConfigModel>()
+            .Select(sl => new QueryConfigPagedOutput
             {
                 ConfigId = sl.ConfigId,
                 ConfigCode = sl.ConfigCode,
@@ -58,7 +59,8 @@ public class ConfigService : IDynamicApplication
     [Permission(PermissionConst.Config.Detail)]
     public async Task<QueryConfigDetailOutput> QueryConfigDetail([Required(ErrorMessage = "配置Id不能为空")] long? configId)
     {
-        QueryConfigDetailOutput result = await _repository.Queryable<ConfigModel>().Where(wh => wh.ConfigId == configId)
+        QueryConfigDetailOutput result = await _repository.Queryable<ConfigModel>()
+            .Where(wh => wh.ConfigId == configId)
             .Select(sl => new QueryConfigDetailOutput
             {
                 ConfigId = sl.ConfigId,

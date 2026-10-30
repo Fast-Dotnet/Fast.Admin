@@ -35,7 +35,8 @@ public class ApplicationVersionService : IDynamicApplication
     public async Task<PagedResult<QueryApplicationVersionPagedOutput>> QueryApplicationVersionPaged(
         QueryApplicationVersionPagedInput input)
     {
-        return await _repository.Queryable<ApplicationVersionModel>().LeftJoin<ApplicationClientModel>((t1, t2) => t1.AppKey == t2.AppKey)
+        return await _repository.Queryable<ApplicationVersionModel>()
+            .LeftJoin<ApplicationClientModel>((t1, t2) => t1.AppKey == t2.AppKey)
             .LeftJoin<ApplicationModel>((t1, t2, t3) => t2.AppId == t3.AppId)
             .WhereIF(input.PackageType != null, t1 => t1.PackageType == input.PackageType)
             .WhereIF(input.Status != null, t1 => t1.Status == input.Status)

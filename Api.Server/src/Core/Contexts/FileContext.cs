@@ -8,7 +8,6 @@
 using System.Security.Cryptography;
 using System.Text;
 using Fast.Center.Domain;
-using Fast.SqlSugar;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using SqlSugar;
@@ -139,8 +138,9 @@ public class FileContext
         }
 
         ISqlSugarClient db = FastContext.GetRequiredService<ISqlSugarClient>();
-        bool fileExists = await db.Queryable<FileModel>().AnyAsync(wh =>
-            wh.FileId == fileId && (wh.FileMimeType.StartsWith("audio/") || wh.FileMimeType.StartsWith("video/")));
+        bool fileExists = await db.Queryable<FileModel>()
+            .AnyAsync(wh =>
+                wh.FileId == fileId && (wh.FileMimeType.StartsWith("audio/") || wh.FileMimeType.StartsWith("video/")));
         if (!fileExists)
         {
             throw new UserFriendlyException("文件不存在或存储地址不受支持！");
@@ -197,8 +197,9 @@ public class FileContext
         }
 
         ISqlSugarClient db = FastContext.GetRequiredService<ISqlSugarClient>();
-        bool fileExists = await db.Queryable<FileModel>().AnyAsync(wh =>
-            wh.FileId == fileId && (wh.FileMimeType.StartsWith("audio/") || wh.FileMimeType.StartsWith("video/")));
+        bool fileExists = await db.Queryable<FileModel>()
+            .AnyAsync(wh =>
+                wh.FileId == fileId && (wh.FileMimeType.StartsWith("audio/") || wh.FileMimeType.StartsWith("video/")));
         if (!fileExists)
         {
             throw new UserFriendlyException("文件不存在或存储地址不受支持！");
