@@ -27,24 +27,10 @@ public partial class LoginService
     private static ClientUserModel CreateClientUser(long appId, AppEnvironmentEnum appType, string openId, string unionId,
         string sessionKey)
     {
-        ClientUserTypeEnum userType = appType switch
-        {
-            AppEnvironmentEnum.Android => ClientUserTypeEnum.Mobile,
-            AppEnvironmentEnum.IOS => ClientUserTypeEnum.Mobile | ClientUserTypeEnum.Apple,
-            AppEnvironmentEnum.WeChatMiniProgram => ClientUserTypeEnum.Mobile | ClientUserTypeEnum.MiniProgram,
-            AppEnvironmentEnum.WeChatOfficialAccount => ClientUserTypeEnum.OfficialAccount,
-            AppEnvironmentEnum.WeChatServiceAccount => ClientUserTypeEnum.ServiceAccount,
-            AppEnvironmentEnum.WeChatOpenPlatform => ClientUserTypeEnum.OpenPlatform,
-            AppEnvironmentEnum.WorkWeChat => ClientUserTypeEnum.WorkWeChat,
-            AppEnvironmentEnum.QuickApp => ClientUserTypeEnum.Mobile,
-            _ => throw new UserFriendlyException("暂不支持此类微信客户端！")
-        };
-
         return new ClientUserModel
         {
             UserId = YitIdHelper.NextId(),
             AppId = appId,
-            UserType = userType,
             OpenId = openId,
             UnionId = unionId,
             SessionKey = sessionKey,

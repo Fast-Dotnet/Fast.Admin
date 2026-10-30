@@ -98,6 +98,34 @@ public partial class AccountService : IDynamicApplication
     }
 
     /// <summary>
+    /// 强制下线账号
+    /// </summary>
+    private async Task AccountForceOffline(long accountId, string message)
+    {
+        List<string> connectionIds = await _repository.Queryable<TenantOnlineUserModel>()
+            .ClearFilter<IBaseTEntity>()
+            .Where(wh => wh.IsOnline)
+            .Where(wh => wh.AccountId == accountId)
+            .Select(sl => sl.ConnectionId)
+            .ToListAsync();
+        if (connectionIds.Count == 0)
+        {
+            return;
+        }
+
+        // 强制下线当前账号所有在线用户
+        await _hubContext.Clients.Clients(connectionIds)
+            .ForceOffline(new ForceOfflineOutput
+            {
+                IsAdmin = _user.IsSuperAdmin || _user.IsAdmin,
+                NickName = _user.NickName,
+                EmployeeNo = _user.EmployeeNo,
+                OfflineTime = DateTime.Now,
+                Message = message
+            });
+    }
+
+    /// <summary>
     /// 账号选择器
     /// </summary>
     [HttpPost]
@@ -465,30 +493,71 @@ public partial class AccountService : IDynamicApplication
     }
 
     /// <summary>
-    /// 强制下线账号
+    /// 账号解除锁定
     /// </summary>
-    private async Task AccountForceOffline(long accountId, string message)
+    [HttpPost]
+    [ApiInfo("账号解除锁定", HttpRequestActionEnum.Edit)]
+    [Permission(PermissionConst.Account.Unlock)]
+    [PlatformOnly]
+    public async Task Unlock(AccountIdInput input)
     {
-        List<string> connectionIds = await _repository.Queryable<TenantOnlineUserModel>()
-            .ClearFilter<IBaseTEntity>()
-            .Where(wh => wh.IsOnline)
-            .Where(wh => wh.AccountId == accountId)
-            .Select(sl => sl.ConnectionId)
-            .ToListAsync();
-        if (connectionIds.Count == 0)
+        AccountModel accountModel = await _repository.SingleOrDefaultAsync(input.AccountId);
+        if (accountModel == null)
         {
-            return;
+            throw new UserFriendlyException("数据不存在！");
         }
 
-        // 强制下线当前账号所有在线用户
-        await _hubContext.Clients.Clients(connectionIds)
-            .ForceOffline(new ForceOfflineOutput
-            {
-                IsAdmin = _user.IsSuperAdmin || _user.IsAdmin,
-                NickName = _user.NickName,
-                EmployeeNo = _user.EmployeeNo,
-                OfflineTime = DateTime.Now,
-                Message = message
-            });
+        DateTime dateTime = DateTime.Now;
+
+        // 判断是否存在锁定
+        if (accountModel.LockEndTime == null || accountModel.LockEndTime < dateTime)
+        {
+            throw new UserFriendlyException("账号未锁定！");
+        }
+
+        accountModel.PasswordErrorTime = null;
+        accountModel.LockStartTime = null;
+        accountModel.LockEndTime = null;
+        accountModel.RowVersion = input.RowVersion;
+
+        await _repository.UpdateAsync(accountModel);
+    }
+
+    /// <summary>
+    /// 账号更改状态
+    /// </summary>
+    [HttpPost]
+    [ApiInfo("账号更改状态", HttpRequestActionEnum.Edit)]
+    [Permission(PermissionConst.Account.Status)]
+    [PlatformOnly]
+    public async Task ChangeStatus(AccountIdInput input)
+    {
+        if (_user.AccountId == input.AccountId)
+        {
+            throw new UserFriendlyException("禁止更改当前登录账号状态！");
+        }
+
+        AccountModel accountModel = await _repository.SingleOrDefaultAsync(input.AccountId);
+        if (accountModel == null)
+        {
+            throw new UserFriendlyException("数据不存在！");
+        }
+
+        // 更改状态
+        accountModel.Status = accountModel.Status switch
+        {
+            CommonStatusEnum.Enable => CommonStatusEnum.Disable,
+            CommonStatusEnum.Disable => CommonStatusEnum.Enable,
+            _ => accountModel.Status
+        };
+        accountModel.RowVersion = input.RowVersion;
+
+        await _repository.UpdateAsync(accountModel);
+
+        if (accountModel.Status == CommonStatusEnum.Disable)
+        {
+            await _user.RevokeAccount(accountModel.AccountId);
+            await AccountForceOffline(accountModel.AccountId, "账号已被禁用");
+        }
     }
 }

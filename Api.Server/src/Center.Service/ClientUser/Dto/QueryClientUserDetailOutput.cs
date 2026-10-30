@@ -20,11 +20,6 @@ public class QueryClientUserDetailOutput : UpdateVersionInput
     public long UserId { get; set; }
 
     /// <summary>
-    /// 用户类型
-    /// </summary>
-    public ClientUserTypeEnum UserType { get; set; }
-
-    /// <summary>
     /// 手机
     /// </summary>
     public string Mobile { get; set; }

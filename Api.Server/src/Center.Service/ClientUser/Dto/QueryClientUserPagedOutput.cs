@@ -25,11 +25,6 @@ public class QueryClientUserPagedOutput : PagedOutput
     public long AppId { get; set; }
 
     /// <summary>
-    /// 用户类型
-    /// </summary>
-    public ClientUserTypeEnum UserType { get; set; }
-
-    /// <summary>
     /// 手机
     /// </summary>
     [SugarSearchValue]

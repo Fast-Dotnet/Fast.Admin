@@ -68,14 +68,12 @@ public class ClientUserService : IDynamicApplication
     public async Task<PagedResult<QueryClientUserPagedOutput>> QueryClientUserPaged(QueryClientUserPagedInput input)
     {
         return await _repository.Queryable<ClientUserModel>().WhereIF(input.AppId != null, wh => wh.AppId == input.AppId)
-            .WhereIF(input.UserType != null, wh => wh.UserType == input.UserType)
             .WhereIF(input.Sex != null, wh => wh.Sex == input.Sex)
             .OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
             .Select(sl => new QueryClientUserPagedOutput
             {
                 UserId = sl.UserId,
                 AppId = sl.AppId,
-                UserType = sl.UserType,
                 Mobile = sl.Mobile,
                 OpenId = sl.OpenId,
                 UnionId = sl.UnionId,
@@ -118,7 +116,6 @@ public class ClientUserService : IDynamicApplication
             .Select(sl => new QueryClientUserDetailOutput
             {
                 UserId = sl.UserId,
-                UserType = sl.UserType,
                 Mobile = sl.Mobile,
                 OpenId = sl.OpenId,
                 UnionId = sl.UnionId,

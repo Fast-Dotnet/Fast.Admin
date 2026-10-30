@@ -20,11 +20,6 @@ public class QueryClientUserPagedInput : PagedInput
     public long? AppId { get; set; }
 
     /// <summary>
-    /// 用户类型
-    /// </summary>
-    public ClientUserTypeEnum? UserType { get; set; }
-
-    /// <summary>
     /// 性别
     /// </summary>
     public GenderEnum? Sex { get; set; }

@@ -16,6 +16,40 @@ namespace Fast.Center.Service.Login;
 public partial class LoginService
 {
     /// <summary>
+    /// 获取登录用户
+    /// </summary>
+    [HttpGet("/queryLoginUser")]
+    [ApiInfo("获取登录用户", HttpRequestActionEnum.Query)]
+    [EnableRateLimiting(CommonConst.LoginApiRateLimit)]
+    [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+    public async Task<List<LoginTenantOutput>> QueryLoginUser()
+    {
+        return await _repository.Queryable<AccountModel>()
+            .InnerJoin<TenantUserModel>((t1, t2) => t1.AccountId == t2.AccountId)
+            .InnerJoin<TenantModel>((t1, t2, t3) => t2.TenantId == t3.TenantId)
+            .ClearFilter<IBaseTEntity>()
+            .Where(t1 => t1.AccountId == _user.AccountId)
+            .Where((t1, t2, t3) => t3.Status == CommonStatusEnum.Enable)
+            .Select((t1, t2, t3) => new LoginTenantOutput
+            {
+                UserKey = t2.UserKey,
+                TenantName = t3.TenantName,
+                ShortName = t3.ShortName,
+                SpellName = t3.SpellName,
+                Edition = t3.Edition,
+                LogoUrl = t3.LogoUrl,
+                EmployeeNo = t2.EmployeeNo,
+                EmployeeName = t2.EmployeeName,
+                IdPhoto = t2.IdPhoto,
+                DepartmentId = t2.DepartmentId,
+                DepartmentName = t2.DepartmentName,
+                UserType = t2.UserType,
+                Status = t2.Status
+            })
+            .ToListAsync();
+    }
+
+    /// <summary>
     /// 尝试登录
     /// </summary>
     [HttpPost("/tryLogin")]

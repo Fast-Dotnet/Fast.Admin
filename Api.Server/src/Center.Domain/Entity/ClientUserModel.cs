@@ -34,12 +34,6 @@ public class ClientUserModel : IUpdateVersion
     public long AppId { get; set; }
 
     /// <summary>
-    /// 用户类型
-    /// </summary>
-    [SugarColumn(ColumnDescription = "用户类型")]
-    public ClientUserTypeEnum UserType { get; set; }
-
-    /// <summary>
     /// 手机
     /// </summary>
     [SugarColumn(ColumnDescription = "手机", ColumnDataType = "varchar(11)")]

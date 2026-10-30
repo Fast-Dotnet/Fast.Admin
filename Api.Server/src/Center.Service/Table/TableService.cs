@@ -7,6 +7,10 @@
 
 using Fast.Cache;
 using Fast.Center.Domain;
+using Fast.Center.Service.Table.Dto;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Yitter.IdGenerator;
 
 namespace Fast.Center.Service.Table;
 
@@ -31,5 +35,373 @@ public partial class TableService : IDynamicApplication
         _tableRepository = tableRepository;
         _columnRepository = columnRepository;
         _columnCacheRepository = columnCacheRepository;
+    }
+
+    /// <summary>
+    /// 获取表格配置分页列表
+    /// </summary>
+    [HttpPost]
+    [ApiInfo("获取表格配置分页列表", HttpRequestActionEnum.Paged)]
+    [Permission(PermissionConst.Table.Paged)]
+    [PlatformOnly]
+    public async Task<PagedResult<QueryTableConfigPagedOutput>> QueryTableConfigPaged(PagedInput input)
+    {
+        return await _tableRepository.Queryable<TableConfigModel>()
+            .OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
+            .Select(sl => new QueryTableConfigPagedOutput
+            {
+                TableId = sl.TableId,
+                TableKey = sl.TableKey,
+                TableName = sl.TableName,
+                Remark = sl.Remark,
+                CreatedUserName = sl.CreatedUserName,
+                CreatedTime = sl.CreatedTime,
+                UpdatedUserName = sl.UpdatedUserName,
+                UpdatedTime = sl.UpdatedTime,
+                RowVersion = sl.RowVersion
+            })
+            .ToPagedListAsync(input);
+    }
+
+    /// <summary>
+    /// 获取表格配置详情
+    /// </summary>
+    [HttpGet]
+    [ApiInfo("获取表格配置详情", HttpRequestActionEnum.Query)]
+    [Permission(PermissionConst.Table.Detail)]
+    [PlatformOnly]
+    public async Task<QueryTableConfigDetailOutput> QueryTableConfigDetail([Required(ErrorMessage = "表格Id不能为空")] long? tableId)
+    {
+        QueryTableConfigDetailOutput result = await _tableRepository.Queryable<TableConfigModel>()
+            .Where(wh => wh.TableId == tableId)
+            .Select(sl => new QueryTableConfigDetailOutput
+            {
+                TableId = sl.TableId,
+                TableKey = sl.TableKey,
+                TableName = sl.TableName,
+                Remark = sl.Remark,
+                CreatedUserName = sl.CreatedUserName,
+                CreatedTime = sl.CreatedTime,
+                UpdatedUserName = sl.UpdatedUserName,
+                UpdatedTime = sl.UpdatedTime,
+                RowVersion = sl.RowVersion
+            })
+            .SingleAsync();
+
+        if (result == null)
+        {
+            throw new UserFriendlyException("数据不存在！");
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// 添加表格配置
+    /// </summary>
+    [HttpPost]
+    [ApiInfo("添加表格配置", HttpRequestActionEnum.Add)]
+    [Permission(PermissionConst.Table.Add)]
+    [PlatformOnly]
+    public async Task AddTableConfig(AddTableConfigInput input)
+    {
+        // 判断表格名称是否重复
+        if (await _tableRepository.AnyAsync(a => a.TableName == input.TableName))
+        {
+            throw new UserFriendlyException("表格名称不能重复！");
+        }
+
+        long tableId = YitIdHelper.NextId();
+        var tableConfigModel = new TableConfigModel
+        {
+            TableId = tableId,
+            TableKey = NumberUtil.IdToCodeByLong(tableId),
+            TableName = input.TableName,
+            Remark = input.Remark
+        };
+
+        await _tableRepository.InsertAsync(tableConfigModel);
+    }
+
+    /// <summary>
+    /// 编辑表格配置
+    /// </summary>
+    [HttpPost]
+    [ApiInfo("编辑表格配置", HttpRequestActionEnum.Edit)]
+    [Permission(PermissionConst.Table.Edit)]
+    [PlatformOnly]
+    public async Task EditTableConfig(EditTableConfigInput input)
+    {
+        // 判断表格名称是否重复
+        if (await _tableRepository.AnyAsync(a => a.TableName == input.TableName && a.TableId != input.TableId))
+        {
+            throw new UserFriendlyException("表格名称不能重复！");
+        }
+
+        TableConfigModel tableConfigModel = await _tableRepository.SingleOrDefaultAsync(input.TableId);
+        if (tableConfigModel == null)
+        {
+            throw new UserFriendlyException("数据不存在！");
+        }
+
+        tableConfigModel.TableName = input.TableName;
+        tableConfigModel.Remark = input.Remark;
+        tableConfigModel.RowVersion = input.RowVersion;
+
+        await _tableRepository.Updateable(tableConfigModel)
+            // 避免表格同步循环问题，这里不更新时间
+            .IgnoreColumns(it => new {it.UpdatedTime})
+            .ExecuteCommandWithOptLockAsync(true);
+    }
+
+    /// <summary>
+    /// 删除表格配置
+    /// </summary>
+    [HttpPost]
+    [ApiInfo("删除表格配置", HttpRequestActionEnum.Delete)]
+    [Permission(PermissionConst.Table.Delete)]
+    [PlatformOnly]
+    public async Task DeleteTableConfig(TableIdInput input)
+    {
+        TableConfigModel tableConfigModel = await _tableRepository.SingleOrDefaultAsync(input.TableId);
+        if (tableConfigModel == null)
+        {
+            throw new UserFriendlyException("数据不存在！");
+        }
+
+        await _tableRepository.Ado.UseTranAsync(async () =>
+        {
+            await _columnCacheRepository.DeleteAsync(wh => wh.TableId == tableConfigModel.TableId);
+            await _columnRepository.DeleteAsync(wh => wh.TableId == tableConfigModel.TableId);
+            await _tableRepository.DeleteAsync(tableConfigModel);
+        }, ex => throw ex);
+
+        // 清除缓存
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.TableConfig, tableConfigModel.TableKey);
+        await _centerCache.DelAsync(cacheKey);
+        // 清除用户缓存
+        string userCacheKey = CacheConst.GetCacheKey(CacheConst.Center.UserTableConfigCache, tableConfigModel.TableKey, "*", "*");
+        await _centerCache.DelByPatternAsync(userCacheKey);
+    }
+
+    /// <summary>
+    /// 复制表格配置
+    /// </summary>
+    [HttpPost]
+    [ApiInfo("复制表格配置", HttpRequestActionEnum.Edit)]
+    [Permission(PermissionConst.Table.Edit)]
+    [PlatformOnly]
+    public async Task CopyTableConfig(CopyTableConfigInput input)
+    {
+        // 判断表格名称是否重复
+        if (await _tableRepository.AnyAsync(a => a.TableName == input.TableName))
+        {
+            throw new UserFriendlyException("表格名称不能重复！");
+        }
+
+        if (!await _tableRepository.AnyAsync(a => a.TableId == input.TableId))
+        {
+            throw new UserFriendlyException("数据不存在！");
+        }
+
+        long tableId = YitIdHelper.NextId();
+        var tableConfigModel = new TableConfigModel
+        {
+            TableId = tableId,
+            TableKey = NumberUtil.IdToCodeByLong(tableId),
+            TableName = input.TableName,
+            Remark = input.Remark
+        };
+
+        // 查询表格所有列
+        List<TableColumnConfigModel> columnConfigList = await _columnRepository.Queryable<TableColumnConfigModel>()
+            .Where(wh => wh.TableId == input.TableId)
+            .OrderBy(ob => ob.Order)
+            .ToListAsync();
+
+        // 重置列Id和表格Id
+        columnConfigList.ForEach(item =>
+        {
+            item.ColumnId = YitIdHelper.NextId();
+            item.TableId = tableConfigModel.TableId;
+        });
+
+        await _tableRepository.Ado.UseTranAsync(async () =>
+        {
+            await _tableRepository.InsertAsync(tableConfigModel);
+            await _columnRepository.InsertAsync(columnConfigList);
+        }, ex => throw ex);
+    }
+
+    /// <summary>
+    /// 获取表格列配置详情
+    /// </summary>
+    [HttpGet]
+    [ApiInfo("获取表格列配置详情", HttpRequestActionEnum.Query)]
+    [Permission(PermissionConst.Table.Detail)]
+    [PlatformOnly]
+    public async Task<List<FaTableColumnCtx>> QueryTableColumnConfigDetail([Required(ErrorMessage = "表格Id不能为空")] long? tableId)
+    {
+        return await _columnRepository.Queryable<TableColumnConfigModel>()
+            .Where(wh => wh.TableId == tableId)
+            .OrderBy(ob => ob.Order)
+            .Select(sl => new FaTableColumnCtx
+            {
+                ColumnId = sl.ColumnId,
+                Prop = sl.Prop,
+                Label = sl.Label,
+                Fixed = sl.Fixed,
+                AutoWidth = sl.AutoWidth,
+                Width = sl.Width,
+                SmallWidth = sl.SmallWidth,
+                Order = sl.Order,
+                Show = sl.Show,
+                Copy = sl.Copy,
+                Sortable = sl.Sortable,
+                SortableField = sl.SortableField,
+                Type = sl.Type,
+                Link = sl.Link,
+                ClickEmit = sl.ClickEmit,
+                Tag = sl.Tag,
+                Enum = sl.Enum,
+                DateFix = sl.DateFix,
+                DateFormat = sl.DateFormat,
+                AuthTag = sl.AuthTag,
+                DataDeleteField = sl.DataDeleteField,
+                Slot = sl.Slot,
+                OtherConfig = sl.OtherConfig,
+                PureSearch = sl.PureSearch,
+                SearchEl = sl.SearchEl,
+                SearchKey = sl.SearchKey,
+                SearchLabel = sl.SearchLabel,
+                SearchOrder = sl.SearchOrder,
+                SearchSlot = sl.SearchSlot,
+                SearchConfig = sl.SearchConfig
+            })
+            .ToListAsync();
+    }
+
+    /// <summary>
+    /// 编辑表格列配置
+    /// </summary>
+    [HttpPost]
+    [ApiInfo("编辑表格列配置", HttpRequestActionEnum.Edit)]
+    [Permission(PermissionConst.Table.Edit)]
+    [PlatformOnly]
+    public async Task EditTableColumnConfig(EditTableColumnConfigInput input)
+    {
+        var columnIds = input.Columns.Where(wh => wh.ColumnId != null).Select(sl => sl.ColumnId).Distinct().ToList();
+
+        if (columnIds.Count != input.Columns.Count(c => c.ColumnId != null))
+        {
+            throw new UserFriendlyException("传入的列重复！");
+        }
+
+        TableConfigModel tableConfigModel = await _tableRepository.SingleOrDefaultAsync(input.TableId);
+        if (tableConfigModel == null)
+        {
+            throw new UserFriendlyException("数据不存在！");
+        }
+
+        // 查询表格配置的所有列
+        List<TableColumnConfigModel> tableColumnList = await _columnRepository.Queryable<TableColumnConfigModel>()
+            .Where(wh => wh.TableId == input.TableId)
+            .ToListAsync();
+
+        // 更新的
+        var updateTableColumnList = input.Columns.Where(wh => wh.ColumnId != null)
+            .Select(item =>
+            {
+                TableColumnConfigModel tableColumnModel = tableColumnList.SingleOrDefault(s => s.ColumnId == item.ColumnId);
+                if (tableColumnModel == null)
+                {
+                    throw new UserFriendlyException("数据不存在！");
+                }
+
+                tableColumnModel.Prop = item.Prop;
+                tableColumnModel.Label = item.Label;
+                tableColumnModel.Fixed = item.Fixed;
+                tableColumnModel.AutoWidth = item.AutoWidth;
+                tableColumnModel.Width = item.Width;
+                tableColumnModel.SmallWidth = item.SmallWidth;
+                tableColumnModel.Order = item.Order;
+                tableColumnModel.Show = item.Show;
+                tableColumnModel.Copy = item.Copy;
+                tableColumnModel.Sortable = item.Sortable;
+                tableColumnModel.SortableField = item.SortableField;
+                tableColumnModel.Type = item.Type;
+                tableColumnModel.Link = item.Link;
+                tableColumnModel.ClickEmit = item.ClickEmit;
+                tableColumnModel.Tag = item.Tag;
+                tableColumnModel.Enum = item.Enum;
+                tableColumnModel.DateFix = item.DateFix;
+                tableColumnModel.DateFormat = item.DateFormat;
+                tableColumnModel.AuthTag = item.AuthTag;
+                tableColumnModel.DataDeleteField = item.DataDeleteField;
+                tableColumnModel.Slot = item.Slot;
+                tableColumnModel.OtherConfig = item.OtherConfig;
+                tableColumnModel.PureSearch = item.PureSearch;
+                tableColumnModel.SearchEl = item.SearchEl;
+                tableColumnModel.SearchKey = item.SearchKey;
+                tableColumnModel.SearchLabel = item.SearchLabel;
+                tableColumnModel.SearchOrder = item.SearchOrder;
+                tableColumnModel.SearchSlot = item.SearchSlot;
+                tableColumnModel.SearchConfig = item.SearchConfig;
+
+                return tableColumnModel;
+            })
+            .ToList();
+
+        // 添加的
+        var addTableColumnList = input.Columns.Where(wh => wh.ColumnId == null)
+            .Select(sl => new TableColumnConfigModel
+            {
+                TableId = tableConfigModel.TableId,
+                Prop = sl.Prop,
+                Label = sl.Label,
+                Fixed = sl.Fixed,
+                AutoWidth = sl.AutoWidth,
+                Width = sl.Width,
+                SmallWidth = sl.SmallWidth,
+                Order = sl.Order,
+                Show = sl.Show,
+                Copy = sl.Copy,
+                Sortable = sl.Sortable,
+                SortableField = sl.SortableField,
+                Type = sl.Type,
+                Link = sl.Link,
+                ClickEmit = sl.ClickEmit,
+                Tag = sl.Tag,
+                Enum = sl.Enum,
+                DateFix = sl.DateFix,
+                DateFormat = sl.DateFormat,
+                AuthTag = sl.AuthTag,
+                DataDeleteField = sl.DataDeleteField,
+                Slot = sl.Slot,
+                OtherConfig = sl.OtherConfig,
+                PureSearch = sl.PureSearch,
+                SearchEl = sl.SearchEl,
+                SearchKey = sl.SearchKey,
+                SearchLabel = sl.SearchLabel,
+                SearchOrder = sl.SearchOrder,
+                SearchSlot = sl.SearchSlot,
+                SearchConfig = sl.SearchConfig
+            })
+            .ToList();
+
+        var deleteTableColumnList = tableColumnList.Where(wh => !columnIds.Contains(wh.ColumnId)).ToList();
+
+        tableConfigModel.RowVersion = input.RowVersion;
+
+        await _tableRepository.Ado.UseTranAsync(async () =>
+        {
+            await _tableRepository.Updateable(tableConfigModel).ExecuteCommandAsync();
+            await _columnRepository.DeleteAsync(deleteTableColumnList);
+            await _columnRepository.UpdateAsync(updateTableColumnList);
+            await _columnRepository.InsertAsync(addTableColumnList);
+        }, ex => throw ex);
+
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.TableConfig, tableConfigModel.TableKey);
+        await _centerCache.DelAsync(cacheKey);
     }
 }

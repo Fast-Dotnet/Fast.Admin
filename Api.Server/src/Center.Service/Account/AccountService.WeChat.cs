@@ -65,18 +65,6 @@ public partial class AccountService
         if (clientUserModel == null)
         {
             addClientUser = true;
-            clientUserModel = new ClientUserModel
-            {
-                UserId = YitIdHelper.NextId(),
-                AppId = applicationModel.AppId,
-                UserType = ClientUserTypeEnum.Mobile | ClientUserTypeEnum.MiniProgram,
-                OpenId = response.OpenId,
-                UnionId = response.UnionId,
-                SessionKey = response.SessionKey,
-                NickName = "微信用户",
-                Avatar = CommonConst.DefaultAvatar,
-                Sex = GenderEnum.Unknown
-            };
 
             // 尝试解析加密数据
             byte[] decryptBytes = AESUtility.DecryptWithCBC(Convert.FromBase64String(response.SessionKey),
@@ -88,8 +76,17 @@ public partial class AccountService
                 throw new UserFriendlyException("解析加密用户信息失败！");
             }
 
-            clientUserModel.NickName = decryptData.NickName;
-            clientUserModel.Sex = decryptData.Gender;
+            clientUserModel = new ClientUserModel
+            {
+                UserId = YitIdHelper.NextId(),
+                AppId = applicationModel.AppId,
+                OpenId = response.OpenId,
+                UnionId = response.UnionId,
+                SessionKey = response.SessionKey,
+                NickName = accountModel.NickName,
+                Avatar = accountModel.Avatar,
+                Sex = decryptData.Gender
+            };
         }
 
         if (accountModel.ClientUserId != null && accountModel.ClientUserId != clientUserModel.UserId)
