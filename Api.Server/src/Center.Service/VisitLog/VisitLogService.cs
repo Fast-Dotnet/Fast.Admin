@@ -40,7 +40,7 @@ public class VisitLogService : IDynamicApplication
             throw new UserFriendlyException("请选择具体的时间范围！");
         }
 
-        ISugarQueryable<VisitLogModel> queryable = _repository.Entities
+        ISugarQueryable<VisitLogModel> queryable = _repository.Queryable<VisitLogModel>()
             .WhereIF(input.AccountId != null, wh => wh.AccountId == input.AccountId)
             .WhereIF(input.VisitType != null, wh => wh.VisitType == input.VisitType);
 

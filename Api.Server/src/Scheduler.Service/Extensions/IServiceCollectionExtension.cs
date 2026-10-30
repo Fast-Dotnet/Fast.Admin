@@ -65,8 +65,8 @@ public static class IServiceCollectionExtension
                 x.UseClustering();
 
                 // 数据库连接字符串
-                string connectionString = SqlSugarDatabaseUtil.GetConnectionStr(SqlSugarContext.ConnectionSettings.DbType!.Value,
-                    SqlSugarContext.ConnectionSettings);
+                string connectionString =
+                    SqlSugarContext.GetConnectionConfig(SqlSugarContext.ConnectionSettings).ConnectionString;
 
                 switch (SqlSugarContext.ConnectionSettings.DbType)
                 {

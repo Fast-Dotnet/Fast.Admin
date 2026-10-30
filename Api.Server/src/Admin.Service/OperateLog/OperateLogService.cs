@@ -44,7 +44,7 @@ public class OperateLogService : IDynamicApplication
             throw new UserFriendlyException("请选择具体的时间范围！");
         }
 
-        ISugarQueryable<OperateLogModel> queryable = _repository.Entities
+        ISugarQueryable<OperateLogModel> queryable = _repository.Queryable<OperateLogModel>()
             .WhereIF(input.OperateType != null, wh => wh.OperateType == input.OperateType)
             .WhereIF(input.EmployeeId != null, wh => wh.CreatedUserId == input.EmployeeId)
             .WhereIF(input.BizId != null, wh => wh.BizId == input.BizId);

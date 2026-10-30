@@ -23,7 +23,7 @@ public partial class TableService
     [PlatformOnly]
     public async Task<List<FaTableColumnCtx>> QueryTableColumnConfigDetail([Required(ErrorMessage = "表格Id不能为空")] long? tableId)
     {
-        return await _columnRepository.Entities.Where(wh => wh.TableId == tableId)
+        return await _columnRepository.Queryable<TableColumnConfigModel>().Where(wh => wh.TableId == tableId)
             .OrderBy(ob => ob.Order)
             .Select(sl => new FaTableColumnCtx
             {
@@ -85,7 +85,7 @@ public partial class TableService
 
         // 查询表格配置的所有列
         List<TableColumnConfigModel> tableColumnList = await _columnRepository
-            .Entities.Where(wh => wh.TableId == input.TableId)
+            .Queryable<TableColumnConfigModel>().Where(wh => wh.TableId == input.TableId)
             .ToListAsync();
 
         // 更新的

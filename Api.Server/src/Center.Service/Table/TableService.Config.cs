@@ -24,7 +24,7 @@ public partial class TableService
     [PlatformOnly]
     public async Task<PagedResult<QueryTableConfigPagedOutput>> QueryTableConfigPaged(PagedInput input)
     {
-        return await _tableRepository.Entities.OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
+        return await _tableRepository.Queryable<TableConfigModel>().OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
             .Select(sl => new QueryTableConfigPagedOutput
             {
                 TableId = sl.TableId,
@@ -49,7 +49,7 @@ public partial class TableService
     [PlatformOnly]
     public async Task<QueryTableConfigDetailOutput> QueryTableConfigDetail([Required(ErrorMessage = "表格Id不能为空")] long? tableId)
     {
-        QueryTableConfigDetailOutput result = await _tableRepository.Entities.Where(wh => wh.TableId == tableId)
+        QueryTableConfigDetailOutput result = await _tableRepository.Queryable<TableConfigModel>().Where(wh => wh.TableId == tableId)
             .Select(sl => new QueryTableConfigDetailOutput
             {
                 TableId = sl.TableId,
@@ -190,7 +190,7 @@ public partial class TableService
         };
 
         // 查询表格所有列
-        List<TableColumnConfigModel> columnConfigList = await _columnRepository.Entities.Where(wh => wh.TableId == input.TableId)
+        List<TableColumnConfigModel> columnConfigList = await _columnRepository.Queryable<TableColumnConfigModel>().Where(wh => wh.TableId == input.TableId)
             .OrderBy(ob => ob.Order)
             .ToListAsync();
 

@@ -39,7 +39,7 @@ public partial class RoleService
                 .ToList();
         }
 
-        RoleModel roleModel = await _repository.Entities.Where(wh => wh.RoleId == input.RoleId)
+        RoleModel roleModel = await _repository.Queryable<RoleModel>().Where(wh => wh.RoleId == input.RoleId)
             .WhereIF(assignableRoleIds != null, wh => assignableRoleIds.Contains(wh.RoleId))
             .SingleAsync();
         if (roleModel == null)

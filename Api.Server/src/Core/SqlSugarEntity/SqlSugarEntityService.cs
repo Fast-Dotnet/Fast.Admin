@@ -65,60 +65,55 @@ public class SqlSugarEntityService : ISqlSugarEntityService, ISingletonDependenc
             return connectionSettings;
         }
 
+        using var db = new SqlSugarClient(SqlSugarContext.GetConnectionConfig(SqlSugarContext.ConnectionSettings));
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.Database, tenantNo, databaseType.ToString());
-
-        ConnectionSettingsOptions result = await _centerCache.GetAndSetAsync(cacheKey, async () =>
-        {
-            using var db = new SqlSugarClient(SqlSugarContext.GetConnectionConfig(SqlSugarContext.ConnectionSettings));
-
-            MainDatabaseModel data = await db.Queryable<MainDatabaseModel>()
+        MainDatabaseModel databaseModel = await _centerCache.GetAndSetAsync(cacheKey,
+            async () => await db.Queryable<MainDatabaseModel>()
                 .Includes(e => e.SlaveDatabaseList)
                 .Where(wh => wh.TenantId == tenantId && wh.DatabaseType == databaseType)
-                .SingleAsync();
+                .SingleAsync());
 
-            if (data == null)
-            {
-                string message = $"未能找到对应类型【{databaseType.ToString()}】所存在的 Database 信息！";
-                _logger.LogError($"TenantId：{tenantId}；TenantNo：{tenantNo}；{message}");
-                throw new UserFriendlyException(message);
-            }
+        if (databaseModel == null)
+        {
+            string message = $"未能找到对应类型【{databaseType.ToString()}】所存在的 Database 信息！";
+            _logger.LogError($"TenantId：{tenantId}；TenantNo：{tenantNo}；{message}");
+            throw new UserFriendlyException(message);
+        }
 
-            return new ConnectionSettingsOptions
-            {
-                ConnectionId = data.MainId.ToString(),
-                DbType = data.DbType.ToDbType(),
-                ServiceIp = _hostEnvironment.IsDevelopment()
-                    // 开发环境使用公网地址
-                    ? data.PublicIp
-                    // 生产环境使用内网地址
-                    : data.IntranetIp,
-                Port = data.Port,
-                DbName = data.DbName,
-                DbUser = data.DbUser,
-                DbPwd = data.DbPwd,
-                CustomConnectionStr = data.CustomConnectionStr,
-                CommandTimeOut = data.CommandTimeOut,
-                SugarSqlExecMaxSeconds = data.SugarSqlExecMaxSeconds,
-                DiffLog = data.DiffLog,
-                DisableAop = data.DisableAop,
-                SlaveConnectionList = data.SlaveDatabaseList.Select(dSl => new SlaveConnectionInfo
-                    {
-                        ServiceIp = _hostEnvironment.IsDevelopment()
-                            // 开发环境使用公网地址
-                            ? string.IsNullOrWhiteSpace(dSl.PublicIp) ? data.PublicIp : dSl.PublicIp
-                            // 生产环境使用内网地址
-                            :
-                            string.IsNullOrWhiteSpace(dSl.IntranetIp) ? data.IntranetIp : dSl.IntranetIp,
-                        Port = dSl.Port ?? data.Port,
-                        DbName = string.IsNullOrWhiteSpace(dSl.DbName) ? data.DbName : dSl.DbName,
-                        DbUser = string.IsNullOrWhiteSpace(dSl.DbUser) ? data.DbUser : dSl.DbUser,
-                        DbPwd = string.IsNullOrWhiteSpace(dSl.DbPwd) ? data.DbPwd : dSl.DbPwd,
-                        CustomConnectionStr = data.CustomConnectionStr,
-                        HitRate = dSl.HitRate
-                    })
-                    .ToList()
-            };
-        });
+        var result = new ConnectionSettingsOptions
+        {
+            ConnectionId = databaseModel.MainId.ToString(),
+            DbType = databaseModel.DbType.ToDbType(),
+            ServiceIp = _hostEnvironment.IsDevelopment()
+                // 开发环境使用公网地址
+                ? databaseModel.PublicIp
+                // 生产环境使用内网地址
+                : databaseModel.IntranetIp,
+            Port = databaseModel.Port,
+            DbName = databaseModel.DbName,
+            DbUser = databaseModel.DbUser,
+            DbPwd = databaseModel.DbPwd,
+            CustomConnectionStr = databaseModel.CustomConnectionStr,
+            CommandTimeOut = databaseModel.CommandTimeOut,
+            SugarSqlExecMaxSeconds = databaseModel.SugarSqlExecMaxSeconds,
+            DiffLog = databaseModel.DiffLog,
+            DisableAop = databaseModel.DisableAop,
+            SlaveConnectionList = databaseModel.SlaveDatabaseList.Select(dSl => new SlaveConnectionInfo
+                {
+                    ServiceIp = _hostEnvironment.IsDevelopment()
+                        // 开发环境使用公网地址
+                        ? string.IsNullOrWhiteSpace(dSl.PublicIp) ? databaseModel.PublicIp : dSl.PublicIp
+                        // 生产环境使用内网地址
+                        :
+                        string.IsNullOrWhiteSpace(dSl.IntranetIp) ? databaseModel.IntranetIp : dSl.IntranetIp,
+                    Port = dSl.Port ?? databaseModel.Port,
+                    DbName = databaseModel.DbName,
+                    DbUser = string.IsNullOrWhiteSpace(dSl.DbUser) ? databaseModel.DbUser : dSl.DbUser,
+                    DbPwd = string.IsNullOrWhiteSpace(dSl.DbPwd) ? databaseModel.DbPwd : dSl.DbPwd,
+                    HitRate = dSl.HitRate
+                })
+                .ToList()
+        };
 
         if (httpContext != null)
         {

@@ -34,7 +34,7 @@ public class SysSerialService : IDynamicApplication
     [Permission(PermissionConst.SysSerial.Paged)]
     public async Task<PagedResult<QuerySysSerialRulePagedOutput>> QuerySysSerialRulePaged(PagedInput input)
     {
-        return await _repository.Entities.LeftJoin<SysSerialSettingModel>((t1, t2) => t1.RuleType == t2.RuleType)
+        return await _repository.Queryable<SysSerialRuleModel>().LeftJoin<SysSerialSettingModel>((t1, t2) => t1.RuleType == t2.RuleType)
             .SelectMergeTable((t1, t2) => new QuerySysSerialRulePagedOutput
             {
                 SerialRuleId = t1.SerialRuleId,
@@ -65,7 +65,7 @@ public class SysSerialService : IDynamicApplication
     public async Task<QuerySysSerialRuleDetailOutput> QuerySysSerialRuleDetail(
         [Required(ErrorMessage = "系统序号规则Id不能为空")] long? serialRuleId)
     {
-        QuerySysSerialRuleDetailOutput result = await _repository.Entities.Where(wh => wh.SerialRuleId == serialRuleId)
+        QuerySysSerialRuleDetailOutput result = await _repository.Queryable<SysSerialRuleModel>().Where(wh => wh.SerialRuleId == serialRuleId)
             .Select(sl => new QuerySysSerialRuleDetailOutput
             {
                 SerialRuleId = sl.SerialRuleId,

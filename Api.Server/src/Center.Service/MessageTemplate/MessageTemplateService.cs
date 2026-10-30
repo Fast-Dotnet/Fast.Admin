@@ -35,7 +35,7 @@ public class MessageTemplateService : IDynamicApplication
     public async Task<PagedResult<QueryMessageTemplatePagedOutput>> QueryMessageTemplatePaged(
         QueryMessageTemplatePagedInput input)
     {
-        return await _repository.Entities.LeftJoin<ApplicationClientModel>((t1, t2) => t1.AppKey == t2.AppKey)
+        return await _repository.Queryable<MessageTemplateModel>().LeftJoin<ApplicationClientModel>((t1, t2) => t1.AppKey == t2.AppKey)
             .LeftJoin<ApplicationModel>((t1, t2, t3) => t2.AppId == t3.AppId)
             .WhereIF(input.TenantId != null, (t1, t2, t3) => t1.TenantId == input.TenantId)
             .SelectMergeTable((t1, t2, t3) => new QueryMessageTemplatePagedOutput
@@ -67,7 +67,7 @@ public class MessageTemplateService : IDynamicApplication
     public async Task<QueryMessageTemplateDetailOutput> QueryMessageTemplateDetail(
         [Required(ErrorMessage = "记录Id不能为空")] long? recordId)
     {
-        QueryMessageTemplateDetailOutput result = await _repository.Entities
+        QueryMessageTemplateDetailOutput result = await _repository.Queryable<MessageTemplateModel>()
             .LeftJoin<ApplicationClientModel>((t1, t2) => t1.AppKey == t2.AppKey)
             .LeftJoin<ApplicationModel>((t1, t2, t3) => t2.AppId == t3.AppId)
             .Where((t1, t2, t3) => t1.RecordId == recordId)

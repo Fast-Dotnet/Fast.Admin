@@ -172,7 +172,7 @@ public partial class FileApplication
             throw new UserFriendlyException("文件Id和文件地址必须二选一！");
         }
 
-        FileModel fileInfoModel = await _repository.Entities.WhereIF(input.FileId != null, wh => wh.FileId == input.FileId)
+        FileModel fileInfoModel = await _repository.Queryable<FileModel>().WhereIF(input.FileId != null, wh => wh.FileId == input.FileId)
             .WhereIF(input.FileId == null, wh => wh.FileLocation == input.FileUrl)
             .SingleAsync();
         if (fileInfoModel == null)

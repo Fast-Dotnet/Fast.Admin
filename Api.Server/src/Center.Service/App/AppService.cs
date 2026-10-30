@@ -81,9 +81,7 @@ public class AppService : IDynamicApplication
 
         // 独立客户端不加载 AOP，避免写日志时再次产生 SQL 日志
         using var db = new SqlSugarClient(SqlSugarContext.GetConnectionConfig(SqlSugarContext.ConnectionSettings));
-        ApplicationClientModel applicationClientModel = await db.Queryable<ApplicationClientModel>()
-            .Where(wh => wh.AppKey == appKey)
-            .SingleAsync();
+        ApplicationClientModel applicationClientModel = await ApplicationContext.GetApplication(appKey);
         if (applicationClientModel == null || !applicationClientModel.AppType.HasFlag(GlobalContext.DeviceType))
         {
             throw new UserFriendlyException("非法的应用客户端！");

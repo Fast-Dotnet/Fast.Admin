@@ -106,7 +106,7 @@ public partial class AccountService : IDynamicApplication
     {
         if (_user.IsSystemTenant)
         {
-            PagedResult<AccountModel> data = await _repository.Entities
+            PagedResult<AccountModel> data = await _repository.Queryable<AccountModel>()
                 .WhereIF(!string.IsNullOrWhiteSpace(input.SearchValue),
                     wh => wh.Mobile.Contains(input.SearchValue)
                           || wh.Email.Contains(input.SearchValue)

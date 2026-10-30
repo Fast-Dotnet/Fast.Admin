@@ -41,7 +41,7 @@ public class RequestLogService : IDynamicApplication
             throw new UserFriendlyException("请选择具体的时间范围！");
         }
 
-        ISugarQueryable<RequestLogModel> queryable = _repository.Entities
+        ISugarQueryable<RequestLogModel> queryable = _repository.Queryable<RequestLogModel>()
             .WhereIF(input.AccountId != null, wh => wh.AccountId == input.AccountId)
             .WhereIF(input.IsSuccess != null, wh => wh.IsSuccess == input.IsSuccess)
             .WhereIF(input.OperationAction != null, wh => wh.OperationAction == input.OperationAction)

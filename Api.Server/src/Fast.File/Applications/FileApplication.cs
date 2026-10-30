@@ -70,7 +70,7 @@ public partial class FileApplication : IDynamicApplication
     public async Task<PagedResult<QueryFilePagedOutput>> QueryFilePaged(QueryFilePagedInput input)
     {
         ISugarQueryable<FileModel, TenantModel> queryable =
-            _repository.Entities.LeftJoin<TenantModel>((t1, t2) => t1.TenantId == t2.TenantId);
+            _repository.Queryable<FileModel>().LeftJoin<TenantModel>((t1, t2) => t1.TenantId == t2.TenantId);
 
         if (_user.IsSystemTenant)
         {

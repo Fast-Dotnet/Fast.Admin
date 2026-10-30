@@ -33,7 +33,7 @@ public class PositionService : IDynamicApplication
     [ApiInfo("职位选择器", HttpRequestActionEnum.Query)]
     public async Task<List<ElSelectorOutput<long>>> PositionSelector()
     {
-        var data = await _repository.Entities.OrderBy(ob => ob.Sort)
+        var data = await _repository.Queryable<PositionModel>().OrderBy(ob => ob.Sort)
             .Select(sl => new {sl.PositionId, sl.PositionName})
             .ToListAsync();
 
@@ -48,7 +48,7 @@ public class PositionService : IDynamicApplication
     [Permission(PermissionConst.Position.Paged)]
     public async Task<PagedResult<QueryPositionPagedOutput>> QueryPositionPaged(PagedInput input)
     {
-        return await _repository.Entities.OrderByIF(input.IsOrderBy, ob => ob.Sort)
+        return await _repository.Queryable<PositionModel>().OrderByIF(input.IsOrderBy, ob => ob.Sort)
             .Select(sl => new QueryPositionPagedOutput
             {
                 PositionId = sl.PositionId,
@@ -72,7 +72,7 @@ public class PositionService : IDynamicApplication
     [Permission(PermissionConst.Position.Detail)]
     public async Task<QueryPositionDetailOutput> QueryPositionDetail([Required(ErrorMessage = "职位Id不能为空")] long? positionId)
     {
-        QueryPositionDetailOutput result = await _repository.Entities.Where(t1 => t1.PositionId == positionId)
+        QueryPositionDetailOutput result = await _repository.Queryable<PositionModel>().Where(t1 => t1.PositionId == positionId)
             .Select(sl => new QueryPositionDetailOutput
             {
                 PositionId = sl.PositionId,

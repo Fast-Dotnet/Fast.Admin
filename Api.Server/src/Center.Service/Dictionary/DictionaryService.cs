@@ -43,7 +43,7 @@ public class DictionaryService : IDynamicApplication
     {
         var dictionaryTypeList = await _centerCache.GetAndSetAsync(CacheConst.Center.Dictionary, async () =>
         {
-            return await _typeRepository.Entities.Includes(e => e.DictionaryItemList)
+            return await _typeRepository.Queryable<DictionaryTypeModel>().Includes(e => e.DictionaryItemList)
                 .Where(wh => wh.Status == CommonStatusEnum.Enable)
                 .Select(sl => new
                 {
@@ -98,7 +98,7 @@ public class DictionaryService : IDynamicApplication
     [PlatformOnly]
     public async Task<PagedResult<ElSelectorOutput<long>>> SelectorPaged(PagedInput input)
     {
-        var pagedData = await _typeRepository.Entities
+        var pagedData = await _typeRepository.Queryable<DictionaryTypeModel>()
             .WhereIF(!string.IsNullOrWhiteSpace(input.SearchValue), wh => wh.DictionaryName.Contains(input.SearchValue))
             .OrderBy(ob => ob.DictionaryName)
             .Select(sl => new {sl.DictionaryName, sl.DictionaryId, sl.ValueType})
@@ -119,7 +119,7 @@ public class DictionaryService : IDynamicApplication
     [PlatformOnly]
     public async Task<PagedResult<QueryDictionaryPagedOutput>> QueryDictionaryPaged(PagedInput input)
     {
-        return await _typeRepository.Entities.OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
+        return await _typeRepository.Queryable<DictionaryTypeModel>().OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
             .Select(sl => new QueryDictionaryPagedOutput
             {
                 DictionaryId = sl.DictionaryId,
@@ -147,7 +147,7 @@ public class DictionaryService : IDynamicApplication
     [PlatformOnly]
     public async Task<QueryDictionaryDetailOutput> QueryDictionaryDetail([Required(ErrorMessage = "字典Id不能为空")] long? dictionaryId)
     {
-        QueryDictionaryDetailOutput result = await _typeRepository.Entities.Includes(e => e.DictionaryItemList)
+        QueryDictionaryDetailOutput result = await _typeRepository.Queryable<DictionaryTypeModel>().Includes(e => e.DictionaryItemList)
             .Where(wh => wh.DictionaryId == dictionaryId)
             .Select(sl => new QueryDictionaryDetailOutput
             {
@@ -249,7 +249,7 @@ public class DictionaryService : IDynamicApplication
     public async Task EditDictionary(EditDictionaryInput input)
     {
         DictionaryTypeModel dictionaryTypeModel = await _typeRepository
-            .Entities.Includes(e => e.DictionaryItemList)
+            .Queryable<DictionaryTypeModel>().Includes(e => e.DictionaryItemList)
             .InSingleAsync(input.DictionaryId);
         if (dictionaryTypeModel == null)
         {
@@ -325,7 +325,7 @@ public class DictionaryService : IDynamicApplication
     public async Task DeleteDictionary(DictionaryIdInput input)
     {
         DictionaryTypeModel dictionaryTypeModel = await _typeRepository
-            .Entities.Includes(e => e.DictionaryItemList)
+            .Queryable<DictionaryTypeModel>().Includes(e => e.DictionaryItemList)
             .InSingleAsync(input.DictionaryId);
         if (dictionaryTypeModel == null)
         {

@@ -37,7 +37,7 @@ public class DatabaseService : IDynamicApplication
     [Permission(PermissionConst.Database.Paged)]
     public async Task<PagedResult<QueryDatabasePagedOutput>> QueryDatabasePaged(QueryDatabasePagedInput input)
     {
-        return await _repository.Entities.Includes(e => e.SlaveDatabaseList)
+        return await _repository.Queryable<MainDatabaseModel>().Includes(e => e.SlaveDatabaseList)
             .LeftJoin<TenantModel>((t1, t2) => t1.TenantId == t2.TenantId)
             .WhereIF(input.DatabaseType != null, t1 => t1.DatabaseType == input.DatabaseType)
             .WhereIF(input.DbType != null, t1 => t1.DbType == input.DbType)
@@ -78,7 +78,7 @@ public class DatabaseService : IDynamicApplication
     [Permission(PermissionConst.Database.Detail)]
     public async Task<QueryDatabaseDetailOutput> QueryDatabaseDetail([Required(ErrorMessage = "主库Id不能为空")] long? mainId)
     {
-        QueryDatabaseDetailOutput result = await _repository.Entities.Includes(e => e.SlaveDatabaseList)
+        QueryDatabaseDetailOutput result = await _repository.Queryable<MainDatabaseModel>().Includes(e => e.SlaveDatabaseList)
             .LeftJoin<TenantModel>((t1, t2) => t1.TenantId == t2.TenantId)
             .Where(t1 => t1.MainId == mainId)
             .Select((t1, t2) => new QueryDatabaseDetailOutput
@@ -137,7 +137,7 @@ public class DatabaseService : IDynamicApplication
     [Permission(PermissionConst.Database.Add)]
     public async Task AddDatabase(AddDatabaseInput input)
     {
-        if (await _repository.Entities.ClearFilter<IBaseTEntity>()
+        if (await _repository.Queryable<MainDatabaseModel>().ClearFilter<IBaseTEntity>()
                 .AnyAsync(a => a.TenantId == input.TenantId && a.DatabaseType == input.DatabaseType))
         {
             throw new UserFriendlyException("当前数据库类型已经存在主库信息！");

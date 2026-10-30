@@ -35,7 +35,7 @@ public class RegionService : IDynamicApplication
     {
         return await _cache.GetAndSetAsync(CacheConst.Center.Region, async () =>
         {
-            var data = await _repository.Entities
+            var data = await _repository.Queryable<RegionModel>()
                 .Where(wh => (wh.RegionLevel & (RegionLevelEnum.Province | RegionLevelEnum.City | RegionLevelEnum.District)) != 0)
                 .OrderBy(ob => ob.RegionName)
                 .Select(sl => new
@@ -81,7 +81,7 @@ public class RegionService : IDynamicApplication
     {
         return await _cache.GetAndSetAsync(CacheConst.Center.Province, async () =>
         {
-            var data = await _repository.Entities.Where(wh => wh.RegionLevel == RegionLevelEnum.Province)
+            var data = await _repository.Queryable<RegionModel>().Where(wh => wh.RegionLevel == RegionLevelEnum.Province)
                 .OrderBy(ob => ob.RegionName)
                 .Select(sl => new
                 {
@@ -116,7 +116,7 @@ public class RegionService : IDynamicApplication
     {
         return await _cache.GetAndSetAsync(CacheConst.Center.City, async () =>
         {
-            var data = await _repository.Entities
+            var data = await _repository.Queryable<RegionModel>()
                 .Where(wh => (wh.RegionLevel & (RegionLevelEnum.Province | RegionLevelEnum.City)) != 0)
                 .OrderBy(ob => ob.RegionName)
                 .Select(sl => new

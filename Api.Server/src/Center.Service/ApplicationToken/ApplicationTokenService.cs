@@ -36,7 +36,7 @@ public class ApplicationTokenService : IDynamicApplication
     [Permission(PermissionConst.AppToken.Paged)]
     public async Task<PagedResult<QueryApplicationTokenPagedOutput>> QueryApplicationTokenPaged(PagedInput input)
     {
-        return await _repository.Entities.LeftJoin<ApplicationClientModel>((t1, t2) => t1.AppKey == t2.AppKey)
+        return await _repository.Queryable<ApplicationTokenModel>().LeftJoin<ApplicationClientModel>((t1, t2) => t1.AppKey == t2.AppKey)
             .LeftJoin<ApplicationModel>((t1, t2, t3) => t2.AppId == t3.AppId)
             .SelectMergeTable((t1, t2, t3) => new QueryApplicationTokenPagedOutput
             {

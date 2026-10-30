@@ -18,12 +18,10 @@ namespace Fast.Center.Service.Application;
 [ApiDescriptionSettings(ApiGroupConst.Center, Name = "application")]
 public class ApplicationService : IDynamicApplication
 {
-    private readonly IUser _user;
     private readonly ISqlSugarRepository<ApplicationModel> _repository;
 
-    public ApplicationService(IUser user, ISqlSugarRepository<ApplicationModel> repository)
+    public ApplicationService(ISqlSugarRepository<ApplicationModel> repository)
     {
-        _user = user;
         _repository = repository;
     }
 
@@ -35,7 +33,7 @@ public class ApplicationService : IDynamicApplication
     [PlatformOnly]
     public async Task<List<ElSelectorOutput<long>>> ApplicationSelector()
     {
-        var data = await _repository.Entities.OrderBy(ob => ob.AppName)
+        var data = await _repository.Queryable<ApplicationModel>().OrderBy(ob => ob.AppName)
             .Select(sl => new
             {
                 sl.AppId,
@@ -60,7 +58,7 @@ public class ApplicationService : IDynamicApplication
     [PlatformOnly]
     public async Task<PagedResult<QueryApplicationPagedOutput>> QueryApplicationPaged(QueryApplicationPagedInput input)
     {
-        PagedResult<QueryApplicationPagedOutput> result = await _repository.Entities
+        PagedResult<QueryApplicationPagedOutput> result = await _repository.Queryable<ApplicationModel>()
             .WhereIF(input.Edition != null, wh => wh.Edition == input.Edition)
             .OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
             .Select(sl => new QueryApplicationPagedOutput
@@ -129,7 +127,7 @@ public class ApplicationService : IDynamicApplication
     [PlatformOnly]
     public async Task<QueryApplicationDetailOutput> QueryApplicationDetail([Required(ErrorMessage = "应用Id不能为空")] long? appId)
     {
-        QueryApplicationDetailOutput result = await _repository.Entities.Where(wh => wh.AppId == appId)
+        QueryApplicationDetailOutput result = await _repository.Queryable<ApplicationModel>().Where(wh => wh.AppId == appId)
             .Select(sl => new QueryApplicationDetailOutput
             {
                 AppId = sl.AppId,

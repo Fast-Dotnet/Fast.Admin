@@ -21,7 +21,7 @@ public partial class RoleService
     [ApiInfo("角色选择器", HttpRequestActionEnum.Query)]
     public async Task<List<ElSelectorOutput<long>>> RoleSelector()
     {
-        ISugarQueryable<RoleModel> queryable = _repository.Entities;
+        ISugarQueryable<RoleModel> queryable = _repository.Queryable<RoleModel>();
         if (!_user.IsSuperAdmin && !_user.IsAdmin)
         {
             List<long> roleIds = _user.RoleIdList ?? [];
@@ -57,7 +57,7 @@ public partial class RoleService
     [Permission(PermissionConst.Role.Paged)]
     public async Task<PagedResult<QueryRolePagedOutput>> QueryRolePaged(QueryRolePagedInput input)
     {
-        return await _repository.Entities.WhereIF(input.RoleType != null, wh => wh.RoleType == input.RoleType)
+        return await _repository.Queryable<RoleModel>().WhereIF(input.RoleType != null, wh => wh.RoleType == input.RoleType)
             .WhereIF(input.DataScopeType != null, wh => wh.DataScopeType == input.DataScopeType)
             .OrderByIF(input.IsOrderBy, ob => ob.Sort)
             .Select(sl => new QueryRolePagedOutput
@@ -87,7 +87,7 @@ public partial class RoleService
     [Permission(PermissionConst.Role.Detail)]
     public async Task<QueryRoleDetailOutput> QueryRoleDetail([Required(ErrorMessage = "角色Id不能为空")] long? roleId)
     {
-        QueryRoleDetailOutput result = await _repository.Entities.Where(wh => wh.RoleId == roleId)
+        QueryRoleDetailOutput result = await _repository.Queryable<RoleModel>().Where(wh => wh.RoleId == roleId)
             .Select(sl => new QueryRoleDetailOutput
             {
                 RoleId = sl.RoleId,

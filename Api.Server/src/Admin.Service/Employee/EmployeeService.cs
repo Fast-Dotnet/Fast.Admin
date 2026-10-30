@@ -37,7 +37,7 @@ public partial class EmployeeService : IDynamicApplication
     /// <returns>当前用户数据权限范围内的职员</returns>
     private async Task<EmployeeModel> GetEmployeeWithinDataScope(long employeeId)
     {
-        bool hasAccess = await _repository.Entities
+        bool hasAccess = await _repository.Queryable<EmployeeModel>()
             .LeftJoin<EmployeeOrgModel>((t1, t2) => t1.EmployeeId == t2.EmployeeId && t2.IsPrimary)
             .SelectMergeTable((t1, t2) => new QueryEmployeeSelectorDto
             {

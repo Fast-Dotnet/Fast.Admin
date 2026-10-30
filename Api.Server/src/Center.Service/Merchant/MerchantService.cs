@@ -34,7 +34,7 @@ public class MerchantService : IDynamicApplication
     [Permission(PermissionConst.Merchant.Paged)]
     public async Task<List<ElSelectorOutput<long>>> MerchantSelector(PaymentChannelEnum? merchantType)
     {
-        var data = await _repository.Entities.WhereIF(merchantType != null, wh => wh.MerchantType == merchantType)
+        var data = await _repository.Queryable<MerchantModel>().WhereIF(merchantType != null, wh => wh.MerchantType == merchantType)
             .OrderBy(ob => ob.MerchantNo)
             .Select(sl => new {sl.MerchantId, sl.MerchantName, sl.MerchantNo, sl.MerchantType})
             .ToListAsync();
@@ -55,7 +55,7 @@ public class MerchantService : IDynamicApplication
     [Permission(PermissionConst.Merchant.Paged)]
     public async Task<PagedResult<QueryMerchantPagedOutput>> QueryMerchantPaged(QueryMerchantPagedInput input)
     {
-        return await _repository.Entities.WhereIF(input.MerchantType != null, wh => wh.MerchantType == input.MerchantType)
+        return await _repository.Queryable<MerchantModel>().WhereIF(input.MerchantType != null, wh => wh.MerchantType == input.MerchantType)
             .OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
             .Select(sl => new QueryMerchantPagedOutput
             {
@@ -81,7 +81,7 @@ public class MerchantService : IDynamicApplication
     [Permission(PermissionConst.Merchant.Detail)]
     public async Task<QueryMerchantDetailOutput> QueryMerchantDetail([Required(ErrorMessage = "商户号Id不能为空")] long? merchantId)
     {
-        QueryMerchantDetailOutput result = await _repository.Entities.Where(wh => wh.MerchantId == merchantId)
+        QueryMerchantDetailOutput result = await _repository.Queryable<MerchantModel>().Where(wh => wh.MerchantId == merchantId)
             .Select(sl => new QueryMerchantDetailOutput
             {
                 MerchantId = sl.MerchantId,

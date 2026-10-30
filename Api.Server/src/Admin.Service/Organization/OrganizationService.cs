@@ -35,7 +35,7 @@ public class OrganizationService : IDynamicApplication
     [ApiInfo("机构选择器", HttpRequestActionEnum.Query)]
     public async Task<List<ElSelectorOutput<long>>> OrganizationSelector()
     {
-        ISugarQueryable<OrganizationModel> queryable = _repository.Entities;
+        ISugarQueryable<OrganizationModel> queryable = _repository.Queryable<OrganizationModel>();
         List<long> customDepartmentIds = _user.DataScopeDepartmentIdList ?? [];
         List<long> customOrgIds = customDepartmentIds.Count == 0
             ? []
@@ -111,7 +111,7 @@ public class OrganizationService : IDynamicApplication
     [Permission(PermissionConst.Department.Detail)]
     public async Task<QueryOrganizationDetailOutput> QueryOrganizationDetail([Required(ErrorMessage = "机构Id不能为空")] long? orgId)
     {
-        QueryOrganizationDetailOutput result = await _repository.Entities.Where(wh => wh.OrgId == orgId)
+        QueryOrganizationDetailOutput result = await _repository.Queryable<OrganizationModel>().Where(wh => wh.OrgId == orgId)
             .Select(sl => new QueryOrganizationDetailOutput
             {
                 OrgId = sl.OrgId,
@@ -282,7 +282,7 @@ public class OrganizationService : IDynamicApplication
         await _repository.UpdateAsync(organizationModel);
 
         // 更新所有子级
-        List<OrganizationModel> childrenList = await _repository.Entities
+        List<OrganizationModel> childrenList = await _repository.Queryable<OrganizationModel>()
             .Where(wh => SqlFunc.JsonArrayAny(wh.ParentIds, organizationModel.OrgId))
             .ToListAsync();
 

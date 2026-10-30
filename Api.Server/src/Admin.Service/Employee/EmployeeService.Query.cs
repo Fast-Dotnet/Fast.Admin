@@ -22,7 +22,7 @@ public partial class EmployeeService
     [ApiInfo("职员选择器", HttpRequestActionEnum.Query)]
     public async Task<PagedResult<ElSelectorOutput<long>>> EmployeeSelector(PagedInput input)
     {
-        PagedResult<QueryEmployeeSelectorDto> data = await _repository.Entities
+        PagedResult<QueryEmployeeSelectorDto> data = await _repository.Queryable<EmployeeModel>()
             .LeftJoin<EmployeeOrgModel>((t1, t2) => t1.EmployeeId == t2.EmployeeId && t2.IsPrimary)
             .WhereIF(!string.IsNullOrWhiteSpace(input.SearchValue),
                 t1 => t1.EmployeeNo.Contains(input.SearchValue)
@@ -56,7 +56,7 @@ public partial class EmployeeService
     [Permission(PermissionConst.Employee.Paged)]
     public async Task<PagedResult<QueryEmployeePagedOutput>> QueryEmployeePaged(QueryEmployeePagedInput input)
     {
-        PagedResult<QueryEmployeePagedOutput> result = await _repository.Entities
+        PagedResult<QueryEmployeePagedOutput> result = await _repository.Queryable<EmployeeModel>()
             .LeftJoin<EmployeeOrgModel>((t1, t2) => t1.EmployeeId == t2.EmployeeId && t2.IsPrimary)
             .WhereIF(input.Status != null, t1 => t1.Status == input.Status)
             .WhereIF(input.Sex != null, t1 => t1.Sex == input.Sex)
@@ -147,7 +147,7 @@ public partial class EmployeeService
     {
         await GetEmployeeWithinDataScope(employeeId!.Value);
 
-        QueryEmployeeDetailOutput result = await _repository.Entities.Where(wh => wh.EmployeeId == employeeId)
+        QueryEmployeeDetailOutput result = await _repository.Queryable<EmployeeModel>().Where(wh => wh.EmployeeId == employeeId)
             .Select(sl => new QueryEmployeeDetailOutput
             {
                 EmployeeId = sl.EmployeeId,

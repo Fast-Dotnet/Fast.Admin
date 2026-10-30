@@ -24,7 +24,7 @@ public partial class TableService
 
         return await _centerCache.GetAndSetAsync(cacheKey, async () =>
         {
-            return await _tableRepository.Entities.Includes(e => e.TableColumnConfigList.OrderBy(ob => ob.Order).ToList())
+            return await _tableRepository.Queryable<TableConfigModel>().Includes(e => e.TableColumnConfigList.OrderBy(ob => ob.Order).ToList())
                 .Where(wh => wh.TableKey == tableKey)
                 .SingleAsync();
         });
@@ -40,7 +40,7 @@ public partial class TableService
             CacheConst.GetCacheKey(CacheConst.Center.UserTableConfigCache, tableKey, _user.TenantNo, _user.EmployeeNo);
         return await _centerCache.GetAndSetAsync(cacheKey, async () =>
                {
-                   return await _columnCacheRepository.Entities
+                   return await _columnCacheRepository.Queryable<TableColumnConfigCacheModel>()
                        .Where(wh => wh.UserId == _user.EmployeeId && wh.TableId == tableId)
                        .OrderBy(ob => ob.Order)
                        .ToListAsync();
