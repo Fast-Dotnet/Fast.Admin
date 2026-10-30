@@ -33,14 +33,9 @@
     <ItemGroup>
         <PackageReference Include="MailKit" />
         <PackageReference Include="MiniExcel" />
+        <PackageReference Include="SkiaSharp" />
         <PackageReference Include="ToolGood.Words.Pinyin" />
         <PackageReference Include="ZXing.Net" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="SixLabors.Fonts" />
-        <PackageReference Include="SixLabors.ImageSharp" />
-        <PackageReference Include="SixLabors.ImageSharp.Drawing" />
     </ItemGroup>
 
     <ItemGroup>

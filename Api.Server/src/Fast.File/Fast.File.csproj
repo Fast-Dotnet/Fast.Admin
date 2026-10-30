@@ -14,8 +14,10 @@
 
     <ItemGroup>
         <PackageReference Include="IGeekFan.AspNetCore.Knife4jUI" />
+        <PackageReference Include="KGySoft.Drawing.Core" />
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.NewtonsoftJson" />
         <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
+        <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" />
         <PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" />
     </ItemGroup>
 

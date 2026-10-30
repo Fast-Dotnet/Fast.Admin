@@ -15,9 +15,7 @@ using Fast.Core;
 using Fast.Runtime;
 using Fast.Shared;
 using Microsoft.AspNetCore.Mvc;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats;
-using SixLabors.ImageSharp.Processing;
+using SkiaSharp;
 using Yitter.IdGenerator;
 
 namespace Fast.File.Applications;
@@ -198,31 +196,37 @@ public partial class FileApplication
 
         if (FileContext.Images.Contains(normalizedContentType))
         {
-            try
+            await using Stream formatStream = file.OpenReadStream();
+            // 根据文件内容创建解码器，不依赖扩展名；此处先识别格式和尺寸，不申请整图像素内存
+            using var codec = SKCodec.Create(formatStream, out SKCodecResult result);
+            if (codec == null)
             {
-                await using Stream formatStream = file.OpenReadStream();
-                IImageFormat imageFormat = await Image.DetectFormatAsync(formatStream);
-                string expectedMimeType = normalizedContentType == "image/jpg" ? "image/jpeg" : normalizedContentType;
-                if (imageFormat == null
-                    || !string.Equals(imageFormat.DefaultMimeType, expectedMimeType, StringComparison.OrdinalIgnoreCase))
-                {
-                    throw new UserFriendlyException("图片内容与声明的文件类型不一致！");
-                }
-
-                await using Stream identifyStream = file.OpenReadStream();
-                ImageInfo imageInfo = await Image.IdentifyAsync(identifyStream);
-                if (imageInfo == null || (long)imageInfo.Width * imageInfo.Height > MaxImagePixels)
-                {
-                    throw new UserFriendlyException("图片像素尺寸超出限制！");
-                }
+                // 输入不足与格式不匹配分别提示，避免将无法识别的内容当作合法图片继续处理
+                throw new UserFriendlyException(result == SKCodecResult.IncompleteInput ? "图片内容已损坏或格式不受支持！" : "图片内容与声明的文件类型不一致！");
             }
-            catch (UnknownImageFormatException)
+
+            // 将实际编码格式映射为允许上传的 MIME 类型；其他可被 SkiaSharp 识别的格式也不在此放行
+            string mimeType = codec.EncodedFormat switch
+            {
+                SKEncodedImageFormat.Jpeg => "image/jpeg",
+                SKEncodedImageFormat.Png => "image/png",
+                SKEncodedImageFormat.Gif => "image/gif",
+                SKEncodedImageFormat.Bmp => "image/bmp",
+                _ => null
+            };
+
+            // jpg 和 jpeg 使用同一种编码，先统一别名再比较，兼容历史上传声明
+            string expectedMimeType = normalizedContentType == "image/jpg" ? "image/jpeg" : normalizedContentType;
+            if (!string.Equals(mimeType, expectedMimeType, StringComparison.OrdinalIgnoreCase))
             {
                 throw new UserFriendlyException("图片内容与声明的文件类型不一致！");
             }
-            catch (InvalidImageContentException)
+
+            // 先检查头部尺寸，再分配解码缓冲区，保留原有像素上限
+            // 乘法前转为 long，避免异常的大尺寸在 int 乘法中溢出后绕过上限检查
+            if (codec.Info.Width <= 0 || codec.Info.Height <= 0 || (long)codec.Info.Width * codec.Info.Height > MaxImagePixels)
             {
-                throw new UserFriendlyException("图片内容已损坏或格式不受支持！");
+                throw new UserFriendlyException("图片像素尺寸超出限制！");
             }
         }
 
@@ -661,24 +665,73 @@ public partial class FileApplication
         // 判断是否为图片
         if (FileContext.Images.Contains(normalizedContentType))
         {
-            // 异步读取原始图片
-            using Image image = await Image.LoadAsync(localFullPath);
+            using SKCodec codec = SKCodec.Create(localFullPath) ?? throw new UserFriendlyException("图片内容已损坏或格式不受支持！");
+
+            // 统一使用每像素 4 字节的 BGRA 缓冲区；Premul 表示颜色通道已乘以透明度，适合后续画布合成
+            var imageInfo = new SKImageInfo(codec.Info.Width, codec.Info.Height, SKColorType.Bgra8888, SKAlphaType.Premul);
+            using var image = new SKBitmap(imageInfo);
+            bool isGif = codec.EncodedFormat == SKEncodedImageFormat.Gif;
+            // PNG 容器也可能包含 APNG 动画，需要单独扫描动画块；普通 PNG 返回 null
+            PngAnimation animation = codec.EncodedFormat == SKEncodedImageFormat.Png ? ReadPngAnimation(localFullPath) : null;
+            if (!isGif && animation == null)
+            {
+                // 静态图只解码一次，多个尺寸共用原始像素；动画则在各自编码流程中逐帧解码和合成
+                DecodeImageFrame(codec, image, 0, -1);
+            }
 
             foreach (KeyValuePair<string, int> item in ImageSizes)
             {
+                _httpContext.RequestAborted.ThrowIfCancellationRequested();
+
+                // 预设值是最大宽度，小图不放大；高度按同一比例缩小，避免极扁图片取整后变成 0
                 int width = Math.Min(item.Value, image.Width);
                 // 按原图比例计算高度
                 float ratio = (float)width / image.Width;
                 int height = Math.Max(1, (int)(image.Height * ratio));
 
-                // 创建图片副本并调整大小
-                using Image clone = image.Clone(ctx => ctx.Resize(width, height));
                 // 拼接缩略图文件名
-                string thumbnailName = $"{fileId}@{item.Key}{fileSuffix}";
-                string thumbnailPath = Path.Combine(localFilePath, thumbnailName);
+                string thumbnailPath = Path.Combine(localFilePath, $"{fileId}@{item.Key}{fileSuffix}");
 
-                // 保存图片到本地，格式自动根据后缀判断
-                await clone.SaveAsync(thumbnailPath);
+                // 每个尺寸单独写文件；离开本轮循环时关闭流，失败或取消不会自动删除已写出的内容
+                await using var output = new FileStream(thumbnailPath, FileMode.Create, FileAccess.Write, FileShare.None, 81920,
+                    FileOptions.Asynchronous | FileOptions.SequentialScan);
+
+                if (animation != null)
+                {
+                    // APNG 必须保留动画控制块，不能只把默认静态图重新编码为普通 PNG
+                    WritePngAnimationThumbnail(localFullPath, animation, image, output, width, height,
+                        _httpContext.RequestAborted);
+                }
+                else if (isGif)
+                {
+                    // GIF 需要逐帧缩放后重新量化并编码，保留动画而不是只输出首帧
+                    WriteGifThumbnail(codec, image, output, width, height, _httpContext.RequestAborted);
+                }
+                else
+                {
+                    using SKBitmap thumbnail = ResizeImage(image, width, height);
+                    if (codec.EncodedFormat == SKEncodedImageFormat.Bmp)
+                    {
+                        // BMP 没有可用的 SkiaSharp 编码入口，使用下面的专用写入方法
+                        WriteBmpThumbnail(thumbnail, output);
+                    }
+                    else
+                    {
+                        // 按原始格式编码；JPEG 延续质量 75，PNG 等无损格式不依赖质量参数控制有损压缩
+                        using SKData data = thumbnail.Encode(codec.EncodedFormat,
+                            codec.EncodedFormat == SKEncodedImageFormat.Jpeg ? 75 : 100);
+                        await using Stream encodedStream = data.AsStream();
+                        if (codec.EncodedFormat == SKEncodedImageFormat.Jpeg && codec.EncodedOrigin != SKEncodedOrigin.TopLeft)
+                        {
+                            // 缩放保留原始像素方向，通过 EXIF 告知查看器如何旋转或镜像显示
+                            WriteJpegOrientation(output, codec.EncodedOrigin);
+                            // 上一步已经写入 JPEG 的 FF D8 起始标记，跳过编码结果中重复的 2 字节
+                            encodedStream.Position = 2;
+                        }
+
+                        await encodedStream.CopyToAsync(output, _httpContext.RequestAborted);
+                    }
+                }
             }
         }
 
