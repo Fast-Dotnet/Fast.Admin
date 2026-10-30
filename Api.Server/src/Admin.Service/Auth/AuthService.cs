@@ -50,7 +50,7 @@ public class AuthService : IDynamicApplication
         bool hasDesktop = (GlobalContext.DeviceType
                            & (AppEnvironmentEnum.Windows | AppEnvironmentEnum.Mac | AppEnvironmentEnum.Linux))
                           != 0;
-        bool hasWeb = (GlobalContext.DeviceType & AppEnvironmentEnum.Web) != 0;
+        bool hasWeb = GlobalContext.IsWeb;
         bool hasMobile = GlobalContext.IsMobile;
 
         // 查询租户信息

@@ -196,10 +196,17 @@ public class GlobalContext
     /// <summary>
     /// 是否为桌面端
     /// </summary>
-    public static bool IsDesktop => (DeviceType & AppEnvironmentEnum.Desktop) != 0;
+    public static bool IsDesktop =>
+        (DeviceType & (AppEnvironmentEnum.Windows | AppEnvironmentEnum.Mac | AppEnvironmentEnum.Linux)) != 0;
 
     /// <summary>
     /// 是否为移动端
     /// </summary>
-    public static bool IsMobile => (DeviceType & AppEnvironmentEnum.MobileThree) != 0;
+    public static bool IsMobile =>
+        (DeviceType
+         & (AppEnvironmentEnum.Android
+            | AppEnvironmentEnum.HarmonyOS
+            | AppEnvironmentEnum.IOS
+            | AppEnvironmentEnum.WeChatMiniProgram))
+        != 0;
 }
