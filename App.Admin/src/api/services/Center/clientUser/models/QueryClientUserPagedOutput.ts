@@ -1,4 +1,3 @@
-import type { ClientUserTypeEnum } from "@/api/enums/ClientUserTypeEnum";
 import type { GenderEnum } from "@/api/enums/GenderEnum";
 
 /**
@@ -13,10 +12,6 @@ export interface QueryClientUserPagedOutput {
 	 * 应用Id
 	 */
 	appId?: string;
-	/**
-	 * 
-	 */
-	userType?: ClientUserTypeEnum;
 	/**
 	 * 手机
 	 */

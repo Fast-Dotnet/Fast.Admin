@@ -1,3 +1,4 @@
+import type { AppEnvironmentEnum } from "@/api/enums/AppEnvironmentEnum";
 import type { ApplicationPackageTypeEnum } from "@/api/enums/ApplicationPackageTypeEnum";
 
 /**
@@ -8,6 +9,10 @@ export interface AddApplicationVersionInput {
 	 * 应用标识
 	 */
 	appKey?: string;
+	/**
+	 * 
+	 */
+	appType?: AppEnvironmentEnum;
 	/**
 	 * 
 	 */

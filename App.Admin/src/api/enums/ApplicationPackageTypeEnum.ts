@@ -7,7 +7,7 @@ export enum ApplicationPackageTypeEnum {
 	 */
 	FullPackage = 1,
 	/**
-	 * WGT热更新包
+	 * 热更新
 	 */
 	Wgt = 2,
 }

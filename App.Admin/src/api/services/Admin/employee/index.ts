@@ -14,39 +14,6 @@ import type { QueryEmployeePagedOutput } from "./models/QueryEmployeePagedOutput
  */
 export const employeeApi = {
 	/**
-	 * 添加职员
-	 */
-	addEmployee(data: AddEmployeeInput): Promise<void> {
-		return axiosUtil.request<void>({
-			url: "/employee/addEmployee",
-			method: "post",
-			data,
-			requestType: "add",
-		});
-	},
-	/**
-	 * 编辑本职员
-	 */
-	editSelfEmployee(data: EditEmployeeInput): Promise<void> {
-		return axiosUtil.request<void>({
-			url: "/employee/editSelfEmployee",
-			method: "post",
-			data,
-			requestType: "edit",
-		});
-	},
-	/**
-	 * 编辑职员
-	 */
-	editEmployee(data: EditEmployeeInput): Promise<void> {
-		return axiosUtil.request<void>({
-			url: "/employee/editEmployee",
-			method: "post",
-			data,
-			requestType: "edit",
-		});
-	},
-	/**
 	 * 职员选择器
 	 */
 	employeeSelector(data: PagedInput): Promise<PagedResult<ElSelectorOutput<string>>> {
@@ -79,6 +46,39 @@ export const employeeApi = {
 				employeeId,
 			},
 			requestType: "query",
+		});
+	},
+	/**
+	 * 添加职员
+	 */
+	addEmployee(data: AddEmployeeInput): Promise<void> {
+		return axiosUtil.request<void>({
+			url: "/employee/addEmployee",
+			method: "post",
+			data,
+			requestType: "add",
+		});
+	},
+	/**
+	 * 编辑本职员
+	 */
+	editSelfEmployee(data: EditEmployeeInput): Promise<void> {
+		return axiosUtil.request<void>({
+			url: "/employee/editSelfEmployee",
+			method: "post",
+			data,
+			requestType: "edit",
+		});
+	},
+	/**
+	 * 编辑职员
+	 */
+	editEmployee(data: EditEmployeeInput): Promise<void> {
+		return axiosUtil.request<void>({
+			url: "/employee/editEmployee",
+			method: "post",
+			data,
+			requestType: "edit",
 		});
 	},
 	/**

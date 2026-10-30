@@ -13,34 +13,36 @@ import type { RoleIdInput } from "./models/RoleIdInput";
  */
 export const roleApi = {
 	/**
-	 * 角色授权
+	 * 角色选择器
 	 */
-	roleAuth(data: RoleAuthInput): Promise<void> {
-		return axiosUtil.request<void>({
-			url: "/role/roleAuth",
-			method: "post",
-			data,
-			requestType: "edit",
+	roleSelector(): Promise<ElSelectorOutput<string>[]> {
+		return axiosUtil.request<ElSelectorOutput<string>[]>({
+			url: "/role/roleSelector",
+			method: "get",
+			requestType: "query",
 		});
 	},
 	/**
-	 * 获取角色授权菜单
+	 * 获取角色分页列表
 	 */
-	queryRoleAuthMenu(data: RoleIdInput): Promise<RoleAuthInput> {
-		return axiosUtil.request<RoleAuthInput>({
-			url: "/role/queryRoleAuthMenu",
+	queryRolePaged(data: QueryRolePagedInput): Promise<PagedResult<QueryRolePagedOutput>> {
+		return axiosUtil.request<PagedResult<QueryRolePagedOutput>>({
+			url: "/role/queryRolePaged",
 			method: "post",
 			data,
 			requestType: "query",
 		});
 	},
 	/**
-	 * 获取授权菜单
+	 * 获取角色详情
 	 */
-	queryAuthMenu(): Promise<ElSelectorOutput<string>[]> {
-		return axiosUtil.request<ElSelectorOutput<string>[]>({
-			url: "/role/queryAuthMenu",
+	queryRoleDetail(roleId: string): Promise<QueryRoleDetailOutput> {
+		return axiosUtil.request<QueryRoleDetailOutput>({
+			url: "/role/queryRoleDetail",
 			method: "get",
+			params: {
+				roleId,
+			},
 			requestType: "query",
 		});
 	},
@@ -78,36 +80,34 @@ export const roleApi = {
 		});
 	},
 	/**
-	 * 角色选择器
+	 * 角色授权
 	 */
-	roleSelector(): Promise<ElSelectorOutput<string>[]> {
-		return axiosUtil.request<ElSelectorOutput<string>[]>({
-			url: "/role/roleSelector",
-			method: "get",
-			requestType: "query",
+	roleAuth(data: RoleAuthInput): Promise<void> {
+		return axiosUtil.request<void>({
+			url: "/role/roleAuth",
+			method: "post",
+			data,
+			requestType: "edit",
 		});
 	},
 	/**
-	 * 获取角色分页列表
+	 * 获取角色授权菜单
 	 */
-	queryRolePaged(data: QueryRolePagedInput): Promise<PagedResult<QueryRolePagedOutput>> {
-		return axiosUtil.request<PagedResult<QueryRolePagedOutput>>({
-			url: "/role/queryRolePaged",
+	queryRoleAuthMenu(data: RoleIdInput): Promise<RoleAuthInput> {
+		return axiosUtil.request<RoleAuthInput>({
+			url: "/role/queryRoleAuthMenu",
 			method: "post",
 			data,
 			requestType: "query",
 		});
 	},
 	/**
-	 * 获取角色详情
+	 * 获取授权菜单
 	 */
-	queryRoleDetail(roleId: string): Promise<QueryRoleDetailOutput> {
-		return axiosUtil.request<QueryRoleDetailOutput>({
-			url: "/role/queryRoleDetail",
+	queryAuthMenu(): Promise<ElSelectorOutput<string>[]> {
+		return axiosUtil.request<ElSelectorOutput<string>[]>({
+			url: "/role/queryAuthMenu",
 			method: "get",
-			params: {
-				roleId,
-			},
 			requestType: "query",
 		});
 	},

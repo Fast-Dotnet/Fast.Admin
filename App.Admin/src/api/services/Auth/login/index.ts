@@ -28,16 +28,6 @@ export const loginApi = {
 		});
 	},
 	/**
-	 * 获取登录用户
-	 */
-	queryLoginUser(): Promise<LoginTenantOutput[]> {
-		return axiosUtil.request<LoginTenantOutput[]>({
-			url: "/queryLoginUser",
-			method: "get",
-			requestType: "query",
-		});
-	},
-	/**
 	 * 租户登录
 	 */
 	tenantLogin(data: TenantLoginInput): Promise<LoginOutput> {
@@ -62,6 +52,16 @@ export const loginApi = {
 			},
 			cancelDuplicateRequest: false,
 			requestType: "auth",
+		});
+	},
+	/**
+	 * 获取登录用户
+	 */
+	queryLoginUser(): Promise<LoginTenantOutput[]> {
+		return axiosUtil.request<LoginTenantOutput[]>({
+			url: "/queryLoginUser",
+			method: "get",
+			requestType: "query",
 		});
 	},
 	/**

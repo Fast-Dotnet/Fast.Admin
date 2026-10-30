@@ -1,5 +1,4 @@
 import type { PagedInput } from "fast-element-plus";
-import type { ClientUserTypeEnum } from "@/api/enums/ClientUserTypeEnum";
 import type { GenderEnum } from "@/api/enums/GenderEnum";
 
 /**
@@ -10,10 +9,6 @@ export interface QueryClientUserPagedInput extends PagedInput  {
 	 * 应用Id
 	 */
 	appId?: string;
-	/**
-	 * 
-	 */
-	userType?: ClientUserTypeEnum;
 	/**
 	 * 
 	 */

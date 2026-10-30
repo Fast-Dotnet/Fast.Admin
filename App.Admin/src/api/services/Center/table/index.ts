@@ -16,30 +16,6 @@ import type { TableIdInput } from "./models/TableIdInput";
  */
 export const tableApi = {
 	/**
-	 * 获取表格列配置详情
-	 */
-	queryTableColumnConfigDetail(tableId: string): Promise<FaTableColumnCtx[]> {
-		return axiosUtil.request<FaTableColumnCtx[]>({
-			url: "/table/queryTableColumnConfigDetail",
-			method: "get",
-			params: {
-				tableId,
-			},
-			requestType: "query",
-		});
-	},
-	/**
-	 * 编辑表格列配置
-	 */
-	editTableColumnConfig(data: EditTableColumnConfigInput): Promise<void> {
-		return axiosUtil.request<void>({
-			url: "/table/editTableColumnConfig",
-			method: "post",
-			data,
-			requestType: "edit",
-		});
-	},
-	/**
 	 * 获取表格配置分页列表
 	 */
 	queryTableConfigPaged(data: PagedInput): Promise<PagedResult<QueryTableConfigPagedOutput>> {
@@ -102,6 +78,30 @@ export const tableApi = {
 	copyTableConfig(data: CopyTableConfigInput): Promise<void> {
 		return axiosUtil.request<void>({
 			url: "/table/copyTableConfig",
+			method: "post",
+			data,
+			requestType: "edit",
+		});
+	},
+	/**
+	 * 获取表格列配置详情
+	 */
+	queryTableColumnConfigDetail(tableId: string): Promise<FaTableColumnCtx[]> {
+		return axiosUtil.request<FaTableColumnCtx[]>({
+			url: "/table/queryTableColumnConfigDetail",
+			method: "get",
+			params: {
+				tableId,
+			},
+			requestType: "query",
+		});
+	},
+	/**
+	 * 编辑表格列配置
+	 */
+	editTableColumnConfig(data: EditTableColumnConfigInput): Promise<void> {
+		return axiosUtil.request<void>({
+			url: "/table/editTableColumnConfig",
 			method: "post",
 			data,
 			requestType: "edit",
