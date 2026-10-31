@@ -15,6 +15,10 @@ declare interface ImportMetaEnv {
 	 */
 	readonly VITE_STORAGE_CRYPTO: "true" | "false";
 	/**
+	 * App Store 中的数字 ID
+	 */
+	readonly VITE_APPLE_STORE_APP_ID: string;
+	/**
 	 * APP 来源
 	 */
 	readonly VITE_APP_ORIGIN: string;

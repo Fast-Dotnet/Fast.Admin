@@ -10,7 +10,7 @@
 	>
 		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" cols="1">
 			<FaFormItem prop="appKey" label="应用标识">
-				<el-input v-model="state.formData.appKey" maxlength="50" placeholder="请输入应用标识" />
+				<ApplicationClientSelect v-model="state.formData.appKey" />
 			</FaFormItem>
 			<FaFormItem prop="tokenType" label="凭据类型">
 				<RadioGroup name="ApplicationTokenTypeEnum" v-model="state.formData.tokenType" />
@@ -41,7 +41,7 @@ const faFormRef = useTemplateRef<FaFormInstance>("faFormRef");
 const state = reactive({
 	formData: withDefineType<AddApplicationTokenInput>({}),
 	formRules: withDefineType<FormRules<AddApplicationTokenInput>>({
-		appKey: [{ required: true, message: "请输入应用标识", trigger: "blur" }],
+		appKey: [{ required: true, message: "请选择应用标识", trigger: "change" }],
 		tokenType: [{ required: true, message: "请选择凭据类型", trigger: "change" }],
 	}),
 });

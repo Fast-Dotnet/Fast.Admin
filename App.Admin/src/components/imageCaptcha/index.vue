@@ -20,6 +20,7 @@
 
 <script setup lang="ts">
 import { onMounted, reactive } from "vue";
+import { throttle } from "@fast-china/utils";
 import { baseProps } from "@wot-ui/ui/common/props";
 import { loginApi } from "@/api/services/Auth/login";
 
@@ -70,7 +71,7 @@ const state = reactive({
 });
 
 /** 重新获取图形验证码并清空旧答案。 */
-const refresh = async () => {
+const refresh = throttle(async () => {
 	state.loading = true;
 	state.loadFailed = false;
 	captchaKey.value = undefined;
@@ -87,7 +88,7 @@ const refresh = async () => {
 		state.enabled = false;
 		state.loadFailed = true;
 	}
-};
+});
 
 onMounted(refresh);
 

@@ -1,52 +1,29 @@
-import { type App, type ComponentPublicInstance, nextTick } from "vue";
 import { configureInstallationIdentity, configureLogger, configureStorage, getOrCreateInstallationId, logger } from "@fast-china/utils";
+import { isAxiosError } from "axios";
 import dayjs from "dayjs";
 import "dayjs/locale/zh-cn";
 import { AppEnvironmentEnum } from "@/api/enums/AppEnvironmentEnum";
 import { CommonUniApp } from "@/common";
 import { RegExps } from "@/constants";
-import { useMessageBox } from "@/hooks";
-import { useApp } from "@/stores";
+import { usePrivacy } from "@/hooks/use-privacy";
+import { useApp, useConfig } from "@/stores";
 import { loadFastAxios } from "./axios";
 import { loadWotUi } from "./wot-ui";
 import { loadZPaging } from "./z-paging";
+import type { App, ComponentPublicInstance } from "vue";
 
-/** 初始化平台信息、存储、请求和 UI 默认配置；调用前须先安装 Pinia。 */
+/** 注册存储与 UI 默认配置；设备信息和请求初始化延后至隐私同意后。 */
 export function loadPlugins(app: App): void {
 	// 全局异常捕获
 	app.config.errorHandler = (err, _instance: ComponentPublicInstance, _info: string) => {
-		if (!err) return;
-		const errorMap: Record<string, string> = {
-			InternalError: "Javascript引擎内部错误",
-			ReferenceError: "未找到对象",
-			TypeError: "使用了错误的类型或对象",
-			RangeError: "使用内置对象时，参数超范围",
-			SyntaxError: "语法错误",
-			EvalError: "错误的使用了Eval",
-			URIError: "URI错误",
-			AggregateError: "未知的多个错误",
-			TimeoutError: "操作超时",
-			NetworkError: "网络错误",
-			OutOfMemoryError: "内存溢出",
-			DOMException: "DOM 操作异常",
-			SecurityError: "安全错误，可能涉及跨域或 CSP 限制",
-			EventError: "事件处理错误",
-		};
-		const errorName = err instanceof Error ? err.name : undefined;
-		if (err === "cancel") {
-			console.warn("操作已取消");
-		} else if (errorName === "AxiosError") {
-			return;
-		} else {
-			const errorMessage = (errorName && errorMap[errorName]) || "未知错误";
-			console.error(err);
-			nextTick(() => {
-				useMessageBox.alert({
-					title: "系统错误",
-					msg: errorMessage,
-				});
-			});
-		}
+		if (isAxiosError(err)) return;
+		console.error(err);
+		uni.showModal({
+			title: "系统错误",
+			// eslint-disable-next-line @typescript-eslint/no-base-to-string
+			content: err instanceof Error ? err.message : String(err),
+			showCancel: false,
+		});
 	};
 
 	configureLogger({
@@ -54,6 +31,19 @@ export function loadPlugins(app: App): void {
 	});
 
 	configureStorage({ prefix: "fast__", crypto: import.meta.env.VITE_STORAGE_CRYPTO === "true" });
+
+	dayjs.locale("zh-cn");
+
+	loadWotUi();
+	loadZPaging();
+	loadAppRuntime();
+}
+
+let isRuntimeLoaded = false;
+
+/** 隐私同意后初始化平台信息、请求与主题；重复调用不重复注册监听。 */
+export function loadAppRuntime(): void {
+	if (isRuntimeLoaded || !usePrivacy.hasAgreed()) return;
 
 	configureInstallationIdentity();
 	const deviceId = getOrCreateInstallationId();
@@ -169,19 +159,25 @@ export function loadPlugins(app: App): void {
 	const accountInfo = uni.getAccountInfoSync();
 	// 使用微信小程序的 AppId
 	appStore.appId = accountInfo.miniProgram.appId;
+	// 小程序展示微信发布版本；开发版和体验版可能没有版本名称。
+	appStore.appVersion = accountInfo.miniProgram.version || appStore.appVersion || "开发版";
 	// #endif
 
-	// #ifdef APP-PLUS
-	if (appStore.deviceInfo.platform === "ios") {
+	// #ifdef APP-PLUS || APP-HARMONY
+	if (process.env.UNI_PLATFORM === "app-harmony") {
+		appStore.deviceType = AppEnvironmentEnum.HarmonyOS;
+	} else if (appStore.deviceInfo.platform === "ios") {
 		appStore.deviceType = AppEnvironmentEnum.IOS;
 	} else {
 		appStore.deviceType = AppEnvironmentEnum.Android;
 	}
 
-	// 判断是否存在 WGT 热更新的版本号
+	// #ifdef APP-PLUS
+	// WGT 版本名称仅用于 Android/iOS。
 	if (appStore.appBaseInfo.appWgtVersion) {
 		appStore.appVersion = appStore.appBaseInfo.appWgtVersion;
 	}
+	// #endif
 	// #endif
 
 	// 是否为 Iphone 设备
@@ -201,11 +197,19 @@ export function loadPlugins(app: App): void {
 	logger.debug("App", "IsIphone", isIphone);
 	logger.debug("App", "IsClient", isClient);
 
-	dayjs.locale("zh-cn");
-
 	loadFastAxios();
 
-	loadWotUi();
+	// #ifdef APP-PLUS
+	// App 需要设置原生 UI 外观，主题才能跟随系统。
+	plus.nativeUI.setUIStyle("auto");
+	// #endif
 
-	loadZPaging();
+	// 设置应用名称
+	appStore.setAppName(appStore.appBaseInfo.appName);
+
+	// 初始化主题
+	useConfig().initTheme();
+
+	logger.debug("App", `成功加载【${appStore.appBaseInfo.appName}】`, new Date());
+	isRuntimeLoaded = true;
 }

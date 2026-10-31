@@ -52,7 +52,9 @@
 					"<uses-permission android:name=\"android.permission.CAMERA\" />",
 
 					"<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\" />",
-					"<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />"
+					"<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />",
+
+					"<uses-permission android:name=\"android.permission.REQUEST_INSTALL_PACKAGES\" />"
 				],
 				"permissionExternalStorage": {
 					"request": "none"
@@ -67,6 +69,7 @@
 			"ios": {
 				"dSYMs": false,
 				"idfa": false,
+				"privacyRegisterMode": "manual",
 				"UIBackgroundModes": ["audio"],
 				"privacyDescription": {
 					"NSPhotoLibraryUsageDescription": "用于从系统相册选择业务图片并上传，例如个人头像、业务附件及相关凭证。",

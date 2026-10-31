@@ -143,6 +143,11 @@ public class ApplicationVersionService : IDynamicApplication
 
         if (input.PackageType == ApplicationPackageTypeEnum.Wgt)
         {
+            if (input.AppType.HasFlag(AppEnvironmentEnum.HarmonyOS))
+            {
+                throw new UserFriendlyException("原生鸿蒙暂不支持 WGT 热更新！");
+            }
+
             if (input.MinNativeVersionCode is not > 0
                 || input.MaxNativeVersionCode is not > 0
                 || input.MinNativeVersionCode > input.MaxNativeVersionCode)
@@ -227,6 +232,11 @@ public class ApplicationVersionService : IDynamicApplication
 
         if (input.PackageType == ApplicationPackageTypeEnum.Wgt)
         {
+            if (input.AppType.HasFlag(AppEnvironmentEnum.HarmonyOS))
+            {
+                throw new UserFriendlyException("原生鸿蒙暂不支持 WGT 热更新！");
+            }
+
             if (input.MinNativeVersionCode is not > 0
                 || input.MaxNativeVersionCode is not > 0
                 || input.MinNativeVersionCode > input.MaxNativeVersionCode)

@@ -12,7 +12,7 @@
 	>
 		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" :disabled="state.formDisabled" cols="2">
 			<FaFormItem prop="appKey" label="应用标识">
-				<el-input v-model="state.formData.appKey" maxlength="50" placeholder="请输入应用标识" />
+				<ApplicationClientSelect v-model="state.formData.appKey" />
 			</FaFormItem>
 			<FaFormItem prop="packageType" label="包类型">
 				<RadioGroup name="ApplicationPackageTypeEnum" v-model="state.formData.packageType" @change="handlePackageTypeChange" />
@@ -27,7 +27,6 @@
 				<el-checkbox-group v-else v-model="appTypes">
 					<el-checkbox :value="AppEnvironmentEnum.Windows">Windows</el-checkbox>
 					<el-checkbox :value="AppEnvironmentEnum.Android">Android</el-checkbox>
-					<el-checkbox :value="AppEnvironmentEnum.HarmonyOS">鸿蒙</el-checkbox>
 					<el-checkbox :value="AppEnvironmentEnum.IOS">IOS</el-checkbox>
 				</el-checkbox-group>
 			</FaFormItem>
@@ -111,7 +110,7 @@ const appEnvironmentEnum = appStore.getDictionary("AppEnvironmentEnum").filter((
 const state = reactive({
 	formData: withDefineType<EditApplicationVersionInput>({}),
 	formRules: withDefineType<FormRules<EditApplicationVersionInput>>({
-		appKey: [{ required: true, message: "请输入应用标识", trigger: "blur" }],
+		appKey: [{ required: true, message: "请选择应用标识", trigger: "change" }],
 		appType: [{ required: true, message: "请选择应用类型", trigger: "change" }],
 		packageType: [{ required: true, message: "请选择包类型", trigger: "blur" }],
 		versionName: [{ required: true, message: "请输入版本名称", trigger: "blur" }],

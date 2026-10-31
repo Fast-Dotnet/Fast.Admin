@@ -5,6 +5,7 @@
  */
 
 import AccountSelectPage from "./AccountSelectPage/index.vue";
+import ApplicationClientSelect from "./ApplicationClientSelect/index.vue";
 import ApplicationSelect from "./ApplicationSelect/index.vue";
 import ApplicationTree from "./ApplicationTree/index.vue";
 import CheckboxGroup from "./CheckboxGroup/index.vue";
@@ -31,6 +32,8 @@ import type { App } from "vue";
 
 export { AccountSelectPage };
 export type AccountSelectPageInstance = InstanceType<typeof AccountSelectPage>;
+export { ApplicationClientSelect };
+export type ApplicationClientSelectInstance = InstanceType<typeof ApplicationClientSelect>;
 export { ApplicationSelect };
 export type ApplicationSelectInstance = InstanceType<typeof ApplicationSelect>;
 export { ApplicationTree };
@@ -79,6 +82,7 @@ export type WatermarkInstance = InstanceType<typeof Watermark>;
 /** 将扫描到的组件注册为 Vue 全局组件。 */
 export function registerComponents(app: App): void {
 	app.component(AccountSelectPage.name, AccountSelectPage);
+	app.component(ApplicationClientSelect.name, ApplicationClientSelect);
 	app.component(ApplicationSelect.name, ApplicationSelect);
 	app.component(ApplicationTree.name, ApplicationTree);
 	app.component(CheckboxGroup.name, CheckboxGroup);

@@ -1,9 +1,9 @@
 <template>
 	<wd-img
 		v-bind="wdImgProps"
-		:custom-class="`fa-image ${!state.src || state.hideImage ? 'is-small' : ''} ${props.customClass}`"
+		:custom-class="`fa-image ${!state.src || props.hideImage ? 'is-small' : ''} ${props.customClass}`"
 		:custom-style="`--height:${addCssUnit(props.height)};--width:${addCssUnit(props.width)};`"
-		:src="state.hideImage ? artwork : (state.src ?? notImage)"
+		:src="props.hideImage ? artwork : (state.src ?? notImage)"
 		:preview-src="state.previewSrc"
 		:enable-preview="props.enablePreview && !!state.src"
 		@click.stop="(event: MouseEvent) => emit('click', event)"
@@ -28,7 +28,6 @@
 import { computed, reactive, toRef, watch } from "vue";
 import { addCssUnit, useProps } from "@fast-china/utils";
 import { imgProps } from "@wot-ui/ui/components/wd-img/types";
-import { useConfig } from "@/stores";
 import artwork from "./images/artwork.png";
 import notImage from "./images/notImage.png";
 
@@ -87,13 +86,9 @@ const emit = defineEmits<{
 	error: [event: Event];
 }>();
 
-const configStore = useConfig();
-
 const state = reactive({
 	/** 图片加载错误 */
 	loadError: false,
-	/** 隐藏图片 */
-	hideImage: computed(() => (props.hideImage == null ? configStore.tableLayout.hideImage : props.hideImage)),
 	/** 预览地址 */
 	previewSrc: computed(() => {
 		if (props.enablePreview && props.src) {

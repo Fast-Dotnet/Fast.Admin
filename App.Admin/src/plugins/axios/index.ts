@@ -58,6 +58,10 @@ export function loadFastAxios(): void {
 			origin = appStore.appId;
 			deviceType = uni.getSystemInfoSync().platform === "ios" ? "IOS" : "Android";
 			break;
+		case "app-harmony":
+			origin = appStore.appId;
+			deviceType = "HarmonyOS";
+			break;
 		case "h5":
 		default:
 			origin = import.meta.env.DEV ? import.meta.env.VITE_APP_ORIGIN || window.location.host : window.location.host;

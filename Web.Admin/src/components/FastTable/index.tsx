@@ -150,8 +150,8 @@ export default defineComponent({
 		/** 清除当前用户的表格列缓存并重新加载配置。 */
 		const clearColumnsCache = () => {
 			if (props.columns) return;
-			ElMessageBox.confirm("确认重置列缓存配置？此操作无法撤销。", { type: "warning" }).then(async () => {
-				await faTableRef.value.doLoading(async () => {
+			ElMessageBox.confirm("确认重置列缓存配置？此操作无法撤销。", { type: "warning" }).then(() => {
+				faTableRef.value.doLoading(async () => {
 					try {
 						await tableApi.clearUserTableConfig({ tableKey: props.tableKey });
 						appStore.deleteTableColumns(props.tableKey);

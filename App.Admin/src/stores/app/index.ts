@@ -67,7 +67,6 @@ export const useApp = defineStore(
 			appType: AppEnvironmentEnum.WeChatMiniProgram,
 			environmentType: EnvironmentTypeEnum.Development,
 			loginComponent: "ClassicLogin",
-			webSocketUrl: "",
 			requestTimeout: 6000,
 			requestEncipher: true,
 			tenantName: "",

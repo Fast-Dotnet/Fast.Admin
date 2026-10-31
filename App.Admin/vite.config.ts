@@ -53,8 +53,8 @@ export default defineConfig({
 	build: {
 		/* 无需额外计算构建产物的 gzip 压缩体积。 */
 		reportCompressedSize: false,
-		/* 不生成 Source Map，减少构建体积并避免暴露源码。 */
-		sourcemap: false,
+		// 开发环境启用 Source Map 便于源码调试，生产环境关闭以减少产物体积并降低源码暴露风险。
+		sourcemap: isDevelopment ? true : false,
 		/* 开发环境不压缩，发行环境使用 Terser。 */
 		minify: isDevelopment ? false : "terser",
 		terserOptions: {

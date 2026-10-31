@@ -4,31 +4,31 @@
 			custom-class="pl20 pt20 mb20"
 			custom-style="display: block;"
 			text="本渠道为平台自有渠道，非官方监管渠道"
-			size="var(--wot-typography-label-size-main)"
+			size="var(--wot-font-size-small)"
 		/>
 
 		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>
-			<wd-cell-group>
-				<wd-form-item title="投诉类型" prop="complaintType">
-					<wd-radio-group v-model="state.formData.complaintType" direction="horizontal">
-						<wd-radio v-for="(item, index) in complaintTypeEnum" :key="index" :value="item.value" :disabled="item.disabled">
-							{{ item.label }}
-						</wd-radio>
-					</wd-radio-group>
-				</wd-form-item>
+			<wd-form-item
+				title="投诉类型"
+				prop="complaintType"
+				is-link
+				:value="complaintPickerLabel"
+				placeholder="请选择投诉类型"
+				@click="state.complaintPickerVisible = true"
+			/>
+			<wd-picker v-model="complaintType" v-model:visible="state.complaintPickerVisible" :columns="complaintTypeEnum" />
 
-				<wd-form-item title="联系电话" prop="contactPhone">
-					<wd-input v-model="state.formData.contactPhone" clearable type="tel" :maxlength="11" placeholder="请输入联系电话" />
-				</wd-form-item>
+			<wd-form-item title="联系电话" prop="contactPhone">
+				<wd-input v-model="state.formData.contactPhone" clearable type="text" inputmode="tel" :maxlength="11" placeholder="请输入联系电话" />
+			</wd-form-item>
 
-				<wd-form-item title="联系邮箱" prop="contactEmail">
-					<wd-input v-model="state.formData.contactEmail" clearable type="text" inputmode="email" placeholder="请输入联系邮箱" />
-				</wd-form-item>
+			<wd-form-item title="联系邮箱" prop="contactEmail">
+				<wd-input v-model="state.formData.contactEmail" clearable type="text" inputmode="email" placeholder="请输入联系邮箱" />
+			</wd-form-item>
 
-				<wd-form-item title="投诉描述" prop="description">
-					<wd-textarea v-model="state.formData.description" clearable :maxlength="200" placeholder="请简单描述内容" />
-				</wd-form-item>
-			</wd-cell-group>
+			<wd-form-item title="投诉描述" prop="description">
+				<wd-textarea v-model="state.formData.description" clearable :maxlength="200" placeholder="请简单描述内容" />
+			</wd-form-item>
 
 			<wd-form-item title="附件图片" prop="attachmentImages" required>
 				<wd-upload v-model:file-list="state.fileList" multiple :limit="4" image-mode="aspectFill" :upload-method="handleUpload" />
@@ -40,15 +40,17 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import { computed, reactive, ref } from "vue";
 import { throttle, withDefineType } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
+import { ComplaintTypeEnum } from "@/api/enums/ComplaintTypeEnum";
 import { complaintApi } from "@/api/services/Center/complaint";
 import { fileApi } from "@/api/services/File";
 import { RegExps } from "@/constants";
 import { useFormSchema, useLoading, useToast } from "@/hooks";
 import { useApp } from "@/stores";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
+import type { PickerOption } from "@wot-ui/ui/components/wd-picker-view/types";
 import type { UploadFile, UploadMethod } from "@wot-ui/ui/components/wd-upload/types";
 import type { AddComplaintInput } from "@/api/services/Center/complaint/models/AddComplaintInput";
 
@@ -63,10 +65,12 @@ const router = useRouter();
 
 const formRef = ref<FormInstance>();
 
-const complaintTypeEnum = appStore.getDictionary("ComplaintTypeEnum");
+const complaintTypeEnum = appStore.getDictionary<PickerOption>("ComplaintTypeEnum");
 
 const state = reactive({
-	formData: withDefineType<AddComplaintInput>({}),
+	formData: withDefineType<AddComplaintInput>({
+		complaintType: ComplaintTypeEnum.Inducement,
+	}),
 	formSchema: useFormSchema<AddComplaintInput>({
 		complaintType: { required: true, message: "请选择投诉类型" },
 		contactPhone: [
@@ -80,7 +84,16 @@ const state = reactive({
 		description: { required: true, message: "请输入投诉描述" },
 	}),
 	fileList: withDefineType<UploadFile[]>([]),
+	complaintPickerVisible: false,
 });
+
+const complaintType = computed({
+	get: () => [state.formData.complaintType],
+	set: (value) => {
+		state.formData.complaintType = value[0];
+	},
+});
+const complaintPickerLabel = computed(() => complaintTypeEnum.find((item) => item.value === state.formData.complaintType)?.label);
 
 /** 处理上传 */
 const handleUpload: UploadMethod = (file, formData, options) => {

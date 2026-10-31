@@ -40,14 +40,6 @@ export const useConfig = defineStore(
 			watermark: true,
 		});
 
-		/** 表格配置 */
-		const tableLayout = reactive({
-			/** 是否默认隐藏表格图片 */
-			hideImage: false,
-			/** 默认时间搜索范围 */
-			dataSearchRange: withDefineType<FaTableDataRange>("Past1M"),
-		});
-
 		/** 更新导航栏、平台外观与 Wot UI 主题变量；空值使用应用主题色。 */
 		const setTheme = (color?: string) => {
 			if (!color) {
@@ -209,13 +201,10 @@ export const useConfig = defineStore(
 			layout.footer = true;
 			layout.watermark = true;
 			initTheme();
-			tableLayout.hideImage = true;
-			tableLayout.dataSearchRange = "Past3D";
 		};
 
 		return {
 			layout,
-			tableLayout,
 			setTheme,
 			switchAutoThemMode,
 			switchDark,

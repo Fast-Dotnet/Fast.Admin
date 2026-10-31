@@ -429,6 +429,8 @@ public sealed class User : AuthUserInfo, IUser, IScopedDependency
         Mobile = input.Mobile;
         NickName = input.NickName;
         Avatar = input.Avatar;
+        ClientUserId = input.ClientUserId;
+        ClientUserOpenId = input.ClientUserOpenId;
 
         // 获取缓存Key
         string cacheKey = CacheConst.GetCacheKey(CacheConst.AuthUser, input.AppNo, input.TenantNo, input.DeviceType.ToString(),

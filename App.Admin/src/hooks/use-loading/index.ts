@@ -22,11 +22,16 @@ export const useLoading = {
 			};
 		}
 	},
-	/** 延迟 500 毫秒清除共享加载状态。 */
-	hide(): void {
-		if (wdHookState.loading?.state) {
-			setTimeout(() => {
+	/** 默认延迟 500 毫秒关闭当前加载；弹窗前可立即关闭，不影响随后开始的新加载。 */
+	hide(options?: { immediate?: boolean }): void {
+		const loading = wdHookState.loading;
+		if (loading?.state) {
+			if (options?.immediate) {
 				wdHookState.loading = undefined;
+				return;
+			}
+			setTimeout(() => {
+				if (wdHookState.loading === loading) wdHookState.loading = undefined;
 			}, 500);
 		}
 	},

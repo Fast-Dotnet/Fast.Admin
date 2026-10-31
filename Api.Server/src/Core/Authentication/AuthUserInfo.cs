@@ -82,7 +82,7 @@ public class AuthUserInfo
     /// <summary>
     /// 客户端用户Id
     /// </summary>
-    public virtual long ClientUserId { get; set; }
+    public virtual long? ClientUserId { get; set; }
 
     /// <summary>
     /// 客户端唯一用户标识

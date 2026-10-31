@@ -7,7 +7,9 @@
 				<text>生效日期：2025年01月01日</text>
 			</view>
 		</view>
-		<view class="page__notice"> 请在使用 {{ appStore.appName }} 前仔细阅读本政策。开始使用即表示您已阅读、理解并同意本政策的相关内容。 </view>
+		<view class="page__notice">
+			请在使用 {{ appStore.appName }} 前仔细阅读本政策。我们将在需要时征得您的明确同意，阅读本政策不代表您已同意。
+		</view>
 		<view v-for="(section, index) in sections" :key="section.title" class="page__section">
 			<view class="page__section-title">{{ index + 1 }}. {{ section.title }}</view>
 			<view v-for="paragraph in section.paragraphs" :key="paragraph" class="page__paragraph">{{ paragraph }}</view>
@@ -26,6 +28,7 @@ import { useApp } from "@/stores";
 definePage({
 	name: "PrivacyAgreement",
 	layout: "layout",
+	watermark: false,
 	noLogin: true,
 	style: { navigationBarTitleText: "隐私政策" },
 });
@@ -60,6 +63,13 @@ const sections = computed(() => [
 		paragraphs: [
 			"我们不会出售您的个人信息。仅在取得您的授权、履行合同所必需、遵守法律义务或保护重大合法权益的情况下，向必要的关联方、服务提供方或主管机关提供信息。",
 			"如发生合并、分立、资产转让或运营主体变更，我们会要求新的处理方继续履行本政策，或重新取得您的同意。除法律另有规定外，我们不会公开披露您的个人信息。",
+		],
+	},
+	{
+		title: "第三方 SDK 服务（DCloud）",
+		paragraphs: [
+			"我们的产品基于 DCloud uni-app（5+ App/Wap2App）开发，应用运行期间需要收集您的设备唯一识别码（IMEI/android ID/DEVICE_ID/IDFA、SIM 卡 IMSI 信息、OAID）以提供统计分析服务，并通过应用启动数据及异常错误日志分析改进性能和用户体验，为用户提供更好的服务。",
+			"详情内容请访问《DCloud App 引擎隐私政策》（https://dcloud.io/license/appprivacy.html）。",
 		],
 	},
 	{

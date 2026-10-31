@@ -136,10 +136,6 @@
 					<el-switch v-model="configStore.layout.screenFull" :active-action-icon="View" :inactive-action-icon="Hide" />
 				</div>
 				<div class="box-item">
-					<span>页脚</span>
-					<el-switch v-model="configStore.layout.footer" :active-action-icon="View" :inactive-action-icon="Hide" />
-				</div>
-				<div class="box-item">
 					<span>菜单宽度</span>
 					<el-input-number v-model="configStore.layout.menuWidth" :max="240" :min="150" style="width: 80px">
 						<template #suffix>

@@ -2,7 +2,7 @@
 	<view class="page">
 		<view class="user-card">
 			<FaImage width="120rpx" height="120rpx" round original :hide-image="false" :src="userInfoStore.avatar" />
-			<view class="user-card__info" @click="router.push('/pages/setting/userInfo/index')">
+			<view class="user-card__info" @click="userInfoStore.clientUserId && router.push('/pages/setting/userInfo/index')">
 				<view class="user-card__employeeName">{{ userInfoStore.employeeName }}</view>
 				<view class="user-card__employeeNo">{{ userInfoStore.employeeNo }}（{{ userInfoStore.departmentName || "无部门" }}）</view>
 				<view class="user-card__nickName">{{ userInfoStore.nickName }}</view>
@@ -10,7 +10,7 @@
 		</view>
 
 		<wd-cell-group border>
-			<wd-cell title="个人资料" clickable is-link to="/pages/setting/userInfo/index">
+			<wd-cell v-if="userInfoStore.clientUserId" title="个人资料" clickable is-link to="/pages/setting/userInfo/index">
 				<template #prefix>
 					<FaIcon custom-class="wd-cell__icon" name="idCard" />
 				</template>
@@ -28,7 +28,7 @@
 		</wd-cell-group>
 
 		<wd-cell-group border>
-			<wd-cell title="系统版本" clickable :value="appVersion" />
+			<wd-cell title="系统版本" clickable :value="state.checkingUpdate ? '正在检查更新…' : appVersion" @click="handleCheckUpdate" />
 			<wd-cell title="系统服务商" value="FastDotnet" />
 			<wd-cell title="消息通知" clickable is-link @click="useToast.info('敬请期待')" />
 			<wd-cell title="通用设置" clickable is-link to="/pages/setting/general/index" />
@@ -66,13 +66,13 @@
 <script setup lang="ts">
 import { onPageScroll, onPullDownRefresh, onShareAppMessage, onShareTimeline, onShow } from "@dcloudio/uni-app";
 import { computed, reactive, ref } from "vue";
-import { Local, throttle, withDefineType } from "@fast-china/utils";
+import { Local, logger, throttle, withDefineType } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { EnvironmentTypeEnum } from "@/api/enums/EnvironmentTypeEnum";
 import { LoginStatusEnum } from "@/api/enums/LoginStatusEnum";
 import { loginApi } from "@/api/services/Auth/login";
 import { CommonRoute } from "@/common";
-import { useMessageBox, useToast } from "@/hooks";
+import { useMessageBox, useToast, useUpdate } from "@/hooks";
 import defaultLogo from "@/static/logo.png";
 import { useApp, useUserInfo } from "@/stores";
 import type { LoginTenantOutput } from "@/api/services/Auth/login/models/LoginTenantOutput";
@@ -97,6 +97,7 @@ const storageInfo = ref<Partial<UniNamespace.GetStorageInfoSuccess>>({});
 const switchTenantPopupRef = ref<FaPopupInstance>();
 
 const state = reactive({
+	checkingUpdate: false,
 	/** 是否滚动 */
 	isScrolled: false,
 	tenantList: withDefineType<LoginTenantOutput[]>([]),
@@ -127,7 +128,22 @@ const appVersion = computed(() => {
 			envName = "Stress";
 			break;
 	}
-	return `${envName} v${appStore.appBaseInfo.appVersion}`;
+	return `${envName} v${appStore.appVersion}`;
+});
+
+const handleCheckUpdate = throttle(async () => {
+	state.checkingUpdate = true;
+	try {
+		const result = await useUpdate.checkUpdate(true);
+		if (result === "required") {
+			await router.replaceAll(CommonRoute.Launcher);
+		}
+	} catch (error) {
+		// 常规失败由更新入口处理，这里仅记录未预期异常。
+		logger.error("My", "手动检查更新失败", error);
+	} finally {
+		state.checkingUpdate = false;
+	}
 });
 
 const currentSize = computed(() => {
@@ -149,8 +165,8 @@ const limitSize = computed(() => {
 });
 
 /** 清除缓存 */
-const handleClearCache = throttle(() => {
-	useMessageBox.confirm("清除缓存后需要重新登录，确定要清除？").then(async () => {
+const handleClearCache = throttle(async () => {
+	await useMessageBox.confirm("清除缓存后需要重新登录，确定要清除？").then(async () => {
 		appStore.clearAppCache();
 		await userInfoStore.logout();
 		useToast.success("退出登录成功");
@@ -158,26 +174,26 @@ const handleClearCache = throttle(() => {
 });
 
 /** 退出登录 */
-const handleLogout = throttle(() => {
-	useMessageBox.confirm("确定要退出登录？").then(async () => {
+const handleLogout = throttle(async () => {
+	await useMessageBox.confirm("确定要退出登录？").then(async () => {
 		await userInfoStore.logout();
 		useToast.success("退出登录成功");
 	});
 });
 
 /** 切换租户点击 */
-const switchTenantClick = throttle(() => {
+const switchTenantClick = () => {
 	switchTenantPopupRef.value.open(async () => {
 		state.tenantList = await loginApi.queryLoginUser();
 	});
-});
+};
 
 /** 处理租户登录 */
-const handleTenantLogin = throttle((data: LoginTenantOutput) => {
+const handleTenantLogin = (data: LoginTenantOutput) => {
 	const { userKey } = userInfoStore;
 	if (data.userKey === userKey) return;
-	switchTenantPopupRef.value
-		.close(async () => {
+	switchTenantPopupRef.value.close(async () => {
+		try {
 			const loginRes = await loginApi.tryLogin({ userKey: data.userKey });
 			if (loginRes.status === LoginStatusEnum.Success) {
 				userInfoStore.login(loginRes);
@@ -185,16 +201,16 @@ const handleTenantLogin = throttle((data: LoginTenantOutput) => {
 			} else {
 				useToast.error(loginRes.message);
 			}
-		})
-		.finally(async () => {
+		} finally {
 			uni.startPullDownRefresh();
 			// 删除 HTTP 缓存数据
 			Local.removeByPrefix("HTTP_CACHE_");
 			// 刷新用户信息
 			await userInfoStore.refreshUserInfo();
 			uni.stopPullDownRefresh();
-		});
-});
+		}
+	});
+};
 
 onShow(() => {
 	storageInfo.value = uni.getStorageInfoSync();

@@ -88,6 +88,12 @@ public class AuthService : IDynamicApplication
             IsAdmin = _user.IsAdmin
         };
 
+        if (hasMobile)
+        {
+            result.ClientUserId = _user.ClientUserId;
+            result.ClientUserOpenId = _user.ClientUserOpenId;
+        }
+
         // 查询角色
         var roleList = await _empRepository.Queryable<EmployeeRoleModel>()
             .LeftJoin<RoleModel>((t1, t2) => t1.RoleId == t2.RoleId)

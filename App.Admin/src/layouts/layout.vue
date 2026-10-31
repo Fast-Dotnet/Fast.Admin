@@ -81,7 +81,7 @@
 <script setup lang="ts">
 import { onHide, onLoad, onShow } from "@dcloudio/uni-app";
 import { type WatchStopHandle, computed, nextTick, onBeforeMount, reactive, ref, watch } from "vue";
-import { logger, throttle } from "@fast-china/utils";
+import { logger } from "@fast-china/utils";
 import { useRoute, useRouter } from "@wot-ui/router";
 import { useDialog } from "@wot-ui/ui/components/wd-dialog";
 import { useNotify } from "@wot-ui/ui/components/wd-notify";
@@ -155,7 +155,7 @@ const mainStyle = computed(() => {
 });
 
 /** 手机登录 */
-const handlePhoneLogin = throttle(({ detail }: { detail: UniHelper.ButtonOnGetphonenumberDetail }) => {
+const handlePhoneLogin = ({ detail }: { detail: UniHelper.ButtonOnGetphonenumberDetail }) => {
 	authMobilePopupRef.value.close(async () => {
 		logger.log("GetPhoneNumber", detail);
 		const { code } = detail;
@@ -186,7 +186,7 @@ const handlePhoneLogin = throttle(({ detail }: { detail: UniHelper.ButtonOnGetph
 				useMessageBox.alert(loginRes.message || "登录失败");
 		}
 	});
-});
+};
 
 /** 消费共享提示请求；页面再次显示时只恢复已经停止的监听。 */
 const handleWatch = () => {

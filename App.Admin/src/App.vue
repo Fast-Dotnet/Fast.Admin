@@ -1,31 +1,27 @@
 <script setup lang="ts">
 import { onLaunch } from "@dcloudio/uni-app";
-import { logger } from "@fast-china/utils";
 import { CommonRoute } from "@/common";
-import { useApp, useConfig } from "@/stores";
+import { useUpdate } from "@/hooks";
+import { usePrivacy } from "@/hooks/use-privacy";
+import { loadAppRuntime } from "@/plugins";
+import { useApp } from "@/stores";
 
 onLaunch((options) => {
-	const appStore = useApp();
-	const configStore = useConfig();
-
-	logger.debug("App", `成功加载【${appStore.appBaseInfo.appName}】`, new Date());
-
-	// #ifdef APP-PLUS
-	// App端需要调用setUIStyle，否则无法使用深色模式
-	plus.nativeUI.setUIStyle("auto");
+	// #ifdef MP
+	// 冷启动时尽早监听更新，后台下载完成后会自动提示重启。
+	useUpdate.checkUpdate();
 	// #endif
 
-	// 设置应用名称
-	appStore.setAppName(appStore.appBaseInfo.appName);
+	// 首次启动由启动页取得同意，再继续初始化。
+	if (!usePrivacy.hasAgreed()) return;
+	loadAppRuntime();
 
 	if (`/${options.path}` !== CommonRoute.Launcher) {
+		const appStore = useApp();
 		// 处理未经过 Launcher 页面导致 axios 配置不存在的问题
 		appStore.setFastAxios();
 		// 处理未经过 Launcher 页面导致字典不存在的问题
 		appStore.setDictionary();
 	}
-
-	// 初始化主题
-	configStore.initTheme();
 });
 </script>

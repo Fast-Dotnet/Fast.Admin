@@ -134,6 +134,44 @@
 	box-shadow: 0 16rpx 36rpx var(--wot-feedback-accent);
 }
 
+:deep(.privacy-popup) {
+	width: min(660rpx, 88vw);
+	max-height: 85vh;
+	overflow-y: auto;
+}
+
+.privacy-popup__content {
+	padding: 40rpx 32rpx 32rpx;
+}
+
+.privacy-popup__title {
+	margin-bottom: 28rpx;
+	font-size: 34rpx;
+	font-weight: var(--wot-font-weight-semibold);
+	text-align: center;
+}
+
+.privacy-popup__text {
+	margin-bottom: 20rpx;
+	font-size: 27rpx;
+	line-height: 1.8;
+	color: var(--wot-text-secondary);
+}
+
+.privacy-popup__link {
+	color: var(--wot-primary-6);
+}
+
+.privacy-popup__actions {
+	display: flex;
+	gap: 20rpx;
+	margin-top: 32rpx;
+
+	> :deep(.wd-button) {
+		flex: 1;
+	}
+}
+
 @keyframes logo-enter {
 	from {
 		opacity: 0;

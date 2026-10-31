@@ -7,7 +7,7 @@
 				<text>生效日期：2025年01月01日</text>
 			</view>
 		</view>
-		<view class="page__notice"> 请在使用 {{ appStore.appName }} 前仔细阅读本协议。开始使用即表示您已阅读、理解并同意本协议的相关内容。 </view>
+		<view class="page__notice"> 请在使用 {{ appStore.appName }} 前仔细阅读本协议，确认同意后再使用相关服务。 </view>
 		<view v-for="(section, index) in sections" :key="section.title" class="page__section">
 			<view class="page__section-title">{{ index + 1 }}. {{ section.title }}</view>
 			<view v-for="paragraph in section.paragraphs" :key="paragraph" class="page__paragraph">{{ paragraph }}</view>
@@ -26,6 +26,7 @@ import { useApp } from "@/stores";
 definePage({
 	name: "ServiceAgreement",
 	layout: "layout",
+	watermark: false,
 	noLogin: true,
 	style: { navigationBarTitleText: "服务协议" },
 });

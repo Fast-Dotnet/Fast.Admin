@@ -30,6 +30,8 @@ export const useUserInfo = defineStore(
 			nickName: "",
 			avatar: "",
 			identityVerification: false,
+			clientUserId: undefined,
+			clientUserOpenId: undefined,
 			tenantNo: "",
 			tenantName: "",
 			shortName: "",

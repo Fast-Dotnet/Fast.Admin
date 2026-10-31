@@ -4,7 +4,7 @@
 		:custom-class="`fa-popup ${props.customClass}`"
 		:custom-style="`${state.style} ${props.customStyle}`"
 		v-model="state.visible"
-		safe-area-inset-bottom
+		:safe-area-inset-bottom="props.position !== 'center' && props.position !== 'top'"
 		@before-enter="() => emit('beforeEnter')"
 		@enter="() => emit('enter')"
 		@after-enter="() => emit('afterEnter')"

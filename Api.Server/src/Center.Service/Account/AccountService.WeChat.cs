@@ -118,6 +118,19 @@ public partial class AccountService
                     .ExecuteCommandWithOptLockAsync(true);
             }
         }, ex => throw ex);
+
+        // 刷新缓存
+        await _user.RefreshClientUser(new RefreshClientUserDto
+        {
+            DeviceType = _user.DeviceType,
+            AppNo = _user.AppNo,
+            Mobile = clientUserModel.Mobile,
+            NickName = clientUserModel.NickName,
+            Avatar = clientUserModel.Avatar,
+            ClientUserId = clientUserModel.UserId,
+            ClientUserOpenId = clientUserModel.OpenId,
+            TenantNo = _user.TenantNo
+        });
     }
 
     /// <summary>

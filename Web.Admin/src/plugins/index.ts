@@ -1,6 +1,7 @@
 import { nextTick } from "vue";
 import { ElNotification } from "element-plus";
 import { configureInstallationIdentity, configureLogger, configureStorage, getOrCreateInstallationId } from "@fast-china/utils";
+import { isAxiosError } from "axios";
 import { registerComponents } from "@/components";
 import { loadFastAxios } from "./axios";
 import { loadElementPlus } from "./element-plus";
@@ -10,6 +11,7 @@ import type { App, ComponentPublicInstance } from "vue";
 export function loadPlugins(app: App): void {
 	// 全局异常捕获
 	app.config.errorHandler = (err, _instance: ComponentPublicInstance, _info: string) => {
+		if (isAxiosError(err)) return;
 		console.error(err);
 		nextTick(() => {
 			ElNotification({

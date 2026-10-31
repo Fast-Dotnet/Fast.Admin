@@ -82,7 +82,7 @@ public interface IUser
     /// <summary>
     /// 客户端用户Id
     /// </summary>
-    long ClientUserId { get; set; }
+    long? ClientUserId { get; set; }
 
     /// <summary>
     /// 客户端唯一用户标识

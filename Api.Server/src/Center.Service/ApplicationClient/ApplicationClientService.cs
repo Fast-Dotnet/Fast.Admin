@@ -27,6 +27,42 @@ public class ApplicationClientService : IDynamicApplication
     }
 
     /// <summary>
+    /// 应用标识选择器
+    /// </summary>
+    [HttpGet]
+    [ApiInfo("应用标识选择器", HttpRequestActionEnum.Query)]
+    [PlatformOnly]
+    public async Task<List<ElSelectorOutput<string>>> ApplicationClientSelector()
+    {
+        var data = await _repository.Queryable<ApplicationClientModel>()
+            .LeftJoin<ApplicationModel>((t1, t2) => t1.AppId == t2.AppId)
+            .OrderBy((t1, t2) => t2.AppName)
+            .OrderBy((t1, t2) => t1.AppKey)
+            .Select((t1, t2) => new
+            {
+                t1.RecordId,
+                t1.AppId,
+                t1.AppKey,
+                t1.AppType,
+                t2.AppName
+            })
+            .ToListAsync();
+
+        return data.GroupBy(gb => new {gb.AppId, gb.AppName})
+            .Select(sl => new ElSelectorOutput<string>
+            {
+                Value = null,
+                Label = sl.Key.AppName,
+                Children = sl.Select(dSl => new ElSelectorOutput<string>
+                    {
+                        Value = dSl.AppKey, Label = dSl.AppKey, Data = new {dSl.AppId, dSl.AppName, dSl.AppType}
+                    })
+                    .ToList()
+            })
+            .ToList();
+    }
+
+    /// <summary>
     /// 获取应用标识详情
     /// </summary>
     [HttpGet]

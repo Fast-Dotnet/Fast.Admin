@@ -31,6 +31,14 @@ export interface GetLoginUserInfoOutput {
 	 */
 	identityVerification?: boolean;
 	/**
+	 * 客户端用户Id
+	 */
+	clientUserId?: string;
+	/**
+	 * 客户端唯一用户标识
+	 */
+	clientUserOpenId?: string;
+	/**
 	 * 租户编号
 	 */
 	tenantNo?: string;

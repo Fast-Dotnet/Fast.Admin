@@ -205,7 +205,7 @@ const handleLogin = throttle(async () => {
 		}
 		loginSuccess(apiRes);
 	} catch {
-		captchaRef.value?.refresh();
+		await captchaRef.value?.refresh();
 	}
 });
 

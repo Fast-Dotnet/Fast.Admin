@@ -43,6 +43,16 @@ public class GetLoginUserInfoOutput
     public bool IdentityVerification { get; set; }
 
     /// <summary>
+    /// 客户端用户Id
+    /// </summary>
+    public long? ClientUserId { get; set; }
+
+    /// <summary>
+    /// 客户端唯一用户标识
+    /// </summary>
+    public string ClientUserOpenId { get; set; }
+
+    /// <summary>
     /// 租户编号
     /// </summary>
     public string TenantNo { get; set; }

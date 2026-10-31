@@ -9,6 +9,16 @@ import type { QueryApplicationClientDetailOutput } from "./models/QueryApplicati
  */
 export const applicationClientApi = {
 	/**
+	 * 应用标识选择器
+	 */
+	applicationClientSelector(): Promise<ElSelectorOutput<string>[]> {
+		return axiosUtil.request<ElSelectorOutput<string>[]>({
+			url: "/applicationClient/applicationClientSelector",
+			method: "get",
+			requestType: "query",
+		});
+	},
+	/**
 	 * 获取应用标识详情
 	 */
 	queryApplicationClientDetail(recordId: string): Promise<QueryApplicationClientDetailOutput> {

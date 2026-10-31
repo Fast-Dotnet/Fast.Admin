@@ -127,7 +127,7 @@
 					</RouterView>
 				</el-scrollbar>
 			</el-main>
-			<el-footer :style="{ '--el-footer-height': configStore.layout.footer ? addCssUnit(configStore.layout.footerHeight) : 0 }">
+			<el-footer>
 				<Footer />
 			</el-footer>
 		</el-container>

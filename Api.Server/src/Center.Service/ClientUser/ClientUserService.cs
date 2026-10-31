@@ -164,43 +164,45 @@ public class ClientUserService : IDynamicApplication
             throw new UserFriendlyException("应用类型不匹配！");
         }
 
-        ClientUserModel userModel = await _repository.Queryable<ClientUserModel>()
+        ClientUserModel clientUserModel = await _repository.Queryable<ClientUserModel>()
             .Where(wh => wh.AppId == applicationModel.AppId)
             .Where(wh => wh.UserId == _user.ClientUserId)
             .SingleAsync();
 
-        if (userModel == null)
+        if (clientUserModel == null)
         {
             throw new UserFriendlyException("数据不存在！");
         }
 
-        if (!string.IsNullOrWhiteSpace(input.Mobile) && userModel.Mobile != input.Mobile)
+        if (!string.IsNullOrWhiteSpace(input.Mobile) && clientUserModel.Mobile != input.Mobile)
         {
             // 检查手机号是否已存在账号
-            if (await _repository.AnyAsync(a => a.Mobile == input.Mobile && a.UserId != userModel.UserId))
+            if (await _repository.AnyAsync(a => a.Mobile == input.Mobile && a.UserId != clientUserModel.UserId))
             {
                 throw new UserFriendlyException("该手机号已被其他用户绑定，请更换手机号！");
             }
 
-            userModel.Mobile = input.Mobile;
-            userModel.MobileUpdateTime = DateTime.Now;
+            clientUserModel.Mobile = input.Mobile;
+            clientUserModel.MobileUpdateTime = DateTime.Now;
         }
 
-        userModel.NickName = input.NickName;
-        userModel.Avatar = input.Avatar;
-        userModel.Sex = input.Sex;
-        userModel.RowVersion = input.RowVersion;
+        clientUserModel.NickName = input.NickName;
+        clientUserModel.Avatar = input.Avatar;
+        clientUserModel.Sex = input.Sex;
+        clientUserModel.RowVersion = input.RowVersion;
 
-        await _repository.UpdateAsync(userModel);
+        await _repository.UpdateAsync(clientUserModel);
 
         // 刷新缓存
         await _user.RefreshClientUser(new RefreshClientUserDto
         {
             DeviceType = _user.DeviceType,
             AppNo = _user.AppNo,
-            Mobile = userModel.Mobile,
-            NickName = userModel.NickName,
-            Avatar = userModel.Avatar,
+            Mobile = clientUserModel.Mobile,
+            NickName = clientUserModel.NickName,
+            Avatar = clientUserModel.Avatar,
+            ClientUserId = clientUserModel.UserId,
+            ClientUserOpenId = clientUserModel.OpenId,
             TenantNo = _user.TenantNo
         });
     }

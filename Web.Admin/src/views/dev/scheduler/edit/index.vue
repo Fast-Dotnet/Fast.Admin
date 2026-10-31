@@ -387,8 +387,8 @@ const handleCronRefer = () => {
 };
 
 const handleCronVerify = () => {
-	faFormRef.value.validateField("cron", async (isValid) => {
-		if (!isValid) return;
+	faDialogRef.value.doLoading(async () => {
+		await faFormRef.value.validateField("cron");
 		const { cron } = state.formData;
 		state.cronLogs = await schedulerApi.runVerifyCron(cron);
 	});

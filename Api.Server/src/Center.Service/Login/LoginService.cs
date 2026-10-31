@@ -320,6 +320,24 @@ public partial class LoginService : IDynamicApplication
             .IgnoreColumns(it => new {it.PasswordErrorTime, it.LockStartTime, it.LockEndTime, it.Status})
             .ExecuteCommandWithOptLockAsync(true);
 
+        ClientUserModel clientUserModel = null;
+        if (accountModel.ClientUserId != null)
+        {
+            clientUserModel = await _repository.Queryable<ClientUserModel>()
+                .SingleAsync(s => s.UserId == accountModel.ClientUserId);
+            if (clientUserModel != null)
+            {
+                clientUserModel.LastLoginDevice = userAgentInfo.Device;
+                clientUserModel.LastLoginOS = userAgentInfo.OS;
+                clientUserModel.LastLoginBrowser = userAgentInfo.Browser;
+                clientUserModel.LastLoginProvince = wanNetIpInfo.Province;
+                clientUserModel.LastLoginCity = wanNetIpInfo.City;
+                clientUserModel.LastLoginIp = wanNetIpInfo.Ip;
+                clientUserModel.LastLoginTime = dateTime;
+                await _repository.Updateable(clientUserModel).ExecuteCommandWithOptLockAsync(true);
+            }
+        }
+
         // 登录后身份验证开关
         bool loginIdentityVerificationOpen = bool.Parse(await ConfigContext.GetConfig(ConfigConst.LoginIdentityVerificationOpen));
 
@@ -337,6 +355,8 @@ public partial class LoginService : IDynamicApplication
             Avatar = accountModel.Avatar,
             // 开启验证并且未验证
             IdentityVerification = loginIdentityVerificationOpen && !accountModel.IdentityVerification,
+            ClientUserId = clientUserModel?.UserId,
+            ClientUserOpenId = clientUserModel?.OpenId,
             TenantId = tenantModel.TenantId,
             TenantNo = tenantModel.TenantNo,
             TenantName = tenantModel.TenantName,

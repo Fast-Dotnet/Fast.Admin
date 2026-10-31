@@ -21,29 +21,12 @@
 			</wd-cell>
 		</wd-cell-group>
 
-		<wd-text custom-class="pl20" text="界面显示" size="var(----wot-typography-label-size-main)" />
-		<wd-cell-group border>
-			<wd-cell title="页脚">
-				<wd-switch v-model="configStore.layout.footer" />
-			</wd-cell>
-		</wd-cell-group>
-
-		<wd-text custom-class="pl20" text="列表配置" size="var(----wot-typography-label-size-main)" />
-		<wd-cell-group border>
-			<wd-cell title="隐藏图片" label="开启后列表所有图片列需要点击才能查看（减少网络资源消耗）">
-				<wd-switch v-model="configStore.tableLayout.hideImage" />
-			</wd-cell>
-			<wd-cell title="默认搜索时间范围" :value="state.dataSearchRangeLabel" is-link @click="state.dataSearchRangePickerVisible = true" />
-			<wd-picker v-model="state.dataSearchRange" v-model:visible="state.dataSearchRangePickerVisible" :columns="dataSearchRangeList" />
-		</wd-cell-group>
-
 		<wd-button custom-class="btn__reset" type="danger" @click="configStore.reset">重置</wd-button>
 	</view>
 </template>
 
 <script setup lang="ts">
 import { computed, reactive } from "vue";
-import { withDefineType } from "@fast-china/utils";
 import { defaultThemeColor, useConfig } from "@/stores";
 import type { PickerOption } from "@wot-ui/ui/components/wd-picker-view/types";
 
@@ -73,45 +56,6 @@ const predefineColorList: PickerOption[] = [
 	{ label: "天空蓝", value: "#4286F3" },
 ];
 
-const dataSearchRangeList: PickerOption[] = [
-	{
-		label: "近1天",
-		value: "Past1D",
-	},
-	{
-		label: "近3天",
-		value: "Past3D",
-	},
-	{
-		label: "近1周",
-		value: "Past1W",
-	},
-	{
-		label: "近1月",
-		value: "Past1M",
-	},
-	{
-		label: "近3月",
-		value: "Past3M",
-	},
-	{
-		label: "近6月",
-		value: "Past6M",
-	},
-	{
-		label: "近1年",
-		value: "Past1Y",
-	},
-	...(import.meta.env.DEV
-		? [
-				{
-					label: "近3年",
-					value: withDefineType<FaTableDataRange>("Past3Y"),
-				},
-			]
-		: []),
-];
-
 const state = reactive({
 	themeColor: computed({
 		get: () => [configStore.layout.themeColor],
@@ -121,15 +65,7 @@ const state = reactive({
 		},
 	}),
 	themeColorVisible: false,
-	themeColorLabel: computed(() => predefineColorList.find((item) => item.value === configStore.layout.themeColor)?.label || ""),
-	dataSearchRange: computed({
-		get: () => [configStore.tableLayout.dataSearchRange],
-		set: (value) => {
-			configStore.tableLayout.dataSearchRange = value[0];
-		},
-	}),
-	dataSearchRangePickerVisible: false,
-	dataSearchRangeLabel: computed(() => dataSearchRangeList.find((item) => item.value === configStore.tableLayout.dataSearchRange)?.label || ""),
+	themeColorLabel: computed(() => predefineColorList.find((item) => item.value === configStore.layout.themeColor)?.label),
 });
 </script>
 

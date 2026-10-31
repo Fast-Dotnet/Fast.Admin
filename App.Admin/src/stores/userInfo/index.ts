@@ -38,6 +38,8 @@ export const useUserInfo = defineStore(
 			nickName: "",
 			avatar: "",
 			identityVerification: false,
+			clientUserId: undefined,
+			clientUserOpenId: undefined,
 			tenantNo: "",
 			tenantName: "",
 			shortName: "",
@@ -232,22 +234,17 @@ export const useUserInfo = defineStore(
 		};
 
 		/** 获取微信小程序登录 code；授权失败或非微信小程序平台时返回空字符串。 */
-		const getWeChatCode = () =>
-			new Promise<string>((resolve) => {
-				// #ifdef MP-WEIXIN
-				uni.login({
-					success: ({ code }) => resolve(code),
-					fail: () => {
-						useToast.warning("授权失败，无法获取您的信息。请重新授权以继续使用我们的服务。");
-						resolve("");
-					},
-				});
-				// #endif
-
-				// #ifndef MP-WEIXIN
-				resolve("");
-				// #endif
-			});
+		const getWeChatCode = async (): Promise<string> => {
+			// #ifdef MP-WEIXIN
+			try {
+				const { code } = await uni.login({});
+				return code;
+			} catch {
+				useToast.warning("授权失败，无法获取您的信息。请重新授权以继续使用我们的服务。");
+			}
+			// #endif
+			return "";
+		};
 
 		return {
 			...toRefs(state),

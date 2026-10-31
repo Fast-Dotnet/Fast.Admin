@@ -71,9 +71,8 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, watch } from "vue";
-import { createOneMonthRangeFromToday, withDefineType } from "@fast-china/utils";
+import { createOneMonthRangeFromToday, definePropType, throttle, withDefineType } from "@fast-china/utils";
 import dayjs from "dayjs";
-import { useConfig } from "@/stores";
 
 defineOptions({
 	name: "SearchInput",
@@ -106,6 +105,11 @@ const props = defineProps({
 	hideSearchTime: Boolean,
 	/** 是否使用从今天起向未来延伸的快捷日期范围 */
 	futureSearchTime: Boolean,
+	/** 搜索时间范围 */
+	dataSearchRange: {
+		type: definePropType<FaTableDataRange>(String),
+		default: "Past3D",
+	},
 });
 
 const emit = defineEmits<{
@@ -122,8 +126,6 @@ const emit = defineEmits<{
 	/** 搜索按钮或筛选确认按钮点击事件 */
 	search: [];
 }>();
-
-const configStore = useConfig();
 
 /** 搜索文本，与 searchParam.searchValue 双向同步 */
 const modelValue = defineModel<string>();
@@ -169,16 +171,27 @@ const dataSearchRangeList = computed<ElSelectorOutput<FaTableDataRange>[]>(() =>
 	},
 ]);
 
-const handleScanClick = () => {
-	uni.scanCode({
-		onlyFromCamera: true,
-		scanType: ["barCode", "qrCode", "datamatrix", "pdf417"],
-		success: (res) => {
-			modelValue.value = res.result;
-			searchParam.value.searchValue = res.result;
-		},
-	});
-};
+const handleScanClick = throttle(async () => {
+	const result = await uni
+		.scanCode({
+			onlyFromCamera: true,
+			scanType: ["barCode", "qrCode", "datamatrix", "pdf417"],
+		})
+		.catch((error: unknown): undefined => {
+			if (
+				typeof error === "object" &&
+				error !== null &&
+				"errMsg" in error &&
+				typeof error.errMsg === "string" &&
+				error.errMsg.includes("cancel")
+			) {
+				return undefined;
+			}
+			throw error;
+		});
+	modelValue.value = result.result;
+	searchParam.value.searchValue = result.result;
+});
 
 const handleInput = (detail: UniHelper.InputOnInputDetail) => {
 	searchParam.value.searchValue = detail.value;
@@ -274,8 +287,8 @@ const defaultSearchTime = () => {
 	if (!props.filter || props.hideSearchTime) {
 		state.searchTimeList = [];
 	} else {
-		const { start, end } = getDateTime(configStore.tableLayout.dataSearchRange);
-		state.dataSearchRange = configStore.tableLayout.dataSearchRange;
+		const { start, end } = getDateTime(props.dataSearchRange);
+		state.dataSearchRange = props.dataSearchRange;
 		state.searchTimeList = [start.getTime(), end.getTime()];
 		searchParam.value.searchTimeList = [dayjs(start).format("YYYY-MM-DD 00:00:00"), dayjs(end).format("YYYY-MM-DD 23:59:59")];
 	}

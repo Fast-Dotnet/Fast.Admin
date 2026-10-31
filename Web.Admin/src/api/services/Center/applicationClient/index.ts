@@ -1,4 +1,5 @@
 import { axiosUtil } from "@fast-china/axios";
+import type { ElSelectorOutput } from "fast-element-plus";
 import type { AddApplicationClientInput } from "./models/AddApplicationClientInput";
 import type { ApplicationClientIdInput } from "./models/ApplicationClientIdInput";
 import type { EditApplicationClientInput } from "./models/EditApplicationClientInput";
@@ -8,6 +9,16 @@ import type { QueryApplicationClientDetailOutput } from "./models/QueryApplicati
  * 应用标识服务Api
  */
 export const applicationClientApi = {
+	/**
+	 * 应用标识选择器
+	 */
+	applicationClientSelector(): Promise<ElSelectorOutput<string>[]> {
+		return axiosUtil.request<ElSelectorOutput<string>[]>({
+			url: "/applicationClient/applicationClientSelector",
+			method: "get",
+			requestType: "query",
+		});
+	},
 	/**
 	 * 获取应用标识详情
 	 */
