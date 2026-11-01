@@ -4,11 +4,716 @@
 		<meta charset="UTF-8" />
 		<meta name="google" value="notranslate" />
 		<meta name="viewport" content="width=device-width, viewport-fit=cover, initial-scale=1.0" />
+		<link rel="icon" href="/static/favicon.ico" />
 		<title>Fast.App</title>
 	</head>
 
 	<body>
-		<div id="app"></div>
+		<div id="app">
+			<style id="boot-style">
+				:root {
+					color-scheme: light;
+					--boot-bg: #f6f8fc;
+					--boot-surface: rgba(255, 255, 255, 0.74);
+					--boot-title: #101828;
+					--boot-text: #667085;
+					--boot-muted: #98a2b3;
+					--boot-line: rgba(15, 23, 42, 0.1);
+					--boot-line-soft: rgba(15, 23, 42, 0.055);
+					--boot-blue: #4f67ff;
+					--boot-cyan: #08a6ca;
+					--boot-green: #12b76a;
+					--boot-glow: rgba(79, 103, 255, 0.2);
+					--boot-shadow: rgba(30, 41, 59, 0.12);
+				}
+
+				@media (prefers-color-scheme: dark) {
+					:root {
+						color-scheme: dark;
+						--boot-bg: #080b13;
+						--boot-surface: rgba(15, 20, 33, 0.76);
+						--boot-title: #f8fafc;
+						--boot-text: #98a2b3;
+						--boot-muted: #667085;
+						--boot-line: rgba(255, 255, 255, 0.1);
+						--boot-line-soft: rgba(255, 255, 255, 0.055);
+						--boot-blue: #8190ff;
+						--boot-cyan: #22d3ee;
+						--boot-green: #32d583;
+						--boot-glow: rgba(99, 102, 241, 0.26);
+						--boot-shadow: rgba(0, 0, 0, 0.48);
+					}
+				}
+
+				html,
+				body,
+				#app {
+					width: 100%;
+					height: 100%;
+					margin: 0;
+				}
+
+				body {
+					overflow: hidden;
+					font-family:
+						"PingFang SC",
+						"Microsoft YaHei",
+						system-ui,
+						-apple-system,
+						BlinkMacSystemFont,
+						"Segoe UI",
+						Arial,
+						sans-serif,
+						"Apple Color Emoji",
+						"Segoe UI Emoji";
+					background: var(--boot-bg);
+				}
+
+				.boot-screen {
+					position: fixed;
+					z-index: 9990;
+					inset: 0;
+					display: grid;
+					place-items: center;
+					overflow: hidden;
+					padding: max(24px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom))
+						max(20px, env(safe-area-inset-left));
+					box-sizing: border-box;
+					color: var(--boot-title);
+					background:
+						radial-gradient(circle at 50% 39%, var(--boot-glow), transparent 29%),
+						radial-gradient(circle at 80% 10%, rgba(8, 166, 202, 0.08), transparent 26%),
+						radial-gradient(circle at 12% 92%, rgba(79, 103, 255, 0.08), transparent 30%), var(--boot-bg);
+				}
+
+				.boot-screen::before {
+					position: absolute;
+					width: min(620px, 90vw);
+					height: min(620px, 90vw);
+					content: "";
+					border-radius: 50%;
+					background: repeating-radial-gradient(circle, transparent 0 54px, var(--boot-line-soft) 55px 56px);
+					mask-image: radial-gradient(circle, #000 16%, transparent 72%);
+					opacity: 0.65;
+					animation: field-breathe 6s ease-in-out infinite;
+				}
+
+				.boot-stage {
+					position: relative;
+					z-index: 1;
+					display: flex;
+					width: min(430px, 100%);
+					flex-direction: column;
+					align-items: center;
+					animation: stage-in 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+				}
+
+				.boot-brand {
+					display: flex;
+					align-items: center;
+					gap: 13px;
+					margin-bottom: 30px;
+				}
+
+				.boot-brand > i {
+					display: grid;
+					width: 36px;
+					height: 36px;
+					place-items: center;
+					flex: 0 0 auto;
+					font-size: 15px;
+					font-style: normal;
+					font-weight: 700;
+					color: #fff;
+					border-radius: 9px;
+					background: linear-gradient(135deg, var(--boot-blue), var(--boot-cyan));
+					box-shadow: 0 9px 22px var(--boot-glow);
+				}
+
+				.boot-brand-copy {
+					display: flex;
+					flex-direction: column;
+					gap: 3px;
+				}
+
+				.boot-brand-copy strong {
+					font-size: 20px;
+					font-weight: 600;
+					line-height: 1.05;
+					letter-spacing: -0.3px;
+				}
+
+				.boot-brand-copy small {
+					font-size: 8px;
+					font-weight: 600;
+					line-height: 1;
+					letter-spacing: 1.35px;
+					color: var(--boot-muted);
+				}
+
+				.boot-orbit {
+					position: relative;
+					width: clamp(210px, 31vw, 252px);
+					aspect-ratio: 1;
+					margin-bottom: 28px;
+				}
+
+				.boot-orbit::before,
+				.boot-orbit::after,
+				.boot-orbit-ring {
+					position: absolute;
+					border-radius: 50%;
+					content: "";
+				}
+
+				.boot-orbit::before {
+					inset: 0;
+					border: 1px solid var(--boot-line);
+					box-shadow: inset 0 0 36px var(--boot-line-soft);
+				}
+
+				.boot-orbit::after {
+					inset: 19%;
+					border: 1px dashed var(--boot-line);
+					animation: orbit-reverse 16s linear infinite;
+				}
+
+				.boot-orbit-ring {
+					inset: 8%;
+					background: conic-gradient(
+						from 18deg,
+						var(--boot-blue) 0deg 74deg,
+						transparent 74deg 195deg,
+						var(--boot-cyan) 195deg 272deg,
+						transparent 272deg 360deg
+					);
+					mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px));
+					animation: orbit 7s linear infinite;
+				}
+
+				.boot-satellite-track {
+					position: absolute;
+					inset: 2%;
+					animation: orbit 5.8s linear infinite;
+				}
+
+				.boot-satellite-track--inner {
+					inset: 13%;
+					animation: orbit-reverse 4.6s linear infinite;
+				}
+
+				.boot-satellite {
+					position: absolute;
+					width: 9px;
+					height: 9px;
+					top: -4px;
+					left: calc(50% - 4px);
+					border: 4px solid var(--boot-bg);
+					border-radius: 50%;
+					background: var(--boot-cyan);
+					box-shadow:
+						0 0 0 1px var(--boot-line),
+						0 0 18px var(--boot-cyan);
+				}
+
+				.boot-satellite-track--inner .boot-satellite {
+					top: auto;
+					right: -4px;
+					bottom: 18%;
+					left: auto;
+					width: 7px;
+					height: 7px;
+					background: var(--boot-blue);
+					box-shadow:
+						0 0 0 1px var(--boot-line),
+						0 0 16px var(--boot-blue);
+				}
+
+				.boot-core {
+					position: absolute;
+					top: 50%;
+					left: 50%;
+					display: grid;
+					width: 90px;
+					height: 90px;
+					place-items: center;
+					overflow: hidden;
+					border: 1px solid rgba(255, 255, 255, 0.24);
+					border-radius: 25px;
+					background: linear-gradient(145deg, #5355eb 6%, #147dd7 54%, #02a6c5 100%);
+					box-shadow:
+						0 24px 56px rgba(44, 93, 219, 0.28),
+						inset 0 1px rgba(255, 255, 255, 0.22);
+					transform: translate(-50%, -50%) rotate(42deg);
+					animation: core-float 4.8s ease-in-out infinite;
+				}
+
+				.boot-core::before {
+					position: absolute;
+					inset: 8px;
+					content: "";
+					border: 1px solid rgba(255, 255, 255, 0.22);
+					border-radius: 19px;
+				}
+
+				.boot-core::after {
+					position: absolute;
+					width: 46px;
+					height: 160%;
+					top: -30%;
+					left: -75%;
+					content: "";
+					background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+					transform: rotate(12deg);
+					animation: core-shine 3.8s ease-in-out infinite;
+				}
+
+				.boot-letter {
+					position: relative;
+					z-index: 1;
+					width: 42px;
+					height: 50px;
+					overflow: visible;
+					transform: rotate(-42deg);
+				}
+
+				.boot-letter path:first-child {
+					fill: none;
+					stroke: rgba(255, 255, 255, 0.2);
+					stroke-width: 10;
+					stroke-linecap: round;
+					stroke-linejoin: round;
+				}
+
+				.boot-letter path:last-child {
+					fill: none;
+					stroke: #fff;
+					stroke-width: 10;
+					stroke-linecap: round;
+					stroke-linejoin: round;
+					stroke-dasharray: 120;
+					stroke-dashoffset: 120;
+					filter: drop-shadow(0 0 7px rgba(255, 255, 255, 0.45));
+					animation: letter-draw 2.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+				}
+
+				.boot-copy {
+					text-align: center;
+				}
+
+				.boot-copy small {
+					display: block;
+					margin-bottom: 9px;
+					font-size: 9px;
+					font-weight: 600;
+					letter-spacing: 1.8px;
+					color: var(--boot-blue);
+				}
+
+				.boot-copy h1 {
+					margin: 0;
+					font-size: clamp(23px, 4vw, 28px);
+					font-weight: 600;
+					line-height: 1.25;
+					letter-spacing: -0.9px;
+				}
+
+				.boot-copy p {
+					margin: 9px 0 24px;
+					font-size: 12px;
+					line-height: 1.65;
+					color: var(--boot-text);
+				}
+
+				.boot-status {
+					display: flex;
+					width: 100%;
+					min-height: 50px;
+					align-items: center;
+					gap: 12px;
+					padding: 0 16px;
+					box-sizing: border-box;
+					border: 1px solid var(--boot-line);
+					border-radius: 15px;
+					background: var(--boot-surface);
+					box-shadow: 0 14px 40px var(--boot-shadow);
+					backdrop-filter: blur(20px) saturate(1.15);
+				}
+
+				.boot-equalizer {
+					display: flex;
+					height: 18px;
+					align-items: flex-end;
+					gap: 3px;
+				}
+
+				.boot-equalizer i {
+					width: 3px;
+					border-radius: 3px;
+					background: var(--boot-blue);
+					animation: equalizer 0.9s ease-in-out infinite alternate;
+				}
+
+				.boot-equalizer i:nth-child(1) {
+					height: 8px;
+				}
+
+				.boot-equalizer i:nth-child(2) {
+					height: 15px;
+					animation-delay: -0.3s;
+				}
+
+				.boot-equalizer i:nth-child(3) {
+					height: 11px;
+					animation-delay: -0.6s;
+				}
+
+				.boot-status span {
+					font-size: 10px;
+					letter-spacing: 0.35px;
+					color: var(--boot-text);
+				}
+
+				.boot-status strong {
+					display: inline-flex;
+					align-items: center;
+					gap: 7px;
+					margin-left: auto;
+					font:
+						600 9px ui-monospace,
+						SFMono-Regular,
+						Menlo,
+						Consolas,
+						monospace;
+					letter-spacing: 0.8px;
+					color: var(--boot-cyan);
+				}
+
+				.boot-status strong::before {
+					width: 5px;
+					height: 5px;
+					content: "";
+					border-radius: 50%;
+					background: var(--boot-green);
+					box-shadow: 0 0 0 4px rgba(18, 183, 106, 0.1);
+					animation: online 1.8s ease-in-out infinite;
+				}
+
+				.boot-progress {
+					position: relative;
+					width: calc(100% - 28px);
+					height: 2px;
+					overflow: hidden;
+					margin-top: 22px;
+					border-radius: 99px;
+					background: var(--boot-line);
+				}
+
+				.boot-progress::before {
+					position: absolute;
+					inset: 0;
+					content: "";
+					background: linear-gradient(90deg, transparent 64%, var(--boot-blue) 88%, var(--boot-cyan));
+					opacity: 0.42;
+				}
+
+				.boot-progress::after {
+					position: absolute;
+					width: 31%;
+					height: 100%;
+					left: -31%;
+					content: "";
+					border-radius: inherit;
+					background: linear-gradient(90deg, transparent, var(--boot-blue) 58%, var(--boot-cyan));
+					box-shadow: 0 0 12px var(--boot-blue);
+					animation: progress 1.65s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+				}
+
+				.boot-footnote {
+					display: inline-flex;
+					align-items: center;
+					gap: 8px;
+					margin-top: 12px;
+					font-size: 8px;
+					font-weight: 600;
+					letter-spacing: 1.35px;
+					color: var(--boot-muted);
+				}
+
+				.boot-footnote i {
+					width: 6px;
+					height: 6px;
+					border-radius: 50%;
+					background: var(--boot-green);
+					box-shadow:
+						0 0 0 4px rgba(18, 183, 106, 0.1),
+						0 0 12px rgba(18, 183, 106, 0.34);
+				}
+
+				.browser-notice {
+					display: flex;
+					width: 100%;
+					min-height: 100%;
+					align-items: center;
+					flex-direction: column;
+					justify-content: center;
+					padding: 24px;
+					box-sizing: border-box;
+					color: #101828;
+					color: var(--boot-title);
+					text-align: center;
+					background: #f6f8fc;
+					background: var(--boot-bg);
+				}
+
+				.browser-notice-icon {
+					display: flex;
+					width: 52px;
+					height: 52px;
+					align-items: center;
+					justify-content: center;
+					margin-bottom: 22px;
+					font-size: 26px;
+					font-weight: 700;
+					color: #fff;
+					border-radius: 15px;
+					background: linear-gradient(135deg, #4f67ff, #08a6ca);
+					box-shadow: 0 14px 32px rgba(79, 103, 255, 0.28);
+				}
+
+				.browser-notice h1 {
+					margin: 0;
+					font-size: 24px;
+					line-height: 1.35;
+					letter-spacing: -0.5px;
+				}
+
+				.browser-notice p {
+					max-width: 420px;
+					margin: 11px 0 0;
+					font-size: 13px;
+					line-height: 1.7;
+					color: #667085;
+					color: var(--boot-text);
+				}
+
+				@keyframes stage-in {
+					from {
+						opacity: 0;
+						filter: blur(8px);
+						transform: translateY(16px) scale(0.985);
+					}
+
+					to {
+						opacity: 1;
+						filter: blur(0);
+						transform: translateY(0) scale(1);
+					}
+				}
+
+				@keyframes field-breathe {
+					50% {
+						opacity: 0.9;
+						transform: scale(1.06);
+					}
+				}
+
+				@keyframes orbit {
+					to {
+						transform: rotate(360deg);
+					}
+				}
+
+				@keyframes orbit-reverse {
+					to {
+						transform: rotate(-360deg);
+					}
+				}
+
+				@keyframes core-float {
+					0%,
+					100% {
+						transform: translate(-50%, -50%) rotate(42deg);
+					}
+
+					50% {
+						transform: translate(-50%, calc(-50% - 8px)) rotate(47deg) scale(1.035);
+					}
+				}
+
+				@keyframes core-shine {
+					0%,
+					42% {
+						left: -75%;
+					}
+
+					76%,
+					100% {
+						left: 135%;
+					}
+				}
+
+				@keyframes letter-draw {
+					0% {
+						opacity: 0.25;
+						stroke-dashoffset: 120;
+					}
+
+					34%,
+					72% {
+						opacity: 1;
+						stroke-dashoffset: 0;
+					}
+
+					100% {
+						opacity: 0.2;
+						stroke-dashoffset: -120;
+					}
+				}
+
+				@keyframes equalizer {
+					to {
+						height: 4px;
+						opacity: 0.38;
+					}
+				}
+
+				@keyframes online {
+					50% {
+						opacity: 0.45;
+						transform: scale(0.76);
+					}
+				}
+
+				@keyframes progress {
+					to {
+						left: 100%;
+					}
+				}
+
+				@media (max-width: 520px) {
+					.boot-stage {
+						width: min(360px, 100%);
+					}
+
+					.boot-brand {
+						margin-bottom: 25px;
+					}
+
+					.boot-orbit {
+						width: 218px;
+						margin-bottom: 23px;
+					}
+
+					.boot-core {
+						width: 82px;
+						height: 82px;
+						border-radius: 23px;
+					}
+
+					.boot-copy p {
+						margin-bottom: 21px;
+					}
+
+					.boot-status {
+						min-height: 48px;
+					}
+				}
+
+				@media (max-height: 690px) {
+					.boot-brand {
+						margin-bottom: 14px;
+					}
+
+					.boot-orbit {
+						width: 182px;
+						margin-bottom: 16px;
+					}
+
+					.boot-core {
+						width: 72px;
+						height: 72px;
+						border-radius: 20px;
+					}
+
+					.boot-copy p {
+						margin: 7px 0 16px;
+					}
+
+					.boot-progress {
+						margin-top: 16px;
+					}
+				}
+
+				@media (prefers-reduced-motion: reduce) {
+					.boot-screen *,
+					.boot-screen *::before,
+					.boot-screen *::after {
+						animation-duration: 0.01ms !important;
+						animation-iteration-count: 1 !important;
+					}
+				}
+			</style>
+			<div class="boot-screen" role="status" aria-live="polite" aria-label="正在加载 Fast Admin">
+				<main class="boot-stage">
+					<div class="boot-brand">
+						<i>F</i>
+						<div class="boot-brand-copy">
+							<strong>Fast Admin</strong>
+							<small>ENTERPRISE CONSOLE</small>
+						</div>
+					</div>
+					<div class="boot-orbit" aria-hidden="true">
+						<div class="boot-orbit-ring"></div>
+						<div class="boot-satellite-track"><i class="boot-satellite"></i></div>
+						<div class="boot-satellite-track boot-satellite-track--inner"><i class="boot-satellite"></i></div>
+						<div class="boot-core">
+							<svg class="boot-letter" viewBox="0 0 58 72" aria-hidden="true">
+								<path d="M17 61V11H48M17 35H42" />
+								<path d="M17 61V11H48M17 35H42" />
+							</svg>
+						</div>
+					</div>
+					<div class="boot-copy">
+						<small>WELCOME TO YOUR WORKSPACE</small>
+						<h1>连接你的数字工作台</h1>
+						<p>正在加载核心资源与安全配置，请稍候…</p>
+					</div>
+					<div class="boot-status">
+						<div class="boot-equalizer" aria-hidden="true"><i></i><i></i><i></i></div>
+						<span>应用服务加载中</span>
+						<strong>ONLINE</strong>
+					</div>
+					<div class="boot-progress" role="progressbar" aria-label="应用加载进度" aria-valuetext="正在加载"></div>
+					<div class="boot-footnote"><i></i>SECURE CONNECTION · FASTDOTNET</div>
+				</main>
+			</div>
+			<noscript>
+				<div class="browser-notice">
+					<div class="browser-notice-icon">!</div>
+					<h1>需要启用 JavaScript</h1>
+					<p>启用后请刷新页面。</p>
+				</div>
+			</noscript>
+			<script>
+				(function () {
+					var userAgent = window.navigator.userAgent;
+					var chromeMatch = userAgent.match(/Chrome\/(\d+)/);
+					var isLegacyBrowser =
+						userAgent.indexOf("MSIE ") !== -1 ||
+						userAgent.indexOf("Trident/") !== -1 ||
+						(chromeMatch && parseInt(chromeMatch[1], 10) < 86);
+					if (isLegacyBrowser) {
+						var appElement = document.getElementById("app");
+						var bootStyle = document.getElementById("boot-style");
+						appElement.innerHTML =
+							'<div class="browser-notice"><div class="browser-notice-icon">!</div><h1>浏览器版本过低</h1><p>请使用最新版 Chrome、Firefox 或 Edge 访问。</p></div>';
+						if (bootStyle) appElement.insertBefore(bootStyle, appElement.firstChild);
+						throw new Error("当前浏览器版本不受支持。");
+					}
+				})();
+			</script>
+		</div>
 		<script type="module" src="/src/main.ts"></script>
 	</body>
 </html>

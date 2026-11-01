@@ -19,83 +19,87 @@ export enum AppEnvironmentEnum {
 	 */
 	Linux = "8",
 	/**
+	 * H5
+	 */
+	H5 = "16",
+	/**
 	 * Android
 	 */
-	Android = "16",
+	Android = "32",
 	/**
 	 * 鸿蒙
 	 */
-	HarmonyOS = "32",
+	HarmonyOS = "64",
 	/**
 	 * IOS
 	 */
-	IOS = "64",
+	IOS = "128",
 	/**
 	 * 快应用
 	 */
-	QuickApp = "128",
+	QuickApp = "256",
 	/**
 	 * 微信小程序
 	 */
-	WeChatMiniProgram = "256",
+	WeChatMiniProgram = "512",
 	/**
 	 * 微信公众号
 	 */
-	WeChatOfficialAccount = "512",
+	WeChatOfficialAccount = "1024",
 	/**
 	 * 微信服务号
 	 */
-	WeChatServiceAccount = "1024",
+	WeChatServiceAccount = "2048",
 	/**
 	 * 微信开放平台
 	 */
-	WeChatOpenPlatform = "2048",
+	WeChatOpenPlatform = "4096",
 	/**
 	 * 企业微信
 	 */
-	WorkWeChat = "4096",
+	WorkWeChat = "8192",
 	/**
 	 * 支付宝小程序
 	 */
-	AlipayMiniProgram = "8192",
+	AlipayMiniProgram = "16384",
 	/**
 	 * 抖音小程序
 	 */
-	TiktokMiniProgram = "16384",
+	TiktokMiniProgram = "32768",
 	/**
 	 * 钉钉小程序
 	 */
-	DingTalkMiniProgram = "32768",
+	DingTalkMiniProgram = "65536",
 	/**
 	 * 飞书小程序
 	 */
-	FeiShuMiniProgram = "65536",
+	FeiShuMiniProgram = "131072",
 	/**
 	 * QQ小程序
 	 */
-	QQMiniProgram = "131072",
+	QQMiniProgram = "262144",
 	/**
 	 * 百度小程序
 	 */
-	BaiduMiniProgram = "262144",
+	BaiduMiniProgram = "524288",
 	/**
 	 * 快手小程序
 	 */
-	KuaiShouMiniProgram = "524288",
+	KuaiShouMiniProgram = "1048576",
 	/**
 	 * 小红书小程序
 	 */
-	XiaoHongShuMiniProgram = "1048576",
+	XiaoHongShuMiniProgram = "2097152",
 	/**
 	 * 京东小程序
 	 */
-	JDMiniProgram = "2097152",
+	JDMiniProgram = "4194304",
 	/**
 	 * Api
 	 */
-	Api = "4194304",
+	Api = "8388608",
 	/**
 	 * 其他
 	 */
-	Other = "8388608",
+	Other = "16777216",
 }

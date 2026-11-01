@@ -13,9 +13,11 @@
 				<template #default="{ row }: { row: PayRecordModel }">
 					<span v-iconCopy="row.mobile">{{ row.mobile }}</span>
 					<br />
-					OpenId：<span v-iconCopy="row.openId">{{ row.openId }}</span>
+					OpenId：
+					<span v-iconCopy="row.openId">{{ row.openId }}</span>
 					<br />
-					UnionId：<span v-iconCopy="row.unionId">{{ row.unionId }}</span>
+					UnionId：
+					<span v-iconCopy="row.unionId">{{ row.unionId }}</span>
 				</template>
 			</FaTableColumn>
 			<FaTableColumn prop="merchantNo" label="收款商户号" width="200" small-width="180" copy sortable />
@@ -30,7 +32,7 @@
 				:enum="appStore.getDictionary('PaymentChannelEnum')"
 			/>
 			<FaTableColumn prop="orderAmount" label="订单金额" width="120" small-width="100" sortable type="d2">
-				<template #default="{ row }: { row: PayRecordModel }"> ￥{{ (row.orderAmount ?? 0).toFixed(2) }} </template>
+				<template #default="{ row }: { row: PayRecordModel }">￥{{ (row.orderAmount ?? 0).toFixed(2) }}</template>
 			</FaTableColumn>
 			<FaTableColumn prop="transactionId" label="交易流水号" width="200" small-width="180" sortable :show-overflow-tooltip="false" />
 			<FaTableColumn
@@ -42,7 +44,10 @@
 				class-name="fa-table__line-height-normal-column"
 			>
 				<template #default="{ row }: { row: PayRecordModel }">
-					<span>状态：<Tag name="BooleanEnum" :value="row.isPaid" /></span>
+					<span>
+						状态：
+						<Tag name="BooleanEnum" :value="row.isPaid" />
+					</span>
 					<br />
 					<span>金额：￥{{ row.paymentAmount?.toFixed(2) || 0.0 }}</span>
 					<br />
@@ -61,7 +66,10 @@
 						<span>--</span>
 					</template>
 					<template v-else>
-						<span>状态：<Tag name="BooleanEnum" :value="row.isClosed" /></span>
+						<span>
+							状态：
+							<Tag name="BooleanEnum" :value="row.isClosed" />
+						</span>
 						<br />
 						<template v-if="row.closeTime">
 							<span>时间：{{ dayjs(row.closeTime).format("YYYY-MM-DD HH:mm:ss") }}</span>

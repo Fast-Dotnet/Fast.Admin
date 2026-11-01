@@ -41,6 +41,11 @@ public class AuthMenuInfoDto : ITreeNode<long>
     public long ParentId { get; set; }
 
     /// <summary>
+    /// 父级Id
+    /// </summary>
+    public List<long> ParentIds { get; set; }
+
+    /// <summary>
     /// 菜单类型
     /// </summary>
     public MenuTypeEnum MenuType { get; set; }

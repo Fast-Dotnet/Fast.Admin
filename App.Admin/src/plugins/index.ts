@@ -180,6 +180,10 @@ export function loadAppRuntime(): void {
 	// #endif
 	// #endif
 
+	// #ifdef H5
+	appStore.deviceType = AppEnvironmentEnum.H5;
+	// #endif
+
 	// 是否为 Iphone 设备
 	const isIphone = RegExps.IPhone.test(appStore.deviceInfo.model);
 	appStore.isIphone = isIphone;

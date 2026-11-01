@@ -36,9 +36,9 @@
 									<div style="flex: 1">
 										<span>{{ data.tenantName }}</span>
 										<span style="display: flex; justify-content: space-between; width: 100%">
-											<span style="font-size: var(--el-font-size-extra-small); padding-right: 8px">{{
-												data.employeeName
-											}}</span>
+											<span style="font-size: var(--el-font-size-extra-small); padding-right: 8px">
+												{{ data.employeeName }}
+											</span>
 											<span style="font-size: var(--el-font-size-extra-small)">{{ data.employeeNo }}</span>
 										</span>
 									</div>

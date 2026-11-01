@@ -17,7 +17,10 @@
 					</div>
 
 					<div class="classic-brand__copy">
-						<span class="classic-brand__badge"><i></i> Enterprise Workspace</span>
+						<span class="classic-brand__badge">
+							<i></i>
+							Enterprise Workspace
+						</span>
 						<h1>
 							让复杂管理
 							<span>清晰而高效</span>
@@ -29,27 +32,60 @@
 						<div class="classic-visual__halo"></div>
 						<div class="classic-console">
 							<header class="classic-console__header">
-								<span class="console-window"><i></i><i></i><i></i></span>
+								<span class="console-window">
+									<i></i>
+									<i></i>
+									<i></i>
+								</span>
 								<strong>业务工作台</strong>
-								<em><i></i>实时</em>
+								<em>
+									<i></i>
+									实时
+								</em>
 							</header>
 							<div class="classic-console__body">
 								<div class="console-overview">
 									<div>
 										<span>运行概览</span>
-										<strong>84<small>%</small></strong>
-										<p><i></i>核心业务运行平稳</p>
+										<strong>
+											84
+											<small>%</small>
+										</strong>
+										<p>
+											<i></i>
+											核心业务运行平稳
+										</p>
 									</div>
 									<div class="console-ring"><span></span></div>
 								</div>
 								<div class="console-chart">
-									<div><span>协作趋势</span><small>近 7 日</small></div>
-									<p><i></i><i></i><i></i><i></i><i></i><i></i><i></i></p>
+									<div>
+										<span>协作趋势</span>
+										<small>近 7 日</small>
+									</div>
+									<p>
+										<i></i>
+										<i></i>
+										<i></i>
+										<i></i>
+										<i></i>
+										<i></i>
+										<i></i>
+									</p>
 								</div>
 								<div class="console-metrics">
-									<span><small>待办任务</small><strong>24</strong></span>
-									<span><small>活跃流程</small><strong>18</strong></span>
-									<span><small>组织协同</small><strong>96%</strong></span>
+									<span>
+										<small>待办任务</small>
+										<strong>24</strong>
+									</span>
+									<span>
+										<small>活跃流程</small>
+										<strong>18</strong>
+									</span>
+									<span>
+										<small>组织协同</small>
+										<strong>96%</strong>
+									</span>
 								</div>
 							</div>
 						</div>
@@ -57,13 +93,16 @@
 
 					<div class="classic-features">
 						<div>
-							<el-icon><CircleCheckFilled /></el-icon><span>稳定可靠</span>
+							<el-icon><CircleCheckFilled /></el-icon>
+							<span>稳定可靠</span>
 						</div>
 						<div>
-							<el-icon><Connection /></el-icon><span>多端协同</span>
+							<el-icon><Connection /></el-icon>
+							<span>多端协同</span>
 						</div>
 						<div>
-							<el-icon><TrendCharts /></el-icon><span>数据驱动</span>
+							<el-icon><TrendCharts /></el-icon>
+							<span>数据驱动</span>
 						</div>
 					</div>
 				</section>

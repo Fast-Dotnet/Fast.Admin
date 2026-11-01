@@ -79,9 +79,7 @@
 			<FaFormItem prop="lastLoginBrowser" label="浏览器">
 				{{ state.formData.lastLoginBrowser }}
 			</FaFormItem>
-			<FaFormItem prop="lastLoginProvince" label="地区">
-				{{ state.formData.lastLoginProvince }} - {{ state.formData.lastLoginCity }}
-			</FaFormItem>
+			<FaFormItem prop="lastLoginProvince" label="地区">{{ state.formData.lastLoginProvince }} - {{ state.formData.lastLoginCity }}</FaFormItem>
 			<FaFormItem prop="lastLoginTime" label="时间">
 				<template v-if="state.formData.lastLoginTime">
 					{{ dayjs(state.formData.lastLoginTime).format("YYYY-MM-DD HH:mm:ss") }}

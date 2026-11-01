@@ -13,9 +13,11 @@
 				<template #default="{ row }: { row: RefundRecordModel }">
 					<span v-iconCopy="row.mobile">{{ row.mobile }}</span>
 					<br />
-					OpenId：<span v-iconCopy="row.openId">{{ row.openId }}</span>
+					OpenId：
+					<span v-iconCopy="row.openId">{{ row.openId }}</span>
 					<br />
-					UnionId：<span v-iconCopy="row.unionId">{{ row.unionId }}</span>
+					UnionId：
+					<span v-iconCopy="row.unionId">{{ row.unionId }}</span>
 				</template>
 			</FaTableColumn>
 			<FaTableColumn prop="merchantNo" label="退款商户号" width="200" small-width="180" copy sortable />
@@ -30,13 +32,16 @@
 				:enum="appStore.getDictionary('PaymentChannelEnum')"
 			/>
 			<FaTableColumn prop="orderAmount" label="订单金额" width="120" small-width="100" sortable type="d2">
-				<template #default="{ row }: { row: RefundRecordModel }"> ￥{{ (row.orderAmount ?? 0).toFixed(2) }} </template>
+				<template #default="{ row }: { row: RefundRecordModel }">￥{{ (row.orderAmount ?? 0).toFixed(2) }}</template>
 			</FaTableColumn>
 			<FaTableColumn prop="refundId" label="交易流水号" width="200" small-width="180" sortable :show-overflow-tooltip="false" />
 			<FaTableColumn prop="refundStatus" label="退款状态" width="150" small-width="130" sortable />
 			<FaTableColumn prop="refundTime" label="退款信息" width="280" small-width="260" sortable class-name="fa-table__line-height-normal-column">
 				<template #default="{ row }: { row: RefundRecordModel }">
-					<span>状态：<Tag name="BooleanEnum" :value="row.isRefunded" /></span>
+					<span>
+						状态：
+						<Tag name="BooleanEnum" :value="row.isRefunded" />
+					</span>
 					<br />
 					<span>金额：￥{{ row.refundAmount?.toFixed(2) || 0.0 }}</span>
 					<br />

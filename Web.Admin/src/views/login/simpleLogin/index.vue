@@ -1,7 +1,11 @@
 <template>
 	<el-container class="login-page simple-login-page" :style="{ '--login-theme-gradient': props.background }">
 		<slot name="help" />
-		<div class="simple-lines" aria-hidden="true"><i></i><i></i><i></i></div>
+		<div class="simple-lines" aria-hidden="true">
+			<i></i>
+			<i></i>
+			<i></i>
+		</div>
 		<div class="login-orb simple-orb simple-orb--one"></div>
 		<div class="login-orb simple-orb simple-orb--two"></div>
 

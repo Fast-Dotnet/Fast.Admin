@@ -13,7 +13,8 @@
 				<template #default="{ row }: { row: VisitLogModel }">
 					{{ row.nickName }}
 					<br />
-					手机：<span v-iconCopy="row.mobile">{{ row.mobile }}</span>
+					手机：
+					<span v-iconCopy="row.mobile">{{ row.mobile }}</span>
 				</template>
 			</FaTableColumn>
 			<FaTableColumn

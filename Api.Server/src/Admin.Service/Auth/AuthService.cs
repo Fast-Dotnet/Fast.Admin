@@ -47,9 +47,7 @@ public class AuthService : IDynamicApplication
             throw new UserFriendlyException("应用类型不匹配！");
         }
 
-        bool hasDesktop = (GlobalContext.DeviceType
-                           & (AppEnvironmentEnum.Windows | AppEnvironmentEnum.Mac | AppEnvironmentEnum.Linux))
-                          != 0;
+        bool hasDesktop = GlobalContext.IsDesktop;
         bool hasWeb = GlobalContext.IsWeb;
         bool hasMobile = GlobalContext.IsMobile;
 
@@ -158,6 +156,7 @@ public class AuthService : IDynamicApplication
                 MenuName = sl.MenuName,
                 MenuTitle = sl.MenuTitle,
                 ParentId = sl.ParentId,
+                ParentIds = sl.ParentIds,
                 MenuType = sl.MenuType,
                 Icon = hasDesktop ? sl.DesktopIcon :
                     hasWeb ? sl.WebIcon :
@@ -176,8 +175,10 @@ public class AuthService : IDynamicApplication
             })
             .ToListAsync();
 
-        // 查询所有父级
-        var parentMenuIds = menuList.Select(sl => sl.ParentId).Distinct().ToList();
+        // 移动端查询顶层目录，PC 端沿用直属父级。
+        List<long> parentMenuIds = hasMobile
+            ? menuList.Where(wh => wh.ParentId != 0).Select(sl => sl.ParentIds[1]).Distinct().ToList()
+            : menuList.Select(sl => sl.ParentId).Distinct().ToList();
 
         List<AuthMenuInfoDto> parentMenuList = await _repository.Queryable<MenuModel>()
             .Where(wh => wh.AppId == applicationModel.AppId)
@@ -194,6 +195,7 @@ public class AuthService : IDynamicApplication
                 MenuName = t1.MenuName,
                 MenuTitle = t1.MenuTitle,
                 ParentId = t1.ParentId,
+                ParentIds = t1.ParentIds,
                 MenuType = t1.MenuType,
                 Icon = hasDesktop ? t1.DesktopIcon :
                     hasWeb ? t1.WebIcon :
@@ -212,10 +214,40 @@ public class AuthService : IDynamicApplication
             })
             .ToListAsync();
 
-        menuList.AddRange(parentMenuList);
+        if (hasMobile)
+        {
+            var otherMenus = menuList.Where(wh => wh.ParentId == 0).ToList();
+            if (otherMenus.Count > 0)
+            {
+                result.MenuList.Add(new AuthMenuInfoDto
+                {
+                    MenuCode = "Other:Catalog",
+                    MenuName = "其他应用",
+                    MenuTitle = "其他应用",
+                    MenuType = MenuTypeEnum.Catalog,
+                    Visible = true,
+                    Children = otherMenus
+                });
+            }
 
-        // 组建菜单树形
-        result.MenuList = new TreeBuildUtil<AuthMenuInfoDto, long>().Build(menuList.Distinct().ToList());
+            foreach (AuthMenuInfoDto parentMenu in parentMenuList.OrderBy(ob => ob.Sort).ToList())
+            {
+                parentMenu.Children = menuList.Where(wh => wh.ParentId != 0)
+                    .Where(wh => wh.ParentIds[1] == parentMenu.MenuId)
+                    .OrderBy(ob => ob.Sort)
+                    .ToList();
+                if (parentMenu.Children?.Count > 0)
+                {
+                    result.MenuList.Add(parentMenu);
+                }
+            }
+        }
+        else
+        {
+            menuList.AddRange(parentMenuList);
+            // 组建菜单树形
+            result.MenuList = new TreeBuildUtil<AuthMenuInfoDto, long>().Build(menuList.Distinct().ToList());
+        }
 
         if (!_user.IsSuperAdmin)
         {

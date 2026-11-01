@@ -25,6 +25,10 @@ export interface AuthMenuInfoDto {
 	 */
 	parentId?: string;
 	/**
+	 * 父级Id
+	 */
+	parentIds?: string[];
+	/**
 	 * 
 	 */
 	menuType?: MenuTypeEnum;

@@ -13,7 +13,8 @@
 				<template #default="{ row }: { row: RequestLogModel }">
 					{{ row.nickName }}
 					<br />
-					手机：<span v-iconCopy="row.mobile">{{ row.mobile }}</span>
+					手机：
+					<span v-iconCopy="row.mobile">{{ row.mobile }}</span>
 				</template>
 			</FaTableColumn>
 			<FaTableColumn
@@ -99,7 +100,7 @@
 				</template>
 			</FaTableColumn>
 			<FaTableColumn prop="elapsedTime" label="耗时" width="100" small-width="80" sortable>
-				<template #default="{ row }: { row: RequestLogModel }"> {{ (Number(row.elapsedTime ?? 0) / 1000).toFixed(4) }}秒 </template>
+				<template #default="{ row }: { row: RequestLogModel }">{{ (Number(row.elapsedTime ?? 0) / 1000).toFixed(4) }}秒</template>
 			</FaTableColumn>
 			<FaTableColumn prop="className" label="类名" width="300" small-width="280" sortable :show-overflow-tooltip="false" />
 			<FaTableColumn prop="methodName" label="方法名" width="200" small-width="180" sortable :show-overflow-tooltip="false" />

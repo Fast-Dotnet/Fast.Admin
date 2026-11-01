@@ -2,7 +2,6 @@ import { ElLoading, ElMessage, ElMessageBox, ElNotification, dayjs } from "eleme
 import { useFastAxios } from "@fast-china/axios";
 import { installationIdentity, logger, toQueryString, withDefineType } from "@fast-china/utils";
 import { HttpTransportType, HubConnectionBuilder, HubConnectionState, LogLevel } from "@microsoft/signalr";
-import { AppEnvironmentEnum } from "@/api/enums/AppEnvironmentEnum";
 import { useUserInfo } from "@/stores";
 import type { HubConnection } from "@microsoft/signalr";
 import type { TenantOnlineUserModel } from "@/api/services/Center/tenantOnlineUser/models/TenantOnlineUserModel";
@@ -25,7 +24,7 @@ const initWebSocket = async (): Promise<void> => {
 		const url = `${fastAxios.baseUrl}/hubs/chatHub`;
 		const params = {
 			"Fast-Origin": import.meta.env.DEV ? import.meta.env.VITE_APP_ORIGIN || window.location.host : window.location.host,
-			"Fast-Device-Type": Object.entries(AppEnvironmentEnum).find(([, value]) => value === AppEnvironmentEnum.Web)?.[0],
+			"Fast-Device-Type": "Web",
 			"Fast-Device-Id": installationIdentity.deviceId,
 		};
 		// 判断是否存在对象

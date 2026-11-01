@@ -58,20 +58,23 @@ export const useConfig = defineStore(
 				navbarFrontColor = pickHigherContrastColor(color) === "#ffffff" ? "#ffffff" : "#000000";
 			}
 
-			uni.setNavigationBarColor({ frontColor: navbarFrontColor, backgroundColor: navbarBgColor });
+			// 延迟设置
+			setTimeout(() => {
+				uni.setNavigationBarColor({ frontColor: navbarFrontColor, backgroundColor: navbarBgColor });
 
-			// #ifdef MP-WEIXIN
-			uni.setBackgroundColor({
-				backgroundColor: pageBackgroundColor,
-				backgroundColorTop: pageBackgroundColor,
-				backgroundColorBottom: pageBackgroundColor,
-			});
-			uni.setBackgroundTextStyle({ textStyle: layout.isDark ? "light" : "dark" });
-			// #endif
+				// #ifdef MP-WEIXIN
+				uni.setBackgroundColor({
+					backgroundColor: pageBackgroundColor,
+					backgroundColorTop: pageBackgroundColor,
+					backgroundColorBottom: pageBackgroundColor,
+				});
+				uni.setBackgroundTextStyle({ textStyle: layout.isDark ? "light" : "dark" });
+				// #endif
 
-			// #ifdef APP-PLUS
-			plus.navigator.setStatusBarStyle(navbarFrontColor === "#ffffff" ? "light" : "dark");
-			// #endif
+				// #ifdef APP-PLUS
+				plus.navigator.setStatusBarStyle(navbarFrontColor === "#ffffff" ? "light" : "dark");
+				// #endif
+			}, 1000);
 
 			const appStore = useApp();
 			// 头部胶囊padding

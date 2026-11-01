@@ -25,6 +25,7 @@
 					<el-checkbox :value="AppEnvironmentEnum.Web">Web</el-checkbox>
 					<el-checkbox :value="AppEnvironmentEnum.Windows">Windows</el-checkbox>
 					<el-checkbox :value="AppEnvironmentEnum.Mac">Mac</el-checkbox>
+					<el-checkbox :value="AppEnvironmentEnum.H5">H5</el-checkbox>
 					<el-checkbox :value="AppEnvironmentEnum.Android">Android</el-checkbox>
 					<el-checkbox :value="AppEnvironmentEnum.HarmonyOS">鸿蒙</el-checkbox>
 					<el-checkbox :value="AppEnvironmentEnum.IOS">IOS</el-checkbox>

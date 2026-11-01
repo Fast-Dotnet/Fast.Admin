@@ -65,7 +65,7 @@ export function loadFastAxios(): void {
 		case "h5":
 		default:
 			origin = import.meta.env.DEV ? import.meta.env.VITE_APP_ORIGIN || window.location.host : window.location.host;
-			deviceType = "Web";
+			deviceType = "H5";
 			break;
 	}
 

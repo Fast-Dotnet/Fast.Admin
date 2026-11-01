@@ -60,7 +60,10 @@
 						:accept="packageAccept"
 						:max-size="512 * 1024"
 					>
-						<div class="el-upload__text">将应用包拖到此处，或 <em>点击上传</em></div>
+						<div class="el-upload__text">
+							将应用包拖到此处，或
+							<em>点击上传</em>
+						</div>
 						<template #tip>
 							<div class="el-upload__tip">支持 {{ packageAccept }}，单个文件不超过 512 MB</div>
 						</template>

@@ -2,7 +2,6 @@ import { ElLoading, ElMessage, ElMessageBox } from "element-plus";
 import { createFastAxios } from "@fast-china/axios";
 import { AESDecrypt, AESEncrypt, Local, installationIdentity, logger, withDefineType } from "@fast-china/utils";
 import { isAxiosError } from "axios";
-import { AppEnvironmentEnum } from "@/api/enums/AppEnvironmentEnum";
 import { useUserInfo } from "@/stores";
 import type { ApiResponse } from "@fast-china/axios";
 import type { AxiosHeaders, AxiosRequestConfig, AxiosResponse } from "axios";
@@ -49,7 +48,7 @@ export function loadFastAxios(): void {
 		baseUrl,
 		headers: {
 			"Fast-Origin": import.meta.env.DEV ? import.meta.env.VITE_APP_ORIGIN || window.location.host : window.location.host,
-			"Fast-Device-Type": Object.entries(AppEnvironmentEnum).find(([, value]) => value === AppEnvironmentEnum.Web)?.[0],
+			"Fast-Device-Type": "Web",
 			"Fast-Device-Id": installationIdentity.deviceId,
 		},
 		requestCipher: true,

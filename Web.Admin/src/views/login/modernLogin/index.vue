@@ -19,7 +19,10 @@
 					</div>
 
 					<div class="modern-brand__copy">
-						<div class="modern-kicker"><span>●</span> System online · 99.99%</div>
+						<div class="modern-kicker">
+							<span>●</span>
+							System online · 99.99%
+						</div>
 						<h1>
 							掌控每一刻
 							<em>业务脉动</em>
@@ -29,7 +32,9 @@
 
 					<div class="insight-window" aria-hidden="true">
 						<div class="insight-window__bar">
-							<span></span><span></span><span></span>
+							<span></span>
+							<span></span>
+							<span></span>
 							<small>Realtime overview</small>
 						</div>
 						<div class="insight-window__content">

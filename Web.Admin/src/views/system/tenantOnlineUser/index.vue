@@ -20,7 +20,8 @@
 				<template #default="{ row }: { row: TenantOnlineUserModel }">
 					<span>{{ row.nickName }}</span>
 					<br />
-					手机：<span v-iconCopy="row.mobile">{{ row.mobile }}</span>
+					手机：
+					<span v-iconCopy="row.mobile">{{ row.mobile }}</span>
 				</template>
 			</FaTableColumn>
 			<FaTableColumn
@@ -34,16 +35,19 @@
 				<template #default="{ row }: { row: TenantOnlineUserModel }">
 					<span>{{ row.employeeName }}</span>
 					<br />
-					工号：<span v-iconCopy="row.employeeNo">{{ row.employeeNo }}</span>
+					工号：
+					<span v-iconCopy="row.employeeNo">{{ row.employeeNo }}</span>
 					<br />
-					部门：<span>{{ row.departmentName }}</span>
+					部门：
+					<span>{{ row.departmentName }}</span>
 				</template>
 			</FaTableColumn>
 			<FaTableColumn prop="appNo" label="应用信息" width="300" small-width="280" sortable class-name="fa-table__line-height-normal-column">
 				<template #default="{ row }: { row: TenantOnlineUserModel }">
 					<span>{{ row.appName }}</span>
 					<br />
-					编号：<span v-iconCopy="row.appNo">{{ row.appNo }}</span>
+					编号：
+					<span v-iconCopy="row.appNo">{{ row.appNo }}</span>
 				</template>
 			</FaTableColumn>
 			<FaTableColumn prop="deviceType" label="设备类型" width="120" small-width="100" sortable tag :enum="appEnvironmentEnum" />

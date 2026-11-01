@@ -204,7 +204,8 @@ public class GlobalContext
     /// </summary>
     public static bool IsMobile =>
         (DeviceType
-         & (AppEnvironmentEnum.Android
+         & (AppEnvironmentEnum.H5
+            | AppEnvironmentEnum.Android
             | AppEnvironmentEnum.HarmonyOS
             | AppEnvironmentEnum.IOS
             | AppEnvironmentEnum.WeChatMiniProgram))

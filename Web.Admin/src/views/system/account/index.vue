@@ -14,9 +14,11 @@
 				<template #default="{ row }: { row: QueryAccountPagedOutput }">
 					<el-button link type="primary" @click="editFormRef.detail(row.accountId)">{{ row.nickName }}</el-button>
 					<br />
-					手机：<span v-iconCopy="row.mobile">{{ row.mobile }}</span>
+					手机：
+					<span v-iconCopy="row.mobile">{{ row.mobile }}</span>
 					<br />
-					邮箱：<span v-iconCopy="row.email">{{ row.email }}</span>
+					邮箱：
+					<span v-iconCopy="row.email">{{ row.email }}</span>
 				</template>
 			</FaTableColumn>
 			<FaTableColumn prop="status" label="状态" width="100" small-width="80" sortable tag :enum="appStore.getDictionary('CommonStatusEnum')" />

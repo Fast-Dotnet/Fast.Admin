@@ -18,9 +18,7 @@
 						<el-dropdown-item disabled>主题</el-dropdown-item>
 						<el-dropdown-item divided :icon="Light" command="浅色模式" :disabled="!configStore.layout.isDark">浅色模式</el-dropdown-item>
 						<el-dropdown-item :icon="Dark" command="深色模式" :disabled="configStore.layout.isDark">深色模式</el-dropdown-item>
-						<el-dropdown-item :icon="Operation" command="系统设置" :disabled="configStore.layout.autoThemMode">
-							系统设置
-						</el-dropdown-item>
+						<el-dropdown-item :icon="Operation" command="系统设置" :disabled="configStore.layout.autoThemMode">系统设置</el-dropdown-item>
 						<el-dropdown-item disabled>谨慎使用</el-dropdown-item>
 						<el-dropdown-item divided :icon="Refresh" command="重置系统">重置系统</el-dropdown-item>
 					</el-dropdown-menu>

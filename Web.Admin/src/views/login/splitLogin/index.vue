@@ -14,16 +14,35 @@
 					<span class="logo-text">{{ appStore.appName }}</span>
 				</div>
 				<div class="panel__hero">
-					<div class="panel__eyebrow"><span></span>FAST ADMIN PLATFORM</div>
-					<h2>让复杂的管理<br /><strong>变得简单清晰</strong></h2>
+					<div class="panel__eyebrow">
+						<span></span>
+						FAST ADMIN PLATFORM
+					</div>
+					<h2>
+						让复杂的管理
+						<br />
+						<strong>变得简单清晰</strong>
+					</h2>
 					<p>一体化企业管理平台，帮助团队更高效地连接业务、数据与协作。</p>
 					<div class="panel__features">
-						<span><i></i>统一权限</span>
-						<span><i></i>多租户架构</span>
-						<span><i></i>灵活配置</span>
+						<span>
+							<i></i>
+							统一权限
+						</span>
+						<span>
+							<i></i>
+							多租户架构
+						</span>
+						<span>
+							<i></i>
+							灵活配置
+						</span>
 					</div>
 				</div>
-				<div class="panel__footnote"><span></span>安全 · 稳定 · 可扩展</div>
+				<div class="panel__footnote">
+					<span></span>
+					安全 · 稳定 · 可扩展
+				</div>
 			</div>
 		</section>
 

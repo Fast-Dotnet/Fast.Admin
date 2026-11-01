@@ -38,12 +38,12 @@
 
 		<view class="help">
 			<view class="help__item" @click="router.push('/pages/setting/account/index')">
-				<FaIcon name="accountSafe" size="38rpx" />
+				<FaIcon name="accountSafe" size="38rpx" color="var(--wot-primary-6)" />
 				<text>账号安全</text>
 				<wd-icon name="arrow-right" />
 			</view>
 			<view class="help__item" @click="router.push(CommonRoute.ComplaintSubmit)">
-				<FaIcon name="message" size="38rpx" />
+				<FaIcon name="message" size="38rpx" color="var(--wot-success-main)" />
 				<text>意见反馈</text>
 				<wd-icon name="arrow-right" />
 			</view>

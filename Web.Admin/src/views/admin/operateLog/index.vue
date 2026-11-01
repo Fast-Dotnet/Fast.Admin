@@ -13,9 +13,11 @@
 				<template #default="{ row }: { row: OperateLogModel }">
 					{{ row.createdUserName }}
 					<br />
-					工号：<span v-iconCopy="row.employeeNo">{{ row.employeeNo }}</span>
+					工号：
+					<span v-iconCopy="row.employeeNo">{{ row.employeeNo }}</span>
 					<br />
-					手机：<span v-iconCopy="row.mobile">{{ row.mobile }}</span>
+					手机：
+					<span v-iconCopy="row.mobile">{{ row.mobile }}</span>
 				</template>
 			</FaTableColumn>
 			<FaTableColumn

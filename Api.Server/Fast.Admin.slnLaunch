@@ -18,5 +18,20 @@
         "DebugTarget": "Fast.Scheduler"
       }
     ]
+  },
+  {
+    "Name": "Fast.Basic",
+    "Projects": [
+      {
+        "Path": "src\\Fast.Api\\Fast.Api.csproj",
+        "Action": "Start",
+        "DebugTarget": "Fast.Api"
+      },
+      {
+        "Path": "src\\Fast.File\\Fast.File.csproj",
+        "Action": "StartWithoutDebugging",
+        "DebugTarget": "Fast.File"
+      }
+    ]
   }
 ]

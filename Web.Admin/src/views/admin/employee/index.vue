@@ -19,11 +19,14 @@
 				<template #default="{ row }: { row: QueryEmployeePagedOutput }">
 					<el-button link type="primary" @click="editFormRef.detail(row.employeeId)">{{ row.employeeName }}</el-button>
 					<br />
-					工号：<span v-iconCopy="row.employeeNo">{{ row.employeeNo }}</span>
+					工号：
+					<span v-iconCopy="row.employeeNo">{{ row.employeeNo }}</span>
 					<br />
-					手机：<span v-iconCopy="row.mobile">{{ row.mobile }}</span>
+					手机：
+					<span v-iconCopy="row.mobile">{{ row.mobile }}</span>
 					<br />
-					邮箱：<span v-iconCopy="row.email">{{ row.email }}</span>
+					邮箱：
+					<span v-iconCopy="row.email">{{ row.email }}</span>
 				</template>
 			</FaTableColumn>
 			<FaTableColumn prop="mobile" label="账号" width="320" small-width="300" sortable class-name="fa-table__line-height-normal-column">
@@ -31,9 +34,11 @@
 					<template v-if="row.accountMobile">
 						<span>昵称：{{ row.accountNickName }}</span>
 						<br />
-						手机：<span v-iconCopy="row.accountMobile">{{ row.accountMobile }}</span>
+						手机：
+						<span v-iconCopy="row.accountMobile">{{ row.accountMobile }}</span>
 						<br />
-						邮箱：<span v-iconCopy="row.accountEmail">{{ row.accountEmail }}</span>
+						邮箱：
+						<span v-iconCopy="row.accountEmail">{{ row.accountEmail }}</span>
 						<br />
 						<span>
 							登陆时间：{{ row.lastLoginTime ?? "" }}
@@ -56,7 +61,8 @@
 				class-name="fa-table__line-height-normal-column"
 			>
 				<template #default="{ row }: { row: QueryEmployeePagedOutput }">
-					机构：<span>{{ row.orgName }}</span>
+					机构：
+					<span>{{ row.orgName }}</span>
 					<br />
 					<span>{{ row.departmentNames?.join(" > ") ?? "-" }}</span>
 					<template v-if="row.isPrincipal">
@@ -74,11 +80,14 @@
 				class-name="fa-table__line-height-normal-column"
 			>
 				<template #default="{ row }: { row: QueryEmployeePagedOutput }">
-					职位：<span>{{ row.positionName }}</span>
+					职位：
+					<span>{{ row.positionName }}</span>
 					<br />
-					职级：<span>{{ row.jobLevelName }}</span>
+					职级：
+					<span>{{ row.jobLevelName }}</span>
 					<br />
-					角色：<span>{{ row.roleNames }}</span>
+					角色：
+					<span>{{ row.roleNames }}</span>
 				</template>
 			</FaTableColumn>
 			<FaTableColumn prop="sex" label="性别" width="100" small-width="80" sortable tag :enum="genderEnum" />
