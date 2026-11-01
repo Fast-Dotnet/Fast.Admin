@@ -35,4 +35,12 @@ module.exports = {
 	vueIndentScriptAndStyle: false,
 	// 统一使用 LF 换行。
 	endOfLine: "lf",
+	// 按文件类型覆盖默认格式化选项。
+	overrides: [
+		{
+			files: "*.vue",
+			// 忽略 Vue 模板标签周围的空白敏感性，允许标签和内容独立换行。
+			options: { htmlWhitespaceSensitivity: "ignore" },
+		},
+	],
 };

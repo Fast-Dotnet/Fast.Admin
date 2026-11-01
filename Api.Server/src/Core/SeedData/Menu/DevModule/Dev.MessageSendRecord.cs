@@ -39,7 +39,7 @@ internal static partial class MenuSeedData
             WebComponent = "dev/messageSendRecord/index",
             WebTab = true,
             WebKeepAlive = true,
-            HasMobile = false,
+            HasMobile = true,
             MobileIcon = "https://image.fastdotnet.com/menu/mobile/messageSendRecord.png",
             MobileRouter = "pages_dev/messageSendRecord/page/index",
             Visible = true,
@@ -61,7 +61,7 @@ internal static partial class MenuSeedData
                     RoleType = GlobalContext.RolePermissions[PermissionConst.MessageSendRecord.Paged],
                     HasDesktop = true,
                     HasWeb = true,
-                    HasMobile = false,
+                    HasMobile = true,
                     Sort = 1,
                     Status = CommonStatusEnum.Enable,
                     CreatedTime = dateTime
@@ -77,7 +77,7 @@ internal static partial class MenuSeedData
                     RoleType = GlobalContext.RolePermissions[PermissionConst.MessageSendRecord.Detail],
                     HasDesktop = true,
                     HasWeb = true,
-                    HasMobile = false,
+                    HasMobile = true,
                     Sort = 2,
                     Status = CommonStatusEnum.Enable,
                     CreatedTime = dateTime

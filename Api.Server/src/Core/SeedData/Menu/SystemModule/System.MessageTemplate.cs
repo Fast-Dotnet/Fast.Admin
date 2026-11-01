@@ -39,7 +39,9 @@ internal static partial class MenuSeedData
             WebComponent = "system/messageTemplate/index",
             WebTab = true,
             WebKeepAlive = true,
-            HasMobile = false,
+            HasMobile = true,
+            MobileIcon = "message",
+            MobileRouter = "pages_system/messageTemplate/page/index",
             Visible = true,
             Sort = menuSort,
             Status = CommonStatusEnum.Enable,
@@ -59,7 +61,7 @@ internal static partial class MenuSeedData
                     RoleType = GlobalContext.RolePermissions[PermissionConst.MessageTemplate.Paged],
                     HasDesktop = true,
                     HasWeb = true,
-                    HasMobile = false,
+                    HasMobile = true,
                     Sort = 1,
                     Status = CommonStatusEnum.Enable,
                     CreatedTime = dateTime
@@ -75,7 +77,7 @@ internal static partial class MenuSeedData
                     RoleType = GlobalContext.RolePermissions[PermissionConst.MessageTemplate.Detail],
                     HasDesktop = true,
                     HasWeb = true,
-                    HasMobile = false,
+                    HasMobile = true,
                     Sort = 2,
                     Status = CommonStatusEnum.Enable,
                     CreatedTime = dateTime
@@ -91,7 +93,7 @@ internal static partial class MenuSeedData
                     RoleType = GlobalContext.RolePermissions[PermissionConst.MessageTemplate.Add],
                     HasDesktop = true,
                     HasWeb = true,
-                    HasMobile = false,
+                    HasMobile = true,
                     Sort = 3,
                     Status = CommonStatusEnum.Enable,
                     CreatedTime = dateTime
@@ -107,7 +109,7 @@ internal static partial class MenuSeedData
                     RoleType = GlobalContext.RolePermissions[PermissionConst.MessageTemplate.Edit],
                     HasDesktop = true,
                     HasWeb = true,
-                    HasMobile = false,
+                    HasMobile = true,
                     Sort = 4,
                     Status = CommonStatusEnum.Enable,
                     CreatedTime = dateTime
@@ -123,7 +125,7 @@ internal static partial class MenuSeedData
                     RoleType = GlobalContext.RolePermissions[PermissionConst.MessageTemplate.Delete],
                     HasDesktop = true,
                     HasWeb = true,
-                    HasMobile = false,
+                    HasMobile = true,
                     Sort = 5,
                     Status = CommonStatusEnum.Enable,
                     CreatedTime = dateTime

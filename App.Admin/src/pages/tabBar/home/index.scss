@@ -1,12 +1,132 @@
-.fa-search-input {
-	position: sticky;
-	top: 0;
-	left: 0;
-	right: 0;
-	z-index: 999;
+.page {
+	display: flex;
+	flex-direction: column;
+	gap: 28rpx;
+	padding: var(--fa-page-padding);
+}
+
+.greeting {
+	display: flex;
+	align-items: center;
+	gap: 24rpx;
+	padding: 12rpx 8rpx;
+}
+
+.greeting__content {
+	flex: 1;
+	min-width: 0;
+}
+
+.greeting__title {
+	font-size: 40rpx;
+	font-weight: var(--wot-font-weight-semibold);
+	line-height: 1.5;
+	overflow-wrap: anywhere;
+}
+
+.greeting__description {
+	margin-top: 10rpx;
+	color: var(--wot-text-secondary);
+	font-size: 24rpx;
 }
 
 .wd-swiper {
 	--wot-swiper-border-radius: var(--wot-radius-super-large);
-	padding: 0 20rpx;
+}
+
+.workspace__header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 16rpx;
+	margin-bottom: 26rpx;
+}
+
+.workspace__title {
+	font-size: 30rpx;
+	font-weight: var(--wot-font-weight-semibold);
+}
+
+.workspace__body {
+	display: flex;
+	align-items: center;
+	gap: 24rpx;
+}
+
+.workspace__icon {
+	width: 86rpx;
+	height: 86rpx;
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 24rpx;
+	color: var(--wot-primary-6);
+	background: var(--wot-primary-1);
+	overflow: hidden;
+}
+
+.workspace__info {
+	min-width: 0;
+}
+
+.workspace__name {
+	font-size: 30rpx;
+	font-weight: var(--wot-font-weight-semibold);
+	overflow-wrap: anywhere;
+}
+
+.workspace__description {
+	margin-top: 10rpx;
+	font-size: 24rpx;
+	color: var(--wot-text-secondary);
+	overflow-wrap: anywhere;
+}
+
+.workspace__action {
+	display: block;
+	margin-top: 32rpx;
+}
+
+.workspace__action-content {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 18rpx;
+}
+
+.help {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 20rpx;
+}
+
+.help__item {
+	display: flex;
+	align-items: center;
+	gap: 18rpx;
+	padding: 32rpx 24rpx;
+	background: var(--wot-filled-oppo);
+	border-radius: var(--wot-radius-extra-large);
+	font-size: 26rpx;
+}
+
+.help__item .fa-icon {
+	color: var(--wot-primary-6);
+}
+
+.help__item > text {
+	flex: 1;
+}
+
+.help__item > .wd-icon {
+	color: var(--wot-text-auxiliary);
+}
+
+.footer {
+	padding: 8rpx 0 32rpx;
+	text-align: center;
+	font-size: 22rpx;
+	color: var(--wot-text-auxiliary);
+	letter-spacing: 1rpx;
 }

@@ -230,13 +230,16 @@ onPageScroll(({ scrollTop }) => {
 });
 
 onPullDownRefresh(async () => {
-	// 删除 HTTP 缓存数据
-	Local.removeByPrefix("HTTP_CACHE_");
-	// 刷新用户信息
-	await userInfoStore.refreshUserInfo();
-	// 刷新字典
-	await appStore.setDictionary();
-	uni.stopPullDownRefresh();
+	try {
+		// 删除 HTTP 缓存数据
+		Local.removeByPrefix("HTTP_CACHE_");
+		// 刷新用户信息
+		await userInfoStore.refreshUserInfo();
+		// 刷新字典
+		await appStore.setDictionary();
+	} finally {
+		uni.stopPullDownRefresh();
+	}
 });
 
 // #ifdef MP-WEIXIN
