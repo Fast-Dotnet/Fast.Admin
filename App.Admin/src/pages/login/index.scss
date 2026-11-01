@@ -55,19 +55,42 @@
 .page__user-info-content {
 	display: flex;
 	flex: 1;
+	min-width: 0;
 	flex-direction: column;
 	gap: 6rpx;
+}
+
+.page__user-clear {
+	display: flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 88rpx;
+	height: 88rpx;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: transparent;
+	color: var(--wot-text-auxiliary);
+	line-height: 1;
+
+	&::after {
+		border: 0;
+	}
 }
 
 .page__tenant-name {
 	font-size: 30rpx;
 	font-weight: var(--wot-font-weight-semibold);
 	color: var(--wot-text-main);
+	overflow-wrap: anywhere;
 }
 
 .page__employee-name {
 	font-size: 24rpx;
 	color: var(--wot-text-auxiliary);
+	overflow-wrap: anywhere;
 }
 
 :deep(.wd-form-item) {

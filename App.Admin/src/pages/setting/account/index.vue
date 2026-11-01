@@ -22,10 +22,8 @@
 			/>
 		</wd-cell-group>
 
-		<wd-divider />
-
 		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>
-			<wd-cell-group>
+			<wd-cell-group title="基础信息" border>
 				<wd-form-item title="头像" prop="avatar" is-link>
 					<!-- #ifdef MP-WEIXIN -->
 					<button class="btn__avatar" :plain="true" openType="chooseAvatar" @chooseavatar="handleAvatar">
@@ -63,7 +61,7 @@
 				</wd-form-item>
 			</wd-cell-group>
 
-			<wd-button custom-class="btn__confirm" type="danger" @click="handleConfirm">保存</wd-button>
+			<wd-button custom-class="btn__confirm" type="primary" @click="handleConfirm">保存</wd-button>
 		</wd-form>
 
 		<!-- #ifdef MP-WEIXIN -->
@@ -94,7 +92,7 @@
 			<view class="auth-popup">
 				<image class="auth-popup__logo" :src="appStore.logoUrl || defaultLogo" mode="aspectFit" />
 				<view class="auth-popup__title">{{ state.formData.mobile ? "更换手机号" : "获取手机号" }}</view>
-				<view class="auth-popup__description">通过微信授权获取手机号，填写到个人资料后，请点击页面底部“保存”完成修改。</view>
+				<view class="auth-popup__description">通过微信授权获取手机号，填写到账号资料后，请点击页面底部“保存”完成修改。</view>
 				<view class="auth-popup__actions">
 					<wd-button type="info" block variant="plain" @click="mobilePopupRef?.close()">取消</wd-button>
 					<wd-button open-type="getRealtimePhoneNumber" type="primary" block @getrealtimephonenumber="handlePhone">
@@ -263,6 +261,7 @@ onLoad(() => {
 <style lang="scss" scoped>
 .top-cell-group {
 	--wot-cell-arrow-size: 16px;
+	margin-bottom: 40rpx;
 }
 
 .top-cell-group :deep(.wd-cell__arrow-right) {
@@ -287,6 +286,8 @@ onLoad(() => {
 }
 
 .image__avatar {
+	display: inline-flex;
+	justify-content: right;
 	width: 120rpx;
 	height: 120rpx;
 	border-radius: 50%;
@@ -295,10 +296,6 @@ onLoad(() => {
 .btn__confirm {
 	display: block;
 	margin: 30rpx 50rpx;
-}
-
-:deep(.wd-cell__label) {
-	font-size: 12px;
 }
 
 .auth-popup {

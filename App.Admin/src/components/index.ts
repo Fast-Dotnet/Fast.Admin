@@ -9,6 +9,7 @@ import Overlay from "./overlay/index.vue";
 import Popup from "./popup/index.vue";
 import SearchInput from "./searchInput/index.vue";
 import Tag from "./tag/index.vue";
+import TagFlag from "./tagFlag/index.vue";
 import Watermark from "./watermark/index.vue";
 
 export { Footer };
@@ -33,5 +34,7 @@ export { SearchInput };
 export type FaSearchInputInstance = InstanceType<typeof SearchInput>;
 export { Tag };
 export type FaTagInstance = InstanceType<typeof Tag>;
+export { TagFlag };
+export type FaTagFlagInstance = InstanceType<typeof TagFlag>;
 export { Watermark };
 export type FaWatermarkInstance = InstanceType<typeof Watermark>;

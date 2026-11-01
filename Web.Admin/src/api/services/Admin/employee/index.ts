@@ -3,6 +3,7 @@ import type { ElSelectorOutput, PagedInput, PagedResult } from "fast-element-plu
 import type { AddEmployeeInput } from "./models/AddEmployeeInput";
 import type { BindLoginAccountInput } from "./models/BindLoginAccountInput";
 import type { ChangeStatusInput } from "./models/ChangeStatusInput";
+import type { EditCommonMenusInput } from "./models/EditCommonMenusInput";
 import type { EditEmployeeInput } from "./models/EditEmployeeInput";
 import type { EmployeeIdInput } from "./models/EmployeeIdInput";
 import type { EmployeeResignedInput } from "./models/EmployeeResignedInput";
@@ -46,6 +47,16 @@ export const employeeApi = {
 			params: {
 				employeeId,
 			},
+			requestType: "query",
+		});
+	},
+	/**
+	 * 获取本职员详情
+	 */
+	querySelfEmployeeDetail(): Promise<QueryEmployeeDetailOutput> {
+		return axiosUtil.request<QueryEmployeeDetailOutput>({
+			url: "/employee/querySelfEmployeeDetail",
+			method: "get",
 			requestType: "query",
 		});
 	},
@@ -121,6 +132,27 @@ export const employeeApi = {
 	changeLoginStatus(data: EmployeeIdInput): Promise<void> {
 		return axiosUtil.request<void>({
 			url: "/employee/changeLoginStatus",
+			method: "post",
+			data,
+			requestType: "edit",
+		});
+	},
+	/**
+	 * 获取职员常用菜单
+	 */
+	queryCommonMenus(): Promise<string[]> {
+		return axiosUtil.request<string[]>({
+			url: "/employee/queryCommonMenus",
+			method: "get",
+			requestType: "query",
+		});
+	},
+	/**
+	 * 编辑职员常用菜单
+	 */
+	editCommonMenus(data: EditCommonMenusInput): Promise<void> {
+		return axiosUtil.request<void>({
+			url: "/employee/editCommonMenus",
 			method: "post",
 			data,
 			requestType: "edit",

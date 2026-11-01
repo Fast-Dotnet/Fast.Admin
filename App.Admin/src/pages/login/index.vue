@@ -8,11 +8,14 @@
 
 		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" error-type="toast">
 			<view v-if="userInfoStore.userKey" class="page__user-info">
-				<FaIcon name="tenant" size="40rpx" />
+				<FaImage width="72rpx" height="72rpx" round original :hide-image="false" :enable-preview="false" :src="userInfoStore.avatar" />
 				<view class="page__user-info-content">
 					<text class="page__tenant-name">{{ userInfoStore.tenantName }}</text>
 					<text class="page__employee-name">{{ userInfoStore.employeeName || userInfoStore.nickName }}</text>
 				</view>
+				<button class="page__user-clear" @click="handleClearLoginUser">
+					<wd-icon name="close-circle" size="36rpx" />
+				</button>
 			</view>
 			<wd-form-item v-else prop="account">
 				<wd-input
@@ -186,6 +189,22 @@ const loginSuccess = (loginRes: LoginOutput) => {
 		default:
 			useMessageBox.alert(loginRes.message || "登录失败");
 	}
+};
+
+/** 清理登录用户 */
+const handleClearLoginUser = () => {
+	useMessageBox
+		.confirm({
+			msg: "清除当前登录选择后，需要重新输入账号登录，确定要继续吗？",
+			confirmButtonText: "确认清除",
+			cancelButtonText: "取消",
+			closeOnClickModal: false,
+		})
+		.then(() => {
+			userInfoStore.userKey = "";
+			state.formData = { captchaKey: state.formData.captchaKey };
+			formRef.value?.reset();
+		});
 };
 
 /** 登录 */

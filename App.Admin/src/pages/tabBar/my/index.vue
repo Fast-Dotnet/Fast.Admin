@@ -2,7 +2,10 @@
 	<view class="page">
 		<view class="user-card">
 			<FaImage width="120rpx" height="120rpx" round original :hide-image="false" :src="userInfoStore.avatar" />
-			<view class="user-card__info" @click="userInfoStore.clientUserId && router.push('/pages/setting/userInfo/index')">
+			<view
+				class="user-card__info"
+				@click="!userInfoStore.isSuperAdmin && !userInfoStore.isAdmin && router.push('/pages/setting/employee/index')"
+			>
 				<view class="user-card__employeeName">{{ userInfoStore.employeeName }}</view>
 				<view class="user-card__employeeNo">{{ userInfoStore.employeeNo }}（{{ userInfoStore.departmentName || "无部门" }}）</view>
 				<view class="user-card__nickName">{{ userInfoStore.nickName }}</view>
@@ -10,7 +13,13 @@
 		</view>
 
 		<wd-cell-group border>
-			<wd-cell v-if="userInfoStore.clientUserId" title="个人资料" clickable is-link to="/pages/setting/userInfo/index">
+			<wd-cell
+				v-if="!userInfoStore.isSuperAdmin && !userInfoStore.isAdmin"
+				title="个人资料"
+				clickable
+				is-link
+				to="/pages/setting/employee/index"
+			>
 				<template #prefix>
 					<FaIcon custom-class="wd-cell__icon" name="idCard" />
 				</template>

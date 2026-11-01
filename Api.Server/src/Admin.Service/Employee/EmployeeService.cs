@@ -265,6 +265,16 @@ public class EmployeeService : IDynamicApplication
     }
 
     /// <summary>
+    /// 获取本职员详情
+    /// </summary>
+    [HttpGet]
+    [ApiInfo("获取本职员详情", HttpRequestActionEnum.Query)]
+    public async Task<QueryEmployeeDetailOutput> QuerySelfEmployeeDetail()
+    {
+        return await QueryEmployeeDetail(_user.EmployeeId);
+    }
+
+    /// <summary>
     /// 添加职员
     /// </summary>
     [HttpPost]
@@ -409,7 +419,7 @@ public class EmployeeService : IDynamicApplication
     [ApiInfo("编辑本职员", HttpRequestActionEnum.Edit)]
     public async Task EditSelfEmployee(EditEmployeeInput input)
     {
-        if (await _repository.AnyAsync(a => a.Mobile == input.Mobile && a.EmployeeId != input.EmployeeId))
+        if (await _repository.AnyAsync(a => a.Mobile == input.Mobile && a.EmployeeId != _user.EmployeeId))
         {
             throw new UserFriendlyException("手机号重复！");
         }
@@ -425,6 +435,7 @@ public class EmployeeService : IDynamicApplication
         employeeModel.Email = input.Email;
         employeeModel.Sex = input.Sex;
         employeeModel.IdPhoto = input.IdPhoto;
+        employeeModel.RowVersion = input.RowVersion;
 
         // 开启事务
         await _repository.Ado.BeginTranAsync();
@@ -455,6 +466,22 @@ public class EmployeeService : IDynamicApplication
             throw;
         }
 
+        await _user.RefreshEmployee(new RefreshEmployeeDto
+        {
+            DeviceType = _user.DeviceType,
+            AppNo = _user.AppNo,
+            TenantNo = _user.TenantNo,
+            EmployeeNo = _user.EmployeeNo,
+            EmployeeName = employeeModel.EmployeeName,
+            DepartmentId = _user.DepartmentId,
+            DepartmentName = _user.DepartmentName,
+            RoleIdList = _user.RoleIdList,
+            RoleNameList = _user.RoleNameList,
+            RoleType = _user.RoleType,
+            DataScopeType = _user.DataScopeType,
+            DataScopeDepartmentIdList = _user.DataScopeDepartmentIdList
+        });
+
         // 操作日志
         await LogContext.OperateLog(new OperateLogDto
         {
@@ -481,7 +508,7 @@ public class EmployeeService : IDynamicApplication
             throw new UserFriendlyException("手机号重复！");
         }
 
-        if (input.OrgList?.Count < 1)
+        if (input.OrgList == null || input.OrgList.Count < 1)
         {
             throw new UserFriendlyException("请至少填写一个部门！");
         }
@@ -1005,5 +1032,57 @@ public class EmployeeService : IDynamicApplication
                 OfflineTime = DateTime.Now,
                 Message = message
             });
+    }
+
+    /// <summary>
+    /// 获取职员常用菜单
+    /// </summary>
+    [HttpGet]
+    [ApiInfo("获取职员常用菜单", HttpRequestActionEnum.Query)]
+    public async Task<List<string>> QueryCommonMenus()
+    {
+        EmployeeModel employee = await _repository.SingleOrDefaultAsync(_user.EmployeeId);
+        return employee?.CommonMenuCodes ?? [];
+    }
+
+    /// <summary>
+    /// 编辑职员常用菜单
+    /// </summary>
+    [HttpPost]
+    [ApiInfo("编辑职员常用菜单", HttpRequestActionEnum.Edit)]
+    public async Task EditCommonMenus(EditCommonMenusInput input)
+    {
+        EmployeeModel employee = await _repository.SingleOrDefaultAsync(_user.EmployeeId);
+        if (employee == null)
+        {
+            throw new UserFriendlyException("数据不存在！");
+        }
+
+        if (input.CommonMenuCodes.Any(string.IsNullOrWhiteSpace))
+        {
+            throw new UserFriendlyException("菜单编码不能为空！");
+        }
+
+        var menuCodes = input.CommonMenuCodes.Distinct(StringComparer.Ordinal).ToList();
+
+        ApplicationClientModel application = await ApplicationContext.GetApplication(GlobalContext.Origin);
+        List<string> authorizedCodes = _user.MenuCodeList ?? [];
+
+        // 获取职员菜单权限
+        List<string> availableCodes = await _centerRepository.Queryable<MenuModel>()
+            .Where(m => m.AppId == application.AppId && m.Status == CommonStatusEnum.Enable)
+            .Where(m => m.HasMobile && m.Visible && m.MenuType != MenuTypeEnum.Catalog)
+            .Where(m => authorizedCodes.Contains(m.MenuCode))
+            .Where(m => menuCodes.Contains(m.MenuCode))
+            .Select(m => m.MenuCode)
+            .ToListAsync();
+        if (menuCodes.Except(availableCodes, StringComparer.Ordinal).Any())
+        {
+            throw new UserFriendlyException("包含不可访问的菜单，请刷新工作台后重试！");
+        }
+
+        employee.CommonMenuCodes = menuCodes;
+
+        await _repository.Updateable(employee).UpdateColumns(e => e.CommonMenuCodes).ExecuteCommandWithOptLockAsync(true);
     }
 }

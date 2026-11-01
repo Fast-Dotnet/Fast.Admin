@@ -9,10 +9,10 @@
 		<slot :label="dictionary?.label" :tips="dictionary?.tips">
 			{{ dictionary?.label }}
 		</slot>
-		<template #icon>
+		<template v-if="$slots.icon" #icon>
 			<slot name="icon" />
 		</template>
-		<template #add>
+		<template v-if="$slots.add" #add>
 			<slot name="add" />
 		</template>
 	</wd-tag>

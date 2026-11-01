@@ -73,7 +73,7 @@
 									:icon="User"
 									@click="employeeEditRef.open()"
 								>
-									职员信息
+									个人信息
 								</el-dropdown-item>
 								<el-dropdown-item divided :icon="Iphone" @click="changeMobileRef.open()">修改手机</el-dropdown-item>
 								<el-dropdown-item :icon="Message" @click="changeEmailRef.open()">修改邮箱</el-dropdown-item>

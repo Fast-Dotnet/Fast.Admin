@@ -1,4 +1,4 @@
-﻿// Copyright © 2018-Present 小方
+// Copyright © 2018-Present 小方
 // SPDX-License-Identifier: Apache-2.0
 // 
 // 本文件依据 Apache License 2.0 授权，完整条款见仓库根目录 LICENSE。
@@ -92,6 +92,14 @@ public class EmployeeModel : BaseEntity, IUpdateVersion
     /// </summary>
     [SugarColumn(ColumnDescription = "备注", Length = 200)]
     public string Remark { get; set; }
+
+    /// <summary>
+    /// 常用菜单编码集合
+    /// </summary>
+    /// <remarks>按展示顺序保存</remarks>
+    [SugarColumn(ColumnDescription = "常用菜单编码集合", ColumnDataType = StaticConfig.CodeFirst_BigString, IsJson = true,
+        IsNullable = true)]
+    public List<string> CommonMenuCodes { get; set; }
 
     /// <summary>
     /// 更新版本控制字段

@@ -110,7 +110,7 @@ const handleConfirm = () => {
 const open = () => {
 	if (userInfoStore.isSuperAdmin || userInfoStore.isAdmin) return;
 	faDialogRef.value.open(async () => {
-		const apiRes = await employeeApi.queryEmployeeDetail(userInfoStore.employeeId);
+		const apiRes = await employeeApi.querySelfEmployeeDetail();
 		state.formData = apiRes;
 		state.dialogTitle = `编辑职员 - ${apiRes.employeeName}`;
 	});

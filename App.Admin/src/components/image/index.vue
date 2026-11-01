@@ -58,7 +58,7 @@ const props = defineProps({
 		type: [String, Number],
 		default: "100%",
 	},
-	/** 是否显示占位图；未指定时跟随全局隐藏图片设置 */
+	/** 是否显示占位图 */
 	hideImage: {
 		type: Boolean,
 		default: undefined,
