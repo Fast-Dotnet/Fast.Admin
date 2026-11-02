@@ -96,8 +96,6 @@ export const useApp = defineStore(
 
 		/** 启动配置就绪后重新加载字典；失败时记录日志。 */
 		const setDictionary = async () => {
-			// 判断是否存在 Launch 数据
-			if (!state.hasLaunch) return;
 			try {
 				// 处理数据字典
 				const _dictionary = await dictionaryApi.queryDictionary();

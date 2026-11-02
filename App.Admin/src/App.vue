@@ -37,13 +37,13 @@ onLaunch((options) => {
 		.then((apiRes) => {
 			Object.assign(appStore, apiRes);
 			appStore.hasLaunch = true;
-
-			appStore.setFastAxios();
 		})
 		.catch((error: unknown) => {
 			logger.warn("App", "启动配置加载失败", error);
 		})
 		.finally(async () => {
+			appStore.setFastAxios();
+
 			if (!appStore.hasLaunch) {
 				// #ifdef H5
 				uni.showModal({
