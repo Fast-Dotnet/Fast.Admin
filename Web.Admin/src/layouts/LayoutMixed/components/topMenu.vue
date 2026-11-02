@@ -47,16 +47,14 @@ const emit = defineEmits<{
 	menuChange: [menu: AuthMenuInfoDto];
 }>();
 
-/** 查找第一个叶子菜单 */
-const findFirstLeaf = (menu: AuthMenuInfoDto): AuthMenuInfoDto => {
-	if (!menu.children || menu.children.length === 0) {
-		return menu;
-	}
-	for (const child of menu.children) {
+/** 查找第一个可见的叶子菜单，跳过隐藏子树和空目录。 */
+const findFirstLeaf = (menu: AuthMenuInfoDto): AuthMenuInfoDto | null => {
+	if (!menu.visible) return null;
+	for (const child of menu.children ?? []) {
 		const leaf = findFirstLeaf(child);
 		if (leaf) return leaf;
 	}
-	return null;
+	return menu.menuType === MenuTypeEnum.Catalog ? null : menu;
 };
 
 const topMenuList = computed(() => {
@@ -68,7 +66,8 @@ const topMenuList = computed(() => {
 				...item,
 				firstChild,
 			};
-		});
+		})
+		.filter((item) => item.firstChild);
 });
 
 /** 判断路径是否在模块中 */

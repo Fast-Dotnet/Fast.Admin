@@ -63,7 +63,7 @@ const packageMenu = (menuList: AuthMenuInfoDto[]) => {
 				title: item.menuTitle || item.menuName,
 				icon: item.icon,
 				tab: item.tab,
-				hide: item.visible,
+				hide: !item.visible,
 				keepAlive: item.keepAlive,
 			},
 			children: [],

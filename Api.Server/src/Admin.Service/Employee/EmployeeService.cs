@@ -1041,8 +1041,10 @@ public class EmployeeService : IDynamicApplication
     [ApiInfo("获取职员常用菜单", HttpRequestActionEnum.Query)]
     public async Task<List<string>> QueryCommonMenus()
     {
-        EmployeeModel employee = await _repository.SingleOrDefaultAsync(_user.EmployeeId);
-        return employee?.CommonMenuCodes ?? [];
+        TenantUserModel tenantUserModel = await _centerRepository.Queryable<TenantUserModel>()
+            .Where(wh => wh.EmployeeId == _user.EmployeeId)
+            .SingleAsync();
+        return tenantUserModel?.CommonMenuCodes ?? [];
     }
 
     /// <summary>
@@ -1052,8 +1054,10 @@ public class EmployeeService : IDynamicApplication
     [ApiInfo("编辑职员常用菜单", HttpRequestActionEnum.Edit)]
     public async Task EditCommonMenus(EditCommonMenusInput input)
     {
-        EmployeeModel employee = await _repository.SingleOrDefaultAsync(_user.EmployeeId);
-        if (employee == null)
+        TenantUserModel tenantUserModel = await _centerRepository.Queryable<TenantUserModel>()
+            .Where(wh => wh.EmployeeId == _user.EmployeeId)
+            .SingleAsync();
+        if (tenantUserModel == null)
         {
             throw new UserFriendlyException("数据不存在！");
         }
@@ -1081,8 +1085,10 @@ public class EmployeeService : IDynamicApplication
             throw new UserFriendlyException("包含不可访问的菜单，请刷新工作台后重试！");
         }
 
-        employee.CommonMenuCodes = menuCodes;
+        tenantUserModel.CommonMenuCodes = menuCodes;
 
-        await _repository.Updateable(employee).UpdateColumns(e => e.CommonMenuCodes).ExecuteCommandWithOptLockAsync(true);
+        await _centerRepository.Updateable(tenantUserModel)
+            .UpdateColumns(e => e.CommonMenuCodes)
+            .ExecuteCommandWithOptLockAsync(true);
     }
 }

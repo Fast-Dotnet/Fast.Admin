@@ -34,7 +34,7 @@ const props = defineProps({
 const activeMenu = computed(() => router.currentRoute.value.path);
 
 const sideMenuList = computed(() => {
-	if (!props.activeTopMenu) return [];
+	if (!props.activeTopMenu?.visible) return [];
 	// 如果顶部菜单有子菜单，显示子菜单；否则显示顶部菜单自身（避免左侧空白）
 	if (props.activeTopMenu.children?.length > 0) {
 		return props.activeTopMenu.children.filter((f) => f.visible);

@@ -1,21 +1,23 @@
 <template>
-	<el-sub-menu
-		v-if="props.menu.children?.length > 0"
-		:index="props.menu.children[0].router || props.menu.children[0].link"
-		:title="props.menu.menuTitle || props.menu.menuName"
-	>
-		<template #title>
+	<template v-if="props.menu.visible">
+		<el-sub-menu
+			v-if="props.menu.children?.length > 0"
+			:index="props.menu.children[0].router || props.menu.children[0].link"
+			:title="props.menu.menuTitle || props.menu.menuName"
+		>
+			<template #title>
+				<FaIcon v-if="props.menu.icon" :name="props.menu.icon" />
+				<span>{{ props.menu.menuName }}</span>
+			</template>
+			<MenuItem v-for="(item, idx) in props.menu.children" :key="idx" :menu="item" />
+		</el-sub-menu>
+		<el-menu-item v-else :index="props.menu.router || props.menu.link" @click="handleMenuClick">
 			<FaIcon v-if="props.menu.icon" :name="props.menu.icon" />
-			<span>{{ props.menu.menuName }}</span>
-		</template>
-		<MenuItem v-for="(item, idx) in props.menu.children" :key="idx" :menu="item" />
-	</el-sub-menu>
-	<el-menu-item v-else :index="props.menu.router || props.menu.link" @click="handleMenuClick">
-		<FaIcon v-if="props.menu.icon" :name="props.menu.icon" />
-		<template #title>
-			<span>{{ props.menu.menuName }}</span>
-		</template>
-	</el-menu-item>
+			<template #title>
+				<span>{{ props.menu.menuName }}</span>
+			</template>
+		</el-menu-item>
+	</template>
 </template>
 
 <script setup lang="ts">

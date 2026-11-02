@@ -54,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import { onLoad, onPullDownRefresh, onShareAppMessage, onShareTimeline, onShow } from "@dcloudio/uni-app";
+import { onPullDownRefresh, onShareAppMessage, onShareTimeline } from "@dcloudio/uni-app";
 import { reactive, watch } from "vue";
 import { Local, getLocalTimeGreeting } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
@@ -89,16 +89,6 @@ const state = reactive({
 	searchValue: "",
 });
 
-/** 加载页面 */
-const loadPage = () => {
-	console.log("加载页面");
-};
-
-/** 页面刷新 */
-const loadRefresh = () => {
-	console.log("页面刷新");
-};
-
 watch(
 	() => appStore.appName,
 	(newVal) => {
@@ -111,18 +101,8 @@ watch(
 	}
 );
 
-onLoad(() => {
-	loadPage();
-});
-
-onShow(() => {
-	loadRefresh();
-});
-
 onPullDownRefresh(async () => {
 	try {
-		loadPage();
-		loadRefresh();
 		// 删除 HTTP 缓存数据
 		Local.removeByPrefix("HTTP_CACHE_");
 		// 刷新用户信息

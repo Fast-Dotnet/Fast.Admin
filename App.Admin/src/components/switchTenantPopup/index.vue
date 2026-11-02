@@ -52,12 +52,6 @@ const userInfoStore = useUserInfo();
 const popupRef = ref<FaPopupInstance>();
 const tenantList = ref<LoginTenantOutput[]>([]);
 
-const open = () => {
-	popupRef.value.open(async () => {
-		tenantList.value = await loginApi.queryLoginUser();
-	});
-};
-
 /** 处理租户登录 */
 const handleTenantLogin = (data: LoginTenantOutput) => {
 	const { userKey } = userInfoStore;
@@ -78,6 +72,12 @@ const handleTenantLogin = (data: LoginTenantOutput) => {
 		await userInfoStore.refreshUserInfo();
 
 		emit("change", data);
+	});
+};
+
+const open = () => {
+	popupRef.value.open(async () => {
+		tenantList.value = await loginApi.queryLoginUser();
 	});
 };
 

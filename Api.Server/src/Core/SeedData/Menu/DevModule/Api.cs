@@ -38,7 +38,7 @@ internal static partial class MenuSeedData
             WebTab = false,
             WebKeepAlive = false,
             HasMobile = false,
-            MobileIcon = "fa-icon-api",
+            MobileIcon = null,
             MobileRouter = null,
             Visible = true,
             Sort = menuSort,

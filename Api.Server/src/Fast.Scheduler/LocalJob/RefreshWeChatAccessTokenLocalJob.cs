@@ -54,7 +54,8 @@ public class RefreshWeChatAccessTokenLocalJob : ISchedulerJob
         // 获取所有凭证信息
         var applicationTokenList = await db.Queryable<ApplicationTokenModel>()
             .LeftJoin<ApplicationClientModel>((t1, t2) => t1.AppKey == t2.AppKey)
-            .Where((t1, t2) => (t2.AppType & (AppEnvironmentEnum.WeChatMiniProgram | AppEnvironmentEnum.WeChatServiceAccount)) != 0)
+            .Where((t1, t2) =>
+                (t2.AppType & (AppEnvironmentEnum.WeChatMiniProgram | AppEnvironmentEnum.WeChatServiceAccount)) != 0)
             .Where((t1, t2) => !string.IsNullOrWhiteSpace(t2.AppSecret))
             .Select((t1, t2) => new {t1.RecordId, t1.TokenType, t1.AppKey, t2.AppSecret})
             .ToListAsync();

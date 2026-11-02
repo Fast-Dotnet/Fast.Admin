@@ -86,9 +86,7 @@ public class ApplicationService : IDynamicApplication
         {
             applicationClientList = await _repository.Queryable<ApplicationClientModel>()
                 .Where(wh => appIds.Contains(wh.AppId))
-                .OrderBy(ob => ob.AppType)
-                .OrderBy(ob => ob.EnvironmentType)
-                .OrderBy(ob => ob.RecordId)
+                .OrderBy(ob => ob.AppKey)
                 .Select(sl => new QueryApplicationClientOutput
                 {
                     RecordId = sl.RecordId,

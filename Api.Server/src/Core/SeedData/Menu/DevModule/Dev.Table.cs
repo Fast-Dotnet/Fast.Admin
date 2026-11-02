@@ -40,7 +40,7 @@ internal static partial class MenuSeedData
             WebTab = true,
             WebKeepAlive = true,
             HasMobile = true,
-            MobileIcon = "https://image.fastdotnet.com/menu/mobile/menu.png",
+            MobileIcon = "https://image.fastdotnet.com/menu/mobile/tableConfig.png",
             MobileRouter = "pages_dev/tableConfig/page/index",
             Visible = true,
             Sort = menuSort,

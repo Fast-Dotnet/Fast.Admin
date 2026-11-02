@@ -14,8 +14,8 @@
 					@click="emit('select', menu)"
 				/>
 				<FaIcon v-else :name="menu.icon || 'menu'" size="44rpx" />
-				<view v-if="props.editable" class="menu-item__check" :class="{ 'is-selected': props.selectedCodes.includes(menu.menuCode) }">
-					<wd-icon :name="props.selectedCodes.includes(menu.menuCode) ? 'check' : 'add'" size="20rpx" />
+				<view v-if="props.editable" class="menu-item__check" :class="{ 'is-selected': props.selectedMenuCodes.includes(menu.menuCode) }">
+					<wd-icon :name="props.selectedMenuCodes.includes(menu.menuCode) ? 'check' : 'add'" size="20rpx" />
 				</view>
 			</view>
 			<text class="menu-item__title">{{ menu.menuName }}</text>
@@ -45,7 +45,7 @@ const props = defineProps({
 	/** 是否显示菜单选择标记 */
 	editable: Boolean,
 	/** 已选菜单 Code 集合 */
-	selectedCodes: {
+	selectedMenuCodes: {
 		type: definePropType<string[]>(Array),
 		default: (): string[] => [],
 	},

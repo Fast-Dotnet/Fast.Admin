@@ -43,6 +43,7 @@ public class AuthMenuInfoDto : ITreeNode<long>
     /// <summary>
     /// 父级Id
     /// </summary>
+    [SugarColumn(IsJson = true)]
     public List<long> ParentIds { get; set; }
 
     /// <summary>

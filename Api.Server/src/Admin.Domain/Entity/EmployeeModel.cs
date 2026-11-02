@@ -94,14 +94,6 @@ public class EmployeeModel : BaseEntity, IUpdateVersion
     public string Remark { get; set; }
 
     /// <summary>
-    /// 常用菜单编码集合
-    /// </summary>
-    /// <remarks>按展示顺序保存</remarks>
-    [SugarColumn(ColumnDescription = "常用菜单编码集合", ColumnDataType = StaticConfig.CodeFirst_BigString, IsJson = true,
-        IsNullable = true)]
-    public List<string> CommonMenuCodes { get; set; }
-
-    /// <summary>
     /// 更新版本控制字段
     /// </summary>
     [SugarColumn(ColumnDescription = "更新版本控制字段", IsEnableUpdateVersionValidation = true, CreateTableFieldSort = 998)]

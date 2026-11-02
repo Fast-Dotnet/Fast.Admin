@@ -40,7 +40,7 @@ internal static partial class MenuSeedData
             WebTab = true,
             WebKeepAlive = true,
             HasMobile = true,
-            MobileIcon = "https://image.fastdotnet.com/menu/mobile/passwordMap.png",
+            MobileIcon = "https://image.fastdotnet.com/menu/mobile/passwordRecord.png",
             MobileRouter = "pages_dev/passwordRecord/page/index",
             Visible = true,
             Sort = menuSort,

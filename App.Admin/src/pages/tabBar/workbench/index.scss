@@ -1,0 +1,99 @@
+.workbench-header {
+	position: sticky;
+	// H5 避开页面导航栏，小程序原生导航栏不占页面视口。
+	top: var(--window-top, 0px);
+	z-index: 10;
+	padding: 24rpx 32rpx;
+	background: var(--wot-filled-oppo);
+	box-shadow: var(--fa-box-shadow-lighter);
+}
+
+.workspace {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 20rpx;
+	margin-top: 24rpx;
+}
+
+.workspace__name {
+	display: flex;
+	flex: 1;
+	align-items: center;
+	gap: 12rpx;
+	min-width: 0;
+	font-size: 28rpx;
+	font-weight: var(--wot-font-weight-semibold);
+}
+
+.workspace__logo {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	width: 48rpx;
+	height: 48rpx;
+	border-radius: 12rpx;
+	color: var(--wot-primary-6);
+	overflow: hidden;
+}
+
+.workspace__title {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.workspace__department {
+	flex-shrink: 0;
+	max-width: 40%;
+	font-size: 22rpx;
+	color: var(--wot-text-secondary);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.workbench-content {
+	display: flex;
+	flex-direction: column;
+	gap: 24rpx;
+	padding: var(--fa-page-padding);
+}
+
+.section-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 16rpx;
+	min-height: 44rpx;
+	margin-bottom: 30rpx;
+}
+
+.section-title {
+	display: flex;
+	align-items: center;
+	gap: 12rpx;
+	font-size: 30rpx;
+	font-weight: var(--wot-font-weight-semibold);
+}
+
+.section-marker {
+	flex-shrink: 0;
+	width: 8rpx;
+	height: 28rpx;
+	border-radius: 4rpx;
+}
+
+.section-count {
+	font-size: 22rpx;
+	color: var(--wot-text-auxiliary);
+}
+
+.menu-empty {
+	padding: 32rpx 8rpx;
+	text-align: center;
+	color: var(--wot-text-secondary);
+	font-size: 26rpx;
+}
