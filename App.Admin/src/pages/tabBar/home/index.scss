@@ -1,7 +1,7 @@
 .page {
 	display: flex;
 	flex-direction: column;
-	gap: 28rpx;
+	gap: var(--fa-page-section-gap);
 	padding: var(--fa-page-padding);
 }
 
@@ -18,7 +18,7 @@
 }
 
 .greeting__title {
-	font-size: 40rpx;
+	font-size: var(--wot-typography-title-size-main);
 	font-weight: var(--wot-font-weight-semibold);
 	line-height: 1.5;
 	overflow-wrap: anywhere;
@@ -27,7 +27,7 @@
 .greeting__description {
 	margin-top: 10rpx;
 	color: var(--wot-text-secondary);
-	font-size: 24rpx;
+	font-size: var(--wot-typography-label-size-main);
 }
 
 .wd-swiper {
@@ -39,11 +39,11 @@
 	justify-content: space-between;
 	align-items: center;
 	gap: 16rpx;
-	margin-bottom: 26rpx;
+	margin-bottom: var(--fa-page-section-gap);
 }
 
 .workspace__title {
-	font-size: 30rpx;
+	font-size: var(--wot-typography-body-size-large);
 	font-weight: var(--wot-font-weight-semibold);
 }
 
@@ -71,14 +71,14 @@
 }
 
 .workspace__name {
-	font-size: 30rpx;
+	font-size: var(--wot-typography-body-size-large);
 	font-weight: var(--wot-font-weight-semibold);
 	overflow-wrap: anywhere;
 }
 
 .workspace__description {
 	margin-top: 10rpx;
-	font-size: 24rpx;
+	font-size: var(--wot-typography-label-size-main);
 	color: var(--wot-text-secondary);
 	overflow-wrap: anywhere;
 }
@@ -102,13 +102,15 @@
 }
 
 .help__item {
+	min-height: 44px;
 	display: flex;
 	align-items: center;
 	gap: 18rpx;
 	padding: 32rpx 24rpx;
-	background: var(--wot-filled-oppo);
+	background: var(--wot-card-bg, var(--wot-filled-oppo));
+	border: 1px solid var(--wot-card-border-color, var(--wot-border-light));
 	border-radius: var(--wot-radius-extra-large);
-	font-size: 26rpx;
+	font-size: var(--wot-typography-body-size-main);
 }
 
 .help__item > text {
@@ -122,7 +124,7 @@
 .footer {
 	padding: 8rpx 0 32rpx;
 	text-align: center;
-	font-size: 22rpx;
+	font-size: var(--wot-typography-label-size-main);
 	color: var(--wot-text-auxiliary);
 	letter-spacing: 1rpx;
 }

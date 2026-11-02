@@ -1,3 +1,4 @@
+// 保留各组件的适配入口，按需调整布局和圆角；通用配色优先沿用 Wot 主题变量。
 @use "./components/wd-action-sheet.scss";
 @use "./components/wd-button.scss";
 @use "./components/wd-card.scss";
@@ -6,8 +7,6 @@
 @use "./components/wd-datetime-picker.scss";
 @use "./components/wd-dialog.scss";
 @use "./components/wd-drop-menu.scss";
-@use "./components/wd-grid.scss";
-@use "./components/wd-input.scss";
 @use "./components/wd-navbar.scss";
 @use "./components/wd-notice-bar.scss";
 @use "./components/wd-notify.scss";
@@ -16,7 +15,6 @@
 @use "./components/wd-radio.scss";
 @use "./components/wd-search.scss";
 @use "./components/wd-switch.scss";
-@use "./components/wd-table.scss";
 @use "./components/wd-tabs.scss";
 @use "./components/wd-tag.scss";
 @use "./components/wd-textarea.scss";

@@ -171,26 +171,15 @@ const dataSearchRangeList = computed<ElSelectorOutput<FaTableDataRange>[]>(() =>
 	},
 ]);
 
-const handleScanClick = throttle(async () => {
-	const result = await uni
-		.scanCode({
-			onlyFromCamera: true,
-			scanType: ["barCode", "qrCode", "datamatrix", "pdf417"],
-		})
-		.catch((error: unknown): undefined => {
-			if (
-				typeof error === "object" &&
-				error !== null &&
-				"errMsg" in error &&
-				typeof error.errMsg === "string" &&
-				error.errMsg.includes("cancel")
-			) {
-				return undefined;
-			}
-			throw error;
-		});
-	modelValue.value = result.result;
-	searchParam.value.searchValue = result.result;
+const handleScanClick = throttle(() => {
+	uni.scanCode({
+		onlyFromCamera: true,
+		scanType: ["barCode", "qrCode", "datamatrix", "pdf417"],
+		success: ({ result }) => {
+			modelValue.value = result;
+			searchParam.value.searchValue = result;
+		},
+	});
 });
 
 const handleInput = (detail: UniHelper.InputOnInputDetail) => {

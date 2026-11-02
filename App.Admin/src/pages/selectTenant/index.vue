@@ -1,10 +1,12 @@
 <template>
 	<view class="page">
-		<view class="page-heading">选择工作空间</view>
-		<view class="page-description">当前账号属于多个组织，请选择本次需要进入的工作空间。</view>
+		<view class="page-heading">
+			<view class="page-heading__title">{{ state.nickName ? `你好，${state.nickName}` : "欢迎回来" }}</view>
+			<view class="page-heading__description">选择一个工作空间，开始今天的工作。</view>
+		</view>
 		<scroll-view class="tenant-list" scroll-y>
 			<view class="tenant-list__content">
-				<view v-for="item in state.tenantList" :key="item.userKey" class="page-card tenant-card" @click="handleTenantLogin(item.userKey)">
+				<view v-for="item in state.tenantList" :key="item.userKey" class="fa-card tenant-card" @click="handleTenantLogin(item.userKey)">
 					<image class="tenant-card__image" :src="item.logoUrl" mode="aspectFill" />
 					<view class="tenant-card__content">
 						<view class="tenant-card__name">{{ item.tenantName }}</view>
@@ -37,7 +39,7 @@ definePage({
 	authForbidView: true,
 	pageScroll: false,
 	watermark: false,
-	style: { navigationBarTitleText: "选择租户" },
+	style: { navigationBarTitleText: "选择工作空间" },
 });
 
 const { proxy } = getCurrentInstance();
@@ -70,7 +72,6 @@ onLoad(() => {
 			state.nickName = data.nickName;
 			state.loginTicket = data.loginTicket;
 			state.tenantList = data.tenantList;
-			uni.setNavigationBarTitle({ title: `选择租户 - ${state.nickName}` });
 		});
 });
 </script>
@@ -82,11 +83,32 @@ onLoad(() => {
 	padding: var(--fa-page-padding);
 }
 
+.page-heading {
+	display: flex;
+	flex-direction: column;
+	gap: 12rpx;
+	padding: 16rpx 4rpx 0;
+}
+
+.page-heading__title {
+	font-size: var(--wot-typography-title-size-large);
+	font-weight: var(--wot-font-weight-semibold);
+	line-height: 1.4;
+	color: var(--wot-text-main);
+	overflow-wrap: anywhere;
+}
+
+.page-heading__description {
+	font-size: var(--wot-typography-body-size-main);
+	line-height: 1.6;
+	color: var(--wot-text-secondary);
+}
+
 .tenant-list {
 	flex: 1;
 	min-height: 0;
 	height: 0;
-	margin-top: 36rpx;
+	margin-top: 32rpx;
 }
 
 .tenant-list__content {

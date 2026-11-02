@@ -4,15 +4,15 @@
 
 .user-card {
 	display: flex;
-	gap: 28rpx;
+	gap: var(--fa-page-section-gap);
 	align-items: center;
-	padding: 36rpx 32rpx;
-	margin-bottom: 28rpx;
-	border: 1px solid var(--wot-border-light);
+	padding: var(--fa-page-card-padding);
+	margin-bottom: var(--fa-page-section-gap);
+	border: 1px solid var(--wot-card-border-color, var(--wot-border-light));
 	border-radius: var(--wot-radius-super-large);
 	color: var(--wot-text-main);
 	box-shadow: var(--fa-box-shadow-lighter);
-	background-color: var(--wot-filled-oppo);
+	background-color: var(--wot-card-bg, var(--wot-filled-oppo));
 }
 
 .user-card .fa-image {
@@ -46,12 +46,7 @@
 }
 
 :deep(.wd-cell-group) {
-	--wot-cell-padding: 28rpx 32rpx;
-	--wot-cell-value-font-size: 12px;
-	--wot-cell-value-color: var(--wot-text-auxiliary);
-	--wot-cell-arrow-size: 16px;
-	--wot-cell-arrow-color: var(--wot-icon-placeholder);
-	margin-bottom: 20rpx;
+	margin-bottom: var(--fa-page-section-gap);
 }
 
 :deep(.wd-cell__left) .wd-icon {

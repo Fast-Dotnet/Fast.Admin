@@ -1,7 +1,7 @@
 <template>
 	<view class="page">
-		<wd-text custom-class="pl20" text="主题样式" size="var(----wot-typography-label-size-main)" />
-		<wd-cell-group border>
+		<wd-text custom-class="pl20" text="主题样式" size="var(--wot-typography-label-size-main)" />
+		<wd-cell-group center border>
 			<wd-cell title="主题颜色" :value="state.themeColorLabel" is-link @click="state.themeColorVisible = true" />
 			<wd-picker v-model="state.themeColor" v-model:visible="state.themeColorVisible" :columns="predefineColorList" />
 			<wd-cell title="主题色导航栏" label="开启后导航栏颜色随主题色变换">

@@ -4,7 +4,7 @@
 			custom-class="pl20 pt20 mb20"
 			custom-style="display: block;"
 			text="本渠道为平台自有渠道，非官方监管渠道"
-			size="var(--wot-font-size-small)"
+			size="var(--wot-typography-body-size-small)"
 		/>
 
 		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>

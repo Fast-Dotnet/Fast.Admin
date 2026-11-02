@@ -103,6 +103,7 @@ const handleConfirm = () => {
 		if (userInfoStore.isSuperAdmin || userInfoStore.isAdmin) return;
 		await faFormRef.value.validateScrollToField();
 		await employeeApi.editSelfEmployee(state.formData);
+		await userInfoStore.refreshUserInfo();
 		ElMessage.success("保存成功！");
 	});
 };

@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { reactive } from "vue";
+import { computed, reactive } from "vue";
 import { addCssUnit, formatHexColor, mixHexColors, parseHexColor, pickHigherContrastColor, serializeStyle, withDefineType } from "@fast-china/utils";
 import { CommonUniApp } from "@/common";
 import { useToast } from "@/hooks";
@@ -40,41 +40,49 @@ export const useConfig = defineStore(
 			watermark: true,
 		});
 
+		const pageTheme = computed(() => {
+			const color = layout.themeColor || useApp().themeColor;
+			// 原生导航栏和下拉背景与 Wot 主题的组件表面色、页面底色保持一致。
+			let navbarBgColor = layout.isDark ? "#1f1f1f" : "#ffffff";
+			let navbarFrontColor = layout.isDark ? "#ffffff" : "#000000";
+			if (!layout.isDark && layout.autoThemeNavBar) {
+				navbarBgColor = color;
+				navbarFrontColor = pickHigherContrastColor(color) === "#ffffff" ? "#ffffff" : "#000000";
+			}
+			return { navbarBgColor, navbarFrontColor, pageBackgroundColor: layout.isDark ? "#141414" : "#f7f8fa" };
+		});
+
+		/** 为当前页面同步原生导航栏配色；启动时未创建页面则由布局 onShow 应用。 */
+		const applyPageTheme = () => {
+			if (!getCurrentPages().length) return;
+			const { navbarBgColor, navbarFrontColor } = pageTheme.value;
+			uni.setNavigationBarColor({ frontColor: navbarFrontColor, backgroundColor: navbarBgColor });
+
+			// #ifdef MP-WEIXIN
+			const { pageBackgroundColor } = pageTheme.value;
+			uni.setBackgroundColor({
+				backgroundColor: pageBackgroundColor,
+				backgroundColorTop: pageBackgroundColor,
+				backgroundColorBottom: pageBackgroundColor,
+			});
+			uni.setBackgroundTextStyle({ textStyle: layout.isDark ? "light" : "dark" });
+			// #endif
+			// #ifdef APP-PLUS
+			plus.navigator.setStatusBarStyle(navbarFrontColor === "#ffffff" ? "light" : "dark");
+			// #endif
+		};
+
 		/** 更新导航栏、平台外观与 Wot UI 主题变量；空值使用应用主题色。 */
 		const setTheme = (color?: string) => {
 			if (!color) {
 				color = useApp().themeColor;
 				useToast.success(`主题颜色已重置为 ${color}`);
 			}
-			let navbarBgColor = "#f8f8f8";
-			let navbarFrontColor = "#000000";
-			let pageBackgroundColor = "#f2f3f5";
-			if (layout.isDark) {
-				navbarBgColor = "#141414";
-				navbarFrontColor = "#ffffff";
-				pageBackgroundColor = "#0a0a0a";
-			} else if (layout.autoThemeNavBar) {
-				navbarBgColor = color;
-				navbarFrontColor = pickHigherContrastColor(color) === "#ffffff" ? "#ffffff" : "#000000";
-			}
 
-			// 延迟设置
-			setTimeout(() => {
-				uni.setNavigationBarColor({ frontColor: navbarFrontColor, backgroundColor: navbarBgColor });
+			layout.themeColor = color;
+			const { navbarBgColor, navbarFrontColor } = pageTheme.value;
 
-				// #ifdef MP-WEIXIN
-				uni.setBackgroundColor({
-					backgroundColor: pageBackgroundColor,
-					backgroundColorTop: pageBackgroundColor,
-					backgroundColorBottom: pageBackgroundColor,
-				});
-				uni.setBackgroundTextStyle({ textStyle: layout.isDark ? "light" : "dark" });
-				// #endif
-
-				// #ifdef APP-PLUS
-				plus.navigator.setStatusBarStyle(navbarFrontColor === "#ffffff" ? "light" : "dark");
-				// #endif
-			}, 1000);
+			applyPageTheme();
 
 			const appStore = useApp();
 			// 头部胶囊padding
@@ -113,6 +121,12 @@ export const useConfig = defineStore(
 				"--wot-tabbar-height": addCssUnit(layout.tabBarHeight),
 			};
 
+			// #ifdef H5
+			// H5 的 100vh 包含导航栏和原生 TabBar 占位，内容高度需扣除它们。
+			styles["--fa-window-height"] =
+				`calc(100vh - var(--window-top, 0px) - var(--window-bottom, 0px) - ${appStore.windowInfo.safeAreaInsets.bottom}px)`;
+			// #endif
+
 			const themeVars: ConfigProviderThemeVars = {
 				primary6: color,
 				feedbackAccent: formatHexColor({ ...parseHexColor(color), alpha: 0.08 }),
@@ -135,7 +149,6 @@ export const useConfig = defineStore(
 				styles["filter"] = "invert(80%)";
 			}
 
-			layout.themeColor = color;
 			layout.themeStyle = serializeStyle(styles);
 		};
 
@@ -209,6 +222,7 @@ export const useConfig = defineStore(
 		return {
 			layout,
 			setTheme,
+			applyPageTheme,
 			switchAutoThemMode,
 			switchDark,
 			switchGreyOrWeak,

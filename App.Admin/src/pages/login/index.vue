@@ -3,7 +3,7 @@
 		<view class="page__brand">
 			<view class="page__logo-wrap"><image class="page__logo" :src="appStore.logoUrl || defaultLogo" mode="aspectFit" /></view>
 			<view class="page__title">{{ appStore.appName }}</view>
-			<view class="page__subtitle"> 统一、安全、便捷的移动管理平台。随时掌握业务动态，高效处理日常工作，让组织协作与数据管理触手可及。 </view>
+			<view class="page__subtitle">统一、安全、便捷的移动管理平台。随时掌握业务动态，高效处理日常工作，让组织协作与数据管理触手可及。</view>
 		</view>
 
 		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" error-type="toast">

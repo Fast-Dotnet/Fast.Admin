@@ -237,7 +237,7 @@ export const useUserInfo = defineStore(
 		const getWeChatCode = async (): Promise<string> => {
 			// #ifdef MP-WEIXIN
 			try {
-				const { code } = await uni.login({});
+				const { code } = await uni.login();
 				return code;
 			} catch {
 				useToast.warning("授权失败，无法获取您的信息。请重新授权以继续使用我们的服务。");

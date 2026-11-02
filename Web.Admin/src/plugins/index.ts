@@ -17,8 +17,7 @@ export function loadPlugins(app: App): void {
 			ElNotification({
 				type: "error",
 				title: "系统错误",
-				// eslint-disable-next-line @typescript-eslint/no-base-to-string
-				message: err instanceof Error ? err.message : String(err),
+				message: err instanceof Error ? err.message : JSON.stringify(err),
 				duration: 3000,
 				position: "top-right",
 			});

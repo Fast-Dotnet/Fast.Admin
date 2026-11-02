@@ -1,5 +1,9 @@
-/* Fast 弹出层：增加内容留白 */
+/* Fast 弹出层：统一圆角，内容留白由各弹窗布局负责，避免与内部容器重复叠加 */
 .fa-popup {
-	padding-top: 20rpx;
-	padding-bottom: 40rpx;
+	--wot-popup-radius: var(--wot-radius-extra-large);
+}
+
+/* 卡片列表弹窗使用页面底色，包含底部安全区；确认、授权等普通弹窗沿用 Wot 默认背景。 */
+.fa-popup__card {
+	--wot-popup-bg: var(--wot-filled-bottom);
 }

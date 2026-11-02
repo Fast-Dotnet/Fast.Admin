@@ -698,6 +698,25 @@ public class EmployeeService : IDynamicApplication
         {
             await _user.RevokeEmployee(_user.TenantNo, employeeModel.EmployeeNo);
         }
+        else
+        {
+            // 编辑本人时同步当前登录会话，避免获取用户信息仍返回旧资料。
+            await _user.RefreshEmployee(new RefreshEmployeeDto
+            {
+                DeviceType = _user.DeviceType,
+                AppNo = _user.AppNo,
+                TenantNo = _user.TenantNo,
+                EmployeeNo = _user.EmployeeNo,
+                EmployeeName = employeeModel.EmployeeName,
+                DepartmentId = _user.DepartmentId,
+                DepartmentName = _user.DepartmentName,
+                RoleIdList = _user.RoleIdList,
+                RoleNameList = _user.RoleNameList,
+                RoleType = _user.RoleType,
+                DataScopeType = _user.DataScopeType,
+                DataScopeDepartmentIdList = _user.DataScopeDepartmentIdList
+            });
+        }
 
         // 操作日志
         await LogContext.OperateLog(new OperateLogDto
@@ -1070,13 +1089,15 @@ public class EmployeeService : IDynamicApplication
         var menuCodes = input.CommonMenuCodes.Distinct(StringComparer.Ordinal).ToList();
 
         ApplicationClientModel application = await ApplicationContext.GetApplication(GlobalContext.Origin);
+        TenantModel tenant = await TenantContext.GetTenant(_user.TenantNo);
         List<string> authorizedCodes = _user.MenuCodeList ?? [];
 
-        // 获取职员菜单权限
+        // 与登录菜单查询一致：管理员按租户版本访问菜单，普通职员还需校验授权编码
         List<string> availableCodes = await _centerRepository.Queryable<MenuModel>()
-            .Where(m => m.AppId == application.AppId && m.Status == CommonStatusEnum.Enable)
-            .Where(m => m.HasMobile && m.Visible && m.MenuType != MenuTypeEnum.Catalog)
-            .Where(m => authorizedCodes.Contains(m.MenuCode))
+            .Where(wh => wh.AppId == application.AppId && wh.Status == CommonStatusEnum.Enable)
+            .Where(wh => wh.HasMobile && wh.Visible && wh.MenuType != MenuTypeEnum.Catalog)
+            .Where(wh => tenant.Edition >= wh.Edition)
+            .WhereIF(!_user.IsSuperAdmin && !_user.IsAdmin, m => authorizedCodes.Contains(m.MenuCode))
             .Where(m => menuCodes.Contains(m.MenuCode))
             .Select(m => m.MenuCode)
             .ToListAsync();

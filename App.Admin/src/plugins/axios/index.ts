@@ -2,7 +2,8 @@ import { createFastAxios } from "@fast-china/axios";
 import { AESDecrypt, AESEncrypt, Local, installationIdentity, logger, withDefineType } from "@fast-china/utils";
 import { isAxiosError } from "axios";
 import { useLoading, useMessageBox, useToast } from "@/hooks";
-import { useApp, useUserInfo } from "@/stores";
+import { appid } from "@/manifest.json";
+import { useUserInfo } from "@/stores";
 import type { ApiResponse } from "@fast-china/axios";
 import type { AxiosHeaders, AxiosRequestConfig, AxiosResponse } from "axios";
 import type { AppEnvironmentEnum } from "@/api/enums/AppEnvironmentEnum";
@@ -40,8 +41,6 @@ const handleReloadLogin = (response?: AxiosResponse) => {
 
 /** 创建请求实例并注册加载提示、缓存、加解密及认证拦截器。 */
 export function loadFastAxios(): void {
-	const appStore = useApp();
-
 	let baseUrl = `${import.meta.env.VITE_API_REQUEST_URL.replace(/\/$/, "")}${import.meta.env.VITE_API_BASE_URL}`;
 	if (baseUrl?.endsWith("/")) {
 		baseUrl = baseUrl.slice(0, -1);
@@ -51,15 +50,15 @@ export function loadFastAxios(): void {
 	let deviceType: keyof typeof AppEnvironmentEnum;
 	switch (process.env.UNI_PLATFORM) {
 		case "mp-weixin":
-			origin = appStore.appId;
+			origin = uni.getAccountInfoSync().miniProgram.appId;
 			deviceType = "WeChatMiniProgram";
 			break;
 		case "app":
-			origin = appStore.appId;
-			deviceType = uni.getSystemInfoSync().platform === "ios" ? "IOS" : "Android";
+			origin = appid;
+			deviceType = plus.os.name === "iOS" ? "IOS" : "Android";
 			break;
 		case "app-harmony":
-			origin = appStore.appId;
+			origin = appid;
 			deviceType = "HarmonyOS";
 			break;
 		case "h5":
@@ -74,7 +73,6 @@ export function loadFastAxios(): void {
 		headers: {
 			"Fast-Origin": origin,
 			"Fast-Device-Type": deviceType,
-			"Fast-Device-Id": installationIdentity.deviceId,
 		},
 		requestCipher: true,
 	});
@@ -139,6 +137,8 @@ export function loadFastAxios(): void {
 	});
 
 	fastAxios.interceptors.request.use((config) => {
+		// 移动端因为加载顺序的问题，只能在这里携带设备Id
+		config.headers["Fast-Device-Id"] = installationIdentity.deviceId;
 		const { token, refreshToken } = useUserInfo().resolveToken();
 		if (token) config.headers["Authorization"] = token;
 		// 刷新 Token

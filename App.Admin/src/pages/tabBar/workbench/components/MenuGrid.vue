@@ -15,7 +15,7 @@
 				/>
 				<FaIcon v-else :name="menu.icon || 'menu'" size="44rpx" />
 				<view v-if="props.editable" class="menu-item__check" :class="{ 'is-selected': props.selectedMenuCodes.includes(menu.menuCode) }">
-					<wd-icon :name="props.selectedMenuCodes.includes(menu.menuCode) ? 'check' : 'add'" size="20rpx" />
+					<wd-icon :name="props.selectedMenuCodes.includes(menu.menuCode) ? 'check' : 'plus'" size="12px" />
 				</view>
 			</view>
 			<text class="menu-item__title">{{ menu.menuName }}</text>
@@ -77,6 +77,7 @@ const emit = defineEmits<{
 	color: var(--wot-text-main);
 	line-height: 1.5;
 	border-radius: 12rpx;
+	overflow: visible;
 }
 
 .menu-item::after {
@@ -97,23 +98,23 @@ const emit = defineEmits<{
 
 .menu-item__title {
 	max-width: 100%;
-	font-size: 24rpx;
+	font-size: var(--wot-typography-label-size-main);
 	overflow-wrap: anywhere;
 }
 
 .menu-item__check {
 	position: absolute;
-	top: -8rpx;
-	right: -8rpx;
+	top: -4px;
+	right: -4px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 32rpx;
-	height: 32rpx;
+	width: 18px;
+	height: 18px;
 	border-radius: 50%;
 	color: var(--wot-text-secondary);
 	background: var(--wot-filled-strong);
-	border: 2rpx solid var(--wot-filled-oppo);
+	border: 1px solid var(--wot-card-bg, var(--wot-filled-oppo));
 }
 
 .menu-item__check.is-selected {

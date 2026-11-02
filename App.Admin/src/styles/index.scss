@@ -7,10 +7,8 @@
 :root,
 page {
 	width: 100%;
-	min-height: 100vh;
 	margin: 0;
 	padding: 0;
-	overflow-x: hidden;
 	font-size: var(--wot-typography-body-size-main);
 	font-weight: var(--wot-font-weight-regular);
 	font-family:
@@ -28,6 +26,22 @@ page {
 	-webkit-tap-highlight-color: transparent;
 	color: var(--wot-text-main);
 	background-color: var(--wot-filled-bottom);
+}
+
+// 根节点负责水平溢出，H5 的 page 不能额外形成滚动容器，否则会破坏吸顶。
+:root {
+	min-height: 100vh;
+	overflow-x: hidden;
+}
+
+page {
+	min-height: 100vh;
+	/* #ifdef H5 */
+	min-height: calc(100vh - var(--window-top, 0px) - var(--window-bottom, 0px));
+	/* #endif */
+	/* #ifndef H5 */
+	overflow-x: hidden;
+	/* #endif */
 }
 
 view,
@@ -52,36 +66,6 @@ textarea {
 	width: 100%;
 	color: var(--wot-text-main);
 	background-color: var(--wot-filled-bottom);
-}
-
-/* 页面卡片容器，用于承载独立的内容区块 */
-.page-card {
-	padding: var(--fa-page-card-padding);
-	background-color: var(--wot-filled-oppo);
-	border: var(--wot-stroke-light) solid var(--wot-divider-light);
-	border-radius: var(--wot-radius-extra-large);
-	box-shadow: var(--fa-box-shadow-lighter);
-}
-
-/* 表格卡片样式 */
-.fa-page__card {
-	display: flex;
-	flex-direction: column;
-	gap: 10rpx;
-	font-size: var(--wot-typography-body-size-main);
-	padding-bottom: 20rpx;
-	.page__row {
-		display: flex;
-		align-items: baseline;
-		.title {
-			flex: 0.33;
-			color: var(--wot-text-auxiliary);
-		}
-		.content {
-			flex: 1;
-			color: var(--wot-text-secondary);
-		}
-	}
 }
 
 /* 固定卡片 */

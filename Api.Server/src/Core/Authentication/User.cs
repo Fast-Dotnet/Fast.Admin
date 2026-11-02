@@ -168,12 +168,12 @@ public sealed class User : AuthUserInfo, IUser, IScopedDependency
             // 设置授权用户信息
             SetAuthUser(authUserInfo, true);
 
-            // 单点登录时撤销同一应用、租户和用户在其他设备上的授权缓存
+            // 单点登录只撤销同一应用、租户、设备类型和用户的其他会话
             bool singleLogin = bool.Parse(await ConfigContext.GetConfig(ConfigConst.SingleLogin));
             if (singleLogin)
             {
-                string delCacheKey = CacheConst.GetCacheKey(CacheConst.AuthUser, authUserInfo.AppNo, authUserInfo.TenantNo, "*",
-                    authUserInfo.EmployeeNo, "*");
+                string delCacheKey = CacheConst.GetCacheKey(CacheConst.AuthUser, authUserInfo.AppNo, authUserInfo.TenantNo,
+                    authUserInfo.DeviceType.ToString(), authUserInfo.EmployeeNo, "*");
                 await _authCache.DelByPatternAsync(delCacheKey);
             }
 
@@ -259,12 +259,12 @@ public sealed class User : AuthUserInfo, IUser, IScopedDependency
             // 设置授权用户信息
             SetAuthUser(authUserInfo, true);
 
-            // 单点登录时撤销同一应用、租户和用户在其他设备上的授权缓存
+            // 单点登录只撤销同一应用、租户、设备类型和用户的其他会话
             bool singleLogin = bool.Parse(await ConfigContext.GetConfig(ConfigConst.SingleLogin));
             if (singleLogin)
             {
-                string delCacheKey = CacheConst.GetCacheKey(CacheConst.AuthUser, authUserInfo.AppNo, authUserInfo.TenantNo, "*",
-                    authUserInfo.EmployeeNo, "*");
+                string delCacheKey = CacheConst.GetCacheKey(CacheConst.AuthUser, authUserInfo.AppNo, authUserInfo.TenantNo,
+                    authUserInfo.DeviceType.ToString(), authUserInfo.EmployeeNo, "*");
                 await _authCache.DelByPatternAsync(delCacheKey);
             }
 

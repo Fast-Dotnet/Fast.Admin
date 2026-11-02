@@ -128,6 +128,7 @@ import { organizationApi } from "@/api/services/Admin/organization";
 import { positionApi } from "@/api/services/Admin/position";
 import { roleApi } from "@/api/services/Admin/role";
 import { fileApi } from "@/api/services/File";
+import { useUserInfo } from "@/stores";
 import type { CheckboxValueType, FormRules } from "element-plus";
 import type { AddEmployeeInput } from "@/api/services/Admin/employee/models/AddEmployeeInput";
 import type { EditEmployeeInput } from "@/api/services/Admin/employee/models/EditEmployeeInput";
@@ -138,6 +139,8 @@ defineOptions({
 });
 
 const emit = defineEmits(["ok"]);
+
+const userInfoStore = useUserInfo();
 
 const faDialogRef = useTemplateRef<FaDialogInstance>("faDialogRef");
 const faFormRef = useTemplateRef<FaFormInstance>("faFormRef");
@@ -233,6 +236,9 @@ const handleConfirm = () => {
 					...state.formData,
 					orgList: buildOrgList(),
 				});
+				if (state.formData.employeeId === userInfoStore.employeeId) {
+					await userInfoStore.refreshUserInfo();
+				}
 				ElMessage.success("保存成功！");
 				break;
 		}

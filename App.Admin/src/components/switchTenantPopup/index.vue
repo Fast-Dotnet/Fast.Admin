@@ -1,5 +1,5 @@
 <template>
-	<FaPopup ref="popupRef" height="70%" position="bottom" :z-index="2001">
+	<FaPopup ref="popupRef" custom-class="fa-popup__card" height="70%" position="bottom" :z-index="2001">
 		<view class="workspace-popup">
 			<view class="workspace-popup__header">
 				<text class="workspace-popup__title">切换工作空间</text>
@@ -7,7 +7,7 @@
 			</view>
 			<scroll-view class="tenant-list" scroll-y>
 				<view class="tenant-list__content">
-					<view v-for="item in tenantList" :key="item.userKey" class="page-card tenant-card" @click="handleTenantLogin(item)">
+					<view v-for="item in tenantList" :key="item.userKey" class="fa-card tenant-card" @click="handleTenantLogin(item)">
 						<image class="tenant-card__image" :src="item.logoUrl" mode="aspectFill" />
 						<view class="tenant-card__content">
 							<view class="tenant-card__name">{{ item.tenantName }}</view>
@@ -98,6 +98,8 @@ defineExpose({
 	align-items: center;
 	justify-content: space-between;
 	padding: 16rpx 24rpx;
+	background: var(--wot-card-bg, var(--wot-filled-oppo));
+	border-bottom: 1px solid var(--wot-card-border-color, var(--wot-border-light));
 }
 
 .workspace-popup__title {
@@ -115,7 +117,7 @@ defineExpose({
 	display: flex;
 	flex-direction: column;
 	gap: 24rpx;
-	padding: 8rpx 24rpx 24rpx;
+	padding: var(--fa-page-section-gap) var(--fa-page-padding);
 }
 
 .tenant-card {

@@ -10,7 +10,7 @@
 
 		<wd-swiper :list="state.swiperList" autoplay v-model:current="state.swiperCurrent" :indicator="{ type: 'dots-bar' }" />
 
-		<view class="page-card">
+		<view class="fa-card">
 			<view class="workspace__header">
 				<text class="workspace__title">当前工作空间</text>
 				<wd-button type="primary" variant="text" size="small" @click="router.pushTab(CommonRoute.My)">管理</wd-button>

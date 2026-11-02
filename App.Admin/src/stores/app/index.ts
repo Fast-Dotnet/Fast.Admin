@@ -5,7 +5,6 @@ import { Local, getOrCreateInstallationId, installationIdentity, logger } from "
 import { AppEnvironmentEnum } from "@/api/enums/AppEnvironmentEnum";
 import { EditionEnum } from "@/api/enums/EditionEnum";
 import { EnvironmentTypeEnum } from "@/api/enums/EnvironmentTypeEnum";
-import { appApi } from "@/api/services/Center/app";
 import { dictionaryApi } from "@/api/services/Center/dictionary";
 import type { LaunchOutput } from "@/api/services/Center/app/models/LaunchOutput";
 
@@ -100,44 +99,21 @@ export const useApp = defineStore(
 			// 判断是否存在 Launch 数据
 			if (!state.hasLaunch) return;
 			try {
-				dictionary.value.clear();
 				// 处理数据字典
 				const _dictionary = await dictionaryApi.queryDictionary();
-				Object.entries(_dictionary).forEach(([key, value]) => {
-					dictionary.value.set(key, value);
-				});
-			} catch {
-				logger.error("App", "字典加载失败");
+				// 整体替换以通知 shallowRef 的订阅组件，加载失败时保留原字典。
+				dictionary.value = new Map(Object.entries(_dictionary));
+			} catch (error) {
+				logger.error("App", "字典加载失败", error);
 			}
 		};
 
-		/** 启动配置就绪后更新请求超时和加密选项。 */
+		/** 使用缓存或默认配置更新请求超时和加密选项。 */
 		const setFastAxios = () => {
-			// 判断是否存在 Launch 数据
-			if (!state.hasLaunch) return;
 			useFastAxios().setOptions({
 				timeout: state.requestTimeout,
 				requestCipher: state.requestEncipher,
 			});
-		};
-
-		/** 加载应用启动数据，并更新导航标题、请求配置和字典；启动请求异常继续向外传播。 */
-		const launch = async () => {
-			try {
-				const apiRes = await appApi.launch();
-				logger.log("Launch", apiRes);
-				Object.assign(state, apiRes);
-				state.hasLaunch = true;
-			} finally {
-				state.loginComponent ||= "ClassicLogin";
-
-				uni.setNavigationBarTitle({ title: state.appName });
-
-				setFastAxios();
-
-				// 处理数据字典
-				await setDictionary();
-			}
 		};
 
 		/**
@@ -178,7 +154,6 @@ export const useApp = defineStore(
 			setAppName,
 			setDictionary,
 			setFastAxios,
-			launch,
 			getDictionary,
 			clearAppCache,
 		};

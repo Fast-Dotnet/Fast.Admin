@@ -37,7 +37,7 @@ if (/^\d{1,3}(?:\.\d{1,3}){3}$/.test(host) || host === "localhost") {
 <style lang="scss" scoped>
 .fa-footer {
 	height: var(--fa-footer-height, 40px);
-	font-size: var(--wot-typography-label-size-large);
+	font-size: var(--wot-typography-label-size-main);
 	color: var(--wot-text-auxiliary);
 	letter-spacing: 0.5px;
 	display: flex;

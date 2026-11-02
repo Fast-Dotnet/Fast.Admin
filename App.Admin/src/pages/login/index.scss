@@ -31,14 +31,14 @@
 }
 
 .page__title {
-	font-size: 42rpx;
+	font-size: var(--wot-typography-title-size-large);
 	font-weight: var(--wot-font-weight-semibold);
 }
 
 .page__subtitle {
 	width: 100%;
 	margin-top: 14rpx;
-	font-size: 26rpx;
+	font-size: var(--wot-typography-body-size-small);
 	line-height: 1.7;
 	color: var(--wot-text-auxiliary);
 }
@@ -65,8 +65,8 @@
 	flex: none;
 	align-items: center;
 	justify-content: center;
-	width: 88rpx;
-	height: 88rpx;
+	width: 44px;
+	height: 44px;
 	margin: 0;
 	padding: 0;
 	border: 0;
@@ -81,14 +81,14 @@
 }
 
 .page__tenant-name {
-	font-size: 30rpx;
+	font-size: var(--wot-typography-body-size-large);
 	font-weight: var(--wot-font-weight-semibold);
 	color: var(--wot-text-main);
 	overflow-wrap: anywhere;
 }
 
 .page__employee-name {
-	font-size: 24rpx;
+	font-size: var(--wot-typography-label-size-main);
 	color: var(--wot-text-auxiliary);
 	overflow-wrap: anywhere;
 }
@@ -100,8 +100,8 @@
 
 :deep(.wd-form-item .wd-input) {
 	--wot-input-bg: transparent;
-	--wot-input-inner-height: 52rpx;
-	--wot-input-padding: 24rpx 8rpx;
+	--wot-input-inner-height: 24px;
+	--wot-input-padding: 12px 8rpx;
 	border-bottom: var(--wot-stroke-main) solid var(--wot-divider-main);
 }
 
@@ -111,7 +111,7 @@
 	align-items: center;
 	justify-content: flex-end;
 	margin-top: 20rpx;
-	font-size: 26rpx;
+	font-size: var(--wot-typography-body-size-small);
 	color: var(--wot-text-auxiliary);
 }
 
@@ -120,7 +120,7 @@
 	gap: 12rpx;
 	align-items: center;
 	margin-top: 32rpx;
-	font-size: 24rpx;
+	font-size: var(--wot-typography-label-size-main);
 	color: var(--wot-text-auxiliary);
 }
 
@@ -154,8 +154,8 @@
 }
 
 :deep(.wd-button.page__wechat) {
-	width: 88rpx;
-	height: 88rpx;
+	width: 44px;
+	height: 44px;
 	padding: 0;
 	border: 0;
 	border-radius: 50%;
@@ -163,7 +163,7 @@
 
 .page__wechat-icon {
 	display: block;
-	width: 88rpx;
-	height: 88rpx;
+	width: 44px;
+	height: 44px;
 	border-radius: 50%;
 }

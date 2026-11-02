@@ -257,7 +257,7 @@ public class ChatHub : Hub<IChatClient>
             await _repository.Updateable(tenantOnlineUserModel).ExecuteCommandAsync();
         }
 
-        // 单点登录
+        // 单点登录只下线同一设备类型的其他连接
         bool singleLogin = bool.Parse(await ConfigContext.GetConfig(ConfigConst.SingleLogin));
 
         if (singleLogin)
@@ -265,6 +265,7 @@ public class ChatHub : Hub<IChatClient>
             List<string> connectionIdList = await _repository.Queryable<TenantOnlineUserModel>()
                 .ClearFilter<IBaseTEntity>()
                 .Where(wh => wh.AppNo == authUserInfo.AppNo)
+                .Where(wh => wh.DeviceType == authUserInfo.DeviceType)
                 .Where(wh => wh.EmployeeId == authUserInfo.EmployeeId)
                 .Where(wh => wh.TenantId == authUserInfo.TenantId)
                 .Where(wh => wh.ConnectionId != Context.ConnectionId)

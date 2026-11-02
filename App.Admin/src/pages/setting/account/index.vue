@@ -24,14 +24,13 @@
 
 		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>
 			<wd-cell-group title="基础信息" border>
-				<wd-form-item title="头像" prop="avatar" is-link>
+				<wd-form-item title="头像" prop="avatar" value-align="right" center is-link>
+					<image class="image__avatar" :src="state.formData.avatar" />
 					<!-- #ifdef MP-WEIXIN -->
-					<button class="btn__avatar" :plain="true" openType="chooseAvatar" @chooseavatar="handleAvatar">
-						<image class="image__avatar" :src="state.formData.avatar" />
-					</button>
+					<button class="btn__avatar" plain hover-class="none" open-type="chooseAvatar" @chooseavatar="handleAvatar" />
 					<!-- #endif -->
 					<!-- #ifndef MP-WEIXIN -->
-					<image class="image__avatar" :src="state.formData.avatar" @click="handleAvatar" />
+					<button class="btn__avatar" plain hover-class="none" @click="handleAvatar" />
 					<!-- #endif -->
 				</wd-form-item>
 
@@ -214,11 +213,13 @@ const handleAvatar = throttle(async (event?: UniHelper.ButtonOnChooseavatarEvent
 	//#endif
 
 	// #ifndef MP-WEIXIN
-	const result = await uni.chooseImage({
+	uni.chooseImage({
 		count: 1,
 		sizeType: ["compressed"],
+		success: async (res) => {
+			await handleAvatarUpload(res.tempFilePaths[0]);
+		},
 	});
-	await handleAvatarUpload(result.tempFilePaths[0]);
 	//#endif
 });
 
@@ -277,20 +278,26 @@ onLoad(() => {
 }
 
 .btn__avatar {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
 	width: 100%;
-	display: inline-flex;
-	justify-content: right;
+	height: 100%;
+	margin: 0;
 	padding: 0;
 	background: transparent;
 	border: 0;
+	border-radius: 0;
+	&::after {
+		border: 0;
+	}
 }
 
 .image__avatar {
-	display: inline-flex;
-	justify-content: right;
 	width: 120rpx;
 	height: 120rpx;
 	border-radius: 50%;
+	vertical-align: middle;
 }
 
 .btn__confirm {

@@ -38,7 +38,7 @@ internal static class ConfigSeedData
                     ConfigCode = ConfigConst.SingleLogin,
                     ConfigName = "单点登录",
                     ConfigValue = "True",
-                    Remark = "True：打开（多次登录只会保留最后一次登录有效）；False：关闭；",
+                    Remark = "True：打开（同一应用、租户、用户及设备类型仅保留最后一次登录，不同设备类型可同时在线）；False：关闭；",
                     CreatedTime = dateTime
                 },
                 new()

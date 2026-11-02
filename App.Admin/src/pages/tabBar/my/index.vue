@@ -12,7 +12,7 @@
 			</view>
 		</view>
 
-		<wd-cell-group border>
+		<wd-cell-group center border>
 			<wd-cell
 				v-if="!userInfoStore.isSuperAdmin && !userInfoStore.isAdmin"
 				title="个人资料"
@@ -36,18 +36,18 @@
 			</wd-cell>
 		</wd-cell-group>
 
-		<wd-cell-group border>
+		<wd-cell-group center border>
 			<wd-cell title="系统版本" clickable :value="state.checkingUpdate ? '正在检查更新…' : appVersion" @click="handleCheckUpdate" />
 			<wd-cell title="系统服务商" value="FastDotnet" />
 			<wd-cell title="消息通知" clickable is-link @click="useToast.info('敬请期待')" />
 			<wd-cell title="通用设置" clickable is-link to="/pages/setting/general/index" />
 		</wd-cell-group>
 
-		<wd-cell-group border>
+		<wd-cell-group center border>
 			<wd-cell title="意见反馈" clickable is-link :to="CommonRoute.ComplaintSubmit" />
 			<wd-cell title="服务协议" clickable is-link :to="CommonRoute.ServiceAgreement" />
 			<wd-cell title="隐私协议" clickable is-link :to="CommonRoute.PrivacyAgreement" />
-			<wd-cell title="清除缓存" :value="`${currentSize}/${limitSize}`" clickable @click="handleClearCache" />
+			<wd-cell title="清除缓存" :value="storageSize" clickable @click="handleClearCache" />
 		</wd-cell-group>
 
 		<wd-button v-if="userInfoStore.hasUserInfo" custom-class="btn__exit-login" type="danger" block icon="Export" @click="handleLogout">
@@ -63,6 +63,7 @@ import { onPageScroll, onPullDownRefresh, onShareAppMessage, onShareTimeline, on
 import { computed, reactive, ref } from "vue";
 import { Local, logger, throttle } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
+import { Decimal } from "decimal.js";
 import { EnvironmentTypeEnum } from "@/api/enums/EnvironmentTypeEnum";
 import { CommonRoute } from "@/common";
 import { useMessageBox, useToast, useUpdate } from "@/hooks";
@@ -137,27 +138,25 @@ const handleCheckUpdate = throttle(async () => {
 	}
 });
 
-const currentSize = computed(() => {
-	if (storageInfo.value.currentSize >= 1024) {
-		const mb = storageInfo.value.currentSize / 1024;
-		return `${Number.isInteger(mb) ? mb : mb.toFixed(2)}MB`;
-	} else {
-		return `${storageInfo.value.currentSize}KB`;
+const formatStorageSize = (size: number) => {
+	const kb = new Decimal(size);
+	if (kb.gte(1024)) {
+		return `${kb.div(1024).toDecimalPlaces(2).toFixed()}MB`;
 	}
-});
+	return `${kb.toDecimalPlaces(2).toFixed()}KB`;
+};
 
-const limitSize = computed(() => {
-	if (storageInfo.value.limitSize >= 1024) {
-		const mb = storageInfo.value.limitSize / 1024;
-		return `${Number.isInteger(mb) ? mb : mb.toFixed(2)}MB`;
-	} else {
-		return `${storageInfo.value.limitSize}KB`;
-	}
+const storageSize = computed(() => {
+	const { currentSize = 0, limitSize } = storageInfo.value;
+	const current = formatStorageSize(currentSize);
+	// H5 使用 Number.MAX_VALUE 占位，未提供实际容量上限时只展示已用容量。
+	if (!limitSize || limitSize === Number.MAX_VALUE) return current;
+	return `${current}/${formatStorageSize(limitSize)}`;
 });
 
 /** 清除缓存 */
-const handleClearCache = throttle(async () => {
-	await useMessageBox.confirm("清除缓存后需要重新登录，确定要清除？").then(async () => {
+const handleClearCache = throttle(() => {
+	useMessageBox.confirm("清除缓存后需要重新登录，确定要清除？").then(async () => {
 		appStore.clearAppCache();
 		await userInfoStore.logout();
 		useToast.success("退出登录成功");
@@ -165,8 +164,8 @@ const handleClearCache = throttle(async () => {
 });
 
 /** 退出登录 */
-const handleLogout = throttle(async () => {
-	await useMessageBox.confirm("确定要退出登录？").then(async () => {
+const handleLogout = throttle(() => {
+	useMessageBox.confirm("确定要退出登录？").then(async () => {
 		await userInfoStore.logout();
 		useToast.success("退出登录成功");
 	});

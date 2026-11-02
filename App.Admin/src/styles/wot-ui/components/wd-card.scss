@@ -1,13 +1,16 @@
-/* Fast 风格：缩小卡片外边距，适配移动端页面的紧凑布局 */
-.wd-card {
-	--wot-card-margin-horizontal: 20rpx;
-	--wot-card-margin-bottom: 20rpx;
+/* 独立卡片容器，供 view 使用 */
+.fa-card {
+	padding: var(--fa-page-card-padding);
+	background-color: var(--wot-card-bg, var(--wot-filled-oppo));
+	border: 1px solid var(--wot-card-border-color, var(--wot-border-light));
+	border-radius: var(--wot-radius-extra-large);
+	box-shadow: var(--fa-box-shadow-lighter);
 }
 
-/* Fast 表格页卡片：明确标题、内容、操作区之间的分隔和留白 */
+/* Wot 页面卡片，通过 wd-card 的 custom-class 使用 */
 .fa-card__page {
-	--wot-card-content-padding: 20rpx 0;
-	--wot-card-footer-padding: 15rpx 0;
+	--wot-card-content-padding: var(--fa-page-padding) 0;
+	--wot-card-footer-padding: var(--fa-page-padding) 0;
 	--wot-card-footer-border-color: var(--wot-border-main);
 
 	.wd-card__title {
@@ -15,7 +18,28 @@
 	}
 	.wd-card__footer {
 		.wd-button + .wd-button {
-			margin-left: 20rpx;
+			margin-left: var(--fa-page-section-gap);
+		}
+	}
+}
+
+/* 卡片内的字段列表，放在卡片内容区使用 */
+.fa-card__fields {
+	display: flex;
+	flex-direction: column;
+	gap: 10rpx;
+	font-size: var(--wot-typography-body-size-main);
+	padding-bottom: 20rpx;
+	.page__row {
+		display: flex;
+		align-items: baseline;
+		.title {
+			flex: 0.33;
+			color: var(--wot-text-auxiliary);
+		}
+		.content {
+			flex: 1;
+			color: var(--wot-text-secondary);
 		}
 	}
 }

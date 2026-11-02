@@ -2,8 +2,8 @@
 	<view class="page">
 		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>
 			<wd-cell-group title="基础信息" border>
-				<wd-cell title="工号" :placeholder="state.formData.employeeNo" />
-				<wd-cell title="入职日期" :placeholder="state.formData.entryDate?.slice(0, 10) || '无'" />
+				<wd-cell title="工号" :value="state.formData.employeeNo" />
+				<wd-cell title="入职日期" :value="state.formData.entryDate?.slice(0, 10)" placeholder="无" />
 
 				<wd-form-item title="姓名" prop="employeeName">
 					<wd-input v-model="state.formData.employeeName" clearable :maxlength="20" placeholder="请输入姓名" />
@@ -20,7 +20,7 @@
 					<wd-input v-model="state.formData.email" clearable inputmode="email" :maxlength="50" placeholder="请输入联系邮箱" />
 				</wd-form-item>
 
-				<wd-form-item title="证件照" prop="idPhoto" is-link>
+				<wd-form-item title="证件照" prop="idPhoto" value-align="right" center clickable is-link>
 					<image class="image__idPhoto" :src="state.formData.idPhoto" @click="handleIdPhoto" />
 				</wd-form-item>
 			</wd-cell-group>
@@ -32,11 +32,11 @@
 				:title="org.isPrimary ? '主要任职' : '兼任信息'"
 				border
 			>
-				<wd-cell title="机构" :placeholder="org.orgName" />
-				<wd-cell title="部门" :placeholder="org.departmentName" />
-				<wd-cell title="职位" :placeholder="org.positionName" />
-				<wd-cell title="职级" :placeholder="org.jobLevelName" />
-				<wd-cell title="负责人" :placeholder="org.isPrincipal ? '是' : '否'" />
+				<wd-cell title="机构" :value="org.orgName" />
+				<wd-cell title="部门" :value="org.departmentName" />
+				<wd-cell title="职位" :value="org.positionName" />
+				<wd-cell title="职级" :value="org.jobLevelName" />
+				<wd-cell title="负责人" :value="org.isPrincipal ? '是' : '否'" />
 			</wd-cell-group>
 
 			<wd-button custom-class="btn__confirm" type="primary" @click="handleConfirm">保存</wd-button>
@@ -103,14 +103,16 @@ const sex = computed({
 const sexLabel = computed(() => genderEnum.find((item) => item.value === state.formData.sex)?.label);
 
 /** 处理证件照 */
-const handleIdPhoto = throttle(async () => {
-	const result = await uni.chooseImage({
+const handleIdPhoto = throttle(() => {
+	uni.chooseImage({
 		count: 1,
 		sizeType: ["compressed"],
+		success: async (res) => {
+			const idPhoto = await fileApi.uploadAvatar(res.tempFilePaths[0]);
+			if (!idPhoto) return;
+			state.formData.idPhoto = idPhoto;
+		},
 	});
-	const idPhoto = await fileApi.uploadAvatar(result.tempFilePaths[0]);
-	if (!idPhoto) return;
-	state.formData.idPhoto = idPhoto;
 });
 
 /** 提交 */
@@ -141,11 +143,10 @@ onLoad(() => {
 }
 
 .image__idPhoto {
-	display: inline-flex;
-	justify-content: right;
 	width: 120rpx;
 	height: 120rpx;
 	border-radius: 50%;
+	vertical-align: middle;
 }
 
 .btn__confirm {

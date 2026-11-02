@@ -1,5 +1,0 @@
-/* Fast 风格：弱化表格边框，并使用内容填充色区分斑马纹行 */
-.wd-table {
-	--wot-table-border-color: var(--wot-divider-light);
-	--wot-table-stripe-bg: var(--wot-filled-content);
-}

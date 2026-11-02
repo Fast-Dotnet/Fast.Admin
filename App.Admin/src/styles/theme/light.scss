@@ -1,74 +1,17 @@
 page,
 .fa-layout.fa-layout__light.wot-theme-light,
-.fa-layout.fa-layout__light.wot-theme-light .wd-root-portal {
+.wd-root-portal.wot-theme-light {
 	--fa-local-icon-filter: brightness(0);
 
-	/* 成功色 */
-	--wot-success-main: #67c23a;
-	--wot-success-hover: #76c84e;
-	--wot-success-clicked: #76c84e;
-	--wot-success-disabled: #b3e19d;
-	--wot-success-particular: #d1edc4;
-	--wot-success-surface: #f0f9eb;
+	/* 卡片表面与页面底色分层，普通容器和 Wot Card 共用组件变量。 */
+	--wot-card-bg: var(--wot-filled-oppo);
+	--wot-card-border-color: var(--wot-border-main);
 
-	/* 警告色 */
-	--wot-warning-main: #e6a23c;
-	--wot-warning-hover: #e9ab50;
-	--wot-warning-clicked: #e9ab50;
-	--wot-warning-disabled: #f3d19e;
-	--wot-warning-particular: #f8e3c5;
-	--wot-warning-surface: #fdf6ec;
-
-	/* 危险色 */
-	--wot-danger-main: #f56c6c;
-	--wot-danger-hover: #f67b7b;
-	--wot-danger-clicked: #f67b7b;
-	--wot-danger-disabled: #fab6b6;
-	--wot-danger-particular: #fcd3d3;
-	--wot-danger-surface: #fef0f0;
-
-	/* 浅色中性色 */
-	--wot-text-main: #303133;
-	--wot-text-secondary: #606266;
-	--wot-text-auxiliary: #909399;
-	--wot-text-placeholder: #a8abb2;
-	--wot-text-disabled: #c0c4cc;
-	--wot-text-white: #ffffff;
-	--wot-icon-main: #303133;
-	--wot-icon-secondary: #606266;
-	--wot-icon-auxiliary: #909399;
-	--wot-icon-placeholder: #a8abb2;
-	--wot-icon-disabled: #c0c4cc;
-	--wot-icon-white: #ffffff;
-	--wot-border-extra-strong: #cdd0d6;
-	--wot-border-strong: #d4d7de;
-	--wot-border-main: #dcdfe6;
-	--wot-border-light: #e4e7ed;
-	--wot-border-white: #ffffff;
-	--wot-border-zero: transparent;
-	--wot-filled-extra-strong: #e6e8eb;
-	--wot-filled-strong: #ebedf0;
-	--wot-filled-content: #f5f7fa;
-	--wot-filled-bottom: #f2f3f5;
-	--wot-filled-oppo: #ffffff;
-	--wot-filled-zero: transparent;
-	--wot-divider-main: #ebeef5;
-	--wot-divider-light: #f2f6fc;
-	--wot-divider-strong: #e4e7ed;
-	--wot-divider-white: #ffffff;
-	--wot-feedback-hover: rgba(0, 0, 0, 0.04);
-	--wot-feedback-active: rgba(0, 0, 0, 0.08);
-	--wot-opacfilled-tooltip-toast-cover: rgba(0, 0, 0, 0.8);
-	--wot-opacfilled-main-cover: rgba(0, 0, 0, 0.7);
-	--wot-opacfilled-light-cover: rgba(0, 0, 0, 0.5);
-	--wot-picker-view-mask-start-color: rgba(255, 255, 255, 0.9);
-	--wot-picker-view-mask-end-color: rgba(255, 255, 255, 0.3);
-
-	/* 页面遮罩和阴影 */
+	/* 应用遮罩和阴影 */
 	--fa-mask-color: rgba(255, 255, 255, 0.9);
 	--fa-mask-color-extra-light: rgba(255, 255, 255, 0.3);
-	--fa-box-shadow: 0rpx 24rpx 64rpx 8rpx rgba(0, 0, 0, 0.04), 0rpx 16rpx 40rpx rgba(0, 0, 0, 0.08);
-	--fa-box-shadow-light: 0rpx 0rpx 24rpx rgba(0, 0, 0, 0.12);
-	--fa-box-shadow-lighter: 0rpx 0rpx 12rpx rgba(0, 0, 0, 0.12);
-	--fa-tabbar-box-shadow: 0 -8rpx 28rpx rgba(0, 0, 0, 0.04);
+	--fa-box-shadow: 0 12rpx 32rpx rgba(0, 0, 0, 0.08);
+	--fa-box-shadow-light: 0 0 20rpx rgba(0, 0, 0, 0.1);
+	--fa-box-shadow-lighter: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+	--fa-tabbar-box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
 }

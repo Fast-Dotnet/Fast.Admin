@@ -1,9 +1,12 @@
 .page {
+	// 启动页自行容纳底部安全区，让渐变背景铺满，并抵消外层布局已有的安全区占位。
+	--main-height: calc(var(--fa-window-height, 100vh) + var(--fa-area-inset-bottom, 0px));
+	margin-bottom: calc(0px - var(--fa-area-inset-bottom, 0px));
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: space-around;
-	padding: calc(var(--fa-status-bar-height, 0px) + 180rpx) 0 0;
+	padding: calc(var(--fa-status-bar-height, 0px) + 180rpx) 0 var(--fa-area-inset-bottom, 0px);
 	background:
 		radial-gradient(circle at 15% 8%, var(--wot-feedback-accent), transparent 38%),
 		radial-gradient(circle at 92% 42%, var(--wot-feedback-accent), transparent 34%),

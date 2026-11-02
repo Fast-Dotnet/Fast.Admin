@@ -26,9 +26,7 @@
 				查看隐私政策
 			</wd-button>
 			<!-- #endif -->
-			<wd-button v-if="state.retryType" custom-class="page__retry" block type="primary" @click="handleRetry">
-				{{ state.retryType === "update" ? "重新检测" : "重新连接" }}
-			</wd-button>
+			<wd-button v-if="state.retryType" custom-class="page__retry" block type="primary" @click="handleRetry">重新检测</wd-button>
 		</view>
 
 		<FaFooter />
@@ -40,7 +38,8 @@
 					欢迎使用 {{ appStore.appName }}！我们重视您的隐私与个人信息保护，请先阅读
 					<text class="privacy-popup__link" @click="handleOpenAgreement(CommonRoute.ServiceAgreement)">《服务协议》</text>
 					和
-					<text class="privacy-popup__link" @click="handleOpenAgreement(CommonRoute.PrivacyAgreement)">《隐私政策》</text>。
+					<text class="privacy-popup__link" @click="handleOpenAgreement(CommonRoute.PrivacyAgreement)">《隐私政策》</text>
+					。
 				</view>
 				<view class="privacy-popup__text">
 					为提供账号登录、业务办理和运行安全保障，我们会按政策说明处理必要的账号、设备与日志信息。相机、相册、定位等权限仅在使用相应功能时申请，拒绝不会影响其他功能。
@@ -57,7 +56,7 @@
 
 <script setup lang="ts">
 import { onBackPress, onLoad, onUnload } from "@dcloudio/uni-app";
-import { reactive } from "vue";
+import { reactive, watch } from "vue";
 import { logger, throttle, withDefineType } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { LoginStatusEnum } from "@/api/enums/LoginStatusEnum";
@@ -65,9 +64,8 @@ import { loginApi } from "@/api/services/Auth/login";
 import { CommonRoute } from "@/common";
 import { useToast, useUpdate } from "@/hooks";
 import { usePrivacy } from "@/hooks/use-privacy";
-import { loadAppRuntime } from "@/plugins";
 import defaultLogo from "@/static/logo.png";
-import { useApp, useConfig, useUserInfo } from "@/stores";
+import { useApp, useUserInfo } from "@/stores";
 
 definePage({
 	name: "Launcher",
@@ -80,7 +78,6 @@ definePage({
 });
 
 const appStore = useApp();
-const configStore = useConfig();
 const userInfoStore = useUserInfo();
 const router = useRouter();
 
@@ -90,7 +87,7 @@ const state = reactive({
 	/** 状态文字 */
 	statusText: "正在初始化应用",
 	/** 重试类型 */
-	retryType: withDefineType<"launch" | "update">(null),
+	retryType: withDefineType<"update">(null),
 	/** 是否已获得隐私同意 */
 	hasPrivacyConsent: usePrivacy.hasAgreed(),
 	/** 隐私协议弹窗 */
@@ -98,6 +95,7 @@ const state = reactive({
 });
 
 let pageUnloaded = false;
+let launchTimer: ReturnType<typeof setTimeout> | undefined;
 
 const openStartPage = async () => {
 	state.statusText = "正在验证登录状态";
@@ -164,29 +162,8 @@ const checkUpdate = async (manual = false) => {
 	await openStartPage();
 };
 
-const appLaunch = async () => {
-	state.statusText = "正在连接服务";
-	try {
-		await appStore.launch();
-	} catch (error: unknown) {
-		if (pageUnloaded) return;
-		logger.error("Launcher", "应用初始化失败", error);
-		if (!appStore.hasLaunch) {
-			state.loading = false;
-			state.statusText = appStore.network.networkType === "none" ? "网络连接不可用，请检查网络设置" : "服务暂时无法连接，请稍后重试";
-			state.retryType = "launch";
-			return;
-		}
-		// 缓存只用于恢复配置，仍须通过本次运行的更新检查。
-		logger.warn("Launcher", "使用缓存配置继续检查更新");
-	}
-	if (pageUnloaded) return;
-	configStore.setTheme(appStore.themeColor);
-	await checkUpdate();
-};
-
-// 启动流程只限制并发，隐私确认或失败重试后无需额外等待冷却窗口。
-const start = throttle(async (manual = false) => {
+// 启动流程只限制并发，隐私确认或更新重试后无需额外等待冷却窗口。
+const start = throttle(async (manual: boolean = false) => {
 	if (pageUnloaded) return;
 	if (!state.hasPrivacyConsent) {
 		state.loading = false;
@@ -194,21 +171,35 @@ const start = throttle(async (manual = false) => {
 		state.privacyVisible = true;
 		return;
 	}
+
 	state.loading = true;
 	state.retryType = null;
-	try {
-		loadAppRuntime();
-		if (manual) {
-			await checkUpdate(true);
-		} else {
-			await appLaunch();
+
+	// #ifndef H5
+	if (!appStore.hasLaunch) {
+		state.statusText = "正在连接服务";
+		if (launchTimer === undefined) {
+			launchTimer = setTimeout(() => {
+				launchTimer = undefined;
+				if (pageUnloaded || appStore.hasLaunch) return;
+				state.loading = false;
+				state.statusText = "应用配置加载超时，请检查网络后重新打开应用";
+			}, 10_000);
 		}
+		return;
+	}
+	// #endif
+
+	clearTimeout(launchTimer);
+	launchTimer = undefined;
+
+	try {
+		await checkUpdate(manual);
 	} catch (error) {
 		if (pageUnloaded) return;
 		logger.error("Launcher", "启动流程失败", error);
 		state.loading = false;
-		state.statusText = "启动失败，请稍后重试";
-		state.retryType = "launch";
+		state.statusText = "启动失败，请稍后重新打开应用";
 	}
 }, 0);
 
@@ -237,8 +228,18 @@ const handleAgreePrivacy = () => {
 };
 
 const handleRetry = () => {
-	if (state.retryType) start(state.retryType === "update");
+	if (state.retryType) start(true);
 };
+
+// #ifndef H5
+watch(
+	() => appStore.hasLaunch,
+	(newValue) => {
+		if (newValue) start();
+	},
+	{ immediate: true, flush: "sync" }
+);
+// #endif
 
 onLoad(() => {
 	start();
@@ -246,6 +247,8 @@ onLoad(() => {
 
 onUnload(() => {
 	pageUnloaded = true;
+	clearTimeout(launchTimer);
+	launchTimer = undefined;
 });
 
 // 返回键不能绕过隐私确认或强制更新。

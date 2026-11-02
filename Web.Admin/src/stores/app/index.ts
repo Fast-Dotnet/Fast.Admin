@@ -1,12 +1,11 @@
 import { defineStore } from "pinia";
 import { reactive, shallowRef, toRefs } from "vue";
 import { ElMessageBox } from "element-plus";
-import { useFastAxios } from "@fast-china/axios";
+import { axiosUtil, useFastAxios } from "@fast-china/axios";
 import { logger } from "@fast-china/utils";
 import { AppEnvironmentEnum } from "@/api/enums/AppEnvironmentEnum";
 import { EditionEnum } from "@/api/enums/EditionEnum";
 import { EnvironmentTypeEnum } from "@/api/enums/EnvironmentTypeEnum";
-import { appApi } from "@/api/services/Center/app";
 import { dictionaryApi } from "@/api/services/Center/dictionary";
 import { useConfig } from "../config";
 import type { FaTableColumnCtx, FaTableEnumColumnCtx } from "fast-element-plus";
@@ -83,7 +82,12 @@ export const useApp = defineStore(
 			}
 
 			try {
-				const apiRes = await appApi.launch();
+				const apiRes = await axiosUtil.request<LaunchOutput>({
+					url: "/launch",
+					method: "post",
+					requestType: "auth",
+					timeout: 10_000,
+				});
 				logger.debug("Launch", apiRes);
 				Object.assign(state, apiRes);
 				state.hasLaunch = true;

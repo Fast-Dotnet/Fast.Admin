@@ -1,11 +1,17 @@
 .workbench-header {
 	position: sticky;
-	// H5 避开页面导航栏，小程序原生导航栏不占页面视口。
-	top: var(--window-top, 0px);
+	top: 0;
 	z-index: 10;
-	padding: 24rpx 32rpx;
+	padding: var(--fa-page-padding);
+	// 自定义导航由页面容纳状态栏和顶部安全区。
+	padding-top: calc(max(var(--fa-status-bar-height, 0px), var(--fa-area-inset-top, 0px)) + var(--fa-page-padding));
 	background: var(--wot-filled-oppo);
 	box-shadow: var(--fa-box-shadow-lighter);
+}
+
+.workbench-header :deep(.fa-search-input) {
+	padding: 0;
+	margin-right: var(--workbench-capsule-space, 0px);
 }
 
 .workspace {
@@ -13,7 +19,19 @@
 	justify-content: space-between;
 	align-items: center;
 	gap: 20rpx;
-	margin-top: 24rpx;
+	width: 100%;
+	min-height: 44px;
+	margin: var(--fa-page-section-gap) 0 0;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: var(--wot-text-main);
+	text-align: left;
+	line-height: inherit;
+
+	&::after {
+		border: 0;
+	}
 }
 
 .workspace__name {
@@ -22,7 +40,7 @@
 	align-items: center;
 	gap: 12rpx;
 	min-width: 0;
-	font-size: 28rpx;
+	font-size: var(--wot-typography-body-size-main);
 	font-weight: var(--wot-font-weight-semibold);
 }
 
@@ -48,7 +66,7 @@
 .workspace__department {
 	flex-shrink: 0;
 	max-width: 40%;
-	font-size: 22rpx;
+	font-size: var(--wot-typography-label-size-main);
 	color: var(--wot-text-secondary);
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -58,8 +76,12 @@
 .workbench-content {
 	display: flex;
 	flex-direction: column;
-	gap: 24rpx;
+	gap: var(--fa-page-section-gap);
 	padding: var(--fa-page-padding);
+}
+
+.menu-section {
+	padding-top: 8rpx;
 }
 
 .section-header {
@@ -67,15 +89,57 @@
 	justify-content: space-between;
 	align-items: center;
 	gap: 16rpx;
-	min-height: 44rpx;
-	margin-bottom: 30rpx;
+	min-height: 44px;
+	margin-bottom: 12rpx;
+}
+
+.section-header--toggle {
+	width: 100%;
+	margin-top: 0;
+	margin-left: 0;
+	margin-right: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	color: inherit;
+	text-align: left;
+	line-height: inherit;
+
+	&::after {
+		border: 0;
+	}
+}
+
+.menu-section.is-collapsed {
+	padding-bottom: 8rpx;
+	.section-header {
+		margin-bottom: 0;
+	}
+}
+
+.section-icon {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	width: 16px;
+	height: 20px;
+}
+
+.section-actions {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	gap: 12rpx;
+	color: var(--wot-text-auxiliary);
 }
 
 .section-title {
 	display: flex;
 	align-items: center;
 	gap: 12rpx;
-	font-size: 30rpx;
+	font-size: var(--wot-typography-body-size-large);
 	font-weight: var(--wot-font-weight-semibold);
 }
 
@@ -87,13 +151,13 @@
 }
 
 .section-count {
-	font-size: 22rpx;
+	font-size: var(--wot-typography-label-size-main);
 	color: var(--wot-text-auxiliary);
 }
 
 .menu-empty {
-	padding: 32rpx 8rpx;
+	padding: var(--fa-page-padding) 8rpx;
 	text-align: center;
 	color: var(--wot-text-secondary);
-	font-size: 26rpx;
+	font-size: var(--wot-typography-body-size-main);
 }

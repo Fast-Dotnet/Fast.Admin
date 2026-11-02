@@ -25,6 +25,7 @@ import { ElMessage } from "element-plus";
 import { withDefineType } from "@fast-china/utils";
 import { accountApi } from "@/api/services/Center/account";
 import { fileApi } from "@/api/services/File";
+import { useUserInfo } from "@/stores";
 import type { FormRules } from "element-plus";
 import type { FaDialogInstance, FaFormInstance } from "fast-element-plus";
 import type { EditAccountInput } from "@/api/services/Center/account/models/EditAccountInput";
@@ -32,6 +33,8 @@ import type { EditAccountInput } from "@/api/services/Center/account/models/Edit
 defineOptions({
 	name: "AccountEdit",
 });
+
+const userInfoStore = useUserInfo();
 
 const faDialogRef = useTemplateRef<FaDialogInstance>("faDialogRef");
 const faFormRef = useTemplateRef<FaFormInstance>("faFormRef");
@@ -49,6 +52,7 @@ const handleConfirm = () => {
 	faDialogRef.value.close(async () => {
 		await faFormRef.value.validateScrollToField();
 		await accountApi.editAccount(state.formData);
+		await userInfoStore.refreshUserInfo();
 		ElMessage.success("保存成功！");
 	});
 };

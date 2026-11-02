@@ -80,7 +80,7 @@
 
 <script setup lang="ts">
 import { onHide, onLoad, onShow } from "@dcloudio/uni-app";
-import { type WatchStopHandle, computed, nextTick, onBeforeMount, reactive, ref, watch } from "vue";
+import { computed, nextTick, onBeforeMount, onMounted, reactive, ref, watch } from "vue";
 import { logger } from "@fast-china/utils";
 import { useRoute, useRouter } from "@wot-ui/router";
 import { useDialog } from "@wot-ui/ui/components/wd-dialog";
@@ -92,6 +92,7 @@ import { CommonRoute } from "@/common";
 import { useMessageBox, wdHookState } from "@/hooks";
 import defaultLogo from "@/static/logo.png";
 import { useApp, useConfig, useUserInfo } from "@/stores";
+import type { WatchStopHandle } from "vue";
 import type { FaPopupInstance } from "@/components";
 
 defineOptions({
@@ -144,7 +145,7 @@ const mainStyle = computed(() => {
 	const style: Record<string, string> = {};
 	let height = "var(--fa-window-height, 100vh)";
 	if (showFooter.value) height += " - var(--fa-footer-height, 40px)";
-	if (state.isTabBar) height += " - var(--wot-tabbar-height, 55px)";
+	if (state.isTabBar) height += " - var(--wot-tabbar-height, 55px) - max(calc(12px - var(--fa-area-inset-bottom, 0px)), 0px)";
 	style["--main-height"] = `calc(${height})`;
 	if (state.backgroundColor) {
 		style["background-color"] = state.backgroundColor;
@@ -240,7 +241,10 @@ onLoad(() => {
 		state.rendered = true;
 	});
 });
-onShow(handleWatch);
+onShow(() => {
+	handleWatch();
+	configStore.applyPageTheme();
+});
 onHide(() => {
 	// 隐藏页面停止消费，避免多个页面布局同时响应同一提示请求。
 	wdNotifyWatch && wdNotifyWatch();
@@ -255,6 +259,14 @@ onHide(() => {
 	authMobileWatch = undefined;
 	// #endif
 });
+
+onMounted(() => {
+	const { isTabBar } = useRoute();
+	if (isTabBar) {
+		uni.hideTabBar({ animation: false });
+	}
+});
+
 onBeforeMount(() => {
 	const { pageScroll, footer, watermark, isTabBar, backgroundColor } = useRoute();
 	state.pageScroll = pageScroll ?? true;

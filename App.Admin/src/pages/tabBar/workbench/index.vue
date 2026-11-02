@@ -1,8 +1,8 @@
 <template>
 	<view class="page">
-		<view class="workbench-header">
+		<view class="workbench-header" :style="headerStyle">
 			<FaSearchInput v-model="state.searchValue" :filter="false" placeholder="搜索应用名称" />
-			<view class="workspace" @click="switchTenantPopupRef?.open()">
+			<button class="workspace" @click="switchTenantPopupRef?.open()">
 				<view class="workspace__name">
 					<view class="workspace__logo">
 						<FaImage
@@ -12,20 +12,23 @@
 							original
 							:hide-image="false"
 							:enable-preview="false"
+							@click="switchTenantPopupRef?.open()"
 						/>
 					</view>
 					<text class="workspace__title">{{ userInfoStore.tenantName }}</text>
 				</view>
 				<text class="workspace__department">{{ userInfoStore.departmentName || "当前工作空间" }}</text>
 				<wd-icon name="arrow-down" size="24rpx" color="var(--wot-text-secondary)" />
-			</view>
+			</button>
 		</view>
 
 		<view class="workbench-content">
-			<view v-if="!state.searchValue.trim()" class="page-card menu-section">
+			<view v-if="!state.searchValue.trim()" class="fa-card menu-section">
 				<view class="section-header">
 					<view class="section-title">
-						<wd-icon name="star" size="32rpx" color="var(--wot-primary-6)" />
+						<view class="section-icon">
+							<wd-icon name="star" size="16px" color="var(--wot-primary-6)" />
+						</view>
 						常用应用
 					</view>
 					<wd-button type="primary" variant="text" size="small" @click="commonMenuPopupRef?.open(commonMenuList)">编辑</wd-button>
@@ -36,15 +39,27 @@
 				<view v-else class="menu-empty" @click="commonMenuPopupRef?.open(commonMenuList)">点击编辑，添加你的常用应用</view>
 			</view>
 
-			<view v-for="group in filteredMenuList" :key="group.menuCode" class="page-card menu-section">
-				<view class="section-header">
+			<view
+				v-for="menu in filteredMenuList"
+				:key="menu.menuCode"
+				class="fa-card menu-section"
+				:class="{ 'is-collapsed': state.collapsedMenuCodes.includes(menu.menuCode) }"
+			>
+				<button class="section-header section-header--toggle" @click="handleToggleGroup(menu.menuCode)">
 					<view class="section-title">
-						<view class="section-marker" :style="{ backgroundColor: getMarkerColor(group) }" />
-						<text>{{ group.menuTitle || group.menuName || group.menuCode }}</text>
+						<view class="section-icon">
+							<view class="section-marker" :style="{ backgroundColor: getMarkerColor(menu) }" />
+						</view>
+						<text>{{ menu.menuName }}</text>
 					</view>
-					<text class="section-count">{{ group.children.length }} 个应用</text>
+					<view class="section-actions">
+						<text class="section-count">{{ menu.children.length }} 个应用</text>
+						<wd-icon :name="state.collapsedMenuCodes.includes(menu.menuCode) ? 'arrow-down' : 'arrow-up'" size="14px" />
+					</view>
+				</button>
+				<view v-show="!state.collapsedMenuCodes.includes(menu.menuCode)">
+					<MenuGrid :menus="menu.children" @select="handleMenuClick" />
 				</view>
-				<MenuGrid :menus="group.children" @select="handleMenuClick" />
 			</view>
 			<wd-empty v-if="!filteredMenuList.length" :tip="state.searchValue.trim() ? '没有找到相关应用' : '暂无可访问的应用'" />
 		</view>
@@ -55,7 +70,7 @@
 </template>
 
 <script setup lang="ts">
-import { onPullDownRefresh, onShareAppMessage, onShareTimeline, onShow } from "@dcloudio/uni-app";
+import { onLoad, onPullDownRefresh, onShareAppMessage, onShareTimeline } from "@dcloudio/uni-app";
 import { computed, reactive, ref } from "vue";
 import { Local, withDefineType } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
@@ -73,6 +88,7 @@ definePage({
 	layout: "layout",
 	isTabBar: true,
 	style: {
+		navigationStyle: "custom",
 		navigationBarTitleText: "工作台",
 		enablePullDownRefresh: true,
 	},
@@ -89,6 +105,23 @@ const commonMenuPopupRef = ref<InstanceType<typeof CommonMenuPopup>>();
 const state = reactive({
 	searchValue: "",
 	commonMenuCodes: withDefineType<string[]>([]),
+	collapsedMenuCodes: withDefineType<string[]>([]),
+});
+
+const headerStyle = computed(() => {
+	const style: Record<string, string> = {};
+	// #ifdef MP-WEIXIN
+	const { menuButton, windowInfo } = appStore;
+	if (menuButton?.width > 0) {
+		// 搜索框固定高 40px，与胶囊垂直居中，并预留右侧胶囊空间。
+		style["padding-top"] = `${Math.max(menuButton.top + (menuButton.height - 40) / 2, windowInfo.statusBarHeight)}px`;
+		style["--workbench-capsule-space"] = `${windowInfo.windowWidth - menuButton.left}px`;
+	} else {
+		// 胶囊尺寸不可用时，将搜索框放到系统导航区域下方。
+		style["padding-top"] = "calc(var(--fa-status-bar-height, 0px) + var(--wot-navbar-height, 44px))";
+	}
+	// #endif
+	return style;
 });
 
 const menuList = computed(() =>
@@ -112,33 +145,40 @@ const filteredMenuList = computed(() => {
 		.filter((item) => item.children.length);
 });
 
+// 常见菜单分组对应的颜色错开色系，避免相邻标题连续出现近似颜色。
 const markerColors = [
-	"#3b82f6",
-	"#22c55e",
-	"#f59e0b",
-	"#ef4444",
-	"#8b5cf6",
-	"#06b6d4",
-	"#ec4899",
 	"#14b8a6",
-	"#f97316",
-	"#6366f1",
-	"#84cc16",
-	"#d946ef",
-	"#0ea5e9",
 	"#f43f5e",
-	"#10b981",
+	"#3b82f6",
+	"#84cc16",
+	"#f97316",
 	"#a855f7",
+	"#22c55e",
+	"#64748b",
+	"#d946ef",
+	"#ef4444",
+	"#0ea5e9",
+	"#8b5cf6",
+	"#b45309",
+	"#10b981",
 	"#eab308",
+	"#ec4899",
+	"#6366f1",
 	"#0891b2",
-	"#db2777",
-	"#7c3aed",
+	"#f59e0b",
+	"#06b6d4",
 ];
 
 const getMarkerColor = (menu: AuthMenuInfoDto) => {
 	let colorIndex = 0;
 	for (let index = 0; index < menu.menuCode.length; index++) colorIndex += menu.menuCode.charCodeAt(index);
 	return markerColors[colorIndex % markerColors.length];
+};
+
+const handleToggleGroup = (menuCode: string) => {
+	state.collapsedMenuCodes = state.collapsedMenuCodes.includes(menuCode)
+		? state.collapsedMenuCodes.filter((code) => code !== menuCode)
+		: [...state.collapsedMenuCodes, menuCode];
 };
 
 const handleMenuClick = (menu: AuthMenuInfoDto) => {
@@ -160,7 +200,7 @@ const loadPage = async () => {
 	state.commonMenuCodes = await employeeApi.queryCommonMenus();
 };
 
-onShow(() => {
+onLoad(() => {
 	loadPage();
 });
 

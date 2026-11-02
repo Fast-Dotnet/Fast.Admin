@@ -255,13 +255,14 @@ public interface IUser
     /// 为管理端用户创建独立会话，并更新当前授权上下文。
     /// </summary>
     /// <param name="authUserInfo">登录所需的账号、租户、职员与设备信息；方法会写入新会话 ID</param>
-    /// <remarks>启用单点登录时，撤销同应用、租户和职员的其他设备会话。</remarks>
+    /// <remarks>启用单点登录时，撤销同应用、租户、设备类型和职员的其他登录会话。</remarks>
     Task Login(AuthUserInfo authUserInfo);
 
     /// <summary>
     /// 为客户端用户创建会话，并使用 client:用户ID 作为跨端主体标识。
     /// </summary>
     /// <param name="authUserInfo">客户端用户、租户与设备信息；方法会更新职员编号字段和会话 ID</param>
+    /// <remarks>启用单点登录时，撤销同应用、租户、设备类型和客户端用户的其他登录会话。</remarks>
     Task ClientLogin(AuthUserInfo authUserInfo);
 
     /// <summary>
