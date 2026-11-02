@@ -44,9 +44,6 @@ onLaunch((options) => {
 
 			appStore.hasLaunch = true;
 		})
-		.catch((error: unknown) => {
-			logger.warn("App", "启动配置加载失败", error);
-		})
 		.finally(async () => {
 			if (!appStore.hasLaunch) {
 				// #ifdef H5
@@ -72,6 +69,9 @@ onLaunch((options) => {
 				// #endif
 				return;
 			}
+		})
+		.catch((error: unknown) => {
+			logger.warn("App", "启动配置加载失败", error);
 		});
 
 	watch(
