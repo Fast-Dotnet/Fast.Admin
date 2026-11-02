@@ -74,6 +74,8 @@ export const useConfig = defineStore(
 
 		/** 更新导航栏、平台外观与 Wot UI 主题变量；空值使用应用主题色。 */
 		const setTheme = (color?: string) => {
+			if (layout.themeColor.toLowerCase() === color.toLowerCase()) return;
+
 			if (!color) {
 				color = useApp().themeColor;
 				useToast.success(`主题颜色已重置为 ${color}`);

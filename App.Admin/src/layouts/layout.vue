@@ -263,7 +263,9 @@ onHide(() => {
 onMounted(() => {
 	const { isTabBar } = useRoute();
 	if (isTabBar) {
+		// #ifndef MP-WEIXIN
 		uni.hideTabBar({ animation: false });
+		// #endif
 	}
 });
 
