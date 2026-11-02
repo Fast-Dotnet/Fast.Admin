@@ -24,6 +24,7 @@ onLaunch((options) => {
 	// #endif
 
 	loadFastAxios();
+	appStore.setFastAxios();
 
 	axiosUtil
 		.request<LaunchOutput>({
@@ -36,14 +37,17 @@ onLaunch((options) => {
 		})
 		.then((apiRes) => {
 			Object.assign(appStore, apiRes);
+			appStore.setFastAxios();
+
+			// 同意隐私后才有完整的窗口信息，才能更新主题布局。
+			if (usePrivacy.hasAgreed()) configStore.setTheme(apiRes.themeColor);
+
 			appStore.hasLaunch = true;
 		})
 		.catch((error: unknown) => {
 			logger.warn("App", "启动配置加载失败", error);
 		})
 		.finally(async () => {
-			appStore.setFastAxios();
-
 			if (!appStore.hasLaunch) {
 				// #ifdef H5
 				uni.showModal({
