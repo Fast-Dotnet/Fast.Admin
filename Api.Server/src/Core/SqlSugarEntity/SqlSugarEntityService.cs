@@ -107,7 +107,7 @@ public class SqlSugarEntityService : ISqlSugarEntityService, ISingletonDependenc
                         :
                         string.IsNullOrWhiteSpace(dSl.IntranetIp) ? databaseModel.IntranetIp : dSl.IntranetIp,
                     Port = dSl.Port ?? databaseModel.Port,
-                    DbName = databaseModel.DbName,
+                    DbName = string.IsNullOrWhiteSpace(dSl.DbName) ? databaseModel.DbName : dSl.DbName,
                     DbUser = string.IsNullOrWhiteSpace(dSl.DbUser) ? databaseModel.DbUser : dSl.DbUser,
                     DbPwd = string.IsNullOrWhiteSpace(dSl.DbPwd) ? databaseModel.DbPwd : dSl.DbPwd,
                     HitRate = dSl.HitRate
