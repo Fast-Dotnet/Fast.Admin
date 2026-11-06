@@ -14,7 +14,12 @@ export function loadPlugins(app: App): void {
 		console.error(err);
 		uni.showModal({
 			title: "系统错误",
-			content: err instanceof Error ? err.message : JSON.stringify(err),
+			content:
+				err instanceof Error
+					? err.message
+					: typeof err === "object" && err !== null && "errMsg" in err && typeof err.errMsg === "string"
+						? err.errMsg
+						: JSON.stringify(err),
 			showCancel: false,
 		});
 	};

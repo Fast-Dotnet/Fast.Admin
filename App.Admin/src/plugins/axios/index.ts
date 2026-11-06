@@ -1,5 +1,5 @@
 import { createFastAxios } from "@fast-china/axios";
-import { AESDecrypt, AESEncrypt, Local, installationIdentity, logger, withDefineType } from "@fast-china/utils";
+import { AESDecrypt, AESEncrypt, Local, installationIdentity, logger } from "@fast-china/utils";
 import { isAxiosError } from "axios";
 import { useLoading, useMessageBox, useToast } from "@/hooks";
 import { appid } from "@/manifest.json";
@@ -7,14 +7,6 @@ import { useUserInfo } from "@/stores";
 import type { ApiResponse } from "@fast-china/axios";
 import type { AxiosHeaders, AxiosRequestConfig, AxiosResponse } from "axios";
 import type { AppEnvironmentEnum } from "@/api/enums/AppEnvironmentEnum";
-
-// 并发请求共享的加载提示状态
-const loadingInstance = {
-	// 加载文案
-	texts: withDefineType<string[]>([]),
-	// 总数
-	count: 0,
-};
 
 // 防止并发的 401 响应重复弹出登录失效提示。
 let loginCallBack = false;
@@ -77,21 +69,8 @@ export function loadFastAxios(): void {
 		requestCipher: true,
 	});
 
-	fastAxios.loading.show.use((text) => {
-		loadingInstance.count++;
-		loadingInstance.texts.push(text);
-		useLoading.show(text ?? "加载中...");
-	});
-	fastAxios.loading.close.use(() => {
-		loadingInstance.count = Math.max(0, loadingInstance.count - 1);
-		loadingInstance.texts.pop();
-		if (loadingInstance.count > 0) {
-			// 获取下一个加载文案
-			useLoading.show(loadingInstance.texts[loadingInstance.texts.length - 1]);
-		} else {
-			useLoading.hide();
-		}
-	});
+	fastAxios.loading.show.use((text) => useLoading.show(text ?? "加载中..."));
+	fastAxios.loading.close.use(() => useLoading.hide());
 
 	fastAxios.message.success.use((message) => message && useToast.success(message));
 	fastAxios.message.warning.use((message) => message && useToast.warning(message));
