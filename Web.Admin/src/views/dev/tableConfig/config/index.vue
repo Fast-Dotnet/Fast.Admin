@@ -109,10 +109,9 @@
 <script lang="ts" setup>
 import { reactive, useTemplateRef, watch } from "vue";
 import { ArrowLeftBold, Close, Plus, Select, StarFilled } from "@element-plus/icons-vue";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 import { withDefineType } from "@fast-china/utils";
 import { tableApi } from "@/api/services/Center/table";
-import { ElMessageBox } from "@/plugins/element-plus";
 import AdvancedConfigForm from "./components/advancedConfig.vue";
 import type { FaTableInstance } from "fast-element-plus";
 import type { WatchHandle } from "vue";

@@ -265,12 +265,11 @@
 <script lang="ts" setup>
 import { onActivated, onDeactivated, onMounted, onUnmounted, reactive, useTemplateRef } from "vue";
 import { Plus } from "@element-plus/icons-vue";
-import { ElMessage, dayjs } from "element-plus";
+import { ElMessage, ElMessageBox, dayjs } from "element-plus";
 import { logger, withDefineType } from "@fast-china/utils";
 import { SchedulerJobGroupEnum } from "@/api/enums/SchedulerJobGroupEnum";
 import { TriggerState } from "@/api/enums/TriggerState";
 import { schedulerApi } from "@/api/services/Scheduler";
-import { ElMessageBox } from "@/plugins/element-plus";
 import { useApp } from "@/stores";
 import SchedulerEdit from "./edit/index.vue";
 import type { QuerySchedulerDetailOutput } from "@/api/services/Scheduler/models/QuerySchedulerDetailOutput";
