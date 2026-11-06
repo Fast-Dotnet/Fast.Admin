@@ -225,6 +225,18 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
+:deep(.fa-popup) {
+	--wot-popup-radius: var(--wot-radius-extra-large);
+	display: flex;
+	flex-direction: column;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+.fa-popup__with-footer {
+	--wot-popup-bg: var(--wot-filled-oppo);
+}
+
 .fa-popup__header {
 	flex-shrink: 0;
 	display: flex;
@@ -247,7 +259,7 @@ defineExpose({
 .fa-popup__close {
 	position: absolute;
 	top: 4px;
-	right: 12px;
+	right: 4px;
 	z-index: 1;
 	display: flex;
 	align-items: center;
@@ -283,8 +295,17 @@ defineExpose({
 	display: flex;
 	flex: 1;
 	flex-direction: column;
+	padding: 20rpx;
 	min-height: 0;
 	overflow-y: auto;
+	background: var(--wot-filled-bottom);
+}
+
+:deep(.fa-popup__body_scroll) {
+	flex: 1;
+	min-width: 0;
+	min-height: 0;
+	overflow: auto;
 }
 
 .fa-popup__footer {

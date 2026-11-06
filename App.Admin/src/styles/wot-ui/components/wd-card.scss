@@ -1,45 +1,33 @@
-/* 独立卡片容器，供 view 使用 */
-.fa-card {
-	padding: var(--fa-page-card-padding);
-	background-color: var(--wot-card-bg, var(--wot-filled-oppo));
-	border: 1px solid var(--wot-card-border-color, var(--wot-border-light));
-	border-radius: var(--wot-radius-extra-large);
-	box-shadow: var(--fa-box-shadow-lighter);
+.wd-card {
+	--wot-card-margin-horizontal: 0;
+	--wot-card-margin-bottom: var(--wot-spacing-extra-loose);
+	--wot-card-title-padding: 20rpx 20rpx 14rpx;
+	--wot-card-content-padding: 24rpx;
+	--wot-card-content-line-height: 1.6;
+	--wot-card-footer-padding: 20rpx 20rpx 16rpx;
 }
 
-/* Wot 页面卡片，通过 wd-card 的 custom-class 使用 */
-.fa-card__page {
-	--wot-card-content-padding: var(--fa-page-padding) 0;
-	--wot-card-footer-padding: var(--fa-page-padding) 0;
-	--wot-card-footer-border-color: var(--wot-border-main);
-
-	.wd-card__title {
-		border-bottom: var(--wot-stroke-main) solid var(--wot-border-main);
-	}
-	.wd-card__footer {
-		.wd-button + .wd-button {
-			margin-left: var(--fa-page-section-gap);
-		}
-	}
+.wd-card__title {
+	min-width: 0;
+	align-items: center;
+	justify-content: space-between;
+	gap: 20rpx;
+	border-bottom: var(--wot-stroke-main) solid var(--wot-border-main);
 }
 
-/* 卡片内的字段列表，放在卡片内容区使用 */
-.fa-card__fields {
+.wd-card__title-text {
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.wd-card__title-view {
 	display: flex;
-	flex-direction: column;
+	align-items: center;
 	gap: 10rpx;
-	font-size: var(--wot-typography-body-size-main);
-	padding-bottom: 20rpx;
-	.page__row {
-		display: flex;
-		align-items: baseline;
-		.title {
-			flex: 0.33;
-			color: var(--wot-text-auxiliary);
-		}
-		.content {
-			flex: 1;
-			color: var(--wot-text-secondary);
-		}
-	}
+}
+
+.wd-card__footer {
+	gap: 20rpx;
 }

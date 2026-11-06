@@ -91,7 +91,7 @@ defineExpose({
 	display: flex;
 	flex-direction: column;
 	gap: 24rpx;
-	padding: var(--fa-page-section-gap) var(--fa-page-padding);
+	padding: 24rpx;
 }
 
 .tenant-card {

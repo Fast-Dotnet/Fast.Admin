@@ -14,6 +14,8 @@ export function loadZPaging(): void {
 			"safe-area-inset-bottom": true,
 			// 默认使用页面滚动
 			"use-page-scroll": true,
+			// 默认背景颜色
+			"bg-color": "var(--wot-filled-bottom)",
 
 			// 列表刷新时自动显示下拉刷新视图
 			"show-refresher-when-reload": true,

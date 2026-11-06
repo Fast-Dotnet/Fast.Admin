@@ -1,5 +1,10 @@
-.z-paging__page {
-	.zp-page-top {
-		padding-bottom: 20rpx;
-	}
+.zp-page-top {
+	padding-bottom: 20rpx;
+	max-width: var(--fa-layout-max-width, 440px);
+	margin: 0 auto;
+	background: var(--wot-filled-bottom);
+}
+
+.zp-paging-container {
+	padding: 0 var(--fa-page-padding);
 }
