@@ -69,19 +69,25 @@ const editFormRef = useTemplateRef<InstanceType<typeof ApplicationTokenEdit>>("e
 
 /** 处理刷新 */
 const handleRefresh = (row: QueryApplicationTokenPagedOutput) => {
-	ElMessageBox.confirm("确定要刷新应用凭据？", { type: "warning" }).then(async () => {
-		await applicationTokenApi.refreshApplicationToken({ recordId: row.recordId });
-		ElMessage.success("刷新成功！");
-		await faTableRef.value.refresh();
+	ElMessageBox.confirm("确定要刷新应用凭据？", {
+		type: "warning",
+		async beforeClose() {
+			await applicationTokenApi.refreshApplicationToken({ recordId: row.recordId });
+			ElMessage.success("刷新成功！");
+			faTableRef.value.refresh();
+		},
 	});
 };
 
 /** 处理删除 */
 const handleDelete = (row: QueryApplicationTokenPagedOutput) => {
-	ElMessageBox.confirm("确定要删除应用凭据？", { type: "warning" }).then(async () => {
-		await applicationTokenApi.deleteApplicationToken({ recordId: row.recordId });
-		ElMessage.success("删除成功！");
-		await faTableRef.value.refresh();
+	ElMessageBox.confirm("确定要删除应用凭据？", {
+		type: "warning",
+		async beforeClose() {
+			await applicationTokenApi.deleteApplicationToken({ recordId: row.recordId });
+			ElMessage.success("删除成功！");
+			faTableRef.value.refresh();
+		},
 	});
 };
 </script>

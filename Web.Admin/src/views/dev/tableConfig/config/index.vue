@@ -109,9 +109,10 @@
 <script lang="ts" setup>
 import { reactive, useTemplateRef, watch } from "vue";
 import { ArrowLeftBold, Close, Plus, Select, StarFilled } from "@element-plus/icons-vue";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { ElMessage } from "element-plus";
 import { withDefineType } from "@fast-china/utils";
 import { tableApi } from "@/api/services/Center/table";
+import { ElMessageBox } from "@/plugins/element-plus";
 import AdvancedConfigForm from "./components/advancedConfig.vue";
 import type { FaTableInstance } from "fast-element-plus";
 import type { WatchHandle } from "vue";
@@ -212,16 +213,19 @@ const handleOrderChange = () => {
 
 /** 处理保存 */
 const handleSave = () => {
-	ElMessageBox.confirm("确认要保存表格配置？", { type: "warning" }).then(async () => {
-		await tableApi.editTableColumnConfig({
-			tableId: state.tableId,
-			columns: state.tableData,
-			rowVersion: state.rowVersion,
-		});
-		state.change = false;
-		ElMessage.success("保存成功！");
-		handleBack();
-		emit("ok");
+	ElMessageBox.confirm("确认要保存表格配置？", {
+		type: "warning",
+		async beforeClose() {
+			await tableApi.editTableColumnConfig({
+				tableId: state.tableId,
+				columns: state.tableData,
+				rowVersion: state.rowVersion,
+			});
+			state.change = false;
+			ElMessage.success("保存成功！");
+			handleBack();
+			emit("ok");
+		},
 	});
 };
 

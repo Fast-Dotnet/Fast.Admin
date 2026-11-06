@@ -97,10 +97,13 @@ const editFormRef = useTemplateRef<InstanceType<typeof DictionaryEdit>>("editFor
 /** 处理删除 */
 const handleDelete = (row: QueryDictionaryPagedOutput) => {
 	const { dictionaryId, rowVersion } = row;
-	ElMessageBox.confirm("确定要删除数据字典？", { type: "warning" }).then(async () => {
-		await dictionaryApi.deleteDictionary({ dictionaryId, rowVersion });
-		ElMessage.success("删除成功！");
-		await faTableRef.value?.refresh();
+	ElMessageBox.confirm("确定要删除数据字典？", {
+		type: "warning",
+		async beforeClose() {
+			await dictionaryApi.deleteDictionary({ dictionaryId, rowVersion });
+			ElMessage.success("删除成功！");
+			faTableRef.value?.refresh();
+		},
 	});
 };
 </script>

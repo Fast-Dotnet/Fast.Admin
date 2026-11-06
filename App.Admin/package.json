@@ -52,7 +52,7 @@
 		"@dcloudio/uni-cli-shared": "3.0.0-5030320261023001",
 		"@dcloudio/uni-stacktracey": "3.0.0-5030320261023001",
 		"@dcloudio/vite-plugin-uni": "3.0.0-5030320261023001",
-		"@fast-china/eslint-config": "^2.1.10",
+		"@fast-china/eslint-config": "^2.1.11",
 		"@types/node": "^24.19.0",
 		"@uni-helper/uni-types": "^1.3.0",
 		"@uni-helper/vite-plugin-uni-components": "^0.3.2",

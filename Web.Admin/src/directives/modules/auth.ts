@@ -1,6 +1,6 @@
 /**
  * v-auth 按钮权限指令。
- * 权限码支持字符串或数组，数组中任意一个权限通过即可；管理员直接通过。
+ * 权限码支持字符串或数组，数组中任意一个权限通过即可；仅超级管理员直接通过。
  * 无权限时默认移除元素，可通过 authType 改为禁用、禁止指针交互或仅提示。
  * 已授权的原始点击回调采用 500 毫秒尾沿防抖；此指令不替代服务端授权。
  */
@@ -74,20 +74,8 @@ const AuthDirective: Directive = {
 		// 记录原来的点击事件方法
 		el.__tag_originClick__ = vNode.props?.onClick;
 
-		// 权限判断
-		let isAuth = false;
-		// 管理员判断
-		if (userInfoStore.isSuperAdmin || userInfoStore.isAdmin) {
-			isAuth = true;
-		} else {
-			// 这里只要判断存在一个Code即可
-			el.__tag__.forEach((item) => {
-				if (userInfoStore.buttonCodeList.includes(item)) {
-					isAuth = true;
-				}
-			});
-		}
-		el.__auth_isAuth__ = isAuth;
+		// 仅超级管理员直接通过，其他用户任意命中一个权限码即可。
+		el.__auth_isAuth__ = userInfoStore.isSuperAdmin || el.__tag__.some((code) => userInfoStore.buttonCodeList.includes(code));
 
 		// 权限判断
 		if (el.__auth_isAuth__) {

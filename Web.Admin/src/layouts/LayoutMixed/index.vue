@@ -225,9 +225,12 @@ const handleScreenLock = () => {
 };
 
 const handleLogout = () => {
-	ElMessageBox.confirm(`确定要退出登录？`, { type: "warning" }).then(async () => {
-		await userInfoStore.logout();
-		ElMessage.success(`退出登录成功`);
+	ElMessageBox.confirm(`确定要退出登录？`, {
+		type: "warning",
+		async beforeClose() {
+			await userInfoStore.logout();
+			ElMessage.success(`退出登录成功`);
+		},
 	});
 };
 </script>

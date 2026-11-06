@@ -106,10 +106,13 @@ const editFormRef = useTemplateRef<InstanceType<typeof MessageTemplateEdit>>("ed
 /** 处理删除 */
 const handleDelete = (row: QueryMessageTemplatePagedOutput) => {
 	const { recordId, rowVersion } = row;
-	ElMessageBox.confirm("确定要删除消息模板？", { type: "warning" }).then(async () => {
-		await messageTemplateApi.deleteMessageTemplate({ recordId, rowVersion });
-		ElMessage.success("删除成功！");
-		await faTableRef.value.refresh();
+	ElMessageBox.confirm("确定要删除消息模板？", {
+		type: "warning",
+		async beforeClose() {
+			await messageTemplateApi.deleteMessageTemplate({ recordId, rowVersion });
+			ElMessage.success("删除成功！");
+			faTableRef.value.refresh();
+		},
 	});
 };
 

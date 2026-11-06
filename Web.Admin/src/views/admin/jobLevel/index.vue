@@ -60,10 +60,13 @@ const editFormRef = useTemplateRef<InstanceType<typeof JobLevelEdit>>("editFormR
 /** 处理删除 */
 const handleDelete = (row: QueryJobLevelPagedOutput) => {
 	const { jobLevelId, rowVersion } = row;
-	ElMessageBox.confirm("确定要删除职级？", { type: "warning" }).then(async () => {
-		await jobLevelApi.deleteJobLevel({ jobLevelId, rowVersion });
-		ElMessage.success("删除成功！");
-		await faTableRef.value?.refresh();
+	ElMessageBox.confirm("确定要删除职级？", {
+		type: "warning",
+		async beforeClose() {
+			await jobLevelApi.deleteJobLevel({ jobLevelId, rowVersion });
+			ElMessage.success("删除成功！");
+			faTableRef.value?.refresh();
+		},
 	});
 };
 </script>

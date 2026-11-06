@@ -86,10 +86,13 @@ const editFormRef = useTemplateRef<InstanceType<typeof DatabaseEdit>>("editFormR
 /** 处理删除 */
 const handleDelete = (row: QueryDatabasePagedOutput) => {
 	const { mainId, rowVersion } = row;
-	ElMessageBox.confirm("确定要删除数据库？", { type: "warning" }).then(async () => {
-		await databaseApi.deleteDatabase({ mainId, rowVersion });
-		ElMessage.success("删除成功！");
-		await faTableRef.value?.refresh();
+	ElMessageBox.confirm("确定要删除数据库？", {
+		type: "warning",
+		async beforeClose() {
+			await databaseApi.deleteDatabase({ mainId, rowVersion });
+			ElMessage.success("删除成功！");
+			faTableRef.value?.refresh();
+		},
 	});
 };
 
@@ -97,10 +100,13 @@ const handleDelete = (row: QueryDatabasePagedOutput) => {
 const handleInitDatabase = (row: QueryDatabasePagedOutput) => {
 	const { tenantId, databaseType, isInitialized } = row;
 	if (isInitialized) return;
-	ElMessageBox.confirm("确定要初始化数据库？", { type: "warning" }).then(async () => {
-		await databaseApi.initDatabase({ tenantId, databaseType });
-		ElMessage.success("初始化成功！");
-		await faTableRef.value?.refresh();
+	ElMessageBox.confirm("确定要初始化数据库？", {
+		type: "warning",
+		async beforeClose() {
+			await databaseApi.initDatabase({ tenantId, databaseType });
+			ElMessage.success("初始化成功！");
+			faTableRef.value?.refresh();
+		},
 	});
 };
 

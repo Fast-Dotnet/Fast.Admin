@@ -47,7 +47,13 @@
 		<!-- 轻提示 -->
 		<wd-toast selector="#fast_toast" />
 		<!-- 消息弹窗 -->
-		<wd-dialog selector="#fast_dialog" />
+		<wd-dialog selector="#fast_dialog">
+			<template v-if="wdHookState.wdDialogState.loading" #actions>
+				<view class="wd-dialog__actions wd-dialog__block">
+					<wd-button custom-class="wd-dialog__actions-btn wd-dialog__actions-btn--confirm" block loading>加载中...</wd-button>
+				</view>
+			</template>
+		</wd-dialog>
 		<!-- 蒙版层加载 -->
 		<FaLoading :loading="!wdHookState.loading?.fullscreen && wdHookState.loading?.state" :text="wdHookState.loading?.text" />
 		<!-- 全屏加载 -->
@@ -221,7 +227,7 @@ const handleWatch = () => {
 	);
 
 	wdDialogWatch ||= watch(
-		() => wdHookState.wdMessageBox,
+		() => wdHookState.wdDialog,
 		(newValue) => {
 			if (!newValue?.type) return;
 			if (newValue.type === "close") {
@@ -229,7 +235,7 @@ const handleWatch = () => {
 			} else {
 				uDialog[newValue.type](newValue.options).then(newValue.then).catch(newValue.catch);
 			}
-			wdHookState.wdMessageBox = undefined;
+			wdHookState.wdDialog = undefined;
 		}
 	);
 

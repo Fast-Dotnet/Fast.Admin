@@ -62,19 +62,25 @@ const editFormRef = useTemplateRef<InstanceType<typeof ConfigEdit>>("editFormRef
 /** 处理删除缓存 */
 const handleDelete = (row: QueryConfigPagedOutput) => {
 	const { configCode } = row;
-	ElMessageBox.confirm("确定要删除缓存？", { type: "warning" }).then(async () => {
-		await configApi.deleteConfigCache({ configCode });
-		ElMessage.success("删除成功！");
-		await faTableRef.value?.refresh();
+	ElMessageBox.confirm("确定要删除缓存？", {
+		type: "warning",
+		async beforeClose() {
+			await configApi.deleteConfigCache({ configCode });
+			ElMessage.success("删除成功！");
+			faTableRef.value?.refresh();
+		},
 	});
 };
 
 /** 处理删除全部缓存 */
 const handleDeleteAll = () => {
-	ElMessageBox.confirm("确定要删除全部缓存？", { type: "warning" }).then(async () => {
-		await configApi.deleteAllConfigCache();
-		ElMessage.success("删除成功！");
-		await faTableRef.value?.refresh();
+	ElMessageBox.confirm("确定要删除全部缓存？", {
+		type: "warning",
+		async beforeClose() {
+			await configApi.deleteAllConfigCache();
+			ElMessage.success("删除成功！");
+			faTableRef.value?.refresh();
+		},
 	});
 };
 </script>

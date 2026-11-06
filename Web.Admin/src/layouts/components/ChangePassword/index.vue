@@ -93,8 +93,10 @@ const handleConfirm = () => {
 		await ElMessageBox.alert("修改成功，请重新登录！", {
 			type: "success",
 			confirmButtonText: "重新登录",
+			async beforeClose() {
+				await userInfoStore.logout();
+			},
 		});
-		await userInfoStore.logout();
 	});
 };
 

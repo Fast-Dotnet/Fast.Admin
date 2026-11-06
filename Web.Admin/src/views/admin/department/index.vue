@@ -142,10 +142,13 @@ const state = reactive({
 			click: (_, { data }: { data?: ElTreeOutput }) => {
 				if (!data || typeof data.value !== "string") return;
 				const { value: orgId, data: orgData } = data;
-				ElMessageBox.confirm("确定要删除机构？", { type: "warning" }).then(async () => {
-					await organizationApi.deleteOrganization({ orgId, rowVersion: orgData?.rowVersion });
-					ElMessage.success("删除成功！");
-					await orgTreeRef.value?.refresh();
+				ElMessageBox.confirm("确定要删除机构？", {
+					type: "warning",
+					async beforeClose() {
+						await organizationApi.deleteOrganization({ orgId, rowVersion: orgData?.rowVersion });
+						ElMessage.success("删除成功！");
+						orgTreeRef.value?.refresh();
+					},
 				});
 			},
 		},
@@ -177,10 +180,13 @@ const handleOrgContextmenu = (event: MouseEvent, data: ElTreeOutput) => {
 /** 处理删除 */
 const handleDelete = (row: QueryDepartmentPagedOutput) => {
 	const { departmentId, rowVersion } = row;
-	ElMessageBox.confirm("确定要删除部门？", { type: "warning" }).then(async () => {
-		await departmentApi.deleteDepartment({ departmentId, rowVersion });
-		ElMessage.success("删除成功！");
-		await faTableRef.value?.refresh();
+	ElMessageBox.confirm("确定要删除部门？", {
+		type: "warning",
+		async beforeClose() {
+			await departmentApi.deleteDepartment({ departmentId, rowVersion });
+			ElMessage.success("删除成功！");
+			faTableRef.value?.refresh();
+		},
 	});
 };
 </script>

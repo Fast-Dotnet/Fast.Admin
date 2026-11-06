@@ -40,7 +40,7 @@ import { computed, defineAsyncComponent, onMounted, provide, reactive, toRef, us
 import { Moon, Operation, Refresh, Sunny } from "@element-plus/icons-vue";
 import { ElMessageBox } from "element-plus";
 import { Dark, Light } from "@fast-element-plus/icons-vue";
-import { Local, Session, getOrCreateInstallationId, installationIdentity, logger, withDefineType } from "@fast-china/utils";
+import { Local, Session, getOrCreateInstallationId, installationIdentity, logger, sleep, withDefineType } from "@fast-china/utils";
 import { defaultThemeColor, useApp, useConfig } from "@/stores";
 import type { DropdownInstance, FormRules } from "element-plus";
 import type { Component } from "vue";
@@ -138,20 +138,19 @@ const handleDropdownClick = (command: string) => {
 				{
 					dangerouslyUseHTMLString: true,
 					type: "warning",
-					beforeClose(_, instance) {
-						instance.confirmButtonText = "重置中...";
-						setTimeout(() => {
-							// 获取设备Id
-							const deviceId = installationIdentity.deviceId;
-							// 清空 Local 缓存
-							Local.clear();
-							// 清空 Session 缓存
-							Session.clear();
-							// 重新设置设备Id
-							getOrCreateInstallationId(deviceId);
-							// 刷新App
-							window.location.reload();
-						}, 2000);
+					async beforeClose() {
+						await sleep(2000);
+
+						// 获取设备Id
+						const deviceId = installationIdentity.deviceId;
+						// 清空 Local 缓存
+						Local.clear();
+						// 清空 Session 缓存
+						Session.clear();
+						// 重新设置设备Id
+						getOrCreateInstallationId(deviceId);
+						// 刷新App
+						window.location.reload();
 					},
 				}
 			);

@@ -22,7 +22,7 @@
 					<wd-button size="small" type="primary" @click="() => emit('search')">搜素</wd-button>
 				</template>
 			</wd-input>
-			<view v-if="props.filter" class="fa-search-input__filter" @click="state.filterVisible = true">
+			<view v-if="props.filter" class="fa-search-input__filter" @click="filterPopupRef?.open()">
 				<FaIcon custom-class="wd-input__icon" name="filter" />
 				<text class="fa-search-input__filter-text">筛选</text>
 			</view>
@@ -31,9 +31,19 @@
 		<view class="fa-search-input__footer">
 			<slot name="footer" />
 		</view>
-		<wd-popup v-if="props.filter" custom-class="fa-search-popup" v-model="state.filterVisible" closable position="bottom" safe-area-inset-bottom>
-			<text class="fa-search-popup__title">高级筛选</text>
-			<view class="fa-search-popup__warp">
+		<FaPopup
+			v-if="props.filter"
+			ref="filterPopupRef"
+			title="高级筛选"
+			height="60%"
+			position="bottom"
+			closable
+			show-close-button
+			show-confirm-button
+			confirm-button-text="筛选"
+			@confirm="handleFilterClick"
+		>
+			<scroll-view class="fa-search-popup__warp" scroll-y>
 				<template v-if="!props.hideSearchTime">
 					<wd-datetime-picker
 						:disable="state.dataSearchRange !== 'custom'"
@@ -59,20 +69,18 @@
 						</view>
 					</wd-radio-group>
 				</template>
+
 				<slot name="filter" />
-			</view>
-			<view class="fa-search-popup__footer">
-				<wd-button type="info" plain block @click="state.filterVisible = false">取消</wd-button>
-				<wd-button type="primary" block @click="handleFilterClick">筛选</wd-button>
-			</view>
-		</wd-popup>
+			</scroll-view>
+		</FaPopup>
 	</view>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, watch } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import { createOneMonthRangeFromToday, definePropType, throttle, withDefineType } from "@fast-china/utils";
 import dayjs from "dayjs";
+import FaPopup from "../popup/index.vue";
 
 defineOptions({
 	name: "SearchInput",
@@ -134,8 +142,9 @@ const searchParam = defineModel<PagedInput>("searchParam", {
 	default: () => ({}),
 });
 
+const filterPopupRef = ref<InstanceType<typeof FaPopup>>();
+
 const state = reactive({
-	filterVisible: false,
 	searchTimeList: withDefineType<number[]>([]),
 	dataSearchRange: withDefineType<FaTableDataRange | "custom">(),
 });
@@ -192,10 +201,7 @@ const handleClear = () => {
 	emit("clear");
 };
 
-const handleFilterClick = () => {
-	state.filterVisible = false;
-	emit("search");
-};
+const handleFilterClick = () => filterPopupRef.value?.close(() => emit("search"));
 
 const getDateTime = (dataRange: FaTableDataRange | "custom") => {
 	const end = new Date();

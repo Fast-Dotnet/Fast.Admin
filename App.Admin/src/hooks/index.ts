@@ -69,7 +69,7 @@ export const wdHookState = reactive({
 		options: withDefineType<ToastOptions | string>(),
 	},
 	/** Dialog 消息弹窗 */
-	wdMessageBox: {
+	wdDialog: {
 		/** 弹窗操作类型 */
 		type: withDefineType<keyof Dialog>(),
 		/** 弹窗配置 */
@@ -78,5 +78,10 @@ export const wdHookState = reactive({
 		then: withDefineType<(res?: DialogResult) => void>(),
 		/** 弹窗操作失败或取消后的回调 */
 		catch: withDefineType<(error?: unknown) => void>(),
+	},
+	/** Dialog 消息弹窗状态 */
+	wdDialogState: {
+		/** 确认操作是否正在执行 */
+		loading: false,
 	},
 });

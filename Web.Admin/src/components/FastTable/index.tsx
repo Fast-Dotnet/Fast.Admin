@@ -136,12 +136,7 @@ export default defineComponent({
 			}
 
 			if (showConfirm) {
-				ElMessageBox.confirm("确认同步列缓存配置？此操作无法撤销。", {
-					type: "warning",
-					beforeClose() {
-						localRequest();
-					},
-				});
+				ElMessageBox.confirm("确认同步列缓存配置？此操作无法撤销。", { type: "warning" }).then(() => localRequest());
 			} else {
 				localRequest();
 			}

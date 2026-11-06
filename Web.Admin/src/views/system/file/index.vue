@@ -42,6 +42,7 @@
 
 <script lang="ts" setup>
 import { computed, reactive } from "vue";
+import { Decimal } from "fast-element-plus";
 import { fileApi } from "@/api/services/File";
 import { useUserInfo } from "@/stores";
 import type { FaTableColumnCtx } from "fast-element-plus";
@@ -72,10 +73,13 @@ const searchColumns = computed<FaTableColumnCtx[]>(() =>
 );
 
 const formatFileSize = (value?: string) => {
-	const kb = Number(value ?? 0);
-	if (kb < 1024) return `${kb} KB`;
-	const mb = kb / 1024;
-	if (mb < 1024) return `${mb.toFixed(2)} MB`;
-	return `${(mb / 1024).toFixed(2)} GB`;
+	let size = Decimal(value ?? 0);
+	const units = ["KB", "MB", "GB", "TB"];
+	let unit = 0;
+	while (size.gte(1024) && unit < units.length - 1) {
+		size = size.div(1024);
+		unit++;
+	}
+	return `${size.toDecimalPlaces(2).toFixed()} ${units[unit]}`;
 };
 </script>

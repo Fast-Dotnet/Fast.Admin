@@ -7,7 +7,7 @@
 		@confirm-click="handleConfirm"
 		@close="faFormRef.resetFields()"
 	>
-		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" clos="1">
+		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" cols="1">
 			<el-alert style="margin-bottom: 16px" type="warning" :closable="false" show-icon>
 				离职后将禁用该职员的登录资格，并强制下线其全部在线会话。
 			</el-alert>

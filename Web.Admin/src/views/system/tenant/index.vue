@@ -89,13 +89,16 @@ const editFormRef = useTemplateRef<InstanceType<typeof TenantEdit>>("editFormRef
 /** 处理状态变更 */
 const handleChangeStatus = (row: QueryTenantPagedOutput) => {
 	const { tenantId, status, rowVersion } = row;
-	ElMessageBox.confirm(`确定${status === CommonStatusEnum.Enable ? "禁用" : "启用"}租户？`, { type: "warning" }).then(async () => {
-		await tenantApi.changeStatus({
-			tenantId,
-			rowVersion,
-		});
-		ElMessage.success("操作成功！");
-		await faTableRef.value?.refresh();
+	ElMessageBox.confirm(`确定${status === CommonStatusEnum.Enable ? "禁用" : "启用"}租户？`, {
+		type: "warning",
+		async beforeClose() {
+			await tenantApi.changeStatus({
+				tenantId,
+				rowVersion,
+			});
+			ElMessage.success("操作成功！");
+			faTableRef.value?.refresh();
+		},
 	});
 };
 

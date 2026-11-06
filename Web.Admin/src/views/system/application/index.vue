@@ -193,20 +193,26 @@ const handleClientData = (row: QueryApplicationPagedOutput) => {
 /** 处理删除 */
 const handleDelete = (row: QueryApplicationPagedOutput) => {
 	const { appId, rowVersion } = row;
-	ElMessageBox.confirm("确定要删除应用？", { type: "warning" }).then(async () => {
-		await applicationApi.deleteApplication({ appId, rowVersion });
-		ElMessage.success("删除成功！");
-		await faTableRef.value?.refresh();
+	ElMessageBox.confirm("确定要删除应用？", {
+		type: "warning",
+		async beforeClose() {
+			await applicationApi.deleteApplication({ appId, rowVersion });
+			ElMessage.success("删除成功！");
+			faTableRef.value?.refresh();
+		},
 	});
 };
 
 /** 处理删除 */
 const handleClientDelete = (row: QueryApplicationClientOutput) => {
 	const { recordId, rowVersion } = row;
-	ElMessageBox.confirm("确定要删除应用标识？", { type: "warning" }).then(async () => {
-		await applicationClientApi.deleteApplicationClient({ recordId, rowVersion });
-		ElMessage.success("删除成功！");
-		await faTableRef.value?.refresh();
+	ElMessageBox.confirm("确定要删除应用标识？", {
+		type: "warning",
+		async beforeClose() {
+			await applicationClientApi.deleteApplicationClient({ recordId, rowVersion });
+			ElMessage.success("删除成功！");
+			faTableRef.value?.refresh();
+		},
 	});
 };
 

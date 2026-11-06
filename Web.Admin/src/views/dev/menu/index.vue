@@ -138,23 +138,29 @@ const handleApplicationChange = (data: ElSelectorOutput) => {
 /** 处理删除 */
 const handleDelete = (row: QueryMenuPagedOutput) => {
 	const { menuId, rowVersion } = row;
-	ElMessageBox.confirm("确定要删除菜单？", { type: "warning" }).then(async () => {
-		await menuApi.deleteMenu({ menuId, rowVersion });
-		ElMessage.success("删除成功！");
-		await faTableRef.value?.refresh();
+	ElMessageBox.confirm("确定要删除菜单？", {
+		type: "warning",
+		async beforeClose() {
+			await menuApi.deleteMenu({ menuId, rowVersion });
+			ElMessage.success("删除成功！");
+			faTableRef.value?.refresh();
+		},
 	});
 };
 
 /** 处理状态变更 */
 const handleChangeStatus = (row: QueryMenuPagedOutput) => {
 	const { menuId, status, rowVersion } = row;
-	ElMessageBox.confirm(`确定${status === CommonStatusEnum.Enable ? "禁用" : "启用"}菜单？`, { type: "warning" }).then(async () => {
-		await menuApi.changeStatus({
-			menuId,
-			rowVersion,
-		});
-		ElMessage.success("操作成功！");
-		await faTableRef.value?.refresh();
+	ElMessageBox.confirm(`确定${status === CommonStatusEnum.Enable ? "禁用" : "启用"}菜单？`, {
+		type: "warning",
+		async beforeClose() {
+			await menuApi.changeStatus({
+				menuId,
+				rowVersion,
+			});
+			ElMessage.success("操作成功！");
+			faTableRef.value?.refresh();
+		},
 	});
 };
 </script>

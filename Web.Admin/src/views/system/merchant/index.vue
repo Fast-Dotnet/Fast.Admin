@@ -65,10 +65,13 @@ const editFormRef = useTemplateRef<InstanceType<typeof ConfigEdit>>("editFormRef
 /** 处理删除缓存 */
 const handleDelete = (row: QueryMerchantPagedOutput) => {
 	const { merchantId, rowVersion } = row;
-	ElMessageBox.confirm("确定要删除商户号？", { type: "warning" }).then(async () => {
-		await merchantApi.deleteMerchant({ merchantId, rowVersion });
-		ElMessage.success("删除成功！");
-		await faTableRef.value?.refresh();
+	ElMessageBox.confirm("确定要删除商户号？", {
+		type: "warning",
+		async beforeClose() {
+			await merchantApi.deleteMerchant({ merchantId, rowVersion });
+			ElMessage.success("删除成功！");
+			faTableRef.value?.refresh();
+		},
 	});
 };
 

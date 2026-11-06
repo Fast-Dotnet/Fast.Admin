@@ -138,12 +138,15 @@ const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
 /** 处理强制下线 */
 const handleForceOffline = (row: TenantOnlineUserModel) => {
 	const { connectionId, mobile } = row;
-	ElMessageBox.confirm(`确定踢掉账号：【${mobile}】`, { type: "warning" }).then(async () => {
-		await tenantOnlineUserApi.forceOffline({
-			connectionId,
-		});
-		ElMessage.success("强制下线成功！");
-		await faTableRef.value?.refresh();
+	ElMessageBox.confirm(`确定踢掉账号：【${mobile}】`, {
+		type: "warning",
+		async beforeClose() {
+			await tenantOnlineUserApi.forceOffline({
+				connectionId,
+			});
+			ElMessage.success("强制下线成功！");
+			faTableRef.value?.refresh();
+		},
 	});
 };
 

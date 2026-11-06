@@ -1,3 +1,4 @@
+import Auth from "./auth/index.vue";
 import Footer from "./footer/index.vue";
 import Icon from "./icon/index.vue";
 import Image from "./image/index.vue";
@@ -13,6 +14,8 @@ import Tag from "./tag/index.vue";
 import TagFlag from "./tagFlag/index.vue";
 import Watermark from "./watermark/index.vue";
 
+export { Auth };
+export type FaAuthInstance = InstanceType<typeof Auth>;
 export { Footer };
 export type FaFooterInstance = InstanceType<typeof Footer>;
 export { Icon };

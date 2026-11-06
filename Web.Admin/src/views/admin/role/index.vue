@@ -74,10 +74,13 @@ const authEditRef = useTemplateRef<InstanceType<typeof AuthEdit>>("authEditRef")
 /** 处理删除 */
 const handleDelete = (row: QueryRolePagedOutput) => {
 	const { roleId, rowVersion } = row;
-	ElMessageBox.confirm("确定要删除角色？", { type: "warning" }).then(async () => {
-		await roleApi.deleteRole({ roleId, rowVersion });
-		ElMessage.success("删除成功！");
-		await faTableRef.value?.refresh();
+	ElMessageBox.confirm("确定要删除角色？", {
+		type: "warning",
+		async beforeClose() {
+			await roleApi.deleteRole({ roleId, rowVersion });
+			ElMessage.success("删除成功！");
+			faTableRef.value?.refresh();
+		},
 	});
 };
 

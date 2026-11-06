@@ -60,10 +60,13 @@ const editFormRef = useTemplateRef<InstanceType<typeof PositionEdit>>("editFormR
 /** 处理删除 */
 const handleDelete = (row: QueryPositionPagedOutput) => {
 	const { positionId, rowVersion } = row;
-	ElMessageBox.confirm("确定要删除职位？", { type: "warning" }).then(async () => {
-		await positionApi.deletePosition({ positionId, rowVersion });
-		ElMessage.success("删除成功！");
-		await faTableRef.value?.refresh();
+	ElMessageBox.confirm("确定要删除职位？", {
+		type: "warning",
+		async beforeClose() {
+			await positionApi.deletePosition({ positionId, rowVersion });
+			ElMessage.success("删除成功！");
+			faTableRef.value?.refresh();
+		},
 	});
 };
 </script>

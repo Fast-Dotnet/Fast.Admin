@@ -1,4 +1,4 @@
-import { wdHookState } from "../index";
+import { useOverlay, wdHookState } from "../index";
 import type { DialogOptions, DialogResult } from "@wot-ui/ui/components/wd-dialog/types";
 
 const defaultTitle = "温馨提示";
@@ -13,7 +13,7 @@ export const useMessageBox = {
 	 */
 	show(options: DialogOptions | string): Promise<DialogResult> {
 		return new Promise<DialogResult>((resolve, reject) => {
-			wdHookState.wdMessageBox = {
+			wdHookState.wdDialog = {
 				type: "show",
 				options: typeof options === "string" ? { title: defaultTitle, msg: options } : { ...options, title: options.title ?? defaultTitle },
 				then: (res) => resolve(res),
@@ -29,7 +29,7 @@ export const useMessageBox = {
 	 */
 	alert(options: DialogOptions | string): Promise<DialogResult> {
 		return new Promise<DialogResult>((resolve, reject) => {
-			wdHookState.wdMessageBox = {
+			wdHookState.wdDialog = {
 				type: "alert",
 				options: typeof options === "string" ? { title: defaultTitle, msg: options } : { ...options, title: options.title ?? defaultTitle },
 				then: (res) => resolve(res),
@@ -44,10 +44,32 @@ export const useMessageBox = {
 	 * @returns Wot UI 弹窗结果；取消或失败时 Promise 拒绝
 	 */
 	confirm(options: DialogOptions | string): Promise<DialogResult> {
+		const dialogOptions =
+			typeof options === "string" ? { title: defaultTitle, msg: options } : { ...options, title: options.title ?? defaultTitle };
+
+		const beforeConfirm = dialogOptions.beforeConfirm;
+
 		return new Promise<DialogResult>((resolve, reject) => {
-			wdHookState.wdMessageBox = {
+			dialogOptions.beforeConfirm = async (value) => {
+				if (!beforeConfirm) return true;
+
+				useOverlay.show(0);
+				wdHookState.wdDialogState.loading = true;
+
+				try {
+					return await beforeConfirm(value);
+				} catch (error) {
+					reject(error);
+					return false;
+				} finally {
+					wdHookState.wdDialogState.loading = false;
+					useOverlay.hide();
+				}
+			};
+
+			wdHookState.wdDialog = {
 				type: "confirm",
-				options: typeof options === "string" ? { title: defaultTitle, msg: options } : { ...options, title: options.title ?? defaultTitle },
+				options: dialogOptions,
 				then: (res) => resolve(res),
 				catch: (error) => reject(error),
 			};
@@ -61,7 +83,7 @@ export const useMessageBox = {
 	 */
 	prompt(options: DialogOptions | string): Promise<DialogResult> {
 		return new Promise<DialogResult>((resolve, reject) => {
-			wdHookState.wdMessageBox = {
+			wdHookState.wdDialog = {
 				type: "prompt",
 				options: typeof options === "string" ? { title: defaultTitle, msg: options } : { ...options, title: options.title ?? defaultTitle },
 				then: (res) => resolve(res),
@@ -71,7 +93,7 @@ export const useMessageBox = {
 	},
 	/** 请求关闭当前弹窗。 */
 	close(): void {
-		wdHookState.wdMessageBox = {
+		wdHookState.wdDialog = {
 			type: "close",
 			options: undefined,
 			then: undefined,

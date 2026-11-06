@@ -265,11 +265,12 @@
 <script lang="ts" setup>
 import { onActivated, onDeactivated, onMounted, onUnmounted, reactive, useTemplateRef } from "vue";
 import { Plus } from "@element-plus/icons-vue";
-import { ElMessage, ElMessageBox, dayjs } from "element-plus";
+import { ElMessage, dayjs } from "element-plus";
 import { logger, withDefineType } from "@fast-china/utils";
 import { SchedulerJobGroupEnum } from "@/api/enums/SchedulerJobGroupEnum";
 import { TriggerState } from "@/api/enums/TriggerState";
 import { schedulerApi } from "@/api/services/Scheduler";
+import { ElMessageBox } from "@/plugins/element-plus";
 import { useApp } from "@/stores";
 import SchedulerEdit from "./edit/index.vue";
 import type { QuerySchedulerDetailOutput } from "@/api/services/Scheduler/models/QuerySchedulerDetailOutput";
@@ -368,21 +369,27 @@ const handleJobGroupChange = async (value: SchedulerJobGroupEnum) => {
 
 /** 调度程序启动 */
 const handleStart = () => {
-	ElMessageBox.confirm(`确定要启动【${state.schedulerDetail.schedulerName}】？`, { type: "warning" }).then(async () => {
-		await schedulerApi.startScheduler(state.tenantId);
-		ElMessage.success("启动成功！");
-		state.schedulerDetail.schedulerInStandbyMode = false;
-		state.schedulerDetail.desiredStatus = "Running (运行)";
+	ElMessageBox.confirm(`确定要启动【${state.schedulerDetail.schedulerName}】？`, {
+		type: "warning",
+		async beforeClose() {
+			await schedulerApi.startScheduler(state.tenantId);
+			ElMessage.success("启动成功！");
+			state.schedulerDetail.schedulerInStandbyMode = false;
+			state.schedulerDetail.desiredStatus = "Running (运行)";
+		},
 	});
 };
 
 /** 调度程序停止 */
 const handleStop = () => {
-	ElMessageBox.confirm(`确定要待机【${state.schedulerDetail.schedulerName}】？`, { type: "warning" }).then(async () => {
-		await schedulerApi.stopScheduler(state.tenantId);
-		ElMessage.success("待机成功！");
-		state.schedulerDetail.schedulerInStandbyMode = true;
-		state.schedulerDetail.desiredStatus = "Standby (待机)";
+	ElMessageBox.confirm(`确定要待机【${state.schedulerDetail.schedulerName}】？`, {
+		type: "warning",
+		async beforeClose() {
+			await schedulerApi.stopScheduler(state.tenantId);
+			ElMessage.success("待机成功！");
+			state.schedulerDetail.schedulerInStandbyMode = true;
+			state.schedulerDetail.desiredStatus = "Standby (待机)";
+		},
 	});
 };
 
@@ -395,13 +402,16 @@ const handleShowException = (row: SchedulerJobInfoDto) => {
 
 /** 异常删除 */
 const handleDelException = (row: SchedulerJobInfoDto) => {
-	ElMessageBox.confirm(`确定要删除【${row.jobName}】的异常信息？`, { type: "warning" }).then(async () => {
-		await schedulerApi.deleteSchedulerJobException(state.tenantId, {
-			jobName: row.jobName,
-			jobGroup: state.activeJobGroup,
-		});
-		ElMessage.success("删除成功！");
-		await handleTableRefresh();
+	ElMessageBox.confirm(`确定要删除【${row.jobName}】的异常信息？`, {
+		type: "warning",
+		async beforeClose() {
+			await schedulerApi.deleteSchedulerJobException(state.tenantId, {
+				jobName: row.jobName,
+				jobGroup: state.activeJobGroup,
+			});
+			ElMessage.success("删除成功！");
+			await handleTableRefresh();
+		},
 	});
 };
 
@@ -423,49 +433,61 @@ const handleLogs = async (row: SchedulerJobInfoDto) => {
 
 /** 暂停调度作业 */
 const handleStopJob = (row: SchedulerJobInfoDto) => {
-	ElMessageBox.confirm(`确定要暂停【${row.jobName}】？`, { type: "warning" }).then(async () => {
-		await schedulerApi.stopSchedulerJob(state.tenantId, {
-			jobName: row.jobName,
-			jobGroup: state.activeJobGroup,
-		});
-		ElMessage.success("暂停成功！");
-		await handleTableRefresh();
+	ElMessageBox.confirm(`确定要暂停【${row.jobName}】？`, {
+		type: "warning",
+		async beforeClose() {
+			await schedulerApi.stopSchedulerJob(state.tenantId, {
+				jobName: row.jobName,
+				jobGroup: state.activeJobGroup,
+			});
+			ElMessage.success("暂停成功！");
+			await handleTableRefresh();
+		},
 	});
 };
 
 /** 恢复调度作业 */
 const handleResumeJob = (row: SchedulerJobInfoDto) => {
-	ElMessageBox.confirm(`确定要恢复【${row.jobName}】？`, { type: "warning" }).then(async () => {
-		await schedulerApi.resumeSchedulerJob(state.tenantId, {
-			jobName: row.jobName,
-			jobGroup: state.activeJobGroup,
-		});
-		ElMessage.success("恢复成功！");
-		await handleTableRefresh();
+	ElMessageBox.confirm(`确定要恢复【${row.jobName}】？`, {
+		type: "warning",
+		async beforeClose() {
+			await schedulerApi.resumeSchedulerJob(state.tenantId, {
+				jobName: row.jobName,
+				jobGroup: state.activeJobGroup,
+			});
+			ElMessage.success("恢复成功！");
+			await handleTableRefresh();
+		},
 	});
 };
 
 /** 执行调度作业 */
 const handleTriggerJob = (row: SchedulerJobInfoDto) => {
-	ElMessageBox.confirm(`确定要立即执行【${row.jobName}】？`, { type: "warning" }).then(async () => {
-		await schedulerApi.triggerSchedulerJob(state.tenantId, {
-			jobName: row.jobName,
-			jobGroup: state.activeJobGroup,
-		});
-		ElMessage.success("执行成功！");
-		await handleTableRefresh();
+	ElMessageBox.confirm(`确定要立即执行【${row.jobName}】？`, {
+		type: "warning",
+		async beforeClose() {
+			await schedulerApi.triggerSchedulerJob(state.tenantId, {
+				jobName: row.jobName,
+				jobGroup: state.activeJobGroup,
+			});
+			ElMessage.success("执行成功！");
+			await handleTableRefresh();
+		},
 	});
 };
 
 /** 删除调度作业 */
 const handleDelJob = (row: SchedulerJobInfoDto) => {
-	ElMessageBox.confirm(`确定要删除【${row.jobName}】？`, { type: "warning" }).then(async () => {
-		await schedulerApi.deleteSchedulerJob(state.tenantId, {
-			jobName: row.jobName,
-			jobGroup: state.activeJobGroup,
-		});
-		ElMessage.success("删除成功！");
-		await handleTableRefresh();
+	ElMessageBox.confirm(`确定要删除【${row.jobName}】？`, {
+		type: "warning",
+		async beforeClose() {
+			await schedulerApi.deleteSchedulerJob(state.tenantId, {
+				jobName: row.jobName,
+				jobGroup: state.activeJobGroup,
+			});
+			ElMessage.success("删除成功！");
+			await handleTableRefresh();
+		},
 	});
 };
 

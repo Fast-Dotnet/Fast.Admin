@@ -48,7 +48,7 @@
 		"vue-router": "^5.4.0"
 	},
 	"devDependencies": {
-		"@fast-china/eslint-config": "^2.1.10",
+		"@fast-china/eslint-config": "^2.1.11",
 		"@types/node": "^24.19.0",
 		"@types/nprogress": "^0.2.3",
 		"@vitejs/plugin-vue": "^6.0.10",
