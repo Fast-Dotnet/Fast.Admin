@@ -30,7 +30,7 @@
 					<br />
 					<span>Ip：{{ row.ip }}</span>
 					<br />
-					<span>时间：{{ dayjs(row.createdTime).format("YYYY-MM-DD HH:mm:ss") }}</span>
+					<span>时间：{{ row.createdTime }}</span>
 					<el-tag v-if="row.createdTime" type="info" round effect="light" size="small" style="margin-left: 5px">
 						{{ formatChineseRelativeTime(row.createdTime) }}
 					</el-tag>
@@ -111,7 +111,6 @@
 
 <script lang="ts" setup>
 import { computed, reactive } from "vue";
-import { dayjs } from "element-plus";
 import { formatChineseRelativeTime } from "@fast-china/utils";
 import VueJsonPretty from "vue-json-pretty";
 import { exceptionLogApi } from "@/api/services/Center/exceptionLog";

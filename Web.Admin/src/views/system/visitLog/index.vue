@@ -30,7 +30,7 @@
 					<br />
 					<span>Ip：{{ row.ip }}</span>
 					<br />
-					<span>时间：{{ dayjs(row.createdTime).format("YYYY-MM-DD HH:mm:ss") }}</span>
+					<span>时间：{{ row.createdTime }}</span>
 					<el-tag v-if="row.createdTime" type="info" round effect="light" size="small" style="margin-left: 5px">
 						{{ formatChineseRelativeTime(row.createdTime) }}
 					</el-tag>
@@ -62,7 +62,6 @@
 </template>
 
 <script lang="ts" setup>
-import { dayjs } from "element-plus";
 import { formatChineseRelativeTime } from "@fast-china/utils";
 import { visitLogApi } from "@/api/services/Center/visitLog";
 import { useApp } from "@/stores";

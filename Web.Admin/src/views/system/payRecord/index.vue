@@ -52,7 +52,7 @@
 					<span>金额：￥{{ row.paymentAmount?.toFixed(2) || 0.0 }}</span>
 					<br />
 					<template v-if="row.paymentTime">
-						<span>时间：{{ dayjs(row.paymentTime).format("YYYY-MM-DD HH:mm:ss") }}</span>
+						<span>时间：{{ row.paymentTime }}</span>
 						<el-tag v-if="row.paymentTime" type="info" round effect="light" size="small" style="margin-left: 5px">
 							{{ formatChineseRelativeTime(row.paymentTime) }}
 						</el-tag>
@@ -72,7 +72,7 @@
 						</span>
 						<br />
 						<template v-if="row.closeTime">
-							<span>时间：{{ dayjs(row.closeTime).format("YYYY-MM-DD HH:mm:ss") }}</span>
+							<span>时间：{{ row.closeTime }}</span>
 							<el-tag v-if="row.closeTime" type="info" round effect="light" size="small" style="margin-left: 5px">
 								{{ formatChineseRelativeTime(row.closeTime) }}
 							</el-tag>
@@ -95,7 +95,7 @@
 					<br />
 					<span>Ip：{{ row.ip }}</span>
 					<br />
-					<span>时间：{{ dayjs(row.createdTime).format("YYYY-MM-DD HH:mm:ss") }}</span>
+					<span>时间：{{ row.createdTime }}</span>
 					<el-tag v-if="row.createdTime" type="info" round effect="light" size="small" style="margin-left: 5px">
 						{{ formatChineseRelativeTime(row.createdTime) }}
 					</el-tag>
@@ -115,7 +115,6 @@
 </template>
 
 <script lang="ts" setup>
-import { dayjs } from "element-plus";
 import { formatChineseRelativeTime } from "@fast-china/utils";
 import { payRecordApi } from "@/api/services/Center/payRecord";
 import { useApp } from "@/stores";

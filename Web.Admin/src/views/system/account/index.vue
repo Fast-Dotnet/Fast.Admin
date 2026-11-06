@@ -36,7 +36,7 @@
 					<br />
 					<span>Ip：{{ row.firstLoginIp }}</span>
 					<br />
-					<span>时间：{{ dayjs(row.firstLoginTime).format("YYYY-MM-DD HH:mm:ss") }}</span>
+					<span>时间：{{ row.firstLoginTime }}</span>
 					<el-tag v-if="row.firstLoginTime" type="info" round effect="light" size="small" style="margin-left: 5px">
 						{{ formatChineseRelativeTime(row.firstLoginTime) }}
 					</el-tag>
@@ -72,7 +72,7 @@
 					<br />
 					<span>Ip：{{ row.lastLoginIp }}</span>
 					<br />
-					<span>时间：{{ dayjs(row.lastLoginTime).format("YYYY-MM-DD HH:mm:ss") }}</span>
+					<span>时间：{{ row.lastLoginTime }}</span>
 					<el-tag v-if="row.lastLoginTime" type="info" round effect="light" size="small" style="margin-left: 5px">
 						{{ formatChineseRelativeTime(row.lastLoginTime) }}
 					</el-tag>
@@ -108,9 +108,9 @@
 						<br />
 						<span>错误次数：{{ row.passwordErrorTime }}次</span>
 						<br />
-						<span>开始时间：{{ dayjs(row.lockStartTime).format("YYYY-MM-DD HH:mm:ss") }}</span>
+						<span>开始时间：{{ row.lockStartTime }}</span>
 						<br />
-						<span>结束时间：{{ dayjs(row.lockEndTime).format("YYYY-MM-DD HH:mm:ss") }}</span>
+						<span>结束时间：{{ row.lockEndTime }}</span>
 					</template>
 					<template v-else>
 						<el-tag type="info">未锁定</el-tag>
@@ -144,7 +144,7 @@
 
 <script lang="ts" setup>
 import { useTemplateRef } from "vue";
-import { ElMessage, ElMessageBox, dayjs } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 import { formatChineseRelativeTime } from "@fast-china/utils";
 import { CommonStatusEnum } from "@/api/enums/CommonStatusEnum";
 import { accountApi } from "@/api/services/Center/account";

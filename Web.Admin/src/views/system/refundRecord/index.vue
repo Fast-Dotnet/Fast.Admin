@@ -46,7 +46,7 @@
 					<span>金额：￥{{ row.refundAmount?.toFixed(2) || 0.0 }}</span>
 					<br />
 					<template v-if="row.refundTime">
-						<span>时间：{{ dayjs(row.refundTime).format("YYYY-MM-DD HH:mm:ss") }}</span>
+						<span>时间：{{ row.refundTime }}</span>
 						<el-tag v-if="row.refundTime" type="info" round effect="light" size="small" style="margin-left: 5px">
 							{{ formatChineseRelativeTime(row.refundTime) }}
 						</el-tag>
@@ -77,7 +77,7 @@
 					<br />
 					<span>Ip：{{ row.ip }}</span>
 					<br />
-					<span>时间：{{ dayjs(row.createdTime).format("YYYY-MM-DD HH:mm:ss") }}</span>
+					<span>时间：{{ row.createdTime }}</span>
 					<el-tag v-if="row.createdTime" type="info" round effect="light" size="small" style="margin-left: 5px">
 						{{ formatChineseRelativeTime(row.createdTime) }}
 					</el-tag>
@@ -88,7 +88,6 @@
 </template>
 
 <script lang="ts" setup>
-import { dayjs } from "element-plus";
 import { formatChineseRelativeTime } from "@fast-china/utils";
 import { refundRecordApi } from "@/api/services/Center/refundRecord";
 import { useApp } from "@/stores";

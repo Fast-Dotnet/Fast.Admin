@@ -1,4 +1,4 @@
-import { ElLoading, ElMessage, ElMessageBox, ElNotification, dayjs } from "element-plus";
+import { ElLoading, ElMessage, ElMessageBox, ElNotification } from "element-plus";
 import { useFastAxios } from "@fast-china/axios";
 import { installationIdentity, logger, toQueryString, withDefineType } from "@fast-china/utils";
 import { HttpTransportType, HubConnectionBuilder, HubConnectionState, LogLevel } from "@microsoft/signalr";
@@ -132,7 +132,7 @@ const initWebSocket = async (): Promise<void> => {
 			connection.on("ElsewhereLogin", async (data: TenantOnlineUserModel) => {
 				logger.warn("WebSocket", "其他地方登录", data);
 
-				const message = `账号于【${dayjs(data.lastLoginTime).format("YYYY-MM-DD HH:mm:ss")}】在【${data.lastLoginOS} ${data.lastLoginBrowser}(${
+				const message = `账号于【${data.lastLoginTime}】在【${data.lastLoginOS} ${data.lastLoginBrowser}(${
 					data.lastLoginIp
 				})】设备登录，如非本人操作，请及时修改密码！`;
 
@@ -157,7 +157,7 @@ const initWebSocket = async (): Promise<void> => {
 						message += `用户【${data.nickName}（${data.employeeNo}）】`;
 					}
 
-					message += `于【${dayjs(data.offlineTime).format("YYYY-MM-DD HH:mm:ss")}】被强制下线！`;
+					message += `于【${data.offlineTime}】被强制下线！`;
 
 					if (data.message) {
 						message += `\r\n原因：${data.message}`;

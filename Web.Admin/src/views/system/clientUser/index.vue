@@ -20,7 +20,7 @@
 					<br />
 					<span>Ip：{{ row.lastLoginIp }}</span>
 					<br />
-					<span>时间：{{ dayjs(row.lastLoginTime).format("YYYY-MM-DD HH:mm:ss") }}</span>
+					<span>时间：{{ row.lastLoginTime }}</span>
 					<el-tag v-if="row.lastLoginTime" type="info" round effect="light" size="small" style="margin-left: 5px">
 						{{ formatChineseRelativeTime(row.lastLoginTime) }}
 					</el-tag>
@@ -50,7 +50,6 @@
 </template>
 
 <script lang="ts" setup>
-import { dayjs } from "element-plus";
 import { formatChineseRelativeTime } from "@fast-china/utils";
 import { clientUserApi } from "@/api/services/Center/clientUser";
 import { useApp } from "@/stores";

@@ -15,7 +15,7 @@
 				</el-text>
 			</FaFormItem>
 			<FaFormItem prop="createdTime" label="发送时间">
-				{{ dayjs(state.formData.createdTime).format("YYYY-MM-DD HH:mm:ss") }}
+				{{ state.formData.createdTime }}
 			</FaFormItem>
 			<FaLayoutGridItem span="2">
 				<FaFormItem prop="title" label="标题">
@@ -47,7 +47,6 @@
 
 <script lang="ts" setup>
 import { computed, reactive, useTemplateRef } from "vue";
-import { dayjs } from "element-plus";
 import { withDefineType } from "@fast-china/utils";
 import VueJsonPretty from "vue-json-pretty";
 import { MessageSendChannelEnum } from "@/api/enums/MessageSendChannelEnum";

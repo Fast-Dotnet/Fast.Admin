@@ -13,7 +13,7 @@
 				<el-text type="info">{{ state.formData.employeeNo }}</el-text>
 			</FaFormItem>
 			<FaFormItem prop="entryDate" label="入职日期">
-				{{ dayjs(state.formData.entryDate).format("YYYY-MM-DD HH:mm:ss") }}
+				{{ state.formData.entryDate }}
 			</FaFormItem>
 			<FaFormItem prop="employeeName" label="职员名称">
 				<el-input v-model="state.formData.employeeName" maxlength="20" placeholder="请输入职员名称" />
@@ -59,7 +59,7 @@
 
 <script lang="ts" setup>
 import { reactive, useTemplateRef } from "vue";
-import { ElMessage, dayjs } from "element-plus";
+import { ElMessage } from "element-plus";
 import { type FaDialogInstance, type FaFormInstance, RegExps } from "fast-element-plus";
 import { withDefineType } from "@fast-china/utils";
 import { employeeApi } from "@/api/services/Admin/employee";

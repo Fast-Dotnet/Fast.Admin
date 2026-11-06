@@ -20,11 +20,11 @@
 						<Text name="CommonStatusEnum" :value="state.formData.status" />
 					</FaFormItem>
 					<FaFormItem prop="createdTime" label="创建时间">
-						{{ dayjs(state.formData.createdTime).format("YYYY-MM-DD HH:mm:ss") }}
+						{{ state.formData.createdTime }}
 					</FaFormItem>
 					<FaFormItem prop="updatedTime" label="更新时间">
 						<template v-if="state.formData.updatedTime">
-							{{ dayjs(state.formData.updatedTime).format("YYYY-MM-DD HH:mm:ss") }}
+							{{ state.formData.updatedTime }}
 						</template>
 						<template v-else>-</template>
 					</FaFormItem>
@@ -56,7 +56,7 @@
 			</FaFormItem>
 			<FaFormItem prop="firstLoginTime" label="时间">
 				<template v-if="state.formData.firstLoginTime">
-					{{ dayjs(state.formData.firstLoginTime).format("YYYY-MM-DD HH:mm:ss") }}
+					{{ state.formData.firstLoginTime }}
 				</template>
 				<template v-else>-</template>
 			</FaFormItem>
@@ -82,7 +82,7 @@
 			<FaFormItem prop="lastLoginProvince" label="地区">{{ state.formData.lastLoginProvince }} - {{ state.formData.lastLoginCity }}</FaFormItem>
 			<FaFormItem prop="lastLoginTime" label="时间">
 				<template v-if="state.formData.lastLoginTime">
-					{{ dayjs(state.formData.lastLoginTime).format("YYYY-MM-DD HH:mm:ss") }}
+					{{ state.formData.lastLoginTime }}
 				</template>
 				<template v-else>-</template>
 			</FaFormItem>
@@ -99,9 +99,9 @@
 			<FaFormItem prop="lockStartTime" label="锁定时间">
 				<template v-if="state.formData.lockStartTime">
 					<el-text type="warning">
-						{{ dayjs(state.formData.lockStartTime).format("YYYY-MM-DD HH:mm:ss") }}
+						{{ state.formData.lockStartTime }}
 						~
-						{{ dayjs(state.formData.lockEndTime).format("YYYY-MM-DD HH:mm:ss") }}
+						{{ state.formData.lockEndTime }}
 					</el-text>
 				</template>
 				<template v-else>-</template>
@@ -112,7 +112,6 @@
 
 <script lang="ts" setup>
 import { reactive, useTemplateRef } from "vue";
-import { dayjs } from "element-plus";
 import { withDefineType } from "@fast-china/utils";
 import { accountApi } from "@/api/services/Center/account";
 import type { FaDialogInstance } from "fast-element-plus";
