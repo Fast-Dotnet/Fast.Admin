@@ -71,7 +71,7 @@ internal static partial class MenuSeedData
             WebKeepAlive = true,
             HasMobile = true,
             MobileIcon = "https://image.fastdotnet.com/menu/mobile/serial.png",
-            MobileRouter = "pages_admin/serial/page/index",
+            MobileRouter = "/pages_admin/serial/page/index",
             Visible = true,
             Sort = menuSort,
             Status = CommonStatusEnum.Enable,
