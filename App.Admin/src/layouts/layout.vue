@@ -68,11 +68,20 @@
 					和
 					<text class="fa-auth-mobile__link" @click.stop="router.push(CommonRoute.PrivacyAgreement)">《隐私政策》</text>
 				</view>
-				<view class="fa-auth-mobile__actions">
-					<wd-button type="info" block variant="plain" @click="authMobilePopupRef?.close()">暂不登录</wd-button>
-					<wd-button open-type="getPhoneNumber" type="primary" block @getphonenumber="handlePhoneLogin">授权手机号</wd-button>
-				</view>
 			</view>
+			<template #footer="{ loading, close }">
+				<wd-button custom-style="flex: 1;" type="info" block variant="plain" :disabled="loading" @click="close">暂不登录</wd-button>
+				<wd-button
+					custom-style="flex: 1;"
+					open-type="getPhoneNumber"
+					type="primary"
+					block
+					:loading="loading"
+					@getphonenumber="handlePhoneLogin"
+				>
+					授权手机号
+				</wd-button>
+			</template>
 		</FaPopup>
 		<!-- #endif -->
 	</wd-config-provider>

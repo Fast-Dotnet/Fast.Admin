@@ -1,7 +1,7 @@
 <template>
 	<wd-popup
 		v-bind="wdPopupProps"
-		:custom-class="`fa-popup ${props.customClass}`"
+		:custom-class="`fa-popup ${hasFooter() ? 'fa-popup__with-footer' : ''} ${props.customClass}`"
 		:custom-style="`${state.style} ${props.customStyle}`"
 		v-model="state.visible"
 		:safe-area-inset-bottom="props.position !== 'center' && props.position !== 'top'"
@@ -14,7 +14,49 @@
 		@click-modal="() => emit('clickModal')"
 		@close="handleClose"
 	>
-		<slot />
+		<view v-if="hasTitle" class="fa-popup__header">
+			<text class="fa-popup__title">{{ props.title }}</text>
+		</view>
+		<button
+			v-if="hasCloseIcon"
+			class="fa-popup__close"
+			:class="{ 'fa-popup__close--floating': !hasTitle }"
+			hover-class="none"
+			:disabled="state.loading"
+			@click="handleCloseClick"
+		>
+			<view class="fa-popup__close-icon">
+				<wd-icon name="close" size="18px" />
+			</view>
+		</button>
+		<view class="fa-popup__body">
+			<slot :loading="state.loading" />
+		</view>
+		<view v-if="hasFooter()" class="fa-popup__footer">
+			<slot name="footer" :loading="state.loading" :close="handleCloseClick" />
+			<wd-button
+				v-if="props.showCloseButton"
+				custom-style="flex: 1;"
+				type="info"
+				variant="plain"
+				block
+				:disabled="state.loading"
+				@click="handleCloseClick"
+			>
+				{{ props.closeButtonText }}
+			</wd-button>
+			<wd-button
+				v-if="props.showConfirmButton"
+				custom-style="flex: 1;"
+				type="primary"
+				block
+				:loading="state.loading"
+				:disabled="props.disabledConfirmButton"
+				@click="handleConfirmClick"
+			>
+				{{ props.confirmButtonText }}
+			</wd-button>
+		</view>
 		<FaLoading mask :loading="state.loading" />
 	</wd-popup>
 </template>
@@ -24,6 +66,7 @@ import { computed, nextTick, reactive, toRef } from "vue";
 import { addCssUnit, callOptionalFunction, definePropType, useProps } from "@fast-china/utils";
 import { popupProps } from "@wot-ui/ui/components/wd-popup/types";
 import FaLoading from "../loading/index.vue";
+import type { VNode } from "vue";
 
 defineOptions({
 	name: "Popup",
@@ -47,11 +90,29 @@ const props = defineProps({
 	height: [String, Number],
 	/** 弹窗显示后的初始化回调，优先于 open 方法传入的回调 */
 	afterOpen: {
-		type: definePropType<() => void>(Function),
+		type: definePropType<() => void | Promise<void>>(Function),
+	},
+	/** 弹窗标题，仅底部和居中弹窗显示 */
+	title: String,
+	/** 是否显示确认按钮 */
+	showConfirmButton: Boolean,
+	/** 显示底部取消按钮，与右上角的 closable 独立控制 */
+	showCloseButton: Boolean,
+	/** 禁用确认按钮 */
+	disabledConfirmButton: Boolean,
+	/** 确认按钮文字，默认确认 */
+	confirmButtonText: {
+		type: String,
+		default: "确认",
+	},
+	/** 关闭按钮文字，默认取消 */
+	closeButtonText: {
+		type: String,
+		default: "取消",
 	},
 });
 
-const wdPopupProps = useProps(props, popupProps, ["safeAreaInsetBottom"]);
+const wdPopupProps = useProps(props, popupProps, ["safeAreaInsetBottom", "closable"]);
 
 const emit = defineEmits<{
 	/** 进入前触发 */
@@ -72,6 +133,15 @@ const emit = defineEmits<{
 	open: [];
 	/** 弹出层关闭时触发 */
 	close: [];
+	/** 确认按钮点击事件 */
+	confirm: [];
+}>();
+
+const slots = defineSlots<{
+	/** 默认内容插槽 */
+	default?: (props: { loading: boolean }) => VNode[];
+	/** 底部插槽 */
+	footer?: (props: { loading: boolean; close: () => void }) => VNode[];
 }>();
 
 const state = reactive({
@@ -89,6 +159,11 @@ const state = reactive({
 		return result;
 	}),
 });
+
+const hasTitle = computed(() => (props.position === "bottom" || props.position === "center") && !!props.title);
+const hasCloseIcon = computed(() => (props.position === "bottom" || props.position === "center") && props.closable);
+
+const hasFooter = () => !!slots.footer || props.showCloseButton || props.showConfirmButton;
 
 const handleOpen = async (openFunction?: () => void | Promise<void>) => {
 	state.visible = true;
@@ -125,6 +200,16 @@ const handleLoading = async (loadingFunction: () => void | Promise<void>) => {
 	}
 };
 
+const handleConfirmClick = () => {
+	if (state.loading) return;
+	emit("confirm");
+};
+
+const handleCloseClick = () => {
+	if (state.loading) return;
+	handleClose();
+};
+
 defineExpose({
 	/** 加载状态 */
 	loading: toRef(state, "loading"),
@@ -138,3 +223,77 @@ defineExpose({
 	doLoading: handleLoading,
 });
 </script>
+
+<style lang="scss" scoped>
+.fa-popup__header {
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 52px;
+	padding: 12rpx 68px;
+	border-bottom: 1px solid var(--wot-border-light);
+	background: var(--wot-filled-oppo);
+}
+
+.fa-popup__title {
+	min-width: 0;
+	font-size: var(--wot-typography-body-size-large);
+	font-weight: var(--wot-font-weight-semibold);
+	text-align: center;
+	overflow-wrap: anywhere;
+}
+
+.fa-popup__close {
+	position: absolute;
+	top: 4px;
+	right: 12px;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: transparent;
+
+	&::after {
+		border: 0;
+	}
+}
+
+.fa-popup__close--floating {
+	top: 12px;
+}
+
+.fa-popup__close-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	border-radius: var(--wot-radius-full);
+	color: var(--wot-popup-close-color, var(--wot-icon-auxiliary));
+	background: var(--wot-filled-bottom);
+}
+
+.fa-popup__body {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	min-height: 0;
+	overflow-y: auto;
+}
+
+.fa-popup__footer {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	gap: 20rpx;
+	padding: 24rpx var(--fa-page-padding);
+	border-top: 1px solid var(--wot-border-light);
+	background: var(--wot-filled-oppo);
+}
+</style>

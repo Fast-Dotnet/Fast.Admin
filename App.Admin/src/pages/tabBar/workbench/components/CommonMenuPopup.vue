@@ -4,98 +4,98 @@
 		custom-class="fa-popup__card"
 		height="80%"
 		position="bottom"
+		title="编辑常用应用"
+		closable
+		show-confirm-button
+		show-close-button
+		confirm-button-text="保存"
+		:disabled-confirm-button="!!state.dragState"
 		:close-on-click-modal="false"
 		:z-index="2001"
 		@after-enter="measureLayout"
 		@close="handleDragCancel"
+		@confirm="handleConfirm"
 	>
-		<view class="commonMenu-popup">
-			<view class="popup__header">
-				<wd-button type="primary" variant="text" @click="popupRef?.close()">取消</wd-button>
-				<text class="section-title">编辑常用应用</text>
-				<wd-button type="primary" variant="text" :disabled="!!state.dragState" @click="handleConfirm">保存</wd-button>
-			</view>
-			<scroll-view class="menu-warp" scroll-y :scroll-top="state.scrollPosition" @scroll="handleScroll">
-				<view class="menu-content">
-					<view v-if="state.selectedMenus.length" class="fa-card selected-list">
-						<view class="selected-list__header">
-							<text class="section-title">常用应用</text>
-							<text class="selected-list__tip">按住图片拖动排序</text>
-						</view>
-						<movable-area class="selected-grid" :style="{ height: `${Math.ceil(state.selectedMenus.length / 4) * state.rowHeight}px` }">
-							<movable-view
-								v-for="item in draggableMenus"
-								:key="item.menu.menuCode"
-								class="selected-menu"
-								:class="{ 'is-dragging': state.dragState?.menuCode === item.menu.menuCode }"
-								:style="{
-									width: `${state.gridWidth / 4}px`,
-									height: `${state.rowHeight}px`,
-									visibility: state.gridWidth ? 'visible' : 'hidden',
-								}"
-								:x="item.x"
-								:y="item.y"
-								direction="all"
-								disabled
-								:animation="state.dragState?.menuCode !== item.menu.menuCode"
-							>
-								<!-- #ifdef H5 -->
-								<!-- 原生节点保留 PointerEvent 字段，避免 uni-app 包装后丢失指针类型和坐标。 -->
-								<div @pointerdown.stop="handleDragPointerStart($event, item.menu)">
-									<!-- #endif -->
-									<view
-										class="selected-menu__icon"
-										@touchstart.stop="handleDragStart($event, item.menu)"
-										@touchmove.stop.prevent="handleDragTouchMove"
-										@touchend.stop="handleDragEnd"
-										@touchcancel.stop="handleDragCancel"
-									>
-										<FaImage
-											v-if="item.menu.icon?.includes('/')"
-											custom-class="selected-menu__picture"
-											width="76rpx"
-											height="76rpx"
-											:src="item.menu.icon"
-											mode="aspectFit"
-											original
-											:hide-image="false"
-											:enable-preview="false"
-										/>
-										<FaIcon v-else custom-class="selected-menu__picture" :name="item.menu.icon || 'menu'" size="44rpx" />
-										<button
-											class="selected-menu__remove"
-											hover-class="none"
-											@pointerdown.stop
-											@touchstart.stop
-											@touchmove.stop
-											@touchend.stop
-											@click.stop="handleToggleMenu(item.menu)"
-										>
-											<view class="selected-menu__remove-icon"><wd-icon name="close" size="12px" /></view>
-										</button>
-									</view>
-									<!-- #ifdef H5 -->
-								</div>
+		<scroll-view class="menu-warp" scroll-y :scroll-top="state.scrollPosition" @scroll="handleScroll">
+			<view class="menu-content">
+				<view v-if="state.selectedMenus.length" class="fa-card selected-list">
+					<view class="selected-list__header">
+						<text class="section-title">常用应用</text>
+						<text class="selected-list__tip">按住图片拖动排序</text>
+					</view>
+					<movable-area class="selected-grid" :style="{ height: `${Math.ceil(state.selectedMenus.length / 4) * state.rowHeight}px` }">
+						<movable-view
+							v-for="item in draggableMenus"
+							:key="item.menu.menuCode"
+							class="selected-menu"
+							:class="{ 'is-dragging': state.dragState?.menuCode === item.menu.menuCode }"
+							:style="{
+								width: `${state.gridWidth / 4}px`,
+								height: `${state.rowHeight}px`,
+								visibility: state.gridWidth ? 'visible' : 'hidden',
+							}"
+							:x="item.x"
+							:y="item.y"
+							direction="all"
+							disabled
+							:animation="state.dragState?.menuCode !== item.menu.menuCode"
+						>
+							<!-- #ifdef H5 -->
+							<!-- 原生节点保留 PointerEvent 字段，避免 uni-app 包装后丢失指针类型和坐标。 -->
+							<div @pointerdown.stop="handleDragPointerStart($event, item.menu)">
 								<!-- #endif -->
-								<text class="selected-menu__title">{{ item.menu.menuName }}</text>
-							</movable-view>
-						</movable-area>
-					</view>
-
-					<view v-for="item in props.menus" :key="item.menuCode" class="fa-card menu-list">
-						<view class="section-header">
-							<view class="section-title">
-								<view class="section-icon">
-									<view class="section-marker" :style="{ backgroundColor: getMarkerColor(item) }" />
+								<view
+									class="selected-menu__icon"
+									@touchstart.stop="handleDragStart($event, item.menu)"
+									@touchmove.stop.prevent="handleDragTouchMove"
+									@touchend.stop="handleDragEnd"
+									@touchcancel.stop="handleDragCancel"
+								>
+									<FaImage
+										v-if="item.menu.icon?.includes('/')"
+										custom-class="selected-menu__picture"
+										width="76rpx"
+										height="76rpx"
+										:src="item.menu.icon"
+										mode="aspectFit"
+										original
+										:hide-image="false"
+										:enable-preview="false"
+									/>
+									<FaIcon v-else custom-class="selected-menu__picture" :name="item.menu.icon || 'menu'" size="44rpx" />
+									<button
+										class="selected-menu__remove"
+										hover-class="none"
+										@pointerdown.stop
+										@touchstart.stop
+										@touchmove.stop
+										@touchend.stop
+										@click.stop="handleToggleMenu(item.menu)"
+									>
+										<view class="selected-menu__remove-icon"><wd-icon name="close" size="12px" /></view>
+									</button>
 								</view>
-								<text>{{ item.menuName }}</text>
-							</view>
-						</view>
-						<MenuGrid :menus="item.children" editable :selected-menu-codes="selectedMenuCodes" @select="handleToggleMenu" />
-					</view>
+								<!-- #ifdef H5 -->
+							</div>
+							<!-- #endif -->
+							<text class="selected-menu__title">{{ item.menu.menuName }}</text>
+						</movable-view>
+					</movable-area>
 				</view>
-			</scroll-view>
-		</view>
+
+				<view v-for="item in props.menus" :key="item.menuCode" class="fa-card menu-list">
+					<view class="section-header">
+						<view class="section-title">
+							<view class="section-icon">
+								<view class="section-marker" :style="{ backgroundColor: getMarkerColor(item) }" />
+							</view>
+							<text>{{ item.menuName }}</text>
+						</view>
+					</view>
+					<MenuGrid :menus="item.children" editable :selected-menu-codes="selectedMenuCodes" @select="handleToggleMenu" />
+				</view>
+			</view>
+		</scroll-view>
 	</FaPopup>
 </template>
 
@@ -442,21 +442,6 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
-.commonMenu-popup {
-	display: flex;
-	flex-direction: column;
-	height: 100%;
-}
-
-.popup__header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 16rpx 24rpx;
-	background: var(--wot-card-bg, var(--wot-filled-oppo));
-	border-bottom: 1px solid var(--wot-card-border-color, var(--wot-border-light));
-}
-
 .menu-warp {
 	flex: 1;
 	min-height: 0;

@@ -91,10 +91,3 @@
 .fa-auth-mobile__agreement .fa-auth-mobile__link {
 	color: var(--wot-primary-6);
 }
-
-.fa-auth-mobile__actions {
-	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 20rpx;
-	margin-top: 32rpx;
-}

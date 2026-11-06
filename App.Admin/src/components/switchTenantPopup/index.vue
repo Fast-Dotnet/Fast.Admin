@@ -1,25 +1,19 @@
 <template>
-	<FaPopup ref="popupRef" custom-class="fa-popup__card" height="70%" position="bottom" :z-index="2001">
-		<view class="workspace-popup">
-			<view class="workspace-popup__header">
-				<text class="workspace-popup__title">切换工作空间</text>
-				<wd-button type="primary" variant="text" size="small" @click="popupRef?.close()">取消</wd-button>
-			</view>
-			<scroll-view class="tenant-list" scroll-y>
-				<view class="tenant-list__content">
-					<view v-for="item in tenantList" :key="item.userKey" class="fa-card tenant-card" @click="handleTenantLogin(item)">
-						<image class="tenant-card__image" :src="item.logoUrl" mode="aspectFill" />
-						<view class="tenant-card__content">
-							<view class="tenant-card__name">{{ item.tenantName }}</view>
-							<view class="tenant-card__meta">{{ item.departmentName || "无部门" }} · {{ item.employeeName }}</view>
-						</view>
-						<FaTag size="small" name="EditionEnum" :value="item.edition" />
-						<wd-icon v-if="item.userKey === userInfoStore.userKey" name="check" size="28rpx" color="var(--wot-primary-6)" />
-						<wd-icon v-else name="arrow-right" size="28rpx" color="var(--wot-text-auxiliary)" />
+	<FaPopup ref="popupRef" custom-class="fa-popup__card" title="切换工作空间" height="70%" position="bottom" closable :z-index="2001">
+		<scroll-view class="tenant-list" scroll-y>
+			<view class="tenant-list__content">
+				<view v-for="item in tenantList" :key="item.userKey" class="fa-card tenant-card" @click="handleTenantLogin(item)">
+					<image class="tenant-card__image" :src="item.logoUrl" mode="aspectFill" />
+					<view class="tenant-card__content">
+						<view class="tenant-card__name">{{ item.tenantName }}</view>
+						<view class="tenant-card__meta">{{ item.departmentName || "无部门" }} · {{ item.employeeName }}</view>
 					</view>
+					<FaTag size="small" name="EditionEnum" :value="item.edition" />
+					<wd-icon v-if="item.userKey === userInfoStore.userKey" name="check" size="28rpx" color="var(--wot-primary-6)" />
+					<wd-icon v-else name="arrow-right" size="28rpx" color="var(--wot-text-auxiliary)" />
 				</view>
-			</scroll-view>
-		</view>
+			</view>
+		</scroll-view>
 	</FaPopup>
 </template>
 
@@ -87,26 +81,6 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
-.workspace-popup {
-	display: flex;
-	flex-direction: column;
-	height: 100%;
-}
-
-.workspace-popup__header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 16rpx 24rpx;
-	background: var(--wot-card-bg, var(--wot-filled-oppo));
-	border-bottom: 1px solid var(--wot-card-border-color, var(--wot-border-light));
-}
-
-.workspace-popup__title {
-	font-size: 32rpx;
-	font-weight: var(--wot-font-weight-semibold);
-}
-
 .tenant-list {
 	flex: 1;
 	min-height: 0;
