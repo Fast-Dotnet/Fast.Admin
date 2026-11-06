@@ -48,7 +48,7 @@
 import { ref } from "vue";
 import { apiApi } from "@/api/services/Center/api";
 import { usePaging } from "@/hooks";
-import DevApiDetail from "../detail/index.vue";
+import DevApiDetail from "./detail/index.vue";
 
 definePage({
 	name: "DevApi",
