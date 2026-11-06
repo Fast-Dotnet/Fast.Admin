@@ -28,8 +28,10 @@ const handleReloadLogin = (response: AxiosResponse) => {
 			title: "温馨提示",
 			type: "warning",
 			confirmButtonText: "重新登录",
-			async beforeClose() {
-				await useUserInfo().logout();
+			beforeClose(_action, _instance, done) {
+				useUserInfo()
+					.logout()
+					.finally(() => done());
 			},
 		}).finally(() => {
 			loginCallBack = false;

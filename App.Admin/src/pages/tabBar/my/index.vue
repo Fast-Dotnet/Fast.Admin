@@ -156,18 +156,22 @@ const storageSize = computed(() => {
 
 /** 清除缓存 */
 const handleClearCache = throttle(() => {
-	useMessageBox.confirm("清除缓存后需要重新登录，确定要清除？").then(async () => {
-		appStore.clearAppCache();
-		await userInfoStore.logout();
-		useToast.success("退出登录成功");
+	useMessageBox.confirm("清除缓存后需要重新登录，确定要清除？", {
+		async beforeConfirm() {
+			appStore.clearAppCache();
+			await userInfoStore.logout();
+			useToast.success("退出登录成功");
+		},
 	});
 });
 
 /** 退出登录 */
 const handleLogout = throttle(() => {
-	useMessageBox.confirm("确定要退出登录？").then(async () => {
-		await userInfoStore.logout();
-		useToast.success("退出登录成功");
+	useMessageBox.confirm("确定要退出登录？", {
+		async beforeConfirm() {
+			await userInfoStore.logout();
+			useToast.success("退出登录成功");
+		},
 	});
 });
 

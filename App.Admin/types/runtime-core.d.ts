@@ -37,6 +37,12 @@ interface RouteOptions {
 	 */
 	pageScroll?: boolean;
 	/**
+	 * 页面访问权限码
+	 *
+	 * @remarks 数组中任一命中即可访问；未配置时不额外限制。仅超级管理员跳过校验。
+	 */
+	authCode?: string | string[];
+	/**
 	 * 登录后是否禁止访问当前页面
 	 *
 	 * @defaultValue false
@@ -60,6 +66,8 @@ interface RouteOptions {
 }
 
 declare module "@wot-ui/router" {
+	// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- 通过模块扩展将页面配置并入路由记录类型
+	interface RouteRecordRaw extends RouteOptions {}
 	// eslint-disable-next-line @typescript-eslint/no-empty-object-type -- 通过模块扩展将页面配置并入路由类型
 	interface RouteLocationNormalized extends RouteOptions {}
 }
