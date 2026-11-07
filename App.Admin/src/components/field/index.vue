@@ -1,11 +1,15 @@
 <template>
 	<view class="fa-field">
 		<text class="fa-field__title">{{ props.label }}</text>
-		<text class="fa-field__content" :style="{ color: props.color, fontSize: props.size ? `${addCssUnit(props.size)}` : undefined }">
-			<slot>
+		<slot>
+			<text
+				class="fa-field__content"
+				:selectable="props.selectable"
+				:style="{ color: props.color, fontSize: props.size ? `${addCssUnit(props.size)}` : undefined }"
+			>
 				{{ props.value }}
-			</slot>
-		</text>
+			</text>
+		</slot>
 	</view>
 </template>
 
@@ -41,6 +45,8 @@ const props = defineProps({
 		type: String,
 		default: "var(--wot-text-main)",
 	},
+	/** 是否允许选中内容文本 */
+	selectable: Boolean,
 });
 </script>
 
@@ -57,7 +63,7 @@ const props = defineProps({
 	color: var(--wot-text-auxiliary);
 }
 
-.fa-field__content {
+:deep(.fa-field__content) {
 	flex: 1;
 	min-width: 0;
 	overflow-wrap: anywhere;

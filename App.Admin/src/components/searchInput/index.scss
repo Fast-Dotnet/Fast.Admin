@@ -32,6 +32,15 @@
 	}
 }
 
+.fa-search-input__footer {
+	display: flex;
+	align-items: center;
+	gap: 16rpx;
+	&:not(:empty) {
+		margin-top: 20rpx;
+	}
+}
+
 .fa-search-input__filter {
 	display: flex;
 	align-items: center;

@@ -28,7 +28,7 @@
 			</view>
 			<slot name="suffix" />
 		</view>
-		<view class="fa-search-input__footer">
+		<view v-if="$slots.footer" class="fa-search-input__footer">
 			<slot name="footer" />
 		</view>
 		<FaPopup
