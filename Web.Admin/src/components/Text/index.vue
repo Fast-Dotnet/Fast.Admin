@@ -1,6 +1,8 @@
 <template>
 	<ElText v-bind="elTextProps" :type="dictionary?.type ?? props.type" :title="dictionary?.tips">
-		{{ dictionary?.label }}
+		<slot :label="dictionary?.label" :tips="dictionary?.tips">
+			{{ dictionary?.label }}
+		</slot>
 	</ElText>
 </template>
 

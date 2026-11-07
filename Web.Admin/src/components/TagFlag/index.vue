@@ -9,7 +9,9 @@
 			@click="(evt: MouseEvent) => emit('click', evt, item)"
 			@close="(evt: MouseEvent) => emit('close', evt, item)"
 		>
-			{{ item.label }}
+			<slot :label="item.label" :tips="item.tips" :item="item">
+				{{ item.label }}
+			</slot>
 		</ElTag>
 	</ElSpace>
 </template>

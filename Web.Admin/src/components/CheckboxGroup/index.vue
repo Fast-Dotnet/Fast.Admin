@@ -59,6 +59,7 @@ const emit = defineEmits<{
 const modelValue = defineModel<string | number | boolean>();
 
 const appStore = useApp();
+
 // 当前字典中允许显示的选项
 const dictionaries = computed(() => {
 	if (!props.name) return [];
