@@ -1,21 +1,22 @@
 <template>
-	<view class="page">
-		<z-paging ref="paging" v-model="pagedList" @query="pagingQuery">
-			<template #top>
-				<FaSearchInput
-					:filter="false"
-					v-model:search-param="searchParam"
-					placeholder="搜索接口地址、名称、模块"
-					@confirm="pagingRefresh()"
-					@clear="pagingRefresh()"
-					@search="pagingRefresh()"
-				/>
-			</template>
+	<FaPaging :request-api="apiApi.queryApiPaged">
+		<template #top="{ searchParam, setParam, refresh }">
+			<FaSearchInput
+				:filter="false"
+				:search-param="searchParam"
+				placeholder="搜索接口地址、名称、模块"
+				@update:search-param="setParam"
+				@confirm="refresh()"
+				@clear="refresh()"
+				@search="refresh()"
+			/>
+		</template>
 
-			<wd-card v-for="item in pagedList" :key="item.apiId" custom-class="wd-card__page">
+		<template #default="{ pagedList }">
+			<FaCard v-for="item in pagedList" :key="item.apiId" @click="editFormRef.detail(item)">
 				<template #title>
-					<text class="wd-card__title-text">{{ item.apiName }}</text>
-					<view class="wd-card__title-view">
+					<text class="fa-card__title-text">{{ item.apiName }}</text>
+					<view class="fa-card__title-view">
 						<FaTag name="HttpRequestActionEnum" :value="item.action" />
 						<FaTag name="HttpRequestMethodEnum" :value="item.method" />
 					</view>
@@ -33,21 +34,16 @@
 					<wd-tag v-if="item.hasAuth" type="primary">需登录</wd-tag>
 					<wd-tag v-if="item.hasPermission" type="warning">权限校验</wd-tag>
 				</view>
+			</FaCard>
+		</template>
+	</FaPaging>
 
-				<template #footer>
-					<wd-button size="small" type="info" variant="plain" @click="editFormRef.detail(item)">详情</wd-button>
-				</template>
-			</wd-card>
-		</z-paging>
-
-		<DevApiDetail ref="editFormRef" />
-	</view>
+	<DevApiDetail ref="editFormRef" />
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
 import { apiApi } from "@/api/services/Center/api";
-import { usePaging } from "@/hooks";
 import DevApiDetail from "./detail/index.vue";
 
 definePage({
@@ -58,8 +54,6 @@ definePage({
 		navigationBarTitleText: "接口管理",
 	},
 });
-
-const { paging, pagedList, searchParam, pagingQuery, pagingRefresh } = usePaging((input) => apiApi.queryApiPaged(input));
 
 const editFormRef = ref<InstanceType<typeof DevApiDetail>>();
 </script>

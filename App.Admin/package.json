@@ -66,6 +66,7 @@
 		"terser": "^5.51.2",
 		"typescript": "^6.0.3",
 		"vite": "5.2.8",
+		"vue-component-type-helpers": "^3.3.14",
 		"vue-tsc": "^3.3.11"
 	},
 	"engines": {

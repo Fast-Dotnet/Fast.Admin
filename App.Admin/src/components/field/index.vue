@@ -30,6 +30,7 @@ const props = defineProps({
 	/** 值 */
 	value: {
 		type: [String, Number, Boolean],
+		default: undefined,
 	},
 	/** 内容的字体大小 */
 	size: {

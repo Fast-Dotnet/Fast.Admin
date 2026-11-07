@@ -27,8 +27,8 @@ function confirm(message: string, options?: MessageBoxConfirmOptions): Promise<D
 function confirm(messageOrOptions: MessageBoxConfirmOptions | string, options: MessageBoxConfirmOptions = {}): Promise<DialogResult> {
 	const { beforeConfirm, ...baseOptions } =
 		typeof messageOrOptions === "string"
-			? { ...options, title: options.title ?? defaultTitle, msg: messageOrOptions }
-			: { ...messageOrOptions, title: messageOrOptions.title ?? defaultTitle };
+			? { ...options, title: options.title ?? defaultTitle, theme: options.theme ?? "text", msg: messageOrOptions }
+			: { ...messageOrOptions, title: messageOrOptions.title ?? defaultTitle, theme: options.theme ?? "text" };
 
 	const dialogOptions: DialogOptions = baseOptions;
 

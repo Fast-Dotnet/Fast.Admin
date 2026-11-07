@@ -49,8 +49,10 @@
 		<!-- 消息弹窗 -->
 		<wd-dialog selector="#fast_dialog">
 			<template v-if="wdHookState.wdDialogState.loading" #actions>
-				<view class="wd-dialog__actions wd-dialog__block">
-					<wd-button custom-class="wd-dialog__actions-btn wd-dialog__actions-btn--confirm" block loading>加载中...</wd-button>
+				<view style="padding: var(--wot-padding-super-loose) 0 0">
+					<wd-button custom-class="wd-dialog__actions-btn wd-dialog__actions-btn--confirm" type="info" variant="plain" block loading>
+						加载中...
+					</wd-button>
 				</view>
 			</template>
 		</wd-dialog>

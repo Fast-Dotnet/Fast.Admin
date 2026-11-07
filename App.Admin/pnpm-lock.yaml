@@ -111,6 +111,9 @@ importers:
       vite:
         specifier: 5.2.8
         version: 5.2.8(@types/node@24.19.1)(sass@1.97.3)(terser@5.51.2)
+      vue-component-type-helpers:
+        specifier: ^3.3.14
+        version: 3.3.14
       vue-tsc:
         specifier: ^3.3.11
         version: 3.3.11(typescript@6.0.3)
@@ -5399,6 +5402,9 @@ packages:
 
   vscode-uri@3.2.0:
     resolution: {integrity: sha512-m2gXo3bn0G1kT9InzMf07fTbqMbGtyckj3bH5ktLO+1Ssv+yiATZ4dhwaQv9UZWxJh6E9IFGnQyjgWVDWVBDrg==}
+
+  vue-component-type-helpers@3.3.14:
+    resolution: {integrity: sha512-Pq3+OnbCiPCHk0R7KSZrx+j/XXaUn2kSQ1epxq60w8CPbByLjC1EJgV51n4WY851sTXUVzsNMuitywdkdVyKjA==}
 
   vue-demi@0.14.10:
     resolution: {integrity: sha512-nMZBOwuzabUO0nLgIcc6rycZEebF6eeUfaiQx9+WSk8e29IbLvPU9feI6tqW4kTo3hvoYAJkMh8n8D0fuISphg==}
@@ -12235,6 +12241,8 @@ snapshots:
       terser: 5.51.2
 
   vscode-uri@3.2.0: {}
+
+  vue-component-type-helpers@3.3.14: {}
 
   vue-demi@0.14.10(vue@3.5.43(typescript@6.0.3)):
     dependencies:

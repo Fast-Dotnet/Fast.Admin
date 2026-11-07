@@ -76,7 +76,7 @@
 	</view>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" generic="TInput extends PagedInput = PagedInput">
 import { computed, onMounted, reactive, ref, watch } from "vue";
 import { createOneMonthRangeFromToday, definePropType, throttle, withDefineType } from "@fast-china/utils";
 import dayjs from "dayjs";
@@ -138,9 +138,7 @@ const emit = defineEmits<{
 /** 搜索文本，与 searchParam.searchValue 双向同步 */
 const modelValue = defineModel<string>();
 /** 分页搜索参数，包含搜索文本和格式化后的日期范围 */
-const searchParam = defineModel<PagedInput>("searchParam", {
-	default: () => ({}),
-});
+const searchParam = defineModel<Partial<TInput>>("searchParam", { default: () => ({}) });
 
 const filterPopupRef = ref<InstanceType<typeof FaPopup>>();
 
@@ -192,12 +190,12 @@ const handleScanClick = throttle(() => {
 });
 
 const handleInput = (detail: UniHelper.InputOnInputDetail) => {
-	searchParam.value.searchValue = detail.value;
+	searchParam.value = { ...searchParam.value, searchValue: detail.value };
 	emit("input", detail);
 };
 
 const handleClear = () => {
-	searchParam.value.searchValue = "";
+	searchParam.value = { ...searchParam.value, searchValue: "" };
 	emit("clear");
 };
 

@@ -148,6 +148,7 @@ const agreementCheck = async () => {
 	if (state.formData.agreed) return true;
 	try {
 		await confirmAgreementDialog.confirm({
+			theme: "text",
 			confirmButtonText: "同意",
 			cancelButtonText: "取消",
 			closeOnClickModal: false,

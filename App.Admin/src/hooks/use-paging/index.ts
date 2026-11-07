@@ -21,8 +21,8 @@ type UsePagingResult<TResult, TInput> = {
 	pagingVirtualListChange: (list: TResult[]) => void;
 	/** 重新加载列表；传入页码时刷新至该页，省略时从首页加载。 */
 	pagingRefresh: {
-		(): void;
-		(pageIndex: number): void;
+		(): Promise<void>;
+		(pageIndex: number): Promise<void>;
 	};
 };
 
@@ -78,7 +78,7 @@ export const usePaging = <TResult, TInput extends PagedInput = PagedInput>(
 			}
 			await zPagingRef.value.completeByTotal(pageData, totalRows);
 		} catch {
-			zPagingRef.value.complete(false);
+			await zPagingRef.value.complete(false);
 		}
 	};
 
@@ -88,12 +88,12 @@ export const usePaging = <TResult, TInput extends PagedInput = PagedInput>(
 	};
 
 	/** 重新加载列表；传入页码时刷新至该页，省略时从首页加载。 */
-	function pagingRefresh(): void;
-	function pagingRefresh(pageIndex?: number): void {
+	async function pagingRefresh(): Promise<void>;
+	async function pagingRefresh(pageIndex?: number): Promise<void> {
 		if (pageIndex) {
-			zPagingRef.value?.refreshToPage(pageIndex);
+			await zPagingRef.value?.refreshToPage(pageIndex);
 		} else {
-			zPagingRef.value?.reload();
+			await zPagingRef.value?.reload();
 		}
 	}
 
