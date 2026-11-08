@@ -35,7 +35,7 @@
 	</el-form-item>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { onMounted, reactive } from "vue";
 import { PictureRounded } from "@element-plus/icons-vue";
 import { RegExps } from "fast-element-plus";

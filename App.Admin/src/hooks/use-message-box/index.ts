@@ -27,8 +27,8 @@ function confirm(message: string, options?: MessageBoxConfirmOptions): Promise<D
 function confirm(messageOrOptions: MessageBoxConfirmOptions | string, options: MessageBoxConfirmOptions = {}): Promise<DialogResult> {
 	const { beforeConfirm, ...baseOptions } =
 		typeof messageOrOptions === "string"
-			? { ...options, title: options.title ?? defaultTitle, theme: options.theme ?? "text", msg: messageOrOptions }
-			: { ...messageOrOptions, title: messageOrOptions.title ?? defaultTitle, theme: options.theme ?? "text" };
+			? { title: options.title ?? defaultTitle, theme: options.theme ?? "text", ...options, msg: messageOrOptions }
+			: { title: messageOrOptions.title ?? defaultTitle, theme: options.theme ?? "text", ...messageOrOptions };
 
 	const dialogOptions: DialogOptions = baseOptions;
 
@@ -71,7 +71,10 @@ export const useMessageBox = {
 		return new Promise<DialogResult>((resolve, reject) => {
 			wdHookState.wdDialog = {
 				type: "show",
-				options: typeof options === "string" ? { title: defaultTitle, msg: options } : { ...options, title: options.title ?? defaultTitle },
+				options:
+					typeof options === "string"
+						? { title: defaultTitle, theme: "text", msg: options }
+						: { title: options.title ?? defaultTitle, theme: options.theme ?? "text", ...options },
 				then: (res) => resolve(res),
 				catch: (error) => reject(error),
 			};
@@ -87,7 +90,10 @@ export const useMessageBox = {
 		return new Promise<DialogResult>((resolve, reject) => {
 			wdHookState.wdDialog = {
 				type: "alert",
-				options: typeof options === "string" ? { title: defaultTitle, msg: options } : { ...options, title: options.title ?? defaultTitle },
+				options:
+					typeof options === "string"
+						? { title: defaultTitle, theme: "text", msg: options }
+						: { title: options.title ?? defaultTitle, theme: options.theme ?? "text", ...options },
 				then: (res) => resolve(res),
 				catch: (error) => reject(error),
 			};
@@ -104,7 +110,10 @@ export const useMessageBox = {
 		return new Promise<DialogResult>((resolve, reject) => {
 			wdHookState.wdDialog = {
 				type: "prompt",
-				options: typeof options === "string" ? { title: defaultTitle, msg: options } : { ...options, title: options.title ?? defaultTitle },
+				options:
+					typeof options === "string"
+						? { title: defaultTitle, theme: "text", msg: options }
+						: { title: options.title ?? defaultTitle, theme: options.theme ?? "text", ...options },
 				then: (res) => resolve(res),
 				catch: (error) => reject(error),
 			};

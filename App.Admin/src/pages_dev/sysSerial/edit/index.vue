@@ -4,7 +4,7 @@
 			<wd-form-item title="前缀" prop="prefix">
 				<wd-input v-model="state.formData.prefix" clearable :maxlength="5" placeholder="请输入前缀" />
 			</wd-form-item>
-			<wd-form-item title="规则类型" prop="ruleType">
+			<wd-form-item v-if="state.pageMode !== 'edit'" title="规则类型" prop="ruleType">
 				<wd-radio-group v-model="state.formData.ruleType" type="button" direction="horizontal">
 					<wd-radio v-for="item in sysSerialRuleTypeEnum" :key="String(item.value)" :value="item.value">{{ item.label }}</wd-radio>
 				</wd-radio-group>
@@ -77,7 +77,12 @@ const serialSpacerEnum = appStore.getDictionary("SerialSpacerEnum");
 const formRef = ref<FormInstance>();
 
 const state = reactive({
-	formData: withDefineType<QuerySysSerialRuleDetailOutput>({}),
+	formData: withDefineType<QuerySysSerialRuleDetailOutput>({
+		ruleType: SysSerialRuleTypeEnum.AppNo,
+		dateType: SerialDateTypeEnum.Year,
+		spacer: SerialSpacerEnum.None,
+		length: 4,
+	}),
 	formSchema: useFormSchema<AddSysSerialRuleInput>({
 		ruleType: { required: true, message: "请选择规则类型" },
 		dateType: { required: true, message: "请选择时间类型" },
@@ -122,7 +127,6 @@ const handleLoad = async () => {
 			break;
 		case "add":
 			state.formDisabled = false;
-			state.formData = { ruleType: SysSerialRuleTypeEnum.AppNo, dateType: SerialDateTypeEnum.Year, spacer: SerialSpacerEnum.None };
 			uni.setNavigationBarTitle({ title: "添加序号" });
 			break;
 		case "edit":
@@ -137,7 +141,7 @@ const handleLoad = async () => {
 };
 
 onLoad((options: { mode?: IPageStateType; serialRuleId?: string }) => {
-	if (!options?.mode || ((options.mode === "edit" || options.mode === "detail") && !options.serialRuleId)) {
+	if (!options?.mode || ((options.mode === "edit" || options.mode === "detail") && !options?.serialRuleId)) {
 		useMessageBox.alert("参数异常");
 		return;
 	}

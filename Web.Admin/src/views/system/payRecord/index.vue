@@ -115,7 +115,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { formatChineseRelativeTime } from "@fast-china/utils";
 import { payRecordApi } from "@/api/services/Center/payRecord";
 import { useApp } from "@/stores";

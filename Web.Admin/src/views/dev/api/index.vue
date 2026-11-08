@@ -45,7 +45,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { apiApi } from "@/api/services/Center/api";
 import { useApp } from "@/stores";
 import type { ApiInfoModel } from "@/api/services/Center/api/models/ApiInfoModel";

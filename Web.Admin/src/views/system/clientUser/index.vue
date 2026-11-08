@@ -49,7 +49,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { formatChineseRelativeTime } from "@fast-china/utils";
 import { clientUserApi } from "@/api/services/Center/clientUser";
 import { useApp } from "@/stores";

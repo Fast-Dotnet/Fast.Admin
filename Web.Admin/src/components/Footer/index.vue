@@ -38,7 +38,7 @@
 	</template>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { reactive } from "vue";
 import { useGlobalSize } from "element-plus";
 import gonganImage from "@/assets/images/gongan.png";

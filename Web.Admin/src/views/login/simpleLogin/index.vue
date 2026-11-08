@@ -46,7 +46,7 @@
 	</el-container>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { Cloudy, Lock } from "@element-plus/icons-vue";
 import { addCssUnit } from "@fast-china/utils";
 import logoImage from "@/assets/logo.png";

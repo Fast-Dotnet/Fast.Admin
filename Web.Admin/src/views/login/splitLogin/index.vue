@@ -60,7 +60,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { addCssUnit } from "@fast-china/utils";
 import logoImage from "@/assets/logo.png";
 import { useApp } from "@/stores";

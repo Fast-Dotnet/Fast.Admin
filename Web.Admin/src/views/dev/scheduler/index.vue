@@ -262,7 +262,7 @@
 	</el-container>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { onActivated, onDeactivated, onMounted, onUnmounted, reactive, useTemplateRef } from "vue";
 import { Plus } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox, dayjs } from "element-plus";

@@ -24,7 +24,7 @@
 	</FaSelectPage>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { accountApi } from "@/api/services/Center/account";
 import type { ElSelectorOutput } from "fast-element-plus";
 

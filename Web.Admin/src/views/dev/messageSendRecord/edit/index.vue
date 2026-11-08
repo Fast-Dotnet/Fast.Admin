@@ -45,7 +45,7 @@
 	</FaDialog>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { computed, reactive, useTemplateRef } from "vue";
 import { withDefineType } from "@fast-china/utils";
 import VueJsonPretty from "vue-json-pretty";

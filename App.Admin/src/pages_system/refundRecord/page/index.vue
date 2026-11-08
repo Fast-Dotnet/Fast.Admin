@@ -4,7 +4,6 @@
 			<FaSearchInput
 				:search-param="searchParam"
 				data-search-range="Past1M"
-				placeholder="搜索退款记录"
 				@update:search-param="setParam"
 				@confirm="refresh()"
 				@clear="refresh()"

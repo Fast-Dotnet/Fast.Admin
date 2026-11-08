@@ -19,7 +19,7 @@
 	</FaSelect>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { merchantApi } from "@/api/services/Center/merchant";
 import type { ElSelectorOutput } from "fast-element-plus";
 import type { PaymentChannelEnum } from "@/api/enums/PaymentChannelEnum";

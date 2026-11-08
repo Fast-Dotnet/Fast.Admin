@@ -127,7 +127,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { onActivated, onDeactivated, onMounted, onUnmounted, reactive } from "vue";
 import { axiosUtil } from "@fast-china/axios";
 import { logger, withDefineType } from "@fast-china/utils";

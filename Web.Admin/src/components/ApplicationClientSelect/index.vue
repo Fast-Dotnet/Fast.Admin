@@ -17,7 +17,7 @@
 	</FaSelect>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { applicationClientApi } from "@/api/services/Center/applicationClient";
 import type { ElSelectorOutput } from "fast-element-plus";
 

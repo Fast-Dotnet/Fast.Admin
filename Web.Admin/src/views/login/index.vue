@@ -35,7 +35,7 @@
 	</component>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { computed, defineAsyncComponent, onMounted, provide, reactive, toRef, useTemplateRef } from "vue";
 import { Moon, Operation, Refresh, Sunny } from "@element-plus/icons-vue";
 import { ElMessageBox } from "element-plus";

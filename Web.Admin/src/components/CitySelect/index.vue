@@ -11,7 +11,7 @@
 	/>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { onMounted, reactive } from "vue";
 import { withDefineType } from "@fast-china/utils";
 import { regionApi } from "@/api/services/Center/region";

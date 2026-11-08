@@ -27,7 +27,7 @@
 	</FaDialog>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { reactive, useTemplateRef } from "vue";
 import { ElMessage, dayjs } from "element-plus";
 import { isDateAfterNow, withDefineType } from "@fast-china/utils";

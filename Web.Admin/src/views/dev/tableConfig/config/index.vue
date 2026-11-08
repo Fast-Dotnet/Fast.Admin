@@ -106,7 +106,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { reactive, useTemplateRef, watch } from "vue";
 import { ArrowLeftBold, Close, Plus, Select, StarFilled } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";

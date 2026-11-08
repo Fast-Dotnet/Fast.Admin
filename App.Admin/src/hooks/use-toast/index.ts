@@ -11,7 +11,7 @@ export const useToast = {
 	show(options: ToastOptions | string): void {
 		wdHookState.wdToast = {
 			type: "show",
-			options,
+			options: typeof options === "string" ? { position: "top", msg: options } : { position: "top", ...options },
 		};
 	},
 	/**
@@ -22,7 +22,7 @@ export const useToast = {
 	success(options: ToastOptions | string): void {
 		wdHookState.wdToast = {
 			type: "success",
-			options,
+			options: typeof options === "string" ? { position: "top", msg: options } : { position: "top", ...options },
 		};
 	},
 	/**
@@ -33,7 +33,7 @@ export const useToast = {
 	error(options: ToastOptions | string): void {
 		wdHookState.wdToast = {
 			type: "error",
-			options,
+			options: typeof options === "string" ? { position: "top", msg: options } : { position: "top", ...options },
 		};
 	},
 	/**
@@ -44,7 +44,7 @@ export const useToast = {
 	info(options: ToastOptions | string): void {
 		wdHookState.wdToast = {
 			type: "info",
-			options,
+			options: typeof options === "string" ? { position: "top", msg: options } : { position: "top", ...options },
 		};
 	},
 	/**
@@ -55,7 +55,7 @@ export const useToast = {
 	warning(options: ToastOptions | string): void {
 		wdHookState.wdToast = {
 			type: "warning",
-			options,
+			options: typeof options === "string" ? { position: "top", msg: options } : { position: "top", ...options },
 		};
 	},
 	/**
@@ -66,7 +66,7 @@ export const useToast = {
 	loading(options: ToastOptions | string): void {
 		wdHookState.wdToast = {
 			type: "loading",
-			options,
+			options: typeof options === "string" ? { position: "top", msg: options } : { position: "top", ...options },
 		};
 	},
 	/** 关闭当前轻提示。 */

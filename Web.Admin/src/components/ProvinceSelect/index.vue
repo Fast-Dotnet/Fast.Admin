@@ -10,7 +10,7 @@
 	/>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { regionApi } from "@/api/services/Center/region";
 import type { ElSelectorOutput } from "fast-element-plus";
 

@@ -4,7 +4,6 @@
 			<FaSearchInput
 				:filter="false"
 				:search-param="searchParam"
-				placeholder="搜索配置编码、名称"
 				@update:search-param="setParam"
 				@confirm="refresh()"
 				@clear="refresh()"

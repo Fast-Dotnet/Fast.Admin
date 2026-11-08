@@ -32,7 +32,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { inject, onBeforeUnmount, shallowRef, watch } from "vue";
 import { ElMessage, formContextKey } from "element-plus";
 import { addCssUnit, definePropType, logger } from "@fast-china/utils";

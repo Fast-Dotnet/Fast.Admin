@@ -24,7 +24,7 @@
 	</FaSelectPage>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { tenantApi } from "@/api/services/Center/tenant";
 import Tag from "../Tag/index.vue";
 import type { ElSelectorOutput } from "fast-element-plus";

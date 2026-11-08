@@ -4,7 +4,7 @@
 	</el-config-provider>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { onMounted, reactive, watch } from "vue";
 import { RouterView } from "vue-router";
 import { useWindowSize } from "@fast-china/utils";

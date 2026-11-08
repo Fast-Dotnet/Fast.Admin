@@ -7,7 +7,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { Page404 } from "@fast-element-plus/icons-vue";
 
 defineOptions({

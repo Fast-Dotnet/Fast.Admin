@@ -13,7 +13,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { passwordRecordApi } from "@/api/services/Center/passwordRecord";
 import { useApp } from "@/stores";
 import type { FaTableColumnCtx } from "fast-element-plus";

@@ -157,7 +157,7 @@
 	</FaDrawer>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { computed, useTemplateRef } from "vue";
 import { Grid, Hide, MagicStick, Moon, Notification, QuestionFilled, Refresh, Sunny, View } from "@element-plus/icons-vue";
 import { useWindowSize } from "@fast-china/utils";

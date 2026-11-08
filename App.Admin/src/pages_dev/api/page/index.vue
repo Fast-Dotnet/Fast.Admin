@@ -4,7 +4,6 @@
 			<FaSearchInput
 				:filter="false"
 				:search-param="searchParam"
-				placeholder="搜索接口地址、名称、模块"
 				@update:search-param="setParam"
 				@confirm="refresh()"
 				@clear="refresh()"

@@ -40,7 +40,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { computed, reactive } from "vue";
 import { Decimal } from "fast-element-plus";
 import { fileApi } from "@/api/services/File";

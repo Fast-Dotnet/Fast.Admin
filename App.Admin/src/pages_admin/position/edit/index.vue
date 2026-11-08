@@ -56,7 +56,7 @@ const router = useRouter();
 const formRef = ref<FormInstance>();
 
 const state = reactive({
-	formData: withDefineType<QueryPositionDetailOutput>({}),
+	formData: withDefineType<QueryPositionDetailOutput>({ sort: 1 }),
 	formSchema: useFormSchema<AddPositionInput>({
 		positionName: { required: true, message: "请输入职位名称" },
 		sort: { required: true, message: "请输入排序" },
@@ -100,7 +100,6 @@ const handleLoad = async () => {
 			break;
 		case "add":
 			state.formDisabled = false;
-			state.formData = { sort: 1 };
 			uni.setNavigationBarTitle({ title: "添加职位" });
 			break;
 		case "edit":
@@ -115,7 +114,7 @@ const handleLoad = async () => {
 };
 
 onLoad((options: { mode?: IPageStateType; positionId?: string }) => {
-	if (!options?.mode || ((options.mode === "edit" || options.mode === "detail") && !options.positionId)) {
+	if (!options?.mode || ((options.mode === "edit" || options.mode === "detail") && !options?.positionId)) {
 		useMessageBox.alert("参数异常");
 		return;
 	}

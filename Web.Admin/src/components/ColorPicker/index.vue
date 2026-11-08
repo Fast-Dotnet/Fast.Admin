@@ -2,7 +2,7 @@
 	<el-color-picker v-bind="$attrs" v-model="modelValue" :predefine="predefineColorList" />
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { defaultThemeColor } from "@/stores";
 
 defineOptions({

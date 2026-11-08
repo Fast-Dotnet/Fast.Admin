@@ -7,9 +7,7 @@
 				<text>生效日期：2025年01月01日</text>
 			</view>
 		</view>
-		<view class="page__notice">
-			请在使用 {{ appStore.appName }} 前仔细阅读本政策。我们将在需要时征得您的明确同意，阅读本政策不代表您已同意。
-		</view>
+		<view class="page__notice">请在使用 {{ appStore.appName }} 前仔细阅读本政策。我们将在需要时征得您的明确同意，阅读本政策不代表您已同意。</view>
 		<view v-for="(section, index) in sections" :key="section.title" class="page__section">
 			<view class="page__section-title">{{ index + 1 }}. {{ section.title }}</view>
 			<view v-for="paragraph in section.paragraphs" :key="paragraph" class="page__paragraph">{{ paragraph }}</view>

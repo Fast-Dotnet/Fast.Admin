@@ -2,7 +2,7 @@
 	<iframe :src="decodeURIComponent(route.query.url as string)" frameborder="0" style="width: 100%; height: 100%" />
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useRoute } from "vue-router";
 
 defineOptions({

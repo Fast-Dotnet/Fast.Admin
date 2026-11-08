@@ -60,7 +60,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useTemplateRef } from "vue";
 import { Plus } from "@element-plus/icons-vue";
 import { sysSerialApi } from "@/api/services/Center/sysSerial";

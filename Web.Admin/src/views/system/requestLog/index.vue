@@ -126,7 +126,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { computed, reactive } from "vue";
 import { AESDecrypt, formatChineseRelativeTime } from "@fast-china/utils";
 import VueJsonPretty from "vue-json-pretty";

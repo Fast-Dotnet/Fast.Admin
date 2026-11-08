@@ -104,7 +104,6 @@ const handleLoad = async () => {
 			break;
 		case "add":
 			state.formDisabled = false;
-			state.formData = {};
 			uni.setNavigationBarTitle({ title: "添加配置" });
 			break;
 		case "edit":
@@ -119,7 +118,7 @@ const handleLoad = async () => {
 };
 
 onLoad((options: { mode?: IPageStateType; configId?: string }) => {
-	if (!options?.mode || ((options.mode === "edit" || options.mode === "detail") && !options.configId)) {
+	if (!options?.mode || ((options.mode === "edit" || options.mode === "detail") && !options?.configId)) {
 		useMessageBox.alert("参数异常");
 		return;
 	}

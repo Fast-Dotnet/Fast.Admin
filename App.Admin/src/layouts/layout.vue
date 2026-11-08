@@ -215,6 +215,9 @@ const handleWatch = () => {
 			if (newValue.type === "closeNotify") uNotify.closeNotify();
 			else uNotify.showNotify(newValue.options);
 			wdHookState.wdNotify = undefined;
+		},
+		{
+			flush: "post",
 		}
 	);
 
@@ -225,6 +228,9 @@ const handleWatch = () => {
 			if (newValue.type === "close") uToast.close();
 			else uToast[newValue.type](newValue.options);
 			wdHookState.wdToast = undefined;
+		},
+		{
+			flush: "post",
 		}
 	);
 
@@ -238,6 +244,9 @@ const handleWatch = () => {
 				uDialog[newValue.type](newValue.options).then(newValue.then).catch(newValue.catch);
 			}
 			wdHookState.wdDialog = undefined;
+		},
+		{
+			flush: "post",
 		}
 	);
 
@@ -247,6 +256,9 @@ const handleWatch = () => {
 		(newValue) => {
 			if (newValue) authMobilePopupRef.value?.open();
 			else if (authMobilePopupRef.value?.visible) authMobilePopupRef.value.close();
+		},
+		{
+			flush: "post",
 		}
 	);
 	// #endif

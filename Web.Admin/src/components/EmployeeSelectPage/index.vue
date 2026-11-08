@@ -24,7 +24,7 @@
 	</FaSelectPage>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { employeeApi } from "@/api/services/Admin/employee";
 import type { ElSelectorOutput } from "fast-element-plus";
 

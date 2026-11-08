@@ -12,7 +12,7 @@
 	/>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { departmentApi } from "@/api/services/Admin/department";
 import type { ElSelectorOutput } from "fast-element-plus";
 

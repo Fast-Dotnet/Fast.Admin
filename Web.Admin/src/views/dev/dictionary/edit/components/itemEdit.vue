@@ -47,7 +47,7 @@
 	</FaDialog>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { reactive, useTemplateRef } from "vue";
 import { FaDialog } from "fast-element-plus";
 import { withDefineType } from "@fast-china/utils";

@@ -14,7 +14,7 @@
 			<FaFormItem prop="prefix" label="前缀">
 				<el-input v-model="state.formData.prefix" maxlength="5" placeholder="请输入前缀" />
 			</FaFormItem>
-			<FaFormItem v-if="state.dialogState === 'add'" prop="ruleType" label="规则类型">
+			<FaFormItem v-if="state.dialogState !== 'edit'" prop="ruleType" label="规则类型">
 				<RadioGroup name="SysSerialRuleTypeEnum" v-model="state.formData.ruleType" />
 			</FaFormItem>
 			<FaFormItem prop="dateType" label="时间类型">
@@ -30,7 +30,7 @@
 	</FaDialog>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { reactive, useTemplateRef } from "vue";
 import { ElMessage } from "element-plus";
 import { withDefineType } from "@fast-china/utils";

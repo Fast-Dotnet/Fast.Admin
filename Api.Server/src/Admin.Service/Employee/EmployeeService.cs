@@ -139,6 +139,7 @@ public class EmployeeService : IDynamicApplication
     {
         PagedResult<QueryEmployeePagedOutput> result = await _repository.Queryable<EmployeeModel>()
             .LeftJoin<EmployeeOrgModel>((t1, t2) => t1.EmployeeId == t2.EmployeeId && t2.IsPrimary)
+            .WhereIF(input.Status == null, t1 => t1.Status != EmployeeStatusEnum.Resigned)
             .WhereIF(input.Status != null, t1 => t1.Status == input.Status)
             .WhereIF(input.Sex != null, t1 => t1.Sex == input.Sex)
             .WhereIF(input.DepartmentId != null, (t1, t2) => t2.DepartmentId == input.DepartmentId)

@@ -100,7 +100,6 @@ const handleLoad = async () => {
 			break;
 		case "add":
 			state.formDisabled = false;
-			state.formData = {};
 			uni.setNavigationBarTitle({ title: "添加职级" });
 			break;
 		case "edit":
@@ -115,7 +114,7 @@ const handleLoad = async () => {
 };
 
 onLoad((options: { mode?: IPageStateType; jobLevelId?: string }) => {
-	if (!options?.mode || ((options.mode === "edit" || options.mode === "detail") && !options.jobLevelId)) {
+	if (!options?.mode || ((options.mode === "edit" || options.mode === "detail") && !options?.jobLevelId)) {
 		useMessageBox.alert("参数异常");
 		return;
 	}

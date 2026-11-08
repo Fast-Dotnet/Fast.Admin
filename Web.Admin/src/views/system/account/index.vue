@@ -142,7 +142,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useTemplateRef } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { formatChineseRelativeTime } from "@fast-china/utils";

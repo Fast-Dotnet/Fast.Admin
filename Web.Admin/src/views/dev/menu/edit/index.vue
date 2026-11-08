@@ -140,7 +140,7 @@
 	</FaDialog>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { onMounted, reactive, useTemplateRef } from "vue";
 import { ElMessage } from "element-plus";
 import { withDefineType } from "@fast-china/utils";

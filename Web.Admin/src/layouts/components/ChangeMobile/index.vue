@@ -51,7 +51,7 @@
 	</FaDialog>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { computed, reactive, useTemplateRef, watch } from "vue";
 import { ElMessage } from "element-plus";
 import { type FaButtonInstance, type FaDialogInstance, type FaFormInstance, RegExps } from "fast-element-plus";

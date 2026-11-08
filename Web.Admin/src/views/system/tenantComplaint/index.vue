@@ -58,7 +58,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { reactive, useTemplateRef } from "vue";
 import { withDefineType } from "@fast-china/utils";
 import { complaintApi } from "@/api/services/Center/complaint";

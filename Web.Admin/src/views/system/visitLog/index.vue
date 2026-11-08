@@ -61,7 +61,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { formatChineseRelativeTime } from "@fast-china/utils";
 import { visitLogApi } from "@/api/services/Center/visitLog";
 import { useApp } from "@/stores";

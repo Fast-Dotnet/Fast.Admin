@@ -12,7 +12,7 @@
 	</el-cascader>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import * as FastElementPlusIconsVue from "@fast-element-plus/icons-vue";
 import { withDefineType } from "@fast-china/utils";

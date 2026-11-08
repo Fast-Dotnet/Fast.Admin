@@ -47,7 +47,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useTemplateRef } from "vue";
 import { formatChineseRelativeTime } from "@fast-china/utils";
 import { messageSendRecordApi } from "@/api/services/Center/messageSendRecord";

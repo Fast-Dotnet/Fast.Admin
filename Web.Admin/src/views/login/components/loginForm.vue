@@ -157,7 +157,7 @@
 	</section>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { computed, useTemplateRef } from "vue";
 import { ArrowLeftBold, Close, Lock, Plus, Right, User } from "@element-plus/icons-vue";
 import { type FaButtonInstance, useOverlay } from "fast-element-plus";
