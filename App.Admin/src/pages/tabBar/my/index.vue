@@ -12,7 +12,7 @@
 			</view>
 		</view>
 
-		<wd-cell-group center border>
+		<wd-cell-group center border insert>
 			<wd-cell
 				v-if="!userInfoStore.isSuperAdmin && !userInfoStore.isAdmin"
 				title="个人资料"
@@ -36,21 +36,29 @@
 			</wd-cell>
 		</wd-cell-group>
 
-		<wd-cell-group center border>
+		<wd-cell-group center border insert>
 			<wd-cell title="系统版本" clickable :value="state.checkingUpdate ? '正在检查更新…' : appVersion" @click="handleCheckUpdate" />
 			<wd-cell title="系统服务商" value="FastDotnet" />
 			<wd-cell title="消息通知" clickable is-link @click="useToast.info('敬请期待')" />
 			<wd-cell title="通用设置" clickable is-link to="/pages/setting/general/index" />
 		</wd-cell-group>
 
-		<wd-cell-group center border>
+		<wd-cell-group center border insert>
 			<wd-cell title="意见反馈" clickable is-link :to="CommonRoute.ComplaintSubmit" />
 			<wd-cell title="服务协议" clickable is-link :to="CommonRoute.ServiceAgreement" />
 			<wd-cell title="隐私协议" clickable is-link :to="CommonRoute.PrivacyAgreement" />
 			<wd-cell title="清除缓存" :value="storageSize" clickable @click="handleClearCache" />
 		</wd-cell-group>
 
-		<wd-button v-if="userInfoStore.hasUserInfo" custom-class="btn__exit-login" type="danger" block icon="Export" @click="handleLogout">
+		<wd-button
+			v-if="userInfoStore.hasUserInfo"
+			custom-class="btn__exit-login"
+			type="danger"
+			variant="text"
+			block
+			icon="Export"
+			@click="handleLogout"
+		>
 			退出登录
 		</wd-button>
 

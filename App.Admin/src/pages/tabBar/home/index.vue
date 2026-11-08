@@ -10,7 +10,7 @@
 
 		<wd-swiper :list="state.swiperList" autoplay v-model:current="state.swiperCurrent" :indicator="{ type: 'dots-bar' }" />
 
-		<view class="fa-card">
+		<view class="workspace">
 			<view class="workspace__header">
 				<text class="workspace__title">当前工作空间</text>
 				<wd-button type="primary" variant="text" size="small" @click="router.pushTab(CommonRoute.My)">管理</wd-button>
@@ -53,7 +53,7 @@
 	</view>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { onPullDownRefresh, onShareAppMessage, onShareTimeline } from "@dcloudio/uni-app";
 import { reactive, watch } from "vue";
 import { Local, getLocalTimeGreeting } from "@fast-china/utils";

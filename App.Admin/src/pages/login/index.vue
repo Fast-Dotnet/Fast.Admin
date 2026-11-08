@@ -104,7 +104,9 @@ definePage({
 	noLogin: true,
 	authForbidView: true,
 	watermark: false,
-	style: { navigationBarTitleText: "登录" },
+	style: {
+		navigationBarTitleText: "登录",
+	},
 });
 
 const appStore = useApp();

@@ -1,17 +1,15 @@
 <template>
 	<FaPopup ref="popupRef" custom-class="fa-popup__card" title="切换工作空间" height="70%" position="bottom" closable :z-index="2001">
 		<scroll-view class="tenant-list" scroll-y>
-			<view class="tenant-list__content">
-				<view v-for="item in tenantList" :key="item.userKey" class="fa-card tenant-card" @click="handleTenantLogin(item)">
-					<image class="tenant-card__image" :src="item.logoUrl" mode="aspectFill" />
-					<view class="tenant-card__content">
-						<view class="tenant-card__name">{{ item.tenantName }}</view>
-						<view class="tenant-card__meta">{{ item.departmentName || "无部门" }} · {{ item.employeeName }}</view>
-					</view>
-					<FaTag size="small" name="EditionEnum" :value="item.edition" />
-					<wd-icon v-if="item.userKey === userInfoStore.userKey" name="check" size="28rpx" color="var(--wot-primary-6)" />
-					<wd-icon v-else name="arrow-right" size="28rpx" color="var(--wot-text-auxiliary)" />
+			<view v-for="item in tenantList" :key="item.userKey" class="tenant-card" @click="handleTenantLogin(item)">
+				<image class="tenant-card__image" :src="item.logoUrl" mode="aspectFill" />
+				<view class="tenant-card__content">
+					<view class="tenant-card__name">{{ item.tenantName }}</view>
+					<view class="tenant-card__meta">{{ item.departmentName || "无部门" }} · {{ item.employeeName }}</view>
 				</view>
+				<FaTag size="small" name="EditionEnum" :value="item.edition" />
+				<wd-icon v-if="item.userKey === userInfoStore.userKey" name="check" size="28rpx" color="var(--wot-primary-6)" />
+				<wd-icon v-else name="arrow-right" size="28rpx" color="var(--wot-text-auxiliary)" />
 			</view>
 		</scroll-view>
 	</FaPopup>
@@ -87,17 +85,20 @@ defineExpose({
 	height: 0;
 }
 
-.tenant-list__content {
-	display: flex;
-	flex-direction: column;
-	gap: 24rpx;
-	padding: 24rpx;
-}
-
 .tenant-card {
+	padding: 24rpx;
 	display: flex;
 	gap: 18rpx;
 	align-items: center;
+	background-color: var(--wot-card-bg);
+	border-radius: var(--wot-radius-large);
+	box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.0392156863);
+	overflow: hidden;
+	transition: box-shadow 0.3s ease;
+
+	&:not(:last-child) {
+		margin-bottom: 24rpx;
+	}
 }
 
 .tenant-card__image {

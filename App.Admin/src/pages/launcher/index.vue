@@ -74,7 +74,9 @@ definePage({
 	watermark: false,
 	pageScroll: false,
 	noLogin: true,
-	style: { navigationStyle: "custom" },
+	style: {
+		navigationStyle: "custom",
+	},
 });
 
 const appStore = useApp();

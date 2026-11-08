@@ -34,6 +34,14 @@
 	--wot-swiper-border-radius: var(--wot-radius-super-large);
 }
 
+.workspace {
+	padding: 28rpx;
+	background-color: var(--wot-card-bg, var(--wot-filled-oppo));
+	border: 1px solid var(--wot-card-border-color, var(--wot-border-light));
+	border-radius: var(--wot-radius-extra-large);
+	box-shadow: var(--fa-box-shadow-lighter);
+}
+
 .workspace__header {
 	display: flex;
 	justify-content: space-between;

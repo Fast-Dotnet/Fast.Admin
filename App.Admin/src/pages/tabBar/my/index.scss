@@ -46,7 +46,7 @@
 }
 
 :deep(.wd-cell-group) {
-	margin-bottom: var(--fa-page-section-gap);
+	--wot-cell-group-insert-margin: 0 0 var(--fa-page-section-gap);
 }
 
 :deep(.wd-cell__left) .wd-icon {
@@ -56,4 +56,5 @@
 
 .btn__exit-login {
 	--wot-button-radius-main: var(--wot-radius-extra-large);
+	--wot-button-danger-plain-bg: var(--wot-filled-oppo);
 }

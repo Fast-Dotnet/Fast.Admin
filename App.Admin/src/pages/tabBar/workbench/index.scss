@@ -81,7 +81,11 @@
 }
 
 .menu-section {
-	padding-top: 8rpx;
+	padding: 8rpx 28rpx 28rpx;
+	background-color: var(--wot-card-bg, var(--wot-filled-oppo));
+	border: 1px solid var(--wot-card-border-color, var(--wot-border-light));
+	border-radius: var(--wot-radius-extra-large);
+	box-shadow: var(--fa-box-shadow-lighter);
 }
 
 .section-header {

@@ -4,19 +4,15 @@
 			<view class="page-heading__title">{{ state.nickName ? `你好，${state.nickName}` : "欢迎回来" }}</view>
 			<view class="page-heading__description">选择一个工作空间，开始今天的工作。</view>
 		</view>
-		<scroll-view class="tenant-list" scroll-y>
-			<view class="tenant-list__content">
-				<view v-for="item in state.tenantList" :key="item.userKey" class="fa-card tenant-card" @click="handleTenantLogin(item.userKey)">
-					<image class="tenant-card__image" :src="item.logoUrl" mode="aspectFill" />
-					<view class="tenant-card__content">
-						<view class="tenant-card__name">{{ item.tenantName }}</view>
-						<view class="tenant-card__meta">{{ item.departmentName || "无部门" }} · {{ item.employeeName }}</view>
-					</view>
-					<FaTag size="small" name="EditionEnum" :value="item.edition" />
-					<wd-icon name="arrow-right" size="28rpx" color="var(--wot-text-auxiliary)" />
-				</view>
+		<view v-for="item in state.tenantList" :key="item.userKey" class="tenant-card" @click="handleTenantLogin(item.userKey)">
+			<image class="tenant-card__image" :src="item.logoUrl" mode="aspectFill" />
+			<view class="tenant-card__content">
+				<view class="tenant-card__name">{{ item.tenantName }}</view>
+				<view class="tenant-card__meta">{{ item.departmentName || "无部门" }} · {{ item.employeeName }}</view>
 			</view>
-		</scroll-view>
+			<FaTag size="small" name="EditionEnum" :value="item.edition" />
+			<wd-icon name="arrow-right" size="28rpx" color="var(--wot-text-auxiliary)" />
+		</view>
 	</view>
 </template>
 
@@ -37,9 +33,10 @@ definePage({
 	layout: "layout",
 	noLogin: true,
 	authForbidView: true,
-	pageScroll: false,
 	watermark: false,
-	style: { navigationBarTitleText: "选择工作空间" },
+	style: {
+		navigationBarTitleText: "选择工作空间",
+	},
 });
 
 const { proxy } = getCurrentInstance();
@@ -88,6 +85,7 @@ onLoad(() => {
 	flex-direction: column;
 	gap: 12rpx;
 	padding: 16rpx 4rpx 0;
+	margin-bottom: 32rpx;
 }
 
 .page-heading__title {
@@ -104,24 +102,20 @@ onLoad(() => {
 	color: var(--wot-text-secondary);
 }
 
-.tenant-list {
-	flex: 1;
-	min-height: 0;
-	height: 0;
-	margin-top: 32rpx;
-}
-
-.tenant-list__content {
-	display: flex;
-	flex-direction: column;
-	gap: 24rpx;
-	padding: 8rpx 4rpx 24rpx;
-}
-
 .tenant-card {
+	padding: 24rpx;
 	display: flex;
 	gap: 18rpx;
 	align-items: center;
+	background-color: var(--wot-card-bg);
+	border-radius: var(--wot-radius-large);
+	box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.0392156863);
+	overflow: hidden;
+	transition: box-shadow 0.3s ease;
+
+	&:not(:last-child) {
+		margin-bottom: 24rpx;
+	}
 }
 
 .tenant-card__image {

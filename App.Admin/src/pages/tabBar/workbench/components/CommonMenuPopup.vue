@@ -18,7 +18,7 @@
 	>
 		<scroll-view class="menu-warp" scroll-y :scroll-top="state.scrollPosition" @scroll="handleScroll">
 			<view class="menu-content">
-				<view v-if="state.selectedMenus.length" class="fa-card selected-list">
+				<view v-if="state.selectedMenus.length" class="selected-list">
 					<view class="selected-list__header">
 						<text class="section-title">常用应用</text>
 						<text class="selected-list__tip">按住图片拖动排序</text>
@@ -83,7 +83,7 @@
 					</movable-area>
 				</view>
 
-				<view v-for="item in props.menus" :key="item.menuCode" class="fa-card menu-list">
+				<view v-for="item in props.menus" :key="item.menuCode" class="menu-list">
 					<view class="section-header">
 						<view class="section-title">
 							<view class="section-icon">
@@ -452,7 +452,15 @@ defineExpose({
 	display: flex;
 	flex-direction: column;
 	gap: var(--fa-page-section-gap);
-	padding: var(--fa-page-section-gap) var(--fa-page-padding);
+}
+
+.selected-list,
+.menu-list {
+	padding: 28rpx;
+	background-color: var(--wot-card-bg, var(--wot-filled-oppo));
+	border: 1px solid var(--wot-card-border-color, var(--wot-border-light));
+	border-radius: var(--wot-radius-extra-large);
+	box-shadow: var(--fa-box-shadow-lighter);
 }
 
 .selected-list__header {

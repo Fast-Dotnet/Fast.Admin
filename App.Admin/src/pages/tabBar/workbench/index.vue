@@ -23,7 +23,7 @@
 		</view>
 
 		<view class="workbench-content">
-			<view v-if="!state.searchValue.trim()" class="fa-card menu-section">
+			<view v-if="!state.searchValue.trim()" class="menu-section">
 				<view class="section-header">
 					<view class="section-title">
 						<view class="section-icon">
@@ -42,7 +42,7 @@
 			<view
 				v-for="menu in filteredMenuList"
 				:key="menu.menuCode"
-				class="fa-card menu-section"
+				class="menu-section"
 				:class="{ 'is-collapsed': state.collapsedMenuCodes.includes(menu.menuCode) }"
 			>
 				<button class="section-header section-header--toggle" @click="handleToggleGroup(menu.menuCode)">

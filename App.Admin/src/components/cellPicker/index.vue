@@ -12,6 +12,7 @@ import { computed, ref, toRef } from "vue";
 import { randomString, useProps } from "@fast-china/utils";
 import { cellProps } from "@wot-ui/ui/components/wd-cell/types";
 import { useApp } from "@/stores";
+import type { PickerOption } from "@wot-ui/ui/components/wd-picker-view/types";
 
 defineOptions({
 	name: "CellPicker",
@@ -67,7 +68,7 @@ const modelValues = computed(() => (modelValue.value == null ? [] : [`${typeof m
 
 const appStore = useApp();
 
-const dictionaries = computed(() => {
+const dictionaries = computed<PickerOption[]>(() => {
 	if (!props.name) return [];
 
 	const items = appStore.getDictionary(props.name) ?? [];
