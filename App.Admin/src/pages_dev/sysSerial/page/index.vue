@@ -35,7 +35,7 @@
 					<FaTag name="SerialDateTypeEnum" :value="item.dateType" />
 				</FaField>
 				<FaField label="分隔符">
-					<FaTag name="SerialSpacerEnum" :value="item.spacer" />
+					<FaText name="SerialSpacerEnum" :value="item.spacer" />
 				</FaField>
 				<FaField label="长度" :value="item.length" />
 				<FaField label="最后序号" :value="item.lastSerial" />

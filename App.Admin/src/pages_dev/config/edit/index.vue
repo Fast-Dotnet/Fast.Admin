@@ -48,6 +48,7 @@ import type { QueryConfigDetailOutput } from "@/api/services/Center/config/model
 definePage({
 	name: "DevConfigEdit",
 	layout: "layout",
+	authCode: ["Config:Detail", "Config:Edit"],
 	style: {
 		navigationBarTitleText: "配置",
 		enablePullDownRefresh: true,

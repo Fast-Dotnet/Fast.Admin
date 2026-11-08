@@ -27,7 +27,7 @@
 				</view>
 
 				<view class="popup__title">分组描述</view>
-				<rich-text :nodes="state.formData.description || '暂无说明'" />
+				<rich-text :nodes="state.formData.description" />
 			</view>
 		</scroll-view>
 	</FaPopup>

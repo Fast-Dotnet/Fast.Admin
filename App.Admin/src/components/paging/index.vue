@@ -41,18 +41,18 @@
 		@inner-cell-click="(item, index?: number) => emit('innerCellClick', item, index)"
 		@virtual-top-height-change="emit('virtualTopHeightChange', $event)"
 	>
-		<slot :paged-list="pagedList" :search-param="searchParam" :set-param="handleSearchParam" :refresh="handleRefresh" />
+		<slot :paged-list="pagedList" :search-param="searchParamModel" :set-param="handleSearchParam" :refresh="handleRefresh" />
 		<template v-if="slots.top" #top>
-			<slot name="top" :paged-list="pagedList" :search-param="searchParam" :set-param="handleSearchParam" :refresh="handleRefresh" />
+			<slot name="top" :paged-list="pagedList" :search-param="searchParamModel" :set-param="handleSearchParam" :refresh="handleRefresh" />
 		</template>
 		<template v-if="slots.bottom" #bottom>
-			<slot name="bottom" :paged-list="pagedList" :search-param="searchParam" :set-param="handleSearchParam" :refresh="handleRefresh" />
+			<slot name="bottom" :paged-list="pagedList" :search-param="searchParamModel" :set-param="handleSearchParam" :refresh="handleRefresh" />
 		</template>
 		<template v-if="slots.left" #left>
-			<slot name="left" :paged-list="pagedList" :search-param="searchParam" :set-param="handleSearchParam" :refresh="handleRefresh" />
+			<slot name="left" :paged-list="pagedList" :search-param="searchParamModel" :set-param="handleSearchParam" :refresh="handleRefresh" />
 		</template>
 		<template v-if="slots.right" #right>
-			<slot name="right" :paged-list="pagedList" :search-param="searchParam" :set-param="handleSearchParam" :refresh="handleRefresh" />
+			<slot name="right" :paged-list="pagedList" :search-param="searchParamModel" :set-param="handleSearchParam" :refresh="handleRefresh" />
 		</template>
 
 		<template v-if="slots.refresher" #refresher="{ refresherStatus }">
@@ -112,7 +112,7 @@
 
 <script setup lang="ts" generic="TResult, TInput extends PagedInput = PagedInput">
 import { onShow } from "@dcloudio/uni-app";
-import { computed, nextTick, normalizeClass, shallowRef, watch } from "vue";
+import { computed, nextTick, normalizeClass, shallowReactive, shallowRef, watch } from "vue";
 import { randomString, useProps } from "@fast-china/utils";
 import useZPaging from "z-paging/components/z-paging/js/hooks/useZPaging.js";
 import {
@@ -403,6 +403,12 @@ const slots = defineSlots<{
 const modelValue = defineModel<TResult[]>({ default: () => [] });
 /** 分页搜索参数 */
 const searchParam = defineModel<Partial<TInput>>("searchParam", { default: () => ({}) });
+const searchParamModel = computed({
+	get: () => shallowReactive(searchParam.value),
+	set: (value: Partial<TInput>) => {
+		searchParam.value = value;
+	},
+});
 
 const paging = shallowRef<ZPagingRef<TResult> & Pick<ComponentPublicInstance, "$forceUpdate"> & { pageReachBottom: () => void }>();
 

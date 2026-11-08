@@ -59,9 +59,9 @@ const predefineColorList: PickerOption[] = [
 const state = reactive({
 	themeColor: computed({
 		get: () => [configStore.layout.themeColor],
-		set: (value) => {
-			configStore.layout.themeColor = value[0];
-			configStore.setTheme(value[0]);
+		set: ([value]) => {
+			configStore.layout.themeColor = value;
+			configStore.setTheme(value);
 		},
 	}),
 	themeColorVisible: false,

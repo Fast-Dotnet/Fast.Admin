@@ -44,31 +44,33 @@
 		>
 			<scroll-view class="fa-popup__body_scroll" scroll-y>
 				<template v-if="!props.hideSearchTime">
-					<wd-cell
-						label="时间"
+					<FaCellPicker
+						title="时间"
 						:value="
 							state.searchTimeList?.length > 0
 								? `${dayjs(state.searchTimeList[0]).format('YYYY-MM-DD')} - ${dayjs(state.searchTimeList[1]).format('YYYY-MM-DD')}`
 								: ''
 						"
-						is-link
 						placeholder="请选择日期"
-						@click="state.dataSearchPickerVisible = true"
-					/>
-					<wd-datetime-picker
-						:disable="state.dataSearchRange !== 'custom'"
-						type="date"
-						v-model="state.searchTimeList"
-						v-model:visible="state.dataSearchPickerVisible"
-						align-right
-						@confirm="handleDateTimeConfirm"
-					/>
-					<wd-radio-group v-model="state.dataSearchRange" direction="horizontal" type="button" @change="handleDateRangeChange">
-						<wd-radio v-for="(item, index) in dataSearchRangeList" :key="index" :value="item.value">
-							{{ item.label }}
-						</wd-radio>
-						<wd-radio value="custom">自定义</wd-radio>
-					</wd-radio-group>
+					>
+						<template #default="{ visible }">
+							<wd-datetime-picker
+								:disable="state.dataSearchRange !== 'custom'"
+								type="date"
+								v-model="state.searchTimeList"
+								v-model:visible="visible.value"
+								align-right
+								@confirm="handleDateTimeConfirm"
+							/>
+
+							<wd-radio-group v-model="state.dataSearchRange" direction="horizontal" type="button" @change="handleDateRangeChange">
+								<wd-radio v-for="(item, index) in dataSearchRangeList" :key="index" :value="item.value">
+									{{ item.label }}
+								</wd-radio>
+								<wd-radio value="custom">自定义</wd-radio>
+							</wd-radio-group>
+						</template>
+					</FaCellPicker>
 				</template>
 
 				<slot name="filter" />

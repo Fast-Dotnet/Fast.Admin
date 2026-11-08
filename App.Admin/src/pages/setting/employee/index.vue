@@ -36,7 +36,10 @@
 				<wd-cell title="部门" :value="org.departmentName" />
 				<wd-cell title="职位" :value="org.positionName" />
 				<wd-cell title="职级" :value="org.jobLevelName" />
-				<wd-cell title="负责人" :value="org.isPrincipal ? '是' : '否'" />
+				<wd-cell title="负责人">
+					<wd-text v-if="org.isPrincipal" type="primary" text="是" />
+					<wd-text v-else type="error" text="否" />
+				</wd-cell>
 			</wd-cell-group>
 
 			<wd-button custom-class="btn__confirm" type="primary" @click="handleConfirm">保存</wd-button>
@@ -95,8 +98,8 @@ const state = reactive({
 
 const sex = computed({
 	get: () => [state.formData.sex],
-	set: (value) => {
-		state.formData.sex = value[0];
+	set: ([value]) => {
+		state.formData.sex = value;
 	},
 });
 

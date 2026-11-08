@@ -2,8 +2,8 @@
 	<FaPaging :request-api="refundRecordApi.queryRefundRecordPaged">
 		<template #top="{ searchParam, setParam, refresh }">
 			<FaSearchInput
-				:search-param="searchParam"
 				data-search-range="Past1M"
+				:search-param="searchParam"
 				@update:search-param="setParam"
 				@confirm="refresh()"
 				@clear="refresh()"

@@ -61,6 +61,7 @@ import type { QuerySysSerialRuleDetailOutput } from "@/api/services/Center/sysSe
 definePage({
 	name: "DevSysSerialEdit",
 	layout: "layout",
+	authCode: ["SysSerial:Detail", "SysSerial:Add", "SysSerial:Edit"],
 	style: {
 		navigationBarTitleText: "序号",
 		enablePullDownRefresh: true,

@@ -89,8 +89,8 @@ const state = reactive({
 
 const complaintType = computed({
 	get: () => [state.formData.complaintType],
-	set: (value) => {
-		state.formData.complaintType = value[0];
+	set: ([value]) => {
+		state.formData.complaintType = value;
 	},
 });
 const complaintPickerLabel = computed(() => complaintTypeEnum.find((item) => item.value === state.formData.complaintType)?.label);

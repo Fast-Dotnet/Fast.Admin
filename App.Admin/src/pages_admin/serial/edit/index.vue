@@ -61,6 +61,7 @@ import type { QuerySerialRuleDetailOutput } from "@/api/services/Admin/serial/mo
 definePage({
 	name: "AdminSerialEdit",
 	layout: "layout",
+	authCode: ["Serial:Detail", "Serial:Add", "Serial:Edit"],
 	style: {
 		navigationBarTitleText: "序号",
 		enablePullDownRefresh: true,
