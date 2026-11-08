@@ -70,8 +70,8 @@ textarea {
 
 /* 表单提交按钮 */
 .wd-button.fa-form-submit {
-	display: block;
-	margin: 30rpx 50rpx;
+	display: block !important;
+	margin: 30rpx 50rpx !important;
 }
 
 /* 固定卡片 */

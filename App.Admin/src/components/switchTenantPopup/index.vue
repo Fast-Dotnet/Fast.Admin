@@ -1,5 +1,5 @@
 <template>
-	<FaPopup ref="popupRef" custom-class="fa-popup__card" title="切换工作空间" height="70%" position="bottom" closable :z-index="2001">
+	<FaPopup ref="popupRef" title="切换工作空间" height="70%" position="bottom" closable :z-index="2001">
 		<scroll-view class="tenant-list" scroll-y>
 			<view v-for="item in tenantList" :key="item.userKey" class="tenant-card" @click="handleTenantLogin(item)">
 				<image class="tenant-card__image" :src="item.logoUrl" mode="aspectFill" />

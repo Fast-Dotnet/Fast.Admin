@@ -1,7 +1,6 @@
 <template>
 	<FaPopup
 		ref="popupRef"
-		custom-class="fa-popup__card"
 		height="76%"
 		position="bottom"
 		title="编辑常用应用"
