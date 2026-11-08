@@ -437,7 +437,7 @@ const handleQuery = async (pageNo: number, pageSize: number, from: ZPagingEnums.
 			} else {
 				pageData = apiRes as TResult[];
 				totalRows = pageData.length;
-				await paging.value.setLocalPaging(pageData);
+				await paging.value.completeByNoMore(pageData, true);
 			}
 			emit("query", pageData, pageNo, pageSize, totalRows, from);
 		} else {

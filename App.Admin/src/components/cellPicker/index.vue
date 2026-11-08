@@ -1,15 +1,15 @@
 <template>
 	<view class="fa-cell-picker">
 		<wd-cell v-bind="wdCellProps" :value="dictionaryLabel" @click="handleClick" />
-		<slot :visible="toRef(visible)">
-			<wd-picker :model-value="modelValues" v-model:visible="visible" :columns="dictionaries" @confirm="handleConfirm" />
+		<slot :visible="slotState.visible" :label="slotState.label">
+			<wd-picker :model-value="modelValues" v-model:visible="state.visible" :columns="dictionaries" @confirm="handleConfirm" />
 		</slot>
 	</view>
 </template>
 
 <script setup lang="ts" generic="TValue extends string | number | boolean">
-import { computed, ref, toRef } from "vue";
-import { randomString, useProps } from "@fast-china/utils";
+import { computed, reactive, toRefs } from "vue";
+import { randomString, useProps, withDefineType } from "@fast-china/utils";
 import { cellProps } from "@wot-ui/ui/components/wd-cell/types";
 import { useApp } from "@/stores";
 import type { PickerOption } from "@wot-ui/ui/components/wd-picker-view/types";
@@ -55,10 +55,14 @@ const emit = defineEmits<{
 	change: [value: string | number];
 }>();
 
-const visible = ref(false);
+const state = reactive({
+	visible: false,
+	label: withDefineType<string>(),
+});
+const slotState = toRefs(state);
 
 const handleClick = () => {
-	visible.value = true;
+	state.visible = true;
 	emit("click");
 };
 
@@ -83,7 +87,10 @@ const dictionaries = computed<PickerOption[]>(() => {
 });
 // 字典值
 const dictionaryLabel = computed(
-	() => props.value ?? dictionaries.value.find((item) => item.rawValue === (modelValue.value === null ? allValue : modelValue.value))?.label
+	() =>
+		props.value ??
+		state.label ??
+		dictionaries.value.find((item) => item.rawValue === (modelValue.value === null ? allValue : modelValue.value))?.label
 );
 
 const handleConfirm = ({ value }: { value: (string | number)[] }) => {

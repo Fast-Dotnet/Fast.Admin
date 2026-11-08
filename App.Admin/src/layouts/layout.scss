@@ -13,10 +13,10 @@
 	padding-right: var(--fa-area-inset-right, 0px);
 	padding-bottom: var(--fa-area-inset-bottom, 0px);
 	:deep() {
-		.page {
+		> .page {
 			min-height: var(--main-height);
 		}
-		.z-paging__page {
+		> .z-paging__page {
 			min-height: var(--main-height);
 		}
 	}
@@ -24,12 +24,12 @@
 
 .fa-main.fa-main__page-scroll {
 	:deep() {
-		.page {
+		> .page {
 			min-height: auto;
 			height: var(--main-height);
 			overflow-y: auto;
 		}
-		.z-paging__page {
+		> .z-paging__page {
 			min-height: auto;
 			height: var(--main-height);
 			overflow-y: auto;
