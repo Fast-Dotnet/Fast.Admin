@@ -8,6 +8,9 @@ declare global {
 	/** FaTable 默认时间搜索支持的快捷日期范围 */
 	type FaTableDataRange = "Past1D" | "Past3D" | "Past1W" | "Past1M" | "Past3M" | "Past6M" | "Past1Y" | "Past3Y";
 
+	/** 页面状态类型 */
+	type IPageStateType = "detail" | "add" | "edit" | "copy";
+
 	/** FaTable 枚举列的选项配置 */
 	interface FaTableEnumColumnCtx {
 		/**

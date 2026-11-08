@@ -8,6 +8,7 @@ import UniHelperPages from "@uni-helper/vite-plugin-uni-pages";
 import { FastResolver } from "./resolver.fast";
 import { WotResolver } from "./resolver.wot-ui";
 import { ZPagingResolver } from "./resolver.z-paging";
+import { transformForwardedSlots } from "./uni-slot-forwarding";
 
 // 兼容插件的模块导出形式，优先使用 default 导出，否则使用模块本身。
 const Uni = (UniPlugin as typeof UniPlugin & { default?: typeof UniPlugin }).default ?? UniPlugin;
@@ -105,6 +106,14 @@ export default defineConfig({
 			dts: "types/components.d.ts",
 		}),
 		/* uni-app Vite 插件必须放在相关转换插件之后。 */
-		Uni(),
+		Uni({
+			vueOptions: {
+				template: {
+					compilerOptions: {
+						nodeTransforms: [transformForwardedSlots],
+					},
+				},
+			},
+		}),
 	],
 });

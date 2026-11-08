@@ -13,9 +13,8 @@
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.apiId" @click="editFormRef.detail(item)">
-				<template #title>
-					<text class="fa-card__title-text">{{ item.apiName }}</text>
+			<FaCard v-for="item in pagedList" :key="item.apiId" :title="item.apiName" @click="editFormRef.detail(item)">
+				<template #titleExtra>
 					<view class="fa-card__title-view">
 						<FaTag name="HttpRequestActionEnum" :value="item.action" />
 						<FaTag name="HttpRequestMethodEnum" :value="item.method" />
@@ -38,13 +37,13 @@
 		</template>
 	</FaPaging>
 
-	<DevApiDetail ref="editFormRef" />
+	<ApiDetail ref="editFormRef" />
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
 import { apiApi } from "@/api/services/Center/api";
-import DevApiDetail from "./detail/index.vue";
+import ApiDetail from "./detail/index.vue";
 
 definePage({
 	name: "DevApi",
@@ -55,5 +54,5 @@ definePage({
 	},
 });
 
-const editFormRef = ref<InstanceType<typeof DevApiDetail>>();
+const editFormRef = ref<InstanceType<typeof ApiDetail>>();
 </script>

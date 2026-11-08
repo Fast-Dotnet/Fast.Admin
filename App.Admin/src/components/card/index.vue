@@ -1,8 +1,9 @@
 <template>
 	<view class="fa-card">
-		<view v-if="props.title || $slots.title" class="fa-card__title">
+		<view v-if="props.title || $slots.title || $slots.titleExtra" class="fa-card__title">
 			<slot name="title">
 				<text v-if="props.title" class="fa-card__title-text">{{ props.title }}</text>
+				<slot v-if="$slots.titleExtra" name="titleExtra" />
 			</slot>
 		</view>
 
@@ -109,7 +110,6 @@ const handleClick = (event: BaseEvent) => {
 	display: flex;
 	align-items: center;
 	justify-content: flex-end;
-	gap: 20rpx;
 	padding: 20rpx 20rpx 16rpx;
 
 	&::after {
@@ -122,6 +122,10 @@ const handleClick = (event: BaseEvent) => {
 		top: 0;
 		transform: scaleY(0.5);
 		background: var(--wot-border-main);
+	}
+
+	:deep(.wd-button + .wd-button) {
+		margin-left: 20rpx;
 	}
 }
 </style>

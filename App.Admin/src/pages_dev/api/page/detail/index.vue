@@ -1,6 +1,6 @@
 <template>
 	<FaPopup ref="popupRef" title="接口详情" height="70%" position="bottom" closable>
-		<scroll-view class="fa-popup__body_scroll" scroll-y>
+		<scroll-view scroll-y>
 			<view style="display: flex; flex-direction: column; gap: 10px">
 				<view class="popup__title">{{ state.formData.apiName }}</view>
 				<view style="display: flex; gap: 16rpx; margin-top: 8rpx">
@@ -13,10 +13,10 @@
 				<FaField label="分组名称" :value="state.formData.groupName" />
 				<FaField label="分组标题" :value="state.formData.groupTitle" />
 				<FaField label="授权检测">
-					<wd-text :type="state.formData.hasAuth ? 'success' : 'error'" :text="state.formData.hasAuth ? '是' : '否'" />
+					<FaTag name="BooleanEnum" :value="state.formData.hasAuth" />
 				</FaField>
 				<FaField label="权限检测">
-					<wd-text :type="state.formData.hasPermission ? 'success' : 'error'" :text="state.formData.hasPermission ? '是' : '否'" />
+					<FaTag name="BooleanEnum" :value="state.formData.hasPermission" />
 				</FaField>
 				<FaField label="版本" :value="state.formData.version" />
 				<FaField label="排序" :value="state.formData.sort" />

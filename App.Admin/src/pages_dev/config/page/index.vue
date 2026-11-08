@@ -1,5 +1,5 @@
 <template>
-	<FaPaging ref="faPagingRef" :request-api="configApi.queryConfigPaged">
+	<FaPaging :request-api="configApi.queryConfigPaged">
 		<template #top="{ searchParam, setParam, refresh }">
 			<FaSearchInput
 				:filter="false"
@@ -13,13 +13,15 @@
 				<template #footer>
 					<FaAuth code="Config:Edit">
 						<wd-button size="small" icon="plus" @click="handleOpen('add')">新增</wd-button>
-						<wd-button size="small" icon="delete" type="warning" variant="plain" @click="handleDeleteAll">清除全部缓存</wd-button>
+						<wd-button size="small" icon="delete" type="warning" variant="plain" @click="handleDeleteAll(refresh)">
+							清除全部缓存
+						</wd-button>
 					</FaAuth>
 				</template>
 			</FaSearchInput>
 		</template>
 
-		<template #default="{ pagedList }">
+		<template #default="{ pagedList, refresh }">
 			<FaCard
 				v-for="item in pagedList"
 				:key="item.configId"
@@ -32,7 +34,9 @@
 					<text v-if="item.configValue" class="config-value">{{ item.configValue }}</text>
 				</FaField>
 				<FaField label="备注" :value="item.remark" />
+				<FaField label="创建人" :value="item.createdUserName" />
 				<FaField label="创建时间" :value="item.createdTime" />
+				<FaField label="更新人" :value="item.updatedUserName" />
 				<FaField label="更新时间" :value="item.updatedTime" />
 
 				<template #footer>
@@ -40,7 +44,7 @@
 						<wd-button size="mini" type="primary" variant="plain" @click="handleOpen('edit', item.configId)">编辑</wd-button>
 					</FaAuth>
 					<FaAuth code="Config:Edit">
-						<wd-button size="mini" type="warning" variant="plain" @click="handleDelete(item)">清除缓存</wd-button>
+						<wd-button size="mini" type="warning" variant="plain" @click="handleDelete(item, refresh)">清除缓存</wd-button>
 					</FaAuth>
 				</template>
 			</FaCard>
@@ -49,12 +53,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 import { useRouter } from "@wot-ui/router";
 import { configApi } from "@/api/services/Center/config";
 import { useMessageBox, useToast } from "@/hooks";
 import type { QueryConfigPagedOutput } from "@/api/services/Center/config/models/QueryConfigPagedOutput";
-import type { FaPagingInstance } from "@/components";
 
 definePage({
 	name: "DevConfig",
@@ -67,27 +69,25 @@ definePage({
 
 const router = useRouter();
 
-const faPagingRef = ref<FaPagingInstance>();
-
 const handleOpen = (mode: IPageStateType, configId?: string) => router.push(`/pages_dev/config/edit/index?mode=${mode}&configId=${configId}`);
 
-const handleDelete = (item: QueryConfigPagedOutput) => {
+const handleDelete = (item: QueryConfigPagedOutput, refresh: () => Promise<void>) => {
 	const { configCode } = item;
 	useMessageBox.confirm("确定要删除缓存？", {
 		async beforeConfirm() {
 			await configApi.deleteConfigCache({ configCode });
 			useToast.success("删除成功！");
-			faPagingRef.value.reload();
+			refresh();
 		},
 	});
 };
 
-const handleDeleteAll = () => {
+const handleDeleteAll = (refresh: () => Promise<void>) => {
 	useMessageBox.confirm("确定要删除全部缓存？", {
 		async beforeConfirm() {
 			await configApi.deleteAllConfigCache();
 			useToast.success("删除成功！");
-			faPagingRef.value.reload();
+			refresh();
 		},
 	});
 };
@@ -95,6 +95,7 @@ const handleDeleteAll = () => {
 
 <style lang="scss" scoped>
 .config-value {
+	flex: 1;
 	margin: var(--fa-page-section-gap) 0;
 	padding: 20rpx;
 	border-radius: var(--wot-radius-main);

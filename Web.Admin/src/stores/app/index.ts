@@ -87,6 +87,7 @@ export const useApp = defineStore(
 					method: "post",
 					requestType: "auth",
 					timeout: 10_000,
+					requestCipher: true,
 				});
 				logger.debug("Launch", apiRes);
 				Object.assign(state, apiRes);

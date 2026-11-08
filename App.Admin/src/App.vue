@@ -32,6 +32,7 @@ onLaunch((options) => {
 			method: "post",
 			requestType: "auth",
 			timeout: 10_000,
+			requestCipher: true,
 			showErrorMessage: false,
 			showCodeMessage: false,
 		})

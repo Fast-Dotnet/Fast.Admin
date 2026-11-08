@@ -296,13 +296,7 @@ defineExpose({
 	flex: 1;
 	flex-direction: column;
 	padding: 20rpx;
-	min-height: 0;
-	overflow-y: auto;
 	background: var(--wot-filled-bottom);
-}
-
-:deep(.fa-popup__body_scroll) {
-	flex: 1;
 	min-width: 0;
 	min-height: 0;
 	overflow: auto;

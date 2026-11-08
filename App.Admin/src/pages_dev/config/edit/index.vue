@@ -88,7 +88,8 @@ const handleConfirm = async () => {
 	} finally {
 		useLoading.hide();
 	}
-	router.back();
+	if (getCurrentPages().length > 1) router.back();
+	else router.replace("/pages_dev/config/page/index");
 };
 
 const handleLoad = async () => {
@@ -118,7 +119,7 @@ const handleLoad = async () => {
 };
 
 onLoad((options: { mode?: IPageStateType; configId?: string }) => {
-	if (!options?.mode && (options.mode === "add" || options.mode === "edit") && !options?.configId) {
+	if (!options?.mode || ((options.mode === "edit" || options.mode === "detail") && !options.configId)) {
 		useMessageBox.alert("参数异常");
 		return;
 	}

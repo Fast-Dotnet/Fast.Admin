@@ -38,47 +38,52 @@
 			height="60%"
 			position="bottom"
 			closable
-			show-close-button
 			show-confirm-button
 			confirm-button-text="筛选"
 			@confirm="handleFilterClick"
 		>
-			<scroll-view class="fa-search-popup__warp" scroll-y>
+			<scroll-view class="fa-popup__body_scroll" scroll-y>
 				<template v-if="!props.hideSearchTime">
+					<wd-cell
+						label="时间"
+						:value="
+							state.searchTimeList?.length > 0
+								? `${dayjs(state.searchTimeList[0]).format('YYYY-MM-DD')} - ${dayjs(state.searchTimeList[1]).format('YYYY-MM-DD')}`
+								: ''
+						"
+						is-link
+						placeholder="请选择日期"
+						@click="state.dataSearchPickerVisible = true"
+					/>
 					<wd-datetime-picker
 						:disable="state.dataSearchRange !== 'custom'"
 						type="date"
-						label="时间"
 						v-model="state.searchTimeList"
-						:default-value="createOneMonthRangeFromToday(props.futureSearchTime).map((date) => date.getTime())"
+						v-model:visible="state.dataSearchPickerVisible"
 						align-right
 						@confirm="handleDateTimeConfirm"
 					/>
-					<wd-radio-group
-						class="fa-search-input__date-range"
-						v-model="state.dataSearchRange"
-						cell
-						shape="button"
-						@change="handleDateRangeChange"
-					>
-						<view class="fa-search-input__date-range__warp">
-							<wd-radio v-for="(item, index) in dataSearchRangeList" :key="index" :value="item.value">
-								{{ item.label }}
-							</wd-radio>
-							<wd-radio value="custom">自定义</wd-radio>
-						</view>
+					<wd-radio-group v-model="state.dataSearchRange" direction="horizontal" type="button" @change="handleDateRangeChange">
+						<wd-radio v-for="(item, index) in dataSearchRangeList" :key="index" :value="item.value">
+							{{ item.label }}
+						</wd-radio>
+						<wd-radio value="custom">自定义</wd-radio>
 					</wd-radio-group>
 				</template>
 
 				<slot name="filter" />
 			</scroll-view>
+
+			<template #footer="{ loading }">
+				<wd-button custom-style="flex: 1;" type="info" variant="plain" block :disabled="loading" @click="handleFilterReset">重置</wd-button>
+			</template>
 		</FaPopup>
 	</view>
 </template>
 
 <script setup lang="ts" generic="TInput extends PagedInput = PagedInput">
 import { computed, onMounted, reactive, ref, watch } from "vue";
-import { createOneMonthRangeFromToday, definePropType, throttle, withDefineType } from "@fast-china/utils";
+import { definePropType, throttle, withDefineType } from "@fast-china/utils";
 import dayjs from "dayjs";
 import FaPopup from "../popup/index.vue";
 
@@ -145,6 +150,7 @@ const filterPopupRef = ref<InstanceType<typeof FaPopup>>();
 const state = reactive({
 	searchTimeList: withDefineType<number[]>([]),
 	dataSearchRange: withDefineType<FaTableDataRange | "custom">(),
+	dataSearchPickerVisible: false,
 });
 
 const dataSearchRangeList = computed<ElSelectorOutput<FaTableDataRange>[]>(() => [
@@ -177,29 +183,6 @@ const dataSearchRangeList = computed<ElSelectorOutput<FaTableDataRange>[]>(() =>
 		value: "Past1Y",
 	},
 ]);
-
-const handleScanClick = throttle(() => {
-	uni.scanCode({
-		onlyFromCamera: true,
-		scanType: ["barCode", "qrCode", "datamatrix", "pdf417"],
-		success: ({ result }) => {
-			modelValue.value = result;
-			searchParam.value.searchValue = result;
-		},
-	});
-});
-
-const handleInput = (detail: UniHelper.InputOnInputDetail) => {
-	searchParam.value = { ...searchParam.value, searchValue: detail.value };
-	emit("input", detail);
-};
-
-const handleClear = () => {
-	searchParam.value = { ...searchParam.value, searchValue: "" };
-	emit("clear");
-};
-
-const handleFilterClick = () => filterPopupRef.value?.close(() => emit("search"));
 
 const getDateTime = (dataRange: FaTableDataRange | "custom") => {
 	const end = new Date();
@@ -267,10 +250,12 @@ const getDateTime = (dataRange: FaTableDataRange | "custom") => {
 
 /** 接口接收按天扩展的本地时间字符串，日期选择器使用毫秒时间戳。 */
 const handleDateTimeConfirm = ({ value }: { value: number[] }) => {
+	state.dataSearchRange = "custom";
 	searchParam.value.searchTimeList = [dayjs(value[0]).format("YYYY-MM-DD 00:00:00"), dayjs(value[1]).format("YYYY-MM-DD 23:59:59")];
 };
 
 const handleDateRangeChange = ({ value }: { value: FaTableDataRange | "custom" }) => {
+	state.dataSearchRange = value;
 	const { start, end } = getDateTime(value);
 	state.searchTimeList = [start.getTime(), end.getTime()];
 	searchParam.value.searchTimeList = [dayjs(start).format("YYYY-MM-DD 00:00:00"), dayjs(end).format("YYYY-MM-DD 23:59:59")];
@@ -287,6 +272,37 @@ const defaultSearchTime = () => {
 	}
 };
 
+const handleScanClick = throttle(() => {
+	uni.scanCode({
+		onlyFromCamera: true,
+		scanType: ["barCode", "qrCode", "datamatrix", "pdf417"],
+		success: ({ result }) => {
+			modelValue.value = result;
+			searchParam.value.searchValue = result;
+		},
+	});
+});
+
+const handleInput = (detail: UniHelper.InputOnInputDetail) => {
+	searchParam.value = { ...searchParam.value, searchValue: detail.value };
+	emit("input", detail);
+};
+
+const handleClear = () => {
+	searchParam.value = { ...searchParam.value, searchValue: "" };
+	emit("clear");
+};
+
+const handleFilterClick = () => filterPopupRef.value?.close(() => emit("search"));
+
+const handleFilterReset = () => {
+	filterPopupRef.value?.close(() => {
+		searchParam.value = {};
+		defaultSearchTime();
+		emit("search");
+	});
+};
+
 watch(
 	() => modelValue.value,
 	(newVal) => {
@@ -296,6 +312,7 @@ watch(
 	},
 	{
 		immediate: true,
+		flush: "post",
 	}
 );
 
@@ -309,6 +326,7 @@ watch(
 	{
 		immediate: true,
 		deep: true,
+		flush: "post",
 	}
 );
 

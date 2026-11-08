@@ -129,7 +129,7 @@ import {
 	zPagingScrollProps,
 	zPagingVirtualListProps,
 } from "./src/props";
-import type { PropType, VNode } from "vue";
+import type { ComponentPublicInstance, PropType, VNode } from "vue";
 import type {
 	ZPagingBackToTopEmit,
 	ZPagingBaseEmit,
@@ -189,7 +189,15 @@ const props = defineProps({
 	 */
 	safeAreaInsetBottom: {
 		type: Boolean,
-		default: true,
+		default: false,
+	},
+	/**
+	 * 页面滚动模式下，内容不足一屏时是否由 z-paging 自动撑满视口
+	 * 默认关闭。外层布局已为页脚预留高度，自动撑满可能导致空列表也出现滚动。
+	 */
+	autoFullHeight: {
+		type: Boolean,
+		default: false,
 	},
 	/**
 	 * 是否使用页面滚动
@@ -396,7 +404,7 @@ const modelValue = defineModel<TResult[]>({ default: () => [] });
 /** 分页搜索参数 */
 const searchParam = defineModel<Partial<TInput>>("searchParam", { default: () => ({}) });
 
-const paging = shallowRef<ZPagingRef<TResult> & { pageReachBottom: () => void }>();
+const paging = shallowRef<ZPagingRef<TResult> & Pick<ComponentPublicInstance, "$forceUpdate"> & { pageReachBottom: () => void }>();
 
 /** 虚拟列表数据 */
 const virtualList = shallowRef<TResult[]>([]);
@@ -461,6 +469,8 @@ const handleRefresh = async (pageIndex?: number): Promise<void> => {
 	if (pageIndex) {
 		await paging.value.refreshToPage(pageIndex);
 	} else {
+		// 带动画的 reload 可能在没有视图更新时卡在 z-paging 的 $nextTick 中。
+		paging.value.$forceUpdate();
 		await paging.value.reload();
 	}
 };
