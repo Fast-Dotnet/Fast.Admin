@@ -39,7 +39,7 @@
 			</template>
 		</wd-form>
 
-		<wd-button custom-class="btn__submit" type="primary" :disabled="state.formDisabled" @click="handleConfirm">保存</wd-button>
+		<wd-button custom-class="fa-form-submit" type="primary" :disabled="state.formDisabled" @click="handleConfirm">保存</wd-button>
 	</view>
 </template>
 
@@ -158,10 +158,3 @@ onPullDownRefresh(() =>
 		.finally(() => uni.stopPullDownRefresh())
 );
 </script>
-
-<style lang="scss" scoped>
-.btn__submit {
-	display: block;
-	margin: 30rpx 50rpx;
-}
-</style>

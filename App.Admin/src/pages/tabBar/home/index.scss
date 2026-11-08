@@ -1,8 +1,8 @@
 .page {
 	display: flex;
 	flex-direction: column;
-	gap: var(--fa-page-section-gap);
-	padding: var(--fa-page-padding);
+	gap: var(--fa-spacing-section);
+	padding: var(--fa-spacing-page);
 }
 
 .greeting {
@@ -35,11 +35,11 @@
 }
 
 .workspace {
-	padding: 28rpx;
+	padding: var(--fa-spacing-panel);
 	background-color: var(--wot-card-bg, var(--wot-filled-oppo));
-	border: 1px solid var(--wot-card-border-color, var(--wot-border-light));
+	border: var(--fa-border-panel);
 	border-radius: var(--wot-radius-extra-large);
-	box-shadow: var(--fa-box-shadow-lighter);
+	box-shadow: var(--fa-shadow-panel);
 }
 
 .workspace__header {
@@ -47,7 +47,7 @@
 	justify-content: space-between;
 	align-items: center;
 	gap: 16rpx;
-	margin-bottom: var(--fa-page-section-gap);
+	margin-bottom: var(--fa-spacing-section);
 }
 
 .workspace__title {
@@ -116,7 +116,7 @@
 	gap: 18rpx;
 	padding: 32rpx 24rpx;
 	background: var(--wot-card-bg, var(--wot-filled-oppo));
-	border: 1px solid var(--wot-card-border-color, var(--wot-border-light));
+	border: var(--fa-border-panel);
 	border-radius: var(--wot-radius-extra-large);
 	font-size: var(--wot-typography-body-size-main);
 }

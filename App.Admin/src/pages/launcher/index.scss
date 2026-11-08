@@ -61,7 +61,7 @@
 	height: 160rpx;
 	background: var(--wot-filled-oppo, #fff);
 	border-radius: 40rpx;
-	box-shadow: var(--fa-box-shadow-light);
+	box-shadow: var(--fa-shadow-ambient);
 	animation: logo-enter 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -79,7 +79,7 @@
 	font-size: 48rpx;
 	font-weight: var(--wot-font-weight-medium);
 	letter-spacing: 2rpx;
-	animation: content-enter 0.6s ease-out 0.18s both;
+	animation: content-enter 0.6s var(--fa-motion-easing-enter) 0.18s both;
 }
 
 .page__subtitle {
@@ -87,7 +87,7 @@
 	font-size: 25rpx;
 	color: var(--wot-text-auxiliary);
 	letter-spacing: 4rpx;
-	animation: content-enter 0.6s ease-out 0.28s both;
+	animation: content-enter 0.6s var(--fa-motion-easing-enter) 0.28s both;
 }
 
 .page__action {

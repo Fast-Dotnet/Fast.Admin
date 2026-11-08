@@ -9,7 +9,7 @@
 		/* 使用紧凑标题规格，兼容自定义胶囊按钮布局 */
 		--wot-navbar-title-font-size: var(--wot-typography-label-size-large);
 		--wot-navbar-title-font-weight: var(--wot-font-weight-regular);
-		transition: background-color var(--fa-transition-duration);
+		transition: background-color var(--fa-motion-duration-normal) var(--fa-motion-easing-standard);
 		&.is-scrolled {
 			/* 滚动后恢复标准内容背景和主文字颜色 */
 			--wot-navbar-bg: var(--wot-filled-oppo);

@@ -1,4 +1,4 @@
 /* Fast 风格：提高搜索框触控高度，改善移动端点击区域 */
 .wd-search {
-	--wot-search-input-height: 40px;
+	--wot-search-input-height: var(--fa-size-search-height);
 }

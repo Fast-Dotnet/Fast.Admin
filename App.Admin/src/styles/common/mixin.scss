@@ -11,32 +11,3 @@
 		line-height: normal;
 	}
 }
-
-/* 外边距、内边距全局样式 */
-@for $i from 1 through 20 {
-	$i_step: $i * 5;
-	.mt#{$i_step} {
-		margin-top: #{$i_step}rpx !important;
-	}
-	.mr#{$i_step} {
-		margin-right: #{$i_step}rpx !important;
-	}
-	.mb#{$i_step} {
-		margin-bottom: #{$i_step}rpx !important;
-	}
-	.ml#{$i_step} {
-		margin-left: #{$i_step}rpx !important;
-	}
-	.pt#{$i_step} {
-		padding-top: #{$i_step}rpx !important;
-	}
-	.pr#{$i_step} {
-		padding-right: #{$i_step}rpx !important;
-	}
-	.pb#{$i_step} {
-		padding-bottom: #{$i_step}rpx !important;
-	}
-	.pl#{$i_step} {
-		padding-left: #{$i_step}rpx !important;
-	}
-}

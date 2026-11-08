@@ -1,5 +1,5 @@
 /* Fast 风格：统一按钮形态单选框的圆角，未选中描边使用较清晰的语义边框色 */
 .wd-radio {
-	--wot-radio-button-border-radius: 20rpx;
+	--wot-radio-button-border-radius: var(--fa-radius-choice-control);
 	--wot-radio-unchecked-color: var(--wot-border-extra-strong);
 }

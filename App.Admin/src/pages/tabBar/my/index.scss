@@ -1,17 +1,17 @@
 .page {
-	padding: var(--fa-page-padding);
+	padding: var(--fa-spacing-page);
 }
 
 .user-card {
 	display: flex;
-	gap: var(--fa-page-section-gap);
+	gap: var(--fa-spacing-section);
 	align-items: center;
-	padding: 28rpx;
-	margin-bottom: var(--fa-page-section-gap);
-	border: 1px solid var(--wot-card-border-color, var(--wot-border-light));
+	padding: var(--fa-spacing-panel);
+	margin-bottom: var(--fa-spacing-section);
+	border: var(--fa-border-panel);
 	border-radius: var(--wot-radius-super-large);
 	color: var(--wot-text-main);
-	box-shadow: var(--fa-box-shadow-lighter);
+	box-shadow: var(--fa-shadow-panel);
 	background-color: var(--wot-card-bg, var(--wot-filled-oppo));
 }
 
@@ -46,7 +46,7 @@
 }
 
 :deep(.wd-cell-group) {
-	--wot-cell-group-insert-margin: 0 0 var(--fa-page-section-gap);
+	--wot-cell-group-insert-margin: 0 0 var(--fa-spacing-section);
 }
 
 :deep(.wd-cell__left) .wd-icon {

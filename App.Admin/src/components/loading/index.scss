@@ -59,8 +59,8 @@
 			border-radius: 50%;
 			border: 2px solid var(--wot-primary-6);
 			animation:
-				loading-rotate 0.8s infinite linear alternate,
-				loading-dash 1.6s infinite linear;
+				loading-rotate 0.8s infinite var(--fa-motion-easing-linear) alternate,
+				loading-dash 1.6s infinite var(--fa-motion-easing-linear);
 		}
 		.box-text {
 			color: var(--wot-primary-6);
@@ -71,6 +71,6 @@
 }
 
 .fa-loading-mask {
-	background-color: var(--fa-mask-color);
+	background-color: var(--fa-color-overlay);
 	position: absolute;
 }

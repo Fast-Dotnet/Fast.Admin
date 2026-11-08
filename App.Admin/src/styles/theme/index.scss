@@ -1,27 +1,55 @@
 @use "./light.scss";
 @use "./dark.scss";
 
-/* 页面公共变量，与明暗模式无关 */
+/* 全局设计变量，随主题变化的别名在当前主题节点解析 */
 :root,
 page,
+.fa-layout,
 .wd-root-portal {
 	/* 标题、选中项与关键数据使用半粗字重 */
 	--wot-font-weight-semibold: 600;
 
-	/* 页面布局变量 */
+	/* 布局与间距 */
+	/* 内容容器的最大宽度，H5 宽屏下使用固定 px 上限 */
 	--fa-layout-max-width: 440px;
-	--fa-page-padding: 24rpx;
-	--fa-page-section-gap: 24rpx;
+	/* 页面内容与页面边缘的间距 */
+	--fa-spacing-page: 24rpx;
+	/* 相邻内容区块之间的间距 */
+	--fa-spacing-section: 24rpx;
+	/* 独立面板内容与自身边缘的间距 */
+	--fa-spacing-panel: 28rpx;
 
-	/* 通用过渡变量 */
-	--fa-transition-duration: 0.3s;
-	--fa-transition-duration-fast: 0.2s;
-	--fa-transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
-	--fa-transition-timing-function-fast: cubic-bezier(0.23, 1, 0.32, 1);
-	--fa-transition-fade: opacity var(--fa-transition-duration) var(--fa-transition-timing-function-fast);
-	--fa-transition-transform: transform var(--fa-transition-duration-fast) var(--fa-transition-timing-function-fast);
-	--fa-transition-colors:
-		color var(--fa-transition-duration-fast) var(--fa-transition-timing-function),
-		background-color var(--fa-transition-duration-fast) var(--fa-transition-timing-function),
-		border-color var(--fa-transition-duration-fast) var(--fa-transition-timing-function);
+	/* 控件尺寸与圆角 */
+	/* 搜索输入区的固定触控高度 */
+	--fa-size-search-height: 40px;
+	/* 按钮形态的单选框和复选框圆角 */
+	--fa-radius-choice-control: 20rpx;
+
+	/* 边框与阴影 */
+	/* 独立面板描边，线宽和颜色由当前 Wot 主题提供 */
+	--fa-border-panel: var(--wot-stroke-main, 1px) solid var(--wot-card-border-color, var(--wot-border-light));
+	/* 低对比度的边缘阴影，给紧凑的列表容器提供轻微分层 */
+	--fa-shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.0392156863);
+	/* 独立面板阴影，引用当前主题的低层阴影 */
+	--fa-shadow-panel: var(--fa-shadow-low, none);
+
+	/* 动效时长 */
+	/* 即时切换，过渡时长归零 */
+	--fa-motion-duration-instant: 0ms;
+	/* 开关等小范围状态切换 */
+	--fa-motion-duration-fast: 200ms;
+	/* 普通界面元素的过渡 */
+	--fa-motion-duration-normal: 300ms;
+	/* 较大范围的展开或位移 */
+	--fa-motion-duration-slow: 500ms;
+
+	/* 动效缓动 */
+	/* 等速变化，适合持续旋转等匀速动效 */
+	--fa-motion-easing-linear: linear;
+	/* 常规交互的默认缓动 */
+	--fa-motion-easing-standard: ease;
+	/* 入场减速，使元素逐渐停稳 */
+	--fa-motion-easing-enter: ease-out;
+	/* 退场加速，使元素逐渐离开 */
+	--fa-motion-easing-exit: ease-in;
 }

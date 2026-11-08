@@ -68,6 +68,12 @@ textarea {
 	background-color: var(--wot-filled-bottom);
 }
 
+/* 表单提交按钮 */
+.wd-button.fa-form-submit {
+	display: block;
+	margin: 30rpx 50rpx;
+}
+
 /* 固定卡片 */
 .fa-fixed__card {
 	text-align: right;

@@ -1,8 +1,7 @@
 <template>
 	<view class="page">
 		<wd-text
-			custom-class="pl20 pt20 mb20"
-			custom-style="display: block;"
+			custom-style="display: block; padding-left: 20rpx; padding-top: 20rpx; margin-bottom: 20rpx;"
 			text="本渠道为平台自有渠道，非官方监管渠道"
 			size="var(--wot-typography-body-size-small)"
 		/>
@@ -34,7 +33,7 @@
 				<wd-upload v-model:file-list="state.fileList" multiple :limit="4" image-mode="aspectFill" :upload-method="handleUpload" />
 			</wd-form-item>
 
-			<wd-button custom-class="btn__submit" type="primary" @click="handleSubmit">提交</wd-button>
+			<wd-button custom-class="fa-form-submit" type="primary" @click="handleSubmit">提交</wd-button>
 		</wd-form>
 	</view>
 </template>
@@ -134,10 +133,5 @@ const handleSubmit = throttle(async () => {
 <style lang="scss" scoped>
 :deep(.wd-textarea__inner) {
 	height: 150rpx;
-}
-
-.btn__submit {
-	display: block;
-	margin: 30rpx 50rpx;
 }
 </style>

@@ -51,7 +51,7 @@
 	max-width: calc(var(--fa-layout-max-width, 440px) - 32px);
 	margin: 0;
 	transform: translateX(-50%);
-	box-shadow: var(--fa-tabbar-box-shadow);
+	box-shadow: var(--fa-shadow-tab-bar);
 }
 
 .fa-auth-mobile {

@@ -104,7 +104,7 @@ const sections = computed(() => [
 
 <style lang="scss" scoped>
 .page {
-	padding: var(--fa-page-padding);
+	padding: var(--fa-spacing-page);
 }
 
 .page__header {

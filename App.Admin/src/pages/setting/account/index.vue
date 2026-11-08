@@ -60,7 +60,7 @@
 				</wd-form-item>
 			</wd-cell-group>
 
-			<wd-button custom-class="btn__confirm" type="primary" @click="handleConfirm">保存</wd-button>
+			<wd-button custom-class="fa-form-submit" type="primary" @click="handleConfirm">保存</wd-button>
 		</wd-form>
 
 		<!-- #ifdef MP-WEIXIN -->
@@ -298,11 +298,6 @@ onLoad(() => {
 	height: 120rpx;
 	border-radius: 50%;
 	vertical-align: middle;
-}
-
-.btn__confirm {
-	display: block;
-	margin: 30rpx 50rpx;
 }
 
 .auth-popup {

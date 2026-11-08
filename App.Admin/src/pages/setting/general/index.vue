@@ -1,6 +1,6 @@
 <template>
 	<view class="page">
-		<wd-text custom-class="pl20" text="主题样式" size="var(--wot-typography-label-size-main)" />
+		<wd-text custom-style="padding-left: 20rpx;" text="主题样式" size="var(--wot-typography-label-size-main)" />
 		<wd-cell-group center border>
 			<wd-cell title="主题颜色" :value="state.themeColorLabel" is-link @click="state.themeColorVisible = true" />
 			<wd-picker v-model="state.themeColor" v-model:visible="state.themeColorVisible" :columns="predefineColorList" />
@@ -21,7 +21,7 @@
 			</wd-cell>
 		</wd-cell-group>
 
-		<wd-button custom-class="btn__reset" type="danger" @click="configStore.reset">重置</wd-button>
+		<wd-button custom-class="fa-form-submit" type="danger" @click="configStore.reset">重置</wd-button>
 	</view>
 </template>
 
@@ -90,10 +90,5 @@ const state = reactive({
 
 :deep(.wd-switch) {
 	--wot-switch-size: 40rpx;
-}
-
-.btn__reset {
-	display: block;
-	margin: 30rpx 50rpx;
 }
 </style>

@@ -2,7 +2,7 @@
 	<FaPopup
 		ref="popupRef"
 		custom-class="fa-popup__card"
-		height="80%"
+		height="76%"
 		position="bottom"
 		title="编辑常用应用"
 		closable
@@ -451,16 +451,20 @@ defineExpose({
 .menu-content {
 	display: flex;
 	flex-direction: column;
-	gap: var(--fa-page-section-gap);
+	gap: 16rpx;
+	padding: 4rpx;
 }
 
 .selected-list,
 .menu-list {
-	padding: 28rpx;
+	padding: 20rpx 24rpx;
 	background-color: var(--wot-card-bg, var(--wot-filled-oppo));
-	border: 1px solid var(--wot-card-border-color, var(--wot-border-light));
+	border: var(--fa-border-panel);
 	border-radius: var(--wot-radius-extra-large);
-	box-shadow: var(--fa-box-shadow-lighter);
+}
+
+.selected-list {
+	box-shadow: var(--fa-shadow-panel);
 }
 
 .selected-list__header {
@@ -496,7 +500,7 @@ defineExpose({
 		z-index: 2;
 		.selected-menu__icon {
 			transform: scale(1.08);
-			box-shadow: var(--fa-box-shadow-light);
+			box-shadow: var(--fa-shadow-ambient);
 		}
 	}
 }
@@ -512,7 +516,7 @@ defineExpose({
 	border-radius: 24rpx;
 	color: var(--wot-primary-6);
 	background: var(--wot-primary-1);
-	transition: transform var(--fa-transition-duration-fast);
+	transition: transform var(--fa-motion-duration-fast) var(--fa-motion-easing-standard);
 	/* #ifdef H5 */
 	cursor: grab;
 	/* #endif */
@@ -590,8 +594,8 @@ defineExpose({
 	justify-content: space-between;
 	align-items: center;
 	gap: 16rpx;
-	min-height: 44px;
-	margin-bottom: var(--fa-page-section-gap);
+	min-height: 28px;
+	margin-bottom: 12rpx;
 }
 
 .section-title {
@@ -607,7 +611,7 @@ defineExpose({
 	flex-shrink: 0;
 	align-items: center;
 	justify-content: center;
-	width: 16px;
+	width: 12px;
 	height: 20px;
 }
 

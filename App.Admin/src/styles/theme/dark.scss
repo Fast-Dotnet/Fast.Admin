@@ -1,6 +1,7 @@
 .fa-layout.fa-layout__dark.wot-theme-dark,
 .wd-root-portal.wot-theme-dark {
-	--fa-local-icon-filter: brightness(0) invert(1);
+	/* 单色图标在深色表面上的对比度滤镜 */
+	--fa-filter-icon-monochrome: brightness(0) invert(1);
 
 	/* 页面、组件表面和嵌入区域使用中性灰阶，统一现有及后续 Wot 组件的深色层级。 */
 	--wot-filled-bottom: #141414;
@@ -30,10 +31,16 @@
 	--wot-card-border-color: var(--wot-border-main);
 
 	/* 深色模式以填充色和边框区分层级，避免高不透明度阴影。 */
-	--fa-mask-color: rgba(0, 0, 0, 0.8);
-	--fa-mask-color-extra-light: rgba(0, 0, 0, 0.3);
-	--fa-box-shadow: 0 12rpx 32rpx rgba(0, 0, 0, 0.24);
-	--fa-box-shadow-light: 0 0 20rpx rgba(0, 0, 0, 0.2);
-	--fa-box-shadow-lighter: 0 2rpx 8rpx rgba(0, 0, 0, 0.16);
-	--fa-tabbar-box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.2);
+	/* 遮罩下的内容需要明显弱化时使用的表面色 */
+	--fa-color-overlay: rgba(0, 0, 0, 0.8);
+	/* 仍需辨认遮罩下内容时使用的轻量表面色 */
+	--fa-color-overlay-subtle: rgba(0, 0, 0, 0.3);
+	/* 较高浮层的投影 */
+	--fa-shadow-high: 0 12rpx 32rpx rgba(0, 0, 0, 0.24);
+	/* 四周均匀散开的柔和阴影 */
+	--fa-shadow-ambient: 0 0 20rpx rgba(0, 0, 0, 0.2);
+	/* 贴近背景表面的低层阴影 */
+	--fa-shadow-low: 0 2rpx 8rpx rgba(0, 0, 0, 0.16);
+	/* 悬浮底部导航的投影 */
+	--fa-shadow-tab-bar: 0 4rpx 20rpx rgba(0, 0, 0, 0.2);
 }

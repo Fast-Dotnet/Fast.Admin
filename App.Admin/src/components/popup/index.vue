@@ -307,7 +307,7 @@ defineExpose({
 	flex-shrink: 0;
 	align-items: center;
 	gap: 20rpx;
-	padding: 24rpx var(--fa-page-padding);
+	padding: 24rpx var(--fa-spacing-page);
 	border-top: 1px solid var(--wot-border-light);
 	background: var(--wot-filled-oppo);
 }

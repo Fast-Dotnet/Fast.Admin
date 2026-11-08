@@ -23,7 +23,7 @@
 		</view>
 
 		<view class="workbench-content">
-			<view v-if="!state.searchValue.trim()" class="menu-section">
+			<view v-if="!searchKeyword" class="menu-section">
 				<view class="section-header">
 					<view class="section-title">
 						<view class="section-icon">
@@ -40,12 +40,12 @@
 			</view>
 
 			<view
-				v-for="menu in filteredMenuList"
+				v-for="(menu, index) in filteredMenuList"
 				:key="menu.menuCode"
 				class="menu-section"
-				:class="{ 'is-collapsed': state.collapsedMenuCodes.includes(menu.menuCode) }"
+				:class="{ 'is-collapsed': isGroupCollapsed(menu.menuCode, index) }"
 			>
-				<button class="section-header section-header--toggle" @click="handleToggleGroup(menu.menuCode)">
+				<button class="section-header section-header--toggle" @click="handleToggleGroup(menu.menuCode, index)">
 					<view class="section-title">
 						<view class="section-icon">
 							<view class="section-marker" :style="{ backgroundColor: getMarkerColor(menu) }" />
@@ -54,14 +54,18 @@
 					</view>
 					<view class="section-actions">
 						<text class="section-count">{{ menu.children.length }} 个应用</text>
-						<wd-icon :name="state.collapsedMenuCodes.includes(menu.menuCode) ? 'arrow-down' : 'arrow-up'" size="14px" />
+						<view class="section-arrow">
+							<wd-icon name="arrow-up" size="14px" />
+						</view>
 					</view>
 				</button>
-				<view v-show="!state.collapsedMenuCodes.includes(menu.menuCode)">
-					<MenuGrid :menus="menu.children" @select="handleMenuClick" />
+				<view class="menu-section__body">
+					<view class="menu-section__grid">
+						<MenuGrid :menus="menu.children" @select="handleMenuClick" />
+					</view>
 				</view>
 			</view>
-			<wd-empty v-if="!filteredMenuList.length" :tip="state.searchValue.trim() ? '没有找到相关应用' : '暂无可访问的应用'" />
+			<wd-empty v-if="!filteredMenuList.length" :tip="searchKeyword ? '没有找到相关应用' : '暂无可访问的应用'" />
 		</view>
 
 		<FaSwitchTenantPopup ref="switchTenantPopupRef" @change="loadPage" />
@@ -71,7 +75,7 @@
 
 <script setup lang="ts">
 import { onLoad, onPullDownRefresh, onShareAppMessage, onShareTimeline } from "@dcloudio/uni-app";
-import { computed, reactive, ref } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 import { Local, withDefineType } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { employeeApi } from "@/api/services/Admin/employee/index.ts";
@@ -105,8 +109,13 @@ const commonMenuPopupRef = ref<InstanceType<typeof CommonMenuPopup>>();
 const state = reactive({
 	searchValue: "",
 	commonMenuCodes: withDefineType<string[]>([]),
-	collapsedMenuCodes: withDefineType<string[]>([]),
 });
+
+const defaultExpandedGroupCount = 3;
+const groupCollapseOverrides = reactive(new Map<string, boolean>());
+const searchCollapseOverrides = reactive(new Map<string, boolean>());
+const searchKeyword = computed(() => state.searchValue.trim().toLocaleLowerCase());
+const activeCollapseOverrides = computed(() => (searchKeyword.value ? searchCollapseOverrides : groupCollapseOverrides));
 
 const headerStyle = computed(() => {
 	const style: Record<string, string> = {};
@@ -136,7 +145,7 @@ const commonMenuList = computed(() =>
 	menuList.value.flatMap((item) => item.children).filter((menu) => state.commonMenuCodes.includes(menu.menuCode))
 );
 const filteredMenuList = computed(() => {
-	const keyword = state.searchValue.trim().toLocaleLowerCase();
+	const keyword = searchKeyword.value;
 	return menuList.value
 		.map((item) => ({
 			...item,
@@ -175,10 +184,11 @@ const getMarkerColor = (menu: AuthMenuInfoDto) => {
 	return markerColors[colorIndex % markerColors.length];
 };
 
-const handleToggleGroup = (menuCode: string) => {
-	state.collapsedMenuCodes = state.collapsedMenuCodes.includes(menuCode)
-		? state.collapsedMenuCodes.filter((code) => code !== menuCode)
-		: [...state.collapsedMenuCodes, menuCode];
+const isGroupCollapsed = (menuCode: string, index: number) =>
+	activeCollapseOverrides.value.get(menuCode) ?? (!searchKeyword.value && index >= defaultExpandedGroupCount);
+
+const handleToggleGroup = (menuCode: string, index: number) => {
+	activeCollapseOverrides.value.set(menuCode, !isGroupCollapsed(menuCode, index));
 };
 
 const handleMenuClick = (menu: AuthMenuInfoDto) => {
@@ -199,6 +209,16 @@ const loadPage = async () => {
 	state.searchValue = "";
 	state.commonMenuCodes = await employeeApi.queryCommonMenus();
 };
+
+// 搜索时的手动折叠仅作用于当前关键词，清空搜索后恢复平时的展开状态。
+watch(searchKeyword, () => searchCollapseOverrides.clear());
+watch(
+	() => userInfoStore.userKey,
+	() => {
+		groupCollapseOverrides.clear();
+		searchCollapseOverrides.clear();
+	}
+);
 
 onLoad(() => {
 	loadPage();

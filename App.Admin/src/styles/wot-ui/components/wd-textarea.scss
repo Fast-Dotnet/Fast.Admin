@@ -1,4 +1,8 @@
-/* Fast 风格：统一多行输入区域圆角，背景沿用 Wot 默认值 */
+/* Fast 风格：独立文本域使用圆角，表单项内的文本域沿用表单轮廓 */
 .wd-textarea {
 	border-radius: var(--wot-radius-large);
+}
+
+.wd-form-item .wd-textarea {
+	border-radius: 0;
 }

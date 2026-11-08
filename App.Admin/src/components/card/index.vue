@@ -63,9 +63,9 @@ const handleClick = (event: BaseEvent) => {
 .fa-card {
 	background-color: var(--wot-card-bg);
 	border-radius: var(--wot-radius-large);
-	box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.0392156863);
+	box-shadow: var(--fa-shadow-subtle);
 	overflow: hidden;
-	transition: box-shadow 0.3s ease;
+	transition: box-shadow var(--fa-motion-duration-normal) var(--fa-motion-easing-standard);
 	margin-bottom: var(--wot-spacing-extra-loose);
 }
 

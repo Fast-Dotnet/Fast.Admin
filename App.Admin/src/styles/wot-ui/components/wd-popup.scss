@@ -1,0 +1,4 @@
+/* Wot 会根据弹出方向将圆角应用到对应边缘。 */
+.wd-popup {
+	--wot-popup-radius: var(--wot-radius-extra-large);
+}

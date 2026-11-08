@@ -1,4 +1,4 @@
 /* Fast 风格：缩短开关过渡时间，让状态切换更利落 */
 .wd-switch {
-	--wot-switch-transition-duration: 0.2s;
+	--wot-switch-transition-duration: var(--fa-motion-duration-fast);
 }

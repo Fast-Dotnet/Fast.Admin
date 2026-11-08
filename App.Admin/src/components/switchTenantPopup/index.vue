@@ -92,9 +92,9 @@ defineExpose({
 	align-items: center;
 	background-color: var(--wot-card-bg);
 	border-radius: var(--wot-radius-large);
-	box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.0392156863);
+	box-shadow: var(--fa-shadow-subtle);
 	overflow: hidden;
-	transition: box-shadow 0.3s ease;
+	transition: box-shadow var(--fa-motion-duration-normal) var(--fa-motion-easing-standard);
 
 	&:not(:last-child) {
 		margin-bottom: 24rpx;
@@ -106,7 +106,7 @@ defineExpose({
 	width: 84rpx;
 	height: 84rpx;
 	border-radius: 18rpx;
-	box-shadow: var(--fa-box-shadow-light);
+	box-shadow: var(--fa-shadow-ambient);
 }
 
 .tenant-card__content {

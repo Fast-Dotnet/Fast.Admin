@@ -27,7 +27,7 @@
 			</template>
 		</wd-form>
 
-		<wd-button custom-class="btn__submit" type="primary" :disabled="state.formDisabled" @click="handleConfirm">保存</wd-button>
+		<wd-button custom-class="fa-form-submit" type="primary" :disabled="state.formDisabled" @click="handleConfirm">保存</wd-button>
 	</view>
 </template>
 
@@ -135,10 +135,5 @@ onPullDownRefresh(() =>
 <style lang="scss" scoped>
 :deep(.wd-textarea__inner) {
 	height: 150rpx;
-}
-
-.btn__submit {
-	display: block;
-	margin: 30rpx 50rpx;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-	<view class="menu-grid">
+	<view class="menu-grid" :class="{ 'is-editable': props.editable }">
 		<button v-for="menu in props.menus" :key="menu.menuCode" class="menu-item" @click="emit('select', menu)">
 			<view class="menu-item__icon">
 				<FaImage
@@ -61,6 +61,14 @@ const emit = defineEmits<{
 	display: grid;
 	grid-template-columns: repeat(4, minmax(0, 1fr));
 	gap: 32rpx 12rpx;
+
+	&.is-editable {
+		row-gap: 20rpx;
+
+		.menu-item {
+			gap: 10rpx;
+		}
+	}
 }
 
 .menu-item {

@@ -44,7 +44,7 @@ if (/^\d{1,3}(?:\.\d{1,3}){3}$/.test(host) || host === "localhost") {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	transition: height var(--fa-transition-duration);
+	transition: height var(--fa-motion-duration-normal) var(--fa-motion-easing-standard);
 	overflow: hidden;
 }
 </style>

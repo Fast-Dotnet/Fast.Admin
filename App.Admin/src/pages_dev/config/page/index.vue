@@ -95,7 +95,7 @@ const handleDeleteAll = (refresh: () => Promise<void>) => {
 <style lang="scss" scoped>
 .config-value {
 	flex: 1;
-	margin: var(--fa-page-section-gap) 0;
+	margin: var(--fa-spacing-section) 0;
 	padding: 20rpx;
 	border-radius: var(--wot-radius-main);
 	background: var(--wot-filled-bottom);

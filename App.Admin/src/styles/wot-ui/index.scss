@@ -19,3 +19,34 @@
 @use "./components/wd-tag.scss";
 @use "./components/wd-textarea.scss";
 @use "./components/wd-toast.scss";
+
+/* 共用控件变量也需要在根传送容器中可用，弹层会脱离原来的组件节点。 */
+:root,
+page,
+.fa-layout,
+.wd-root-portal {
+	/* 浮层表面与短提示 */
+	--wot-curtain-content-radius: var(--wot-radius-extra-large);
+	--wot-floating-panel-radius: var(--wot-radius-extra-large);
+	--wot-popover-radius: var(--wot-radius-large);
+	--wot-tooltip-radius: var(--wot-radius-large);
+	--wot-tour-popover-radius: var(--wot-radius-large);
+	--wot-toast-border-radius: var(--wot-radius-extra-large);
+
+	/* 紧凑录入控件和嵌入式选择器 */
+	--wot-calendar-view-border-radius-active: var(--wot-radius-large);
+	--wot-password-input-radius: var(--wot-radius-large);
+	--wot-picker-view-roller-border-radius: var(--wot-radius-large);
+	--wot-signature-radius: var(--wot-radius-large);
+	--wot-slider-dot-popover-radius: var(--wot-radius-large);
+	--wot-upload-radius: var(--wot-radius-large);
+
+	/* 导航控件与内容表面 */
+	--wot-avatar-border-radius: var(--wot-radius-large);
+	--wot-backtop-radius: var(--wot-radius-large);
+	--wot-segmented-radius: var(--wot-radius-large);
+	--wot-segmented-outline-radius: var(--wot-radius-large);
+	--wot-skeleton-rect-border-radius: var(--wot-radius-large);
+	--wot-swiper-border-radius: var(--wot-radius-extra-large);
+	--wot-tabbar-round-shadow: var(--fa-shadow-tab-bar);
+}
