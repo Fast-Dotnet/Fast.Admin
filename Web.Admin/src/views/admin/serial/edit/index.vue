@@ -81,6 +81,7 @@ const handleConfirm = () => {
 
 const detail = (serialRuleId: string) => {
 	faDialogRef.value.open(async () => {
+		state.dialogState = "detail";
 		state.formDisabled = true;
 		const apiRes = await serialApi.querySerialRuleDetail(serialRuleId);
 		state.formData = apiRes;
