@@ -4,6 +4,7 @@
 			<slot name="prefix" />
 			<wd-input
 				v-model="modelValue"
+				:disabled="props.disabled"
 				clearable
 				:placeholder="props.placeholder ? props.placeholder : props.scan ? '请输入或扫描您想要搜索的内容' : '请输入您想要搜索的内容'"
 				@input="handleInput"
@@ -116,6 +117,8 @@ const props = defineProps({
 		type: Boolean,
 		default: true,
 	},
+	/** 禁用搜素输入框 */
+	disabled: Boolean,
 	/** 隐藏搜索时间 */
 	hideSearchTime: Boolean,
 	/** 是否使用从今天起向未来延伸的快捷日期范围 */

@@ -1,17 +1,22 @@
 <template>
 	<FaPaging :request-api="messageSendRecordApi.queryMessageSendRecordPaged">
-		<template #top="{ searchParam, setParam, refresh }">
+		<template #top="{ searchParam, refresh }">
 			<FaSearchInput
 				data-search-range="Past3M"
-				:search-param="searchParam"
-				@update:search-param="setParam"
+				v-model:search-param="searchParam.value"
 				@confirm="refresh()"
 				@clear="refresh()"
 				@search="refresh()"
 			>
 				<template #filter>
-					<FaCellPicker title="成功" v-model="searchParam.isSuccess" name="BooleanEnum" include-all placeholder="请选择" />
-					<FaCellPicker title="渠道" v-model="searchParam.channel" name="MessageSendChannelEnum" include-all placeholder="请选择渠道" />
+					<FaCellPicker title="成功" v-model="searchParam.value.isSuccess" name="BooleanEnum" include-all placeholder="请选择" />
+					<FaCellPicker
+						title="渠道"
+						v-model="searchParam.value.channel"
+						name="MessageSendChannelEnum"
+						include-all
+						placeholder="请选择渠道"
+					/>
 				</template>
 			</FaSearchInput>
 		</template>

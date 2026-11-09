@@ -41,18 +41,18 @@
 		@inner-cell-click="(item, index?: number) => emit('innerCellClick', item, index)"
 		@virtual-top-height-change="emit('virtualTopHeightChange', $event)"
 	>
-		<slot :paged-list="pagedList" :search-param="searchParamModel" :set-param="handleSearchParam" :refresh="handleRefresh" />
+		<slot :paged-list="pagedList" :search-param="toRef(searchParam)" :refresh="handleRefresh" />
 		<template v-if="slots.top" #top>
-			<slot name="top" :paged-list="pagedList" :search-param="searchParamModel" :set-param="handleSearchParam" :refresh="handleRefresh" />
+			<slot name="top" :paged-list="pagedList" :search-param="toRef(searchParam)" :refresh="handleRefresh" />
 		</template>
 		<template v-if="slots.bottom" #bottom>
-			<slot name="bottom" :paged-list="pagedList" :search-param="searchParamModel" :set-param="handleSearchParam" :refresh="handleRefresh" />
+			<slot name="bottom" :paged-list="pagedList" :search-param="toRef(searchParam)" :refresh="handleRefresh" />
 		</template>
 		<template v-if="slots.left" #left>
-			<slot name="left" :paged-list="pagedList" :search-param="searchParamModel" :set-param="handleSearchParam" :refresh="handleRefresh" />
+			<slot name="left" :paged-list="pagedList" :search-param="toRef(searchParam)" :refresh="handleRefresh" />
 		</template>
 		<template v-if="slots.right" #right>
-			<slot name="right" :paged-list="pagedList" :search-param="searchParamModel" :set-param="handleSearchParam" :refresh="handleRefresh" />
+			<slot name="right" :paged-list="pagedList" :search-param="toRef(searchParam)" :refresh="handleRefresh" />
 		</template>
 
 		<template v-if="slots.refresher" #refresher="{ refresherStatus }">
@@ -110,9 +110,9 @@
 	</z-paging>
 </template>
 
-<script setup lang="ts" generic="TResult, TInput extends PagedInput = PagedInput">
+<script setup lang="ts" generic="TResult, TInput extends string | number | boolean | PagedInput = PagedInput">
 import { onShow } from "@dcloudio/uni-app";
-import { computed, nextTick, normalizeClass, shallowReactive, shallowRef, watch } from "vue";
+import { computed, nextTick, normalizeClass, shallowRef, toRef, watch } from "vue";
 import { randomString, useProps } from "@fast-china/utils";
 import useZPaging from "z-paging/components/z-paging/js/hooks/useZPaging.js";
 import {
@@ -129,7 +129,7 @@ import {
 	zPagingScrollProps,
 	zPagingVirtualListProps,
 } from "./src/props";
-import type { ComponentPublicInstance, PropType, VNode } from "vue";
+import type { ComponentPublicInstance, PropType, Ref, VNode } from "vue";
 import type {
 	ZPagingBackToTopEmit,
 	ZPagingBaseEmit,
@@ -212,6 +212,11 @@ const props = defineProps({
 		type: String,
 		default: "var(--wot-filled-bottom)",
 	},
+	/** 请求失败时是否拒绝 `reload`、`complete` 等方法返回的 Promise */
+	callNetworkReject: {
+		type: Boolean,
+		default: false,
+	},
 	/** 传入时控制 z-paging 的自动查询，省略时由 FaPaging 在页面显示时刷新 */
 	auto: {
 		type: Boolean,
@@ -269,7 +274,12 @@ const props = defineProps({
 	},
 	/** 请求数据的函数 */
 	requestApi: {
-		type: Function as PropType<(params?: Partial<TInput>) => Promise<PagedResult<TResult> | TResult[]>>,
+		type: Function as PropType<(params?: PagedInput) => Promise<PagedResult<TResult> | TResult[]>>,
+	},
+	/** 初始化参数 */
+	initParam: {
+		type: [String, Number, Boolean, Object] as PropType<TInput>,
+		default: undefined,
 	},
 	/** 分页 */
 	pagination: {
@@ -283,16 +293,23 @@ const props = defineProps({
 	},
 });
 
-const zPagingProps = useProps(props, props, [
-	"pagingClass",
-	"pagingContentStyle",
-	"auto",
-	"loadingMoreEnabled",
-	"data",
-	"requestApi",
-	"pagination",
-	"autoRefresh",
-]);
+const zPagingProps = useProps(
+	props,
+	{
+		...zPagingBaseProps,
+		...zPagingDataProps,
+		...zPagingNvueProps,
+		...zPagingEmptyViewProps,
+		...zPagingRefresherProps,
+		...zPagingLoadMoreProps,
+		...zPagingLoadingProps,
+		...zPagingChatRecordProps,
+		...zPagingScrollProps,
+		...zPagingBackToTopProps,
+		...zPagingVirtualListProps,
+	},
+	["pagingClass", "pagingContentStyle", "auto", "loadingMoreEnabled"]
+);
 
 type ZPagingEmit = ZPagingBaseEmit &
 	ZPagingDataEmit &
@@ -316,40 +333,15 @@ const slots = defineSlots<{
 	// 主体布局
 
 	/** 当前用于渲染的列表和查询条件 */
-	default?: (props: {
-		pagedList: TResult[];
-		searchParam: Partial<TInput>;
-		setParam: (value: Partial<TInput>) => void;
-		refresh: (pageIndex?: number) => Promise<void>;
-	}) => VNode[];
+	default?: (props: { pagedList: TResult[]; searchParam: Ref<PagedInput>; refresh: (pageIndex?: number) => Promise<void> }) => VNode[];
 	/** 顶部区域，用于导航栏、搜索栏等 */
-	top?: (props: {
-		pagedList: TResult[];
-		searchParam: Partial<TInput>;
-		setParam: (value: Partial<TInput>) => void;
-		refresh: (pageIndex?: number) => Promise<void>;
-	}) => VNode[];
+	top?: (props: { pagedList: TResult[]; searchParam: Ref<PagedInput>; refresh: (pageIndex?: number) => Promise<void> }) => VNode[];
 	/** 底部区域，用于底部操作栏等 */
-	bottom?: (props: {
-		pagedList: TResult[];
-		searchParam: Partial<TInput>;
-		setParam: (value: Partial<TInput>) => void;
-		refresh: (pageIndex?: number) => Promise<void>;
-	}) => VNode[];
+	bottom?: (props: { pagedList: TResult[]; searchParam: Ref<PagedInput>; refresh: (pageIndex?: number) => Promise<void> }) => VNode[];
 	/** 列表左侧区域 */
-	left?: (props: {
-		pagedList: TResult[];
-		searchParam: Partial<TInput>;
-		setParam: (value: Partial<TInput>) => void;
-		refresh: (pageIndex?: number) => Promise<void>;
-	}) => VNode[];
+	left?: (props: { pagedList: TResult[]; searchParam: Ref<PagedInput>; refresh: (pageIndex?: number) => Promise<void> }) => VNode[];
 	/** 列表右侧区域 */
-	right?: (props: {
-		pagedList: TResult[];
-		searchParam: Partial<TInput>;
-		setParam: (value: Partial<TInput>) => void;
-		refresh: (pageIndex?: number) => Promise<void>;
-	}) => VNode[];
+	right?: (props: { pagedList: TResult[]; searchParam: Ref<PagedInput>; refresh: (pageIndex?: number) => Promise<void> }) => VNode[];
 
 	// 下拉刷新
 
@@ -402,13 +394,7 @@ const slots = defineSlots<{
 /** `v-model` 绑定的已加载列表 */
 const modelValue = defineModel<TResult[]>({ default: () => [] });
 /** 分页搜索参数 */
-const searchParam = defineModel<Partial<TInput>>("searchParam", { default: () => ({}) });
-const searchParamModel = computed({
-	get: () => shallowReactive(searchParam.value),
-	set: (value: Partial<TInput>) => {
-		searchParam.value = value;
-	},
-});
+const searchParam = defineModel<Partial<PagedInput>>("searchParam", { default: () => ({}) });
 
 const paging = shallowRef<ZPagingRef<TResult> & Pick<ComponentPublicInstance, "$forceUpdate"> & { pageReachBottom: () => void }>();
 
@@ -421,7 +407,15 @@ const pagedList = computed(() => (props.useVirtualList && !props.usePageScroll ?
 const handleQuery = async (pageNo: number, pageSize: number, from: ZPagingEnums.QueryFrom) => {
 	try {
 		if (props.requestApi) {
-			const apiRes = await props.requestApi({ ...searchParam.value, ...(props.pagination ? { pageIndex: pageNo, pageSize } : {}) });
+			const params =
+				typeof props.initParam === "string" || typeof props.initParam === "number" || typeof props.initParam === "boolean"
+					? props.initParam
+					: {
+							...(typeof props.initParam === "object" ? props.initParam : {}),
+							...searchParam.value,
+							...(props.pagination ? { pageIndex: pageNo, pageSize } : {}),
+						};
+			const apiRes = await props.requestApi(params as PagedInput);
 
 			let pageData = [] as TResult[];
 			let totalRows = 0;
@@ -435,7 +429,7 @@ const handleQuery = async (pageNo: number, pageSize: number, from: ZPagingEnums.
 				}
 				await paging.value.completeByTotal(pageData, totalRows);
 			} else {
-				pageData = apiRes as TResult[];
+				pageData = (apiRes ?? []) as TResult[];
 				totalRows = pageData.length;
 				await paging.value.completeByNoMore(pageData, true);
 			}
@@ -459,8 +453,9 @@ const handleQuery = async (pageNo: number, pageSize: number, from: ZPagingEnums.
 
 			emit("query", pageData, pageNo, pageSize, totalRows, from);
 		}
-	} catch {
+	} catch (error) {
 		await paging.value.complete(false);
+		throw error;
 	}
 };
 
@@ -479,10 +474,6 @@ const handleRefresh = async (pageIndex?: number): Promise<void> => {
 		paging.value.$forceUpdate();
 		await paging.value.reload();
 	}
-};
-
-const handleSearchParam = (value: Partial<TInput>) => {
-	searchParam.value = value;
 };
 
 watch(
@@ -510,6 +501,14 @@ onShow(() => {
 });
 
 defineExpose({
+	/** 已加载的数据 */
+	pagedList: computed(() => modelValue.value),
+	/** 搜索参数 */
+	searchParam: computed(() => searchParam.value),
+	/** 清空搜索参数 */
+	clearSearchParam: () => {
+		searchParam.value = {};
+	},
 	// 数据刷新与处理
 
 	/**

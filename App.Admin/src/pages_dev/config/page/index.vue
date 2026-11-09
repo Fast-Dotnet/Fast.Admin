@@ -1,14 +1,7 @@
 <template>
 	<FaPaging :request-api="configApi.queryConfigPaged">
-		<template #top="{ searchParam, setParam, refresh }">
-			<FaSearchInput
-				:filter="false"
-				:search-param="searchParam"
-				@update:search-param="setParam"
-				@confirm="refresh()"
-				@clear="refresh()"
-				@search="refresh()"
-			>
+		<template #top="{ searchParam, refresh }">
+			<FaSearchInput :filter="false" v-model:search-param="searchParam.value" @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #footer>
 					<FaAuth code="Config:Edit">
 						<wd-button size="small" icon="plus" @click="handleOpen('add')">新增</wd-button>

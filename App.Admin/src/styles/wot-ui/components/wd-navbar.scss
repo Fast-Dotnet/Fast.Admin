@@ -4,7 +4,7 @@
 	top: var(--fa-status-bar-height, 0px);
 	left: 0;
 	right: 0;
-	z-index: 1001;
+	z-index: 101;
 	.wd-navbar {
 		/* 使用紧凑标题规格，兼容自定义胶囊按钮布局 */
 		--wot-navbar-title-font-size: var(--wot-typography-label-size-large);

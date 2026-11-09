@@ -1,14 +1,7 @@
 <template>
 	<FaPaging :request-api="payRecordApi.queryPayRecordPaged">
-		<template #top="{ searchParam, setParam, refresh }">
-			<FaSearchInput
-				data-search-range="Past1M"
-				:search-param="searchParam"
-				@update:search-param="setParam"
-				@confirm="refresh()"
-				@clear="refresh()"
-				@search="refresh()"
-			/>
+		<template #top="{ searchParam, refresh }">
+			<FaSearchInput :filter="false" v-model:search-param="searchParam.value" @confirm="refresh()" @clear="refresh()" @search="refresh()" />
 		</template>
 
 		<template #default="{ pagedList }">

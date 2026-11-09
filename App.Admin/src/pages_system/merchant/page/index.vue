@@ -1,18 +1,11 @@
 <template>
 	<FaPaging :request-api="merchantApi.queryMerchantPaged">
-		<template #top="{ searchParam, setParam, refresh }">
-			<FaSearchInput
-				hide-search-time
-				:search-param="searchParam"
-				@update:search-param="setParam"
-				@confirm="refresh()"
-				@clear="refresh()"
-				@search="refresh()"
-			>
+		<template #top="{ searchParam, refresh }">
+			<FaSearchInput hide-search-time v-model:search-param="searchParam.value" @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #filter>
 					<FaCellPicker
 						title="商户类型"
-						v-model="searchParam.merchantType"
+						v-model="searchParam.value.merchantType"
 						name="PaymentChannelEnum"
 						include-all
 						placeholder="请选择商户类型"

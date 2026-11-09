@@ -9,7 +9,7 @@
 		@change="(data) => emit('change', data)"
 	>
 		<template #label="{ data }">
-			<FaAvatar style="margin-right: 5px" :src="data.data?.logoUrl" thumb size="small" />
+			<FaAvatar style="margin-right: 5px" :src="data.data?.logoUrl" size="small" />
 			<span>{{ data.label }}</span>
 		</template>
 		<template #default="{ data }">

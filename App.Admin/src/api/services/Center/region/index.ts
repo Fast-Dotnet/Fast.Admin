@@ -35,6 +35,7 @@ export const regionApi = {
 			method: "get",
 			requestType: "query",
       cache: true,
+			cacheNamespace: "region",
 		});
 	},
 };

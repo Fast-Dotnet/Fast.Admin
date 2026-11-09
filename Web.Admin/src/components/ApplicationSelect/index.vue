@@ -11,7 +11,7 @@
 	>
 		<template #default="data">
 			<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%">
-				<FaAvatar v-if="data.data?.logoUrl" :src="data.data.logoUrl" thumb size="small" />
+				<FaAvatar v-if="data.data?.logoUrl" :src="data.data.logoUrl" size="small" />
 				<div style="flex: 1">
 					<span>{{ data.label }}</span>
 					<span style="display: flex; justify-content: space-between; width: 100%">

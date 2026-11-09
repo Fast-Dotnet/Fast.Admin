@@ -2,10 +2,8 @@
 	padding: 20rpx 15rpx;
 	background-color: var(--wot-filled-oppo);
 
-	:deep() {
-		.wd-input__icon {
-			font-size: var(--wot-typography-title-size-main);
-		}
+	:deep(.wd-input__icon) {
+		font-size: var(--wot-typography-title-size-main);
 	}
 }
 
@@ -14,20 +12,18 @@
 	align-items: center;
 	gap: 10rpx;
 
-	:deep() {
-		.wd-input {
-			--wot-input-bg: var(--wot-filled-bottom);
-			--wot-input-inner-height: var(--fa-size-search-height);
-			--wot-input-padding: 0 20rpx;
+	:deep(.wd-input) {
+		--wot-input-bg: var(--wot-filled-bottom);
+		--wot-input-inner-height: var(--fa-size-search-height);
+		--wot-input-padding: 0 20rpx;
 
-			flex: 1;
-			border-radius: var(--wot-radius-full);
-			.wd-input__suffix {
-				.wd-button {
-					margin-left: 5px;
-					height: 26px;
-					line-height: 26px;
-				}
+		flex: 1;
+		border-radius: var(--wot-radius-full);
+		.wd-input__suffix {
+			.wd-button {
+				margin-left: 5px;
+				height: 26px;
+				line-height: 26px;
 			}
 		}
 	}
@@ -37,6 +33,7 @@
 	display: flex;
 	align-items: center;
 	gap: 16rpx;
+
 	&:not(:empty) {
 		margin-top: 20rpx;
 	}

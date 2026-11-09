@@ -10,7 +10,6 @@
 		confirm-button-text="保存"
 		:disabled-confirm-button="!!state.dragState"
 		:close-on-click-modal="false"
-		:z-index="2001"
 		@after-enter="measureLayout"
 		@close="handleDragCancel"
 		@confirm="handleConfirm"
