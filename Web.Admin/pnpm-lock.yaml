@@ -15,8 +15,8 @@ importers:
         specifier: ^2.3.2
         version: 2.3.2(vue@3.5.44(typescript@6.0.3))
       '@fast-china/axios':
-        specifier: ^2.0.7
-        version: 2.0.7(axios@1.20.0(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0))(rolldown@1.2.14)(vite@8.3.4(@types/node@24.19.0)(sass@1.97.3))
+        specifier: ^2.0.9
+        version: 2.0.9(axios@1.20.0(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0))(rolldown@1.2.14)(vite@8.3.4(@types/node@24.19.0)(sass@1.97.3))
       '@fast-china/utils':
         specifier: ^2.1.12
         version: 2.1.12(vue@3.5.44(typescript@6.0.3))
@@ -45,8 +45,8 @@ importers:
         specifier: ^2.14.7
         version: 2.14.7(patch_hash=9f52f548f15f9dc02d7909fcd6c7e6bb17c650f2d664c9eddd951c472718a1cd)(vue@3.5.44(typescript@6.0.3))
       fast-element-plus:
-        specifier: ^2.0.26
-        version: 2.0.26(@element-plus/icons-vue@2.3.2(vue@3.5.44(typescript@6.0.3)))(@fast-element-plus/icons-vue@2.0.3(vue@3.5.44(typescript@6.0.3)))(element-plus@2.14.7(patch_hash=9f52f548f15f9dc02d7909fcd6c7e6bb17c650f2d664c9eddd951c472718a1cd)(vue@3.5.44(typescript@6.0.3)))(vue@3.5.44(typescript@6.0.3))
+        specifier: ^2.0.27
+        version: 2.0.27(@element-plus/icons-vue@2.3.2(vue@3.5.44(typescript@6.0.3)))(@fast-element-plus/icons-vue@2.0.3(vue@3.5.44(typescript@6.0.3)))(element-plus@2.14.7(patch_hash=9f52f548f15f9dc02d7909fcd6c7e6bb17c650f2d664c9eddd951c472718a1cd)(vue@3.5.44(typescript@6.0.3)))(vue@3.5.44(typescript@6.0.3))
       nprogress:
         specifier: ^0.2.0
         version: 0.2.0
@@ -440,8 +440,8 @@ packages:
     resolution: {integrity: sha512-IkO+/KEUvwbVpiURZg+P7zF74z5Jxe0UgJxVni+RtoHQ6IZieXaO02kmadomap/q+l6bc/jdPGGqTjhuZnuz1Q==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
-  '@fast-china/axios@2.0.7':
-    resolution: {integrity: sha512-UCc0ec6KTJVJ5H0AqfIjzVhJ1xUowNY4LjdzWnqAo0jlmRL5xAW2MIWA9OSwWeEW0KWrXzKmUQ9HOKDQz9k6jw==}
+  '@fast-china/axios@2.0.9':
+    resolution: {integrity: sha512-iIKkwFskTodLQweNgAk72NmxUWJogcWMUbneFWOqyV3uFBM7YbQPWeMQC7l2Cf1x2u55E94lpOaRiQ/RKUfdGw==}
     engines: {node: ^22.18.0 || ^24.18.0, pnpm: ^11.0.0}
     peerDependencies:
       axios: ^1.8.1
@@ -1717,8 +1717,8 @@ packages:
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
 
-  fast-element-plus@2.0.26:
-    resolution: {integrity: sha512-OLwTZeb7usWsGVK/mSld7mVuG1wnXwFb1T6LrR5ONpZA8TMwQUqxHJIZxAc8YNuCxJ++Rfr6kUZR3BNdfF3P5Q==}
+  fast-element-plus@2.0.27:
+    resolution: {integrity: sha512-yCJa3LIpiGINAvhAVDbLK7nSXjenQdGBnuV6sKoa7tIHevzTzyrScNz5NZ0H5hW9z4p4GMWkSjHHx8qzv6xKyg==}
     engines: {node: ^22.18.0 || ^24.18.0, pnpm: ^11.0.0}
     peerDependencies:
       '@element-plus/icons-vue': ^2.3.2
@@ -2711,39 +2711,6 @@ packages:
     resolution: {integrity: sha512-xVToRh2CTmLk2HnEG7ac4rl1MJTT3RFkpS8B++/SnB0kXvuaavD+n3m/vrzyWQOdJNSZQACnbz01pnppbwV5BA==}
     engines: {node: '>=20.19.0'}
 
-  unplugin@3.3.0:
-    resolution: {integrity: sha512-qa66K+crbfyE6JK10GjvbJeRrOsuC/JpbnHctfyp/i4oBTxWOzJfRZyDiOk1PtErMFRu8JhsU/wPvOdBNWe5Rg==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    peerDependencies:
-      '@farmfe/core': '*'
-      '@rspack/core': '*'
-      bun-types-no-globals: '*'
-      esbuild: '*'
-      rolldown: '*'
-      rollup: '*'
-      unloader: '*'
-      vite: '*'
-      webpack: '*'
-    peerDependenciesMeta:
-      '@farmfe/core':
-        optional: true
-      '@rspack/core':
-        optional: true
-      bun-types-no-globals:
-        optional: true
-      esbuild:
-        optional: true
-      rolldown:
-        optional: true
-      rollup:
-        optional: true
-      unloader:
-        optional: true
-      vite:
-        optional: true
-      webpack:
-        optional: true
-
   unplugin@3.4.0:
     resolution: {integrity: sha512-9skdIFlCsPdFV7wUfZxNsFInlW+7nJmGu2gkTu0OUhF56aXGsHab9x52/QhdJ4lC7ZDPWTxbiC4ANqVlsuaW3w==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -3435,12 +3402,13 @@ snapshots:
       '@eslint/core': 1.2.1
       levn: 0.4.1
 
-  '@fast-china/axios@2.0.7(axios@1.20.0(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0))(rolldown@1.2.14)(vite@8.3.4(@types/node@24.19.0)(sass@1.97.3))':
+  '@fast-china/axios@2.0.9(axios@1.20.0(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0))(rolldown@1.2.14)(vite@8.3.4(@types/node@24.19.0)(sass@1.97.3))':
     dependencies:
       axios: 1.20.0(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0)
-      unplugin: 3.3.0(rolldown@1.2.14)(vite@8.3.4(@types/node@24.19.0)(sass@1.97.3))
+      unplugin: 3.4.0(rolldown@1.2.14)(vite@8.3.4(@types/node@24.19.0)(sass@1.97.3))
     transitivePeerDependencies:
       - '@farmfe/core'
+      - '@rsbuild/core'
       - '@rspack/core'
       - bun-types-no-globals
       - esbuild
@@ -4838,7 +4806,7 @@ snapshots:
 
   fast-deep-equal@3.1.3: {}
 
-  fast-element-plus@2.0.26(@element-plus/icons-vue@2.3.2(vue@3.5.44(typescript@6.0.3)))(@fast-element-plus/icons-vue@2.0.3(vue@3.5.44(typescript@6.0.3)))(element-plus@2.14.7(patch_hash=9f52f548f15f9dc02d7909fcd6c7e6bb17c650f2d664c9eddd951c472718a1cd)(vue@3.5.44(typescript@6.0.3)))(vue@3.5.44(typescript@6.0.3)):
+  fast-element-plus@2.0.27(@element-plus/icons-vue@2.3.2(vue@3.5.44(typescript@6.0.3)))(@fast-element-plus/icons-vue@2.0.3(vue@3.5.44(typescript@6.0.3)))(element-plus@2.14.7(patch_hash=9f52f548f15f9dc02d7909fcd6c7e6bb17c650f2d664c9eddd951c472718a1cd)(vue@3.5.44(typescript@6.0.3)))(vue@3.5.44(typescript@6.0.3)):
     dependencies:
       '@element-plus/icons-vue': 2.3.2(vue@3.5.44(typescript@6.0.3))
       '@fast-element-plus/icons-vue': 2.0.3(vue@3.5.44(typescript@6.0.3))
@@ -5909,15 +5877,6 @@ snapshots:
     dependencies:
       pathe: 2.0.3
       picomatch: 4.0.7
-
-  unplugin@3.3.0(rolldown@1.2.14)(vite@8.3.4(@types/node@24.19.0)(sass@1.97.3)):
-    dependencies:
-      '@jridgewell/remapping': 2.3.5
-      picomatch: 4.0.7
-      webpack-virtual-modules: 0.6.2
-    optionalDependencies:
-      rolldown: 1.2.14
-      vite: 8.3.4(@types/node@24.19.0)(sass@1.97.3)
 
   unplugin@3.4.0(rolldown@1.2.14)(vite@8.3.4(@types/node@24.19.0)(sass@1.97.3)):
     dependencies:

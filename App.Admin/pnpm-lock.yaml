@@ -24,8 +24,8 @@ importers:
         specifier: 3.0.0-5030320261023001
         version: 3.0.0-5030320261023001(debug@4.4.3(supports-color@7.1.0))(postcss@8.5.29)(rollup@4.64.1)(supports-color@7.1.0)(vue@3.5.43(typescript@6.0.3))
       '@fast-china/axios':
-        specifier: ^2.0.7
-        version: 2.0.7(axios@1.20.0(debug@4.4.3(supports-color@7.1.0))(supports-color@7.1.0))(esbuild@0.20.2)(rollup@4.64.1)(vite@5.2.8(@types/node@24.19.1)(sass@1.97.3)(terser@5.51.2))
+        specifier: ^2.0.9
+        version: 2.0.9(axios@1.20.0(debug@4.4.3(supports-color@7.1.0))(supports-color@7.1.0))(esbuild@0.20.2)(rollup@4.64.1)(vite@5.2.8(@types/node@24.19.1)(sass@1.97.3)(terser@5.51.2))
       '@fast-china/utils':
         specifier: ^2.1.12
         version: 2.1.12(vue@3.5.43(typescript@6.0.3))
@@ -1263,8 +1263,8 @@ packages:
     resolution: {integrity: sha512-IkO+/KEUvwbVpiURZg+P7zF74z5Jxe0UgJxVni+RtoHQ6IZieXaO02kmadomap/q+l6bc/jdPGGqTjhuZnuz1Q==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
-  '@fast-china/axios@2.0.7':
-    resolution: {integrity: sha512-UCc0ec6KTJVJ5H0AqfIjzVhJ1xUowNY4LjdzWnqAo0jlmRL5xAW2MIWA9OSwWeEW0KWrXzKmUQ9HOKDQz9k6jw==}
+  '@fast-china/axios@2.0.9':
+    resolution: {integrity: sha512-iIKkwFskTodLQweNgAk72NmxUWJogcWMUbneFWOqyV3uFBM7YbQPWeMQC7l2Cf1x2u55E94lpOaRiQ/RKUfdGw==}
     engines: {node: ^22.18.0 || ^24.18.0, pnpm: ^11.0.0}
     peerDependencies:
       axios: ^1.8.1
@@ -7258,7 +7258,7 @@ snapshots:
       '@eslint/core': 1.2.1
       levn: 0.4.1
 
-  '@fast-china/axios@2.0.7(axios@1.20.0(debug@4.4.3(supports-color@7.1.0))(supports-color@7.1.0))(esbuild@0.20.2)(rollup@4.64.1)(vite@5.2.8(@types/node@24.19.1)(sass@1.97.3)(terser@5.51.2))':
+  '@fast-china/axios@2.0.9(axios@1.20.0(debug@4.4.3(supports-color@7.1.0))(supports-color@7.1.0))(esbuild@0.20.2)(rollup@4.64.1)(vite@5.2.8(@types/node@24.19.1)(sass@1.97.3)(terser@5.51.2))':
     dependencies:
       axios: 1.20.0(debug@4.4.3(supports-color@7.1.0))(supports-color@7.1.0)
       unplugin: 3.4.0(esbuild@0.20.2)(rollup@4.64.1)(vite@5.2.8(@types/node@24.19.1)(sass@1.97.3)(terser@5.51.2))
