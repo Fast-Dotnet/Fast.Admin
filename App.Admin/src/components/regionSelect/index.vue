@@ -1,39 +1,25 @@
 <template>
 	<FaCellPicker
 		:title="props.title"
-		:value="modelValue ? `${provinceName} / ${cityName} / ${districtName}` : ''"
+		:value="modelValue ? [provinceName, cityName, districtName].filter(Boolean).join(' / ') : ''"
 		:is-link="!props.disabled"
 		placeholder="请选择地区"
 	>
 		<template #default="{ visible }">
-			<FaSelectPage
+			<FaTreePicker
 				title="地区选择"
 				v-model="modelValue"
 				v-model:visible="visible.value"
-				:data="regionList"
+				:request-api="regionApi.regionSelector"
 				clearable
-				tree-select
-				use-virtual-list
-				:open-callback="handleOpenCallback"
+				disabled-search
 				@change="handleChange"
-			>
-				<template #default="{ label, data }">
-					<view style="display: flex; flex-direction: column; gap: 4rpx">
-						<text style="color: var(--wot-text-main); font-weight: var(--wot-font-weight-semibold)">
-							{{ label }}
-						</text>
-						<text style="color: var(--wot-text-secondary); font-size: var(--wot-typography-label-size-main)">
-							{{ data?.provinceName }} · {{ data?.cityName }}
-						</text>
-					</view>
-				</template>
-			</FaSelectPage>
+			/>
 		</template>
 	</FaCellPicker>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
 import { regionApi } from "@/api/services/Center/region";
 
 defineOptions({
@@ -62,36 +48,18 @@ const emit = defineEmits<{
 
 /** 选中的地区 ID */
 const modelValue = defineModel<string>();
-/** 选中区县所属的省份名称 */
+/** 选中路径中的省份名称 */
 const provinceName = defineModel<string>("provinceName");
-/** 选中区县所属的城市名称 */
+/** 选中路径中的城市名称 */
 const cityName = defineModel<string>("cityName");
 /** 选中区县的名称 */
 const districtName = defineModel<string>("districtName");
 
-const regionList = ref([]);
-
-const handleChange = (item: ElSelectorOutput<string>) => {
-	provinceName.value = item?.data?.provinceName;
-	cityName.value = item?.data?.cityName;
-	districtName.value = item?.label;
-	emit("change", item);
-};
-
-const handleOpenCallback = async () => {
-	const apiRes = await regionApi.regionSelector();
-	regionList.value = apiRes.flatMap((province) =>
-		(province.children ?? []).map((city) => ({
-			label: `${province.label} · ${city.label}`,
-			children: (city.children ?? []).map((district) => ({
-				...district,
-				data: {
-					...district.data,
-					provinceName: province.label,
-					cityName: city.label,
-				},
-			})),
-		}))
-	);
+const handleChange = (item: ElSelectorOutput<string> | null, path: ElSelectorOutput<string>[] | null) => {
+	const [province, city, district] = path ?? [];
+	provinceName.value = province?.label;
+	cityName.value = city?.label;
+	districtName.value = district?.label;
+	emit("change", item ? { ...item, data: { ...item.data, provinceName: province?.label, cityName: city?.label } } : null);
 };
 </script>

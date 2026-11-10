@@ -9,7 +9,7 @@
 				:request-api="regionApi.provinceSelector"
 				clearable
 				:pagination="false"
-				disabled
+				disabled-search
 				@change="(data) => emit('change', data)"
 			/>
 		</template>

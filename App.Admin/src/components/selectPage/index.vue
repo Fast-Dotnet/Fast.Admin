@@ -25,7 +25,7 @@
 				<FaSearchInput
 					v-model:search-param="searchParam"
 					:filter="false"
-					:disabled="props.disabled"
+					:disabled="props.disabledSearch"
 					@confirm="props.requestApi && refresh()"
 					@clear="props.requestApi && refresh()"
 					@search="props.requestApi && refresh()"
@@ -152,7 +152,7 @@ const props = defineProps({
 		}),
 	},
 	/** 禁用搜素输入框 */
-	disabled: Boolean,
+	disabledSearch: Boolean,
 	/** 完整的本地列表，空数组表示空数据 */
 	data: {
 		type: Array as PropType<TResult[]>,
@@ -212,19 +212,18 @@ const handleData = (data: TResult[]): TResult[] => {
 			const disabled: unknown =
 				typeof props.props.disabled === "function" ? props.props.disabled(item) : item[props.props.disabled ?? "disabled"];
 			const children: unknown = item[props.props.children ?? "children"];
-			const selectorValue =
-				value !== null && (typeof value === "string" || typeof value === "number" || typeof value === "boolean") ? value : undefined;
+			const selectorValue = typeof value === "string" || typeof value === "number" || typeof value === "boolean" ? value : undefined;
 			return {
 				...item,
 				children: Array.isArray(children) ? handleData(children as TResult[]) : [],
-				disabled: typeof disabled === "boolean" ? disabled : undefined,
-				hide: typeof hide === "boolean" ? hide : undefined,
+				disabled: disabled === true,
+				hide: hide === true,
 				label: getLabel(item),
 				value: `${typeof selectorValue}:${selectorValue}`,
 				rawValue: selectorValue,
 			};
 		})
-		.filter((item) => item.hide !== true);
+		.filter((item) => !item.hide);
 };
 
 const localData = computed(() => {
@@ -265,7 +264,7 @@ const handleChange = (item?: TResult, parentItem?: TResult) => {
 	modelValue.value = item?.rawValue;
 	selectedLabel.value = item?.label;
 	emit("change", item ? { ...item, value: item?.rawValue } : null, parentItem ? { ...parentItem, value: parentItem?.rawValue } : null);
-	if (item?.rawValue != null) close();
+	close();
 };
 
 const handleClear = () => {
@@ -291,8 +290,12 @@ defineExpose({
 	border-bottom: var(--wot-stroke-main) solid var(--wot-border-main);
 }
 
-:deep(.fa-select-page__cell--selected) {
+.fa-select-page__cell--selected {
 	--wot-cell-bg: var(--wot-primary-1);
+}
+
+.wot-theme-dark .fa-select-page__cell--selected {
+	--wot-cell-bg: var(--wot-primary-3);
 }
 
 :deep(.fa-popup__body) {

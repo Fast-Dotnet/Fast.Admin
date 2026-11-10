@@ -40,6 +40,11 @@ const props = defineProps({
 		type: Boolean,
 		default: true,
 	},
+	/** 是否垂直居中 */
+	center: {
+		type: Boolean,
+		default: true,
+	},
 	/** 字典名称 */
 	name: String,
 	/** 是否在结果首部增加值为 null 的“全部”选项 */

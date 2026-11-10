@@ -9,7 +9,7 @@
 				:request-api="applicationApi.applicationSelector"
 				clearable
 				:pagination="false"
-				disabled
+				disabled-search
 				@change="(data) => emit('change', data)"
 			>
 				<template #default="{ label, data }">

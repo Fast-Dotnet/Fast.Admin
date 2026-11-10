@@ -9,7 +9,7 @@
 				clearable
 				tree-select
 				:pagination="false"
-				disabled
+				disabled-search
 				@change="handleChange"
 			>
 				<template #default="{ label, data }">

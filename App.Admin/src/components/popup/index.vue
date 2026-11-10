@@ -14,21 +14,25 @@
 		@click-modal="() => emit('clickModal')"
 		@close="handleClose"
 	>
-		<view v-if="hasTitle" class="fa-popup__header">
-			<text class="fa-popup__title">{{ props.title }}</text>
-		</view>
-		<button
-			v-if="hasCloseIcon"
-			class="fa-popup__close"
-			:class="{ 'fa-popup__close--floating': !hasTitle }"
-			hover-class="none"
-			:disabled="state.loading"
-			@click="handleCloseClick"
+		<view
+			v-if="hasHeaderContent() || hasCloseIcon"
+			class="fa-popup__header"
+			:class="{ 'fa-popup__header--floating': !hasHeaderContent(), 'fa-popup__header--with-prefix': !!slots.titlePrefix }"
 		>
-			<view class="fa-popup__close-icon">
-				<wd-icon name="close" size="18px" />
+			<template v-if="hasHeaderContent()">
+				<view class="fa-popup__title-prefix">
+					<slot name="titlePrefix" :loading="state.loading" />
+				</view>
+				<text class="fa-popup__title">{{ props.title }}</text>
+			</template>
+			<view class="fa-popup__header-actions">
+				<button v-if="hasCloseIcon" class="fa-popup__close" hover-class="none" :disabled="state.loading" @click="handleCloseClick">
+					<view class="fa-popup__close-icon">
+						<wd-icon name="close" size="18px" />
+					</view>
+				</button>
 			</view>
-		</button>
+		</view>
 		<view class="fa-popup__body">
 			<slot :loading="state.loading" />
 		</view>
@@ -140,6 +144,8 @@ const emit = defineEmits<{
 const slots = defineSlots<{
 	/** 默认内容插槽 */
 	default?: (props: { loading: boolean }) => VNode[];
+	/** 标题前缀插槽 */
+	titlePrefix?: (props: { loading: boolean }) => VNode[];
 	/** 底部插槽 */
 	footer?: (props: { loading: boolean; close: () => void }) => VNode[];
 }>();
@@ -160,8 +166,9 @@ const state = reactive({
 	}),
 });
 
-const hasTitle = computed(() => (props.position === "bottom" || props.position === "center") && !!props.title);
-const hasCloseIcon = computed(() => (props.position === "bottom" || props.position === "center") && props.closable);
+const supportsHeader = computed(() => props.position === "bottom" || props.position === "center");
+const hasHeaderContent = () => supportsHeader.value && Boolean(props.title || slots.titlePrefix);
+const hasCloseIcon = computed(() => supportsHeader.value && props.closable);
 
 const hasFooter = () => !!slots.footer || props.showCloseButton || props.showConfirmButton;
 
@@ -238,18 +245,61 @@ defineExpose({
 }
 
 .fa-popup__header {
+	position: relative;
 	flex-shrink: 0;
 	display: flex;
 	align-items: center;
-	justify-content: center;
 	min-height: 52px;
-	padding: 12rpx 68px;
+	padding: 0 4px;
 	border-bottom: 1px solid var(--wot-border-light);
 	background: var(--wot-filled-oppo);
 }
 
+.fa-popup__header--floating {
+	position: absolute;
+	top: 12px;
+	right: 4px;
+	z-index: 1;
+	min-height: 0;
+	padding: 0;
+	border: 0;
+	background: transparent;
+
+	.fa-popup__header-actions {
+		flex-basis: auto;
+	}
+}
+
+.fa-popup__title-prefix,
+.fa-popup__header-actions {
+	display: flex;
+	flex: 0 0 64px;
+	align-items: center;
+}
+
+.fa-popup__header--with-prefix {
+	padding: 0 var(--fa-spacing-page, 12px);
+
+	.fa-popup__title-prefix,
+	.fa-popup__header-actions {
+		flex-basis: 25%;
+		min-width: 44px;
+		max-width: 80px;
+	}
+}
+
+.fa-popup__title-prefix {
+	overflow: hidden;
+}
+
+.fa-popup__header-actions {
+	justify-content: flex-end;
+}
+
 .fa-popup__title {
+	flex: 1;
 	min-width: 0;
+	padding: 12rpx 0;
 	font-size: var(--wot-typography-body-size-large);
 	font-weight: var(--wot-font-weight-semibold);
 	text-align: center;
@@ -257,10 +307,6 @@ defineExpose({
 }
 
 .fa-popup__close {
-	position: absolute;
-	top: 4px;
-	right: 4px;
-	z-index: 1;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -274,10 +320,6 @@ defineExpose({
 	&::after {
 		border: 0;
 	}
-}
-
-.fa-popup__close--floating {
-	top: 12px;
 }
 
 .fa-popup__close-icon {
