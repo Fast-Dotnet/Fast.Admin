@@ -4,7 +4,7 @@
 			<view style="display: flex; flex-direction: column; gap: 10px">
 				<view class="log__title">{{ state.formData.receiver }}</view>
 				<FaField label="渠道">
-					<FaTag name="MessageSendChannelEnum" :value="state.formData.channel" />
+					<FaText name="MessageSendChannelEnum" :value="state.formData.channel" />
 				</FaField>
 				<FaField label="标题" :value="state.formData.title" />
 				<FaField label="成功">

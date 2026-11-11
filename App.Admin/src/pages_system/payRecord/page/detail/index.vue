@@ -9,7 +9,7 @@
 				<FaField label="收款商户号" :value="state.formData.merchantNo" />
 				<FaField label="应用标识" :value="state.formData.appKey" />
 				<FaField label="支付渠道">
-					<FaTag name="PaymentChannelEnum" :value="state.formData.paymentChannel" />
+					<FaText name="PaymentChannelEnum" :value="state.formData.paymentChannel" />
 				</FaField>
 				<FaField label="订单金额" :value="`￥${(state.formData.orderAmount ?? 0).toFixed(2)}`" color="var(--wot-text-auxiliary)" />
 				<FaField label="交易流水号" :value="state.formData.transactionId" />

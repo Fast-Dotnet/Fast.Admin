@@ -25,7 +25,7 @@
 				</template>
 
 				<FaField label="时间类型">
-					<FaTag name="SerialDateTypeEnum" :value="item.dateType" />
+					<FaText name="SerialDateTypeEnum" :value="item.dateType" />
 				</FaField>
 				<FaField label="分隔符">
 					<FaText name="SerialSpacerEnum" :value="item.spacer" />

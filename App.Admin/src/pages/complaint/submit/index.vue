@@ -26,7 +26,13 @@
 			</wd-form-item>
 
 			<wd-form-item title="投诉描述" prop="description">
-				<wd-textarea v-model="state.formData.description" clearable :maxlength="200" placeholder="请简单描述内容" />
+				<wd-textarea
+					custom-style="--wot-textarea-inner-min-height: 150rpx"
+					v-model="state.formData.description"
+					clearable
+					:maxlength="200"
+					placeholder="请简单描述内容"
+				/>
 			</wd-form-item>
 
 			<wd-form-item title="附件图片" prop="attachmentImages" required>
@@ -129,9 +135,3 @@ const handleSubmit = throttle(async () => {
 	setTimeout(router.back, 2000);
 });
 </script>
-
-<style lang="scss" scoped>
-:deep(.wd-textarea__inner) {
-	height: 150rpx;
-}
-</style>

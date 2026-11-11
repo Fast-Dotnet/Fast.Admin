@@ -13,10 +13,22 @@
 				<wd-input v-model="state.formData.merchantNo" clearable :maxlength="32" placeholder="请输入商户号" />
 			</wd-form-item>
 			<wd-form-item title="商户密钥" prop="merchantSecret">
-				<wd-textarea v-model="state.formData.merchantSecret" clearable :maxlength="200" placeholder="请输入商户密钥" />
+				<wd-textarea
+					custom-style="--wot-textarea-inner-min-height: 150rpx"
+					v-model="state.formData.merchantSecret"
+					clearable
+					:maxlength="200"
+					placeholder="请输入商户密钥"
+				/>
 			</wd-form-item>
 			<wd-form-item title="公钥序号" prop="publicSerialNum">
-				<wd-textarea v-model="state.formData.publicSerialNum" clearable :maxlength="200" placeholder="请输入公钥序号" />
+				<wd-textarea
+					custom-style="--wot-textarea-inner-min-height: 150rpx"
+					v-model="state.formData.publicSerialNum"
+					clearable
+					:maxlength="200"
+					placeholder="请输入公钥序号"
+				/>
 			</wd-form-item>
 			<wd-form-item title="公钥" prop="publicKey">
 				<wd-textarea
@@ -28,7 +40,13 @@
 				/>
 			</wd-form-item>
 			<wd-form-item title="证书序号" prop="certSerialNum">
-				<wd-textarea v-model="state.formData.certSerialNum" clearable :maxlength="200" placeholder="请输入证书序号" />
+				<wd-textarea
+					custom-style="--wot-textarea-inner-min-height: 150rpx"
+					v-model="state.formData.certSerialNum"
+					clearable
+					:maxlength="200"
+					placeholder="请输入证书序号"
+				/>
 			</wd-form-item>
 			<wd-form-item title="证书" prop="cert">
 				<wd-textarea
@@ -49,7 +67,13 @@
 				/>
 			</wd-form-item>
 			<wd-form-item title="备注" prop="remark">
-				<wd-textarea v-model="state.formData.remark" clearable :maxlength="200" placeholder="请输入备注" />
+				<wd-textarea
+					custom-style="--wot-textarea-inner-min-height: 150rpx"
+					v-model="state.formData.remark"
+					clearable
+					:maxlength="200"
+					placeholder="请输入备注"
+				/>
 			</wd-form-item>
 
 			<template v-if="state.pageMode === 'detail'">
@@ -177,9 +201,3 @@ onPullDownRefresh(() =>
 		.finally(() => uni.stopPullDownRefresh())
 );
 </script>
-
-<style lang="scss" scoped>
-:deep(.wd-textarea__inner) {
-	height: 150rpx;
-}
-</style>
