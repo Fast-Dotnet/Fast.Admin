@@ -1,5 +1,5 @@
 import { useOverlay, wdHookState } from "../index";
-import type { DialogOptions, DialogResult } from "@wot-ui/ui/components/wd-dialog/types";
+import type { DialogOptions, DialogResult, DialogTheme } from "@wot-ui/ui/components/wd-dialog/types";
 
 /** 确认弹窗配置 */
 type MessageBoxConfirmOptions = Omit<DialogOptions, "beforeConfirm"> & {
@@ -8,6 +8,8 @@ type MessageBoxConfirmOptions = Omit<DialogOptions, "beforeConfirm"> & {
 };
 
 const defaultTitle = "温馨提示";
+const defaultTheme: DialogTheme = "text";
+const defaultZIndex = 1001;
 
 /**
  * 显示确认弹窗。
@@ -27,8 +29,19 @@ function confirm(message: string, options?: MessageBoxConfirmOptions): Promise<D
 function confirm(messageOrOptions: MessageBoxConfirmOptions | string, options: MessageBoxConfirmOptions = {}): Promise<DialogResult> {
 	const { beforeConfirm, ...baseOptions } =
 		typeof messageOrOptions === "string"
-			? { title: options.title ?? defaultTitle, theme: options.theme ?? "text", ...options, msg: messageOrOptions }
-			: { title: messageOrOptions.title ?? defaultTitle, theme: options.theme ?? "text", ...messageOrOptions };
+			? {
+					title: options.title ?? defaultTitle,
+					theme: options.theme ?? defaultTheme,
+					zIndex: options.zIndex ?? defaultZIndex,
+					...options,
+					msg: messageOrOptions,
+				}
+			: {
+					title: messageOrOptions.title ?? defaultTitle,
+					theme: messageOrOptions.theme ?? defaultTheme,
+					zIndex: messageOrOptions.zIndex ?? defaultZIndex,
+					...messageOrOptions,
+				};
 
 	const dialogOptions: DialogOptions = baseOptions;
 
@@ -73,8 +86,13 @@ export const useMessageBox = {
 				type: "show",
 				options:
 					typeof options === "string"
-						? { title: defaultTitle, theme: "text", msg: options }
-						: { title: options.title ?? defaultTitle, theme: options.theme ?? "text", ...options },
+						? { title: defaultTitle, theme: defaultTheme, zIndex: defaultZIndex, msg: options }
+						: {
+								title: options.title ?? defaultTitle,
+								theme: options.theme ?? defaultTheme,
+								zIndex: options.zIndex ?? defaultZIndex,
+								...options,
+							},
 				then: (res) => resolve(res),
 				catch: (error) => reject(error),
 			};
@@ -92,8 +110,13 @@ export const useMessageBox = {
 				type: "alert",
 				options:
 					typeof options === "string"
-						? { title: defaultTitle, theme: "text", msg: options }
-						: { title: options.title ?? defaultTitle, theme: options.theme ?? "text", ...options },
+						? { title: defaultTitle, theme: defaultTheme, zIndex: defaultZIndex, msg: options }
+						: {
+								title: options.title ?? defaultTitle,
+								theme: options.theme ?? defaultTheme,
+								zIndex: options.zIndex ?? defaultZIndex,
+								...options,
+							},
 				then: (res) => resolve(res),
 				catch: (error) => reject(error),
 			};
@@ -112,8 +135,13 @@ export const useMessageBox = {
 				type: "prompt",
 				options:
 					typeof options === "string"
-						? { title: defaultTitle, theme: "text", msg: options }
-						: { title: options.title ?? defaultTitle, theme: options.theme ?? "text", ...options },
+						? { title: defaultTitle, theme: defaultTheme, zIndex: defaultZIndex, msg: options }
+						: {
+								title: options.title ?? defaultTitle,
+								theme: options.theme ?? defaultTheme,
+								zIndex: options.zIndex ?? defaultZIndex,
+								...options,
+							},
 				then: (res) => resolve(res),
 				catch: (error) => reject(error),
 			};

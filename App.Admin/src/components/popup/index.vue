@@ -83,6 +83,11 @@ defineOptions({
 
 const props = defineProps({
 	...popupProps,
+	/** 弹窗层级 */
+	zIndex: {
+		type: Number,
+		default: 200,
+	},
 	/** 是否开启圆角,开启后根据弹出位置自动适配（底部弹出→上圆角，顶部弹出→下圆角，居中→四圆角）*/
 	round: {
 		type: Boolean,

@@ -120,7 +120,7 @@ const props = defineProps({
 	/** 弹窗层级 */
 	zIndex: {
 		type: Number,
-		default: 10,
+		default: 210,
 	},
 	/** 是否允许清空当前选中值 */
 	clearable: {

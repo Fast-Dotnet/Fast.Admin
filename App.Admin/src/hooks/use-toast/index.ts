@@ -1,5 +1,8 @@
 import { wdHookState } from "../index";
-import type { ToastOptions } from "@wot-ui/ui/components/wd-toast/types";
+import type { ToastOptions, ToastPositionType } from "@wot-ui/ui/components/wd-toast/types";
+
+const defaultPosition: ToastPositionType = "middle-top";
+const defaultZIndex = 2099;
 
 /** 应用级轻提示入口，由当前可见页面的布局消费 */
 export const useToast = {
@@ -11,7 +14,10 @@ export const useToast = {
 	show(options: ToastOptions | string): void {
 		wdHookState.wdToast = {
 			type: "show",
-			options: typeof options === "string" ? { position: "middle-top", msg: options } : { position: "middle-top", ...options },
+			options:
+				typeof options === "string"
+					? { position: defaultPosition, zIndex: defaultZIndex, msg: options }
+					: { position: options.position ?? defaultPosition, zIndex: options.zIndex ?? defaultZIndex, ...options },
 		};
 	},
 	/**
@@ -22,7 +28,10 @@ export const useToast = {
 	success(options: ToastOptions | string): void {
 		wdHookState.wdToast = {
 			type: "success",
-			options: typeof options === "string" ? { position: "middle-top", msg: options } : { position: "middle-top", ...options },
+			options:
+				typeof options === "string"
+					? { position: defaultPosition, zIndex: defaultZIndex, msg: options }
+					: { position: options.position ?? defaultPosition, zIndex: options.zIndex ?? defaultZIndex, ...options },
 		};
 	},
 	/**
@@ -33,7 +42,10 @@ export const useToast = {
 	error(options: ToastOptions | string): void {
 		wdHookState.wdToast = {
 			type: "error",
-			options: typeof options === "string" ? { position: "middle-top", msg: options } : { position: "middle-top", ...options },
+			options:
+				typeof options === "string"
+					? { position: defaultPosition, zIndex: defaultZIndex, msg: options }
+					: { position: options.position ?? defaultPosition, zIndex: options.zIndex ?? defaultZIndex, ...options },
 		};
 	},
 	/**
@@ -44,7 +56,10 @@ export const useToast = {
 	info(options: ToastOptions | string): void {
 		wdHookState.wdToast = {
 			type: "info",
-			options: typeof options === "string" ? { position: "middle-top", msg: options } : { position: "middle-top", ...options },
+			options:
+				typeof options === "string"
+					? { position: defaultPosition, zIndex: defaultZIndex, msg: options }
+					: { position: options.position ?? defaultPosition, zIndex: options.zIndex ?? defaultZIndex, ...options },
 		};
 	},
 	/**
@@ -55,7 +70,10 @@ export const useToast = {
 	warning(options: ToastOptions | string): void {
 		wdHookState.wdToast = {
 			type: "warning",
-			options: typeof options === "string" ? { position: "middle-top", msg: options } : { position: "middle-top", ...options },
+			options:
+				typeof options === "string"
+					? { position: defaultPosition, zIndex: defaultZIndex, msg: options }
+					: { position: options.position ?? defaultPosition, zIndex: options.zIndex ?? defaultZIndex, ...options },
 		};
 	},
 	/**
@@ -66,7 +84,10 @@ export const useToast = {
 	loading(options: ToastOptions | string): void {
 		wdHookState.wdToast = {
 			type: "loading",
-			options: typeof options === "string" ? { position: "middle-top", msg: options } : { position: "middle-top", ...options },
+			options:
+				typeof options === "string"
+					? { position: defaultPosition, zIndex: defaultZIndex, msg: options }
+					: { position: options.position ?? defaultPosition, zIndex: options.zIndex ?? defaultZIndex, ...options },
 		};
 	},
 	/** 关闭当前轻提示。 */
