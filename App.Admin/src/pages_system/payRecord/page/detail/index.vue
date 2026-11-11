@@ -2,7 +2,7 @@
 	<FaPopup ref="popupRef" title="支付详情" height="70%" position="bottom" closable>
 		<scroll-view scroll-y>
 			<view style="display: flex; flex-direction: column; gap: 10px">
-				<view class="popup__title">{{ state.formData.bizOrderNo }}</view>
+				<view class="log__title">{{ state.formData.bizOrderNo }}</view>
 				<FaField label="手机" :value="state.formData.mobile" />
 				<FaField label="OpenId" :value="state.formData.openId" />
 				<FaField label="UnionId" :value="state.formData.unionId" />
@@ -69,7 +69,7 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
-.popup__title {
+.log__title {
 	font-size: var(--wot-typography-body-size-large);
 	font-weight: var(--wot-font-weight-semibold);
 	overflow-wrap: anywhere;

@@ -46,6 +46,7 @@
 </template>
 
 <script setup lang="ts">
+import { throttle } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { serialApi } from "@/api/services/Admin/serial";
 
@@ -60,6 +61,7 @@ definePage({
 
 const router = useRouter();
 
-const handleOpen = (mode: IPageStateType, serialRuleId?: string) =>
-	router.push(`/pages_admin/serial/edit/index?mode=${mode}&serialRuleId=${serialRuleId}`);
+const handleOpen = throttle((mode: IPageStateType, serialRuleId?: string) =>
+	router.push(`/pages_admin/serial/edit/index?mode=${mode}&serialRuleId=${serialRuleId}`)
+);
 </script>

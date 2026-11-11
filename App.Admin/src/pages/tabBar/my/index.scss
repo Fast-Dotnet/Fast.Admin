@@ -49,7 +49,7 @@
 	--wot-cell-group-insert-margin: 0 0 var(--fa-spacing-section);
 }
 
-:deep(.wd-cell__left) .wd-icon {
+:deep(.wd-cell-group .wd-cell__left .wd-icon) {
 	min-width: 24px;
 	text-align: center;
 }

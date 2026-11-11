@@ -1,10 +1,10 @@
 <template>
 	<div>
-		<FaTable row-key="userId" :request-api="clientUserApi.queryClientUserPaged" :columns="searchColumns">
+		<FaTable row-key="userId" :request-api="clientUserApi.queryClientUserPaged" :columns="searchColumns" hide-search-time>
 			<FaTableColumn prop="avatar" label="头像" fixed="left" width="70" small-width="50" sortable type="image" />
 			<FaTableColumn prop="mobile" label="手机" width="150" small-width="130" copy sortable />
-			<FaTableColumn prop="openId" label="唯一用户标识" width="200" small-width="180" sortable :show-overflow-tooltip="false" />
-			<FaTableColumn prop="unionId" label="统一用户标识" width="200" small-width="180" sortable :show-overflow-tooltip="false" />
+			<FaTableColumn prop="openId" label="OpenId" width="200" small-width="180" sortable :show-overflow-tooltip="false" />
+			<FaTableColumn prop="unionId" label="UnionId" width="200" small-width="180" sortable :show-overflow-tooltip="false" />
 			<FaTableColumn prop="nickName" label="昵称" width="150" small-width="130" sortable />
 			<FaTableColumn prop="sex" label="性别" width="100" small-width="80" sortable tag :enum="genderEnum" />
 			<FaTableColumn

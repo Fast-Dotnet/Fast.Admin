@@ -1,6 +1,6 @@
 <template>
 	<view class="page">
-		<wd-cell-group custom-class="top-cell-group" border>
+		<wd-cell-group custom-class="top-cell-group" center border>
 			<!-- #ifdef MP-WEIXIN -->
 			<wd-cell
 				:title="userInfoStore.clientUserId ? '解除绑定' : '绑定微信'"
@@ -22,7 +22,7 @@
 			/>
 		</wd-cell-group>
 
-		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>
+		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" center border>
 			<wd-cell-group title="基础信息" border>
 				<wd-form-item title="头像" prop="avatar" value-align="right" center is-link>
 					<image class="image__avatar" :src="state.formData.avatar" />
@@ -265,16 +265,12 @@ onLoad(() => {
 	margin-bottom: 40rpx;
 }
 
-.top-cell-group :deep(.wd-cell__arrow-right) {
+:deep(.top-cell-group .wd-cell__arrow-right) {
 	--wot-cell-arrow-margin-left: 0;
 }
 
-.top-cell-group :deep(.wd-cell__right) {
+:deep(.top-cell-group .wd-cell__right) {
 	flex: unset;
-}
-
-:deep(.wd-cell__wrapper) {
-	align-items: center;
 }
 
 .btn__avatar {

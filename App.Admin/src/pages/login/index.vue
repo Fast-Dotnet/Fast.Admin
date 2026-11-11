@@ -20,6 +20,7 @@
 			<wd-form-item v-else prop="account">
 				<wd-input
 					v-model="state.formData.account"
+					custom-class="page__credential-input"
 					clearable
 					:compact="false"
 					prefix-icon="user"
@@ -31,6 +32,7 @@
 			<wd-form-item prop="password">
 				<wd-input
 					v-model="state.formData.password"
+					custom-class="page__credential-input"
 					clearable
 					:compact="false"
 					prefix-icon="lock"

@@ -46,7 +46,7 @@
 <script setup lang="ts">
 import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app";
 import { reactive, ref } from "vue";
-import { withDefineType } from "@fast-china/utils";
+import { throttle, withDefineType } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { SerialDateTypeEnum } from "@/api/enums/SerialDateTypeEnum";
 import { SerialSpacerEnum } from "@/api/enums/SerialSpacerEnum";
@@ -94,7 +94,7 @@ const state = reactive({
 	serialRuleId: withDefineType<string>(),
 });
 
-const handleConfirm = async () => {
+const handleConfirm = throttle(async () => {
 	const { valid } = await formRef.value.validate();
 	if (!valid) return;
 	useLoading.show();
@@ -114,7 +114,7 @@ const handleConfirm = async () => {
 	}
 	if (getCurrentPages().length > 1) router.back();
 	else router.replace("/pages_dev/sysSerial/page/index");
-};
+});
 
 const handleLoad = async () => {
 	switch (state.pageMode) {

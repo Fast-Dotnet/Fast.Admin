@@ -7,7 +7,7 @@
 			<FaTableColumn prop="mobile" label="手机" width="150" small-width="130" copy sortable />
 			<FaTableColumn prop="email" label="邮箱" width="200" small-width="180" copy sortable />
 			<FaTableColumn prop="operationType" label="操作类型" width="120" small-width="100" sortable tag :enum="passwordOperationTypeEnum" />
-			<FaTableColumn prop="type" label="类型" width="100" small-width="80" sortable tag :enum="appStore.getDictionary('PasswordTypeEnum')" />
+			<FaTableColumn prop="type" label="类型" width="100" small-width="80" sortable tag :enum="passwordTypeEnum" />
 			<FaTableColumn prop="createdTime" label="创建时间" width="180" small-width="160" sortable date-fix type="dateTime" />
 		</FaTable>
 	</div>
@@ -24,6 +24,7 @@ defineOptions({
 
 const appStore = useApp();
 const passwordOperationTypeEnum = appStore.getDictionary("PasswordOperationTypeEnum");
+const passwordTypeEnum = appStore.getDictionary("PasswordTypeEnum");
 
 const searchColumns: FaTableColumnCtx[] = [
 	{
@@ -37,6 +38,13 @@ const searchColumns: FaTableColumnCtx[] = [
 		prop: "operationType",
 		label: "操作类型",
 		enum: passwordOperationTypeEnum,
+		search: { el: "el-select" },
+	},
+	{
+		pureSearch: true,
+		prop: "type",
+		label: "类型",
+		enum: passwordTypeEnum,
 		search: { el: "el-select" },
 	},
 ];

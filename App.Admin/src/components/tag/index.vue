@@ -1,9 +1,10 @@
 <template>
 	<wd-tag
+		v-if="props.value != null"
 		v-bind="wdTagProps"
 		:type="type"
-		@click="(evt: MouseEvent) => emit('click', evt)"
-		@close="(evt: MouseEvent) => emit('close', evt)"
+		@click="emit('click', $event)"
+		@close="emit('close', $event)"
 		@confirm="({ value }: { value: string }) => emit('confirm', { value })"
 	>
 		<slot :label="dictionary?.label" :tips="dictionary?.tips">

@@ -23,4 +23,9 @@ public class QueryPasswordRecordPagedInput : PagedInput
     /// 操作类型
     /// </summary>
     public PasswordOperationTypeEnum? OperationType { get; set; }
+
+    /// <summary>
+    /// 类型
+    /// </summary>
+    public PasswordTypeEnum? Type { get; set; }
 }

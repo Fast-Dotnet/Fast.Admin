@@ -45,6 +45,7 @@
 </template>
 
 <script setup lang="ts">
+import { throttle } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { configApi } from "@/api/services/Center/config";
 import { useMessageBox, useToast } from "@/hooks";
@@ -61,7 +62,9 @@ definePage({
 
 const router = useRouter();
 
-const handleOpen = (mode: IPageStateType, configId?: string) => router.push(`/pages_dev/config/edit/index?mode=${mode}&configId=${configId}`);
+const handleOpen = throttle((mode: IPageStateType, configId?: string) =>
+	router.push(`/pages_dev/config/edit/index?mode=${mode}&configId=${configId}`)
+);
 
 const handleDelete = (item: QueryConfigPagedOutput, refresh: () => Promise<void>) => {
 	const { configCode } = item;

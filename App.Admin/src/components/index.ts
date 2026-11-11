@@ -48,7 +48,7 @@ export type FaAvatarInstance = InstanceType<typeof Avatar>;
 export { Card };
 export type FaCardInstance = InstanceType<typeof Card>;
 export { CellPicker };
-export type FaCellPickerInstance = ComponentExposed<typeof CellPicker>;
+export type FaCellPickerInstance<TValue extends string | number | boolean> = ComponentExposed<typeof CellPicker<TValue>>;
 export { CheckboxGroup };
 export type FaCheckboxGroupInstance = InstanceType<typeof CheckboxGroup>;
 export { CitySelect };
@@ -78,19 +78,25 @@ export type FaNavbarCapsuleInstance = InstanceType<typeof NavbarCapsule>;
 export { Overlay };
 export type FaOverlayInstance = InstanceType<typeof Overlay>;
 export { Paging };
-export type FaPagingInstance = ComponentExposed<typeof Paging>;
+export type FaPagingInstance<TResult = unknown, TInput extends string | number | boolean | PagedInput = PagedInput> = ComponentExposed<
+	typeof Paging<TResult, TInput>
+>;
 export { Popup };
 export type FaPopupInstance = InstanceType<typeof Popup>;
 export { ProvinceSelect };
 export type FaProvinceSelectInstance = InstanceType<typeof ProvinceSelect>;
 export { RadioGroup };
-export type FaRadioGroupInstance = ComponentExposed<typeof RadioGroup>;
+export type FaRadioGroupInstance = InstanceType<typeof RadioGroup>;
 export { RegionSelect };
 export type FaRegionSelectInstance = InstanceType<typeof RegionSelect>;
 export { SearchInput };
-export type FaSearchInputInstance = ComponentExposed<typeof SearchInput>;
+export type FaSearchInputInstance<TInput extends PagedInput = PagedInput> = ComponentExposed<typeof SearchInput<TInput>>;
 export { SelectPage };
-export type FaSelectPageInstance = ComponentExposed<typeof SelectPage>;
+export type FaSelectPageInstance<
+	TValue extends string | number | boolean,
+	TResult extends ElSelectorOutput = ElSelectorOutput<TValue>,
+	TInput extends string | number | boolean | PagedInput = PagedInput,
+> = ComponentExposed<typeof SelectPage<TValue, TResult, TInput>>;
 export { SwitchTenantPopup };
 export type FaSwitchTenantPopupInstance = InstanceType<typeof SwitchTenantPopup>;
 export { Tag };
@@ -102,6 +108,10 @@ export type FaTenantSelectInstance = InstanceType<typeof TenantSelect>;
 export { Text };
 export type FaTextInstance = InstanceType<typeof Text>;
 export { TreePicker };
-export type FaTreePickerInstance = ComponentExposed<typeof TreePicker>;
+export type FaTreePickerInstance<
+	TValue extends string | number | boolean,
+	TResult extends ElTreeOutput = ElTreeOutput<TValue>,
+	TInput extends string | number | boolean | PagedInput = PagedInput,
+> = ComponentExposed<typeof TreePicker<TValue, TResult, TInput>>;
 export { Watermark };
 export type FaWatermarkInstance = InstanceType<typeof Watermark>;

@@ -58,7 +58,15 @@
 							@click="handleSelect(item, activeTab)"
 						>
 							<template #title>
-								<slot v-bind="item">
+								<slot
+									:label="item.label"
+									:value="item.value"
+									:data="item.data"
+									:hide="item.hide"
+									:disabled="item.disabled"
+									:children="item.children"
+									:item="item"
+								>
 									{{ item.label }}
 								</slot>
 							</template>
@@ -86,7 +94,7 @@
 >
 import { computed, nextTick, ref, shallowRef, watch } from "vue";
 import type { TabsInstance } from "@wot-ui/ui/components/wd-tabs/types";
-import type { PropType } from "vue";
+import type { PropType, Ref } from "vue";
 import type { FaPopupInstance } from "@/components";
 
 defineOptions({
@@ -178,7 +186,7 @@ const modelValue = defineModel<TValue>();
 const selectedLabel = defineModel<string>("label");
 
 /** 搜索参数 */
-const searchParam = ref<Partial<PagedInput>>({});
+const searchParam: Ref<Partial<TInput extends PagedInput ? TInput : PagedInput>> = ref({});
 
 const faPopupRef = ref<FaPopupInstance>();
 const tabsRef = ref<TabsInstance>();
@@ -214,22 +222,22 @@ const getLabel = (item: TResult) => {
 };
 
 const handleData = (data: TResult[]): TResult[] => {
-	return data
+	return (data ?? [])
 		.map((item) => {
-			const value: unknown = item[props.valueKey];
+			const value: TValue | undefined = item[props.valueKey];
 			const hide: unknown = typeof props.props.hide === "function" ? props.props.hide(item) : item[props.props.hide ?? "hide"];
 			const disabled: unknown =
 				typeof props.props.disabled === "function" ? props.props.disabled(item) : item[props.props.disabled ?? "disabled"];
 			const children: unknown = item[props.props.children ?? "children"];
-			const selectorValue = typeof value === "string" || typeof value === "number" || typeof value === "boolean" ? value : undefined;
+			const rawValue = typeof value === "string" || typeof value === "number" || typeof value === "boolean" ? value : undefined;
 			return {
 				...item,
 				children: Array.isArray(children) ? handleData(children as TResult[]) : [],
 				disabled: disabled === true,
 				hide: hide === true,
 				label: getLabel(item),
-				value: `${typeof selectorValue}:${selectorValue}`,
-				rawValue: selectorValue,
+				value: `${typeof rawValue}:${rawValue}`,
+				rawValue,
 			};
 		})
 		.filter((item) => !item.hide);
@@ -263,13 +271,11 @@ const loadData = async () => {
 	try {
 		hasError.value = false;
 		if (props.requestApi) {
+			const requestParam = {};
 			const params =
 				typeof props.initParam === "string" || typeof props.initParam === "number" || typeof props.initParam === "boolean"
 					? props.initParam
-					: ({
-							...(typeof props.initParam === "object" ? props.initParam : {}),
-							...searchParam.value,
-						} as TInput);
+					: Object.assign(requestParam, props.initParam, searchParam.value);
 			const resData = await props.requestApi(params);
 			treeList.value = handleData(resData);
 		} else {
@@ -318,7 +324,7 @@ const handleConfirm = () => {
 			? []
 			: selectedList.value.flatMap((node) => (node.rawValue === undefined ? [] : [{ ...node, value: node.rawValue }]));
 	const selected = path.at(-1);
-	modelValue.value = selected?.value;
+	modelValue.value = item?.rawValue;
 	selectedLabel.value = selected?.label;
 	emit("change", selected ?? null, selected ? path : null);
 	close();
@@ -362,6 +368,8 @@ watch([visible, faPopupRef], ([isVisible]) => (isVisible ? open() : close()), { 
 defineExpose({
 	/** 已加载的数据 */
 	treeList: computed(() => treeList.value),
+	/** 当前搜索参数 */
+	searchParam: computed(() => searchParam.value),
 	open,
 	close,
 	/** 执行异步操作并在结束时恢复加载状态；异常继续向调用方传播。 */
@@ -369,47 +377,45 @@ defineExpose({
 });
 </script>
 
-<style lang="scss">
-.fa-tree-picker {
-	&.fa-popup .fa-popup__body {
-		padding: 0;
-		overflow: hidden;
+<style lang="scss" scoped>
+.fa-tree-picker.fa-popup .fa-popup__body {
+	padding: 0;
+	overflow: hidden;
+}
+
+.fa-tree-picker .fa-search-input {
+	flex-shrink: 0;
+	border-bottom: var(--wot-stroke-main) solid var(--wot-border-main);
+}
+
+.fa-tree-picker__tabs {
+	flex-shrink: 0;
+}
+
+.fa-tree-picker__list {
+	flex: 1;
+	min-height: 0;
+	height: 0;
+	background: var(--wot-filled-oppo);
+
+	:deep(.wd-cell__wrapper) {
+		align-items: center;
 	}
 
-	.fa-search-input {
-		flex-shrink: 0;
-		border-bottom: var(--wot-stroke-main) solid var(--wot-border-main);
-	}
-
-	.fa-tree-picker__tabs {
-		flex-shrink: 0;
-	}
-
-	.fa-tree-picker__list {
+	:deep(.wd-cell__left) {
 		flex: 1;
-		min-height: 0;
-		height: 0;
-		background: var(--wot-filled-oppo);
-
-		.wd-cell__wrapper {
-			align-items: center;
-		}
-
-		.wd-cell__left {
-			flex: 1;
-		}
-
-		.wd-cell__right {
-			flex: unset;
-		}
 	}
 
-	.fa-tree-picker__cell--selected {
-		--wot-cell-bg: var(--wot-primary-1);
+	:deep(.wd-cell__right) {
+		flex: unset;
 	}
 }
 
-.wot-theme-dark .fa-tree-picker .fa-tree-picker__cell--selected {
+.fa-tree-picker__cell--selected {
+	--wot-cell-bg: var(--wot-primary-1);
+}
+
+.wot-theme-dark .fa-tree-picker__cell--selected {
 	--wot-cell-bg: var(--wot-primary-3);
 }
 </style>

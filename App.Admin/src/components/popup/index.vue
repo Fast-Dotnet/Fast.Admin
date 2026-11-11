@@ -234,13 +234,14 @@ defineExpose({
 <style lang="scss" scoped>
 :deep(.fa-popup) {
 	--wot-popup-radius: var(--wot-radius-extra-large);
+
 	display: flex;
 	flex-direction: column;
 	box-sizing: border-box;
 	overflow: hidden;
 }
 
-.fa-popup__with-footer {
+:deep(.fa-popup__with-footer) {
 	--wot-popup-bg: var(--wot-filled-oppo);
 }
 

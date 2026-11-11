@@ -38,6 +38,7 @@ public class PasswordRecordService : IDynamicApplication
             .LeftJoin<AccountModel>((t1, t2) => t1.AccountId == t2.AccountId)
             .WhereIF(input.AccountId != null, t1 => t1.AccountId == input.AccountId)
             .WhereIF(input.OperationType != null, t1 => t1.OperationType == input.OperationType)
+            .WhereIF(input.Type != null, t1 => t1.Type == input.Type)
             .SelectMergeTable((t1, t2) => new QueryPasswordRecordPagedOutput
             {
                 RecordId = t1.RecordId,

@@ -34,7 +34,7 @@ defineOptions({
 const props = defineProps({
 	/** 标题 */
 	title: String,
-	/** 内容点击事件的权限编码；数组中任意一项命中即可显示 */
+	/** 内容点击的权限编码，省略时直接触发点击，数组命中任意一项即可 */
 	code: {
 		type: definePropType<string | string[]>([String, Array]),
 	},
@@ -48,7 +48,7 @@ const emit = defineEmits<{
 const userInfoStore = useUserInfo();
 
 const handleClick = (event: BaseEvent) => {
-	if (userInfoStore.isSuperAdmin) {
+	if (props.code === undefined || userInfoStore.isSuperAdmin) {
 		emit("click", event);
 		return;
 	}
@@ -81,6 +81,7 @@ const handleClick = (event: BaseEvent) => {
 	border-bottom: var(--wot-stroke-main) solid var(--wot-border-main);
 }
 
+// 标题插槽可复用默认标题样式。
 :deep(.fa-card__title-text) {
 	color: var(--wot-text-main);
 	font-size: 16px;

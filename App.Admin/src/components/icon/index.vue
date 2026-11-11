@@ -6,7 +6,7 @@
 		:size="props.size"
 		:color="props.color"
 		class-prefix="iconfont"
-		@click="(event: MouseEvent) => emit('click', event)"
+		@click="emit('click', $event)"
 	/>
 </template>
 

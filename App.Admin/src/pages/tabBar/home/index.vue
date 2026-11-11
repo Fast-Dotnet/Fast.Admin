@@ -8,7 +8,13 @@
 			<FaImage width="96rpx" height="96rpx" round :src="userInfoStore.avatar" />
 		</view>
 
-		<wd-swiper :list="state.swiperList" autoplay v-model:current="state.swiperCurrent" :indicator="{ type: 'dots-bar' }" />
+		<wd-swiper
+			custom-style="--wot-swiper-border-radius: var(--wot-radius-super-large);"
+			:list="state.swiperList"
+			autoplay
+			v-model:current="state.swiperCurrent"
+			:indicator="{ type: 'dots-bar' }"
+		/>
 
 		<view class="workspace">
 			<view class="workspace__header">

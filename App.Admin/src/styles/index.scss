@@ -31,7 +31,9 @@ page {
 // 根节点负责水平溢出，H5 的 page 不能额外形成滚动容器，否则会破坏吸顶。
 :root {
 	min-height: 100vh;
+	/* #ifndef H5 */
 	overflow-x: hidden;
+	/* #endif */
 }
 
 page {

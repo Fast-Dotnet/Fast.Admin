@@ -1,7 +1,7 @@
 <template>
 	<view class="page">
-		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>
-			<wd-cell-group title="基础信息" border>
+		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" center border>
+			<wd-cell-group title="基础信息" center border>
 				<wd-cell title="工号" :value="state.formData.employeeNo" />
 				<wd-cell title="入职日期" :value="state.formData.entryDate?.slice(0, 10)" placeholder="无" />
 
@@ -30,6 +30,7 @@
 				:key="org.departmentId"
 				custom-style="margin-top: 40rpx;"
 				:title="org.isPrimary ? '主要任职' : '兼任信息'"
+				center
 				border
 			>
 				<wd-cell title="机构" :value="org.orgName" />
@@ -141,10 +142,6 @@ onLoad(() => {
 </script>
 
 <style lang="scss" scoped>
-:deep(.wd-cell__wrapper) {
-	align-items: center;
-}
-
 .image__idPhoto {
 	width: 120rpx;
 	height: 120rpx;

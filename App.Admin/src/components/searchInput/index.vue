@@ -4,6 +4,7 @@
 			<slot name="prefix" />
 			<wd-input
 				v-model="modelValue"
+				custom-class="fa-search-input__input"
 				:disabled="props.disabled"
 				clearable
 				:placeholder="props.placeholder ? props.placeholder : props.scan ? '请输入或扫描您想要搜索的内容' : '请输入您想要搜索的内容'"
@@ -35,6 +36,7 @@
 		<FaPopup
 			v-if="props.filter"
 			ref="filterPopupRef"
+			custom-class="fa-search-input__popup"
 			title="高级筛选"
 			height="60%"
 			position="bottom"
@@ -43,7 +45,7 @@
 			confirm-button-text="筛选"
 			@confirm="handleFilterClick"
 		>
-			<scroll-view class="fa-popup__body_scroll" scroll-y>
+			<scroll-view class="fa-search-input__filters" scroll-y>
 				<template v-if="!props.hideSearchTime">
 					<FaCellPicker
 						title="时间"
@@ -64,7 +66,13 @@
 								@confirm="handleDateTimeConfirm"
 							/>
 
-							<wd-radio-group v-model="state.dataSearchRange" direction="horizontal" type="button" @change="handleDateRangeChange">
+							<wd-radio-group
+								custom-class="fa-search-input__date-ranges"
+								v-model="state.dataSearchRange"
+								direction="horizontal"
+								type="button"
+								@change="handleDateRangeChange"
+							>
 								<wd-radio v-for="(item, index) in dataSearchRangeList" :key="index" :value="item.value">
 									{{ item.label }}
 								</wd-radio>
@@ -74,7 +82,7 @@
 					</FaCellPicker>
 				</template>
 
-				<slot name="filter" />
+				<slot name="filter" :search-param="slotState.searchParam" />
 			</scroll-view>
 
 			<template #footer="{ loading }">
@@ -149,6 +157,7 @@ const emit = defineEmits<{
 const modelValue = defineModel<string>();
 /** 分页搜索参数，包含搜索文本和格式化后的日期范围 */
 const searchParam = defineModel<Partial<TInput>>("searchParam", { default: () => ({}) });
+const slotState = { searchParam };
 
 const filterPopupRef = ref<InstanceType<typeof FaPopup>>();
 
@@ -266,14 +275,18 @@ const handleDateRangeChange = ({ value }: { value: FaTableDataRange | "custom" }
 	searchParam.value.searchTimeList = [dayjs(start).format("YYYY-MM-DD 00:00:00"), dayjs(end).format("YYYY-MM-DD 23:59:59")];
 };
 
-const defaultSearchTime = () => {
+const defaultSearchTime = (params: Partial<TInput> = searchParam.value) => {
 	if (!props.filter || props.hideSearchTime) {
 		state.searchTimeList = [];
+		searchParam.value = params;
 	} else {
 		const { start, end } = getDateTime(props.dataSearchRange);
 		state.dataSearchRange = props.dataSearchRange;
 		state.searchTimeList = [start.getTime(), end.getTime()];
-		searchParam.value.searchTimeList = [dayjs(start).format("YYYY-MM-DD 00:00:00"), dayjs(end).format("YYYY-MM-DD 23:59:59")];
+		searchParam.value = {
+			...params,
+			searchTimeList: [dayjs(start).format("YYYY-MM-DD 00:00:00"), dayjs(end).format("YYYY-MM-DD 23:59:59")],
+		};
 	}
 };
 
@@ -302,8 +315,7 @@ const handleFilterClick = () => filterPopupRef.value?.close(() => emit("search")
 
 const handleFilterReset = () => {
 	filterPopupRef.value?.close(() => {
-		searchParam.value = {};
-		defaultSearchTime();
+		defaultSearchTime({});
 		emit("search");
 	});
 };
@@ -337,6 +349,11 @@ watch(
 
 onMounted(() => {
 	defaultSearchTime();
+});
+
+defineExpose({
+	/** 当前搜索参数 */
+	searchParam: computed(() => searchParam.value),
 });
 </script>
 

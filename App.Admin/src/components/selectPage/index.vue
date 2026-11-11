@@ -1,6 +1,7 @@
 <template>
 	<FaPopup
 		ref="faPopupRef"
+		custom-class="fa-select-page"
 		:title="props.title"
 		:height="props.height"
 		:z-index="props.zIndex"
@@ -12,6 +13,8 @@
 	>
 		<FaPaging
 			ref="faPagingRef"
+			style="flex: 1; min-height: 0"
+			paging-class="fa-select-page__list"
 			v-model:search-param="searchParam"
 			:data="localData"
 			:request-api="props.requestApi"
@@ -48,7 +51,15 @@
 							@click="handleChange(cItem as TResult, item)"
 						>
 							<template #title>
-								<slot v-bind="cItem">
+								<slot
+									:label="cItem.label"
+									:value="cItem.value"
+									:data="cItem.data"
+									:hide="cItem.hide"
+									:disabled="cItem.disabled"
+									:children="cItem.children"
+									:item="cItem"
+								>
 									{{ cItem.label }}
 								</slot>
 							</template>
@@ -68,7 +79,15 @@
 						@click="handleChange(item)"
 					>
 						<template #title>
-							<slot v-bind="item">
+							<slot
+								:label="item.label"
+								:value="item.value"
+								:data="item.data"
+								:hide="item.hide"
+								:disabled="item.disabled"
+								:children="item.children"
+								:item="item"
+							>
 								{{ item.label }}
 							</slot>
 						</template>
@@ -91,10 +110,11 @@
 		TInput extends string | number | boolean | PagedInput = PagedInput
 	"
 >
-import { type PropType, computed, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import FaPaging from "../paging/index.vue";
 import FaPopup from "../popup/index.vue";
 import FaSearchInput from "../searchInput/index.vue";
+import type { PropType, Ref } from "vue";
 import type { FaPagingInstance, FaPopupInstance } from "@/components";
 
 defineOptions({
@@ -160,7 +180,7 @@ const props = defineProps({
 	},
 	/** 请求数据的函数 */
 	requestApi: {
-		type: Function as PropType<(params?: PagedInput) => Promise<PagedResult<TResult> | TResult[]>>,
+		type: Function as PropType<(params?: TInput) => Promise<PagedResult<TResult> | TResult[]>>,
 	},
 	/** 初始化参数 */
 	initParam: {
@@ -182,7 +202,7 @@ const props = defineProps({
 
 const emit = defineEmits<{
 	/** 选择时返回映射后的选项，value 为原始值，清空选择时返回 null */
-	change: [value: TResult | null, parentValue?: TResult];
+	change: [value: TResult | null, parentValue?: TResult | null];
 }>();
 
 /** 弹窗显隐状态 */
@@ -193,10 +213,10 @@ const modelValue = defineModel<TValue>();
 const selectedLabel = defineModel<string>("label");
 
 /** 分页搜索参数 */
-const searchParam = ref<Partial<PagedInput>>({});
+const searchParam: Ref<Partial<TInput extends PagedInput ? TInput : PagedInput>> = ref({});
 
 const faPopupRef = ref<FaPopupInstance>();
-const faPagingRef = ref<FaPagingInstance>();
+const faPagingRef = ref<FaPagingInstance<TResult, TInput>>();
 
 const getLabel = (item: TResult) => {
 	const { label } = props.props;
@@ -205,22 +225,22 @@ const getLabel = (item: TResult) => {
 };
 
 const handleData = (data: TResult[]): TResult[] => {
-	return data
-		?.flatMap((item) => {
-			const value: unknown = item[props.valueKey];
+	return (data ?? [])
+		.map((item) => {
+			const value: TValue | undefined = item[props.valueKey];
 			const hide: unknown = typeof props.props.hide === "function" ? props.props.hide(item) : item[props.props.hide ?? "hide"];
 			const disabled: unknown =
 				typeof props.props.disabled === "function" ? props.props.disabled(item) : item[props.props.disabled ?? "disabled"];
 			const children: unknown = item[props.props.children ?? "children"];
-			const selectorValue = typeof value === "string" || typeof value === "number" || typeof value === "boolean" ? value : undefined;
+			const rawValue = typeof value === "string" || typeof value === "number" || typeof value === "boolean" ? value : undefined;
 			return {
 				...item,
 				children: Array.isArray(children) ? handleData(children as TResult[]) : [],
 				disabled: disabled === true,
 				hide: hide === true,
 				label: getLabel(item),
-				value: `${typeof selectorValue}:${selectorValue}`,
-				rawValue: selectorValue,
+				value: `${typeof rawValue}:${rawValue}`,
+				rawValue,
 			};
 		})
 		.filter((item) => !item.hide);
@@ -263,14 +283,13 @@ const close = () => {
 const handleChange = (item?: TResult, parentItem?: TResult) => {
 	modelValue.value = item?.rawValue;
 	selectedLabel.value = item?.label;
-	emit("change", item ? { ...item, value: item?.rawValue } : null, parentItem ? { ...parentItem, value: parentItem?.rawValue } : null);
+	emit("change", item ? { ...item, value: item.rawValue } : null, parentItem ? { ...parentItem, value: parentItem.rawValue } : null);
 	close();
 };
 
 const handleClear = () => {
 	faPagingRef.value?.clearSearchParam();
 	handleChange();
-	faPagingRef.value.reload();
 };
 
 watch([visible, faPopupRef], ([isVisible]) => (isVisible ? open() : close()), { immediate: true, flush: "post" });
@@ -278,6 +297,8 @@ watch([visible, faPopupRef], ([isVisible]) => (isVisible ? open() : close()), { 
 defineExpose({
 	/** 已加载的数据 */
 	pagedList: computed(() => faPagingRef.value?.pagedList),
+	/** 当前搜索参数 */
+	searchParam: computed(() => searchParam.value),
 	open,
 	close,
 	/** 执行异步操作并在结束时恢复加载状态；异常继续向调用方传播。 */
@@ -298,23 +319,25 @@ defineExpose({
 	--wot-cell-bg: var(--wot-primary-3);
 }
 
-:deep(.fa-popup__body) {
+:deep(.fa-select-page.fa-popup > .fa-popup__body) {
 	padding: 0;
 }
 
-:deep(.zp-paging-container) {
-	padding: 0;
-}
+:deep(.fa-select-page__list) {
+	.zp-paging-container {
+		padding: 0;
+	}
 
-:deep(.wd-cell__wrapper) {
-	align-items: center;
-}
+	.wd-cell__wrapper {
+		align-items: center;
+	}
 
-:deep(.wd-cell__left) {
-	flex: 1;
-}
+	.wd-cell__left {
+		flex: 1;
+	}
 
-:deep(.wd-cell__right) {
-	flex: unset;
+	.wd-cell__right {
+		flex: unset;
+	}
 }
 </style>

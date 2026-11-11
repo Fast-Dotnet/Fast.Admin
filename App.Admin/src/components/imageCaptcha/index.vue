@@ -107,7 +107,7 @@ defineExpose({
 	border-bottom: var(--wot-stroke-main) solid var(--wot-divider-main);
 }
 
-:deep(.fa-image-captcha__content .wd-input) {
+.fa-image-captcha__content :deep(.wd-input) {
 	border: 0;
 }
 

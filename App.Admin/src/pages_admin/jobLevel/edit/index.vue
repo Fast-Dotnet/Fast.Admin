@@ -8,7 +8,13 @@
 				<wd-input v-model="state.formData.level" clearable :maxlength="5" placeholder="请输入职级等级" />
 			</wd-form-item>
 			<wd-form-item title="备注" prop="remark">
-				<wd-textarea v-model="state.formData.remark" clearable :maxlength="200" placeholder="请输入备注" />
+				<wd-textarea
+					custom-style="--wot-textarea-inner-min-height: 150rpx"
+					v-model="state.formData.remark"
+					clearable
+					:maxlength="200"
+					placeholder="请输入备注"
+				/>
 			</wd-form-item>
 
 			<template v-if="state.pageMode === 'detail'">
@@ -34,7 +40,7 @@
 <script setup lang="ts">
 import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app";
 import { reactive, ref } from "vue";
-import { withDefineType } from "@fast-china/utils";
+import { throttle, withDefineType } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { jobLevelApi } from "@/api/services/Admin/jobLevel";
 import { useFormSchema, useLoading, useMessageBox, useToast } from "@/hooks";
@@ -67,7 +73,7 @@ const state = reactive({
 	jobLevelId: withDefineType<string>(),
 });
 
-const handleConfirm = async () => {
+const handleConfirm = throttle(async () => {
 	const { valid } = await formRef.value.validate();
 	if (!valid) return;
 	useLoading.show();
@@ -87,7 +93,7 @@ const handleConfirm = async () => {
 	}
 	if (getCurrentPages().length > 1) router.back();
 	else router.replace("/pages_dev/jobLevel/page/index");
-};
+});
 
 const handleLoad = async () => {
 	switch (state.pageMode) {
@@ -131,9 +137,3 @@ onPullDownRefresh(() =>
 		.finally(() => uni.stopPullDownRefresh())
 );
 </script>
-
-<style lang="scss" scoped>
-:deep(.wd-textarea__inner) {
-	height: 150rpx;
-}
-</style>

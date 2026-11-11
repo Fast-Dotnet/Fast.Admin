@@ -73,22 +73,22 @@ const state = reactive({
 .page {
 	padding-top: 20rpx;
 	padding-bottom: 20rpx;
-}
 
-:deep(.wd-cell-group) {
-	--wot-cell-arrow-size: 16px;
-	margin-bottom: 20rpx;
-}
+	:deep(.wd-cell-group) {
+		--wot-cell-arrow-size: 16px;
+		margin-bottom: 20rpx;
 
-:deep(.wd-cell__label) {
-	font-size: 12px;
-}
+		.wd-cell__label {
+			font-size: 12px;
+		}
 
-:deep(.wd-cell__right) {
-	flex: unset;
-}
+		.wd-cell__right {
+			flex: unset;
+		}
 
-:deep(.wd-switch) {
-	--wot-switch-size: 40rpx;
+		.wd-switch {
+			--wot-switch-size: 40rpx;
+		}
+	}
 }
 </style>

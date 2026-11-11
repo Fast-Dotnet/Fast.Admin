@@ -6,8 +6,8 @@
 		:src="props.hideImage ? artwork : (state.src ?? notImage)"
 		:preview-src="state.previewSrc"
 		:enable-preview="props.enablePreview && !!state.src"
-		@click.stop="(event: MouseEvent) => emit('click', event)"
-		@load="(event: Event) => emit('load', event)"
+		@click="emit('click', $event)"
+		@load="emit('load', $event)"
 		@error="
 			(event: Event) => {
 				state.loadError ||= true;
@@ -133,9 +133,10 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
-.is-small {
+.fa-image.is-small {
 	padding: calc(var(--height) * 0.1);
 }
+
 :deep(.fa-image__loading) {
 	width: var(--width);
 	height: var(--height);
@@ -146,7 +147,7 @@ defineExpose({
 	color: var(--wot-text-placeholder);
 }
 
-:deep(.fa-image__error) {
+.fa-image__error {
 	width: calc(var(--width) * 0.8);
 	height: calc(var(--height) * 0.8);
 	padding-top: calc(var(--height) * 0.1);

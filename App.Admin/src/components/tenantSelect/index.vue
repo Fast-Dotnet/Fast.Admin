@@ -2,7 +2,7 @@
 	<FaCellPicker :title="props.title" :value="tenantName" :is-link="!props.disabled" placeholder="请选择租户">
 		<template #default="{ visible }">
 			<FaSelectPage
-				title="应用选择"
+				title="租户选择"
 				v-model="modelValue"
 				v-model:visible="visible.value"
 				:request-api="tenantApi.tenantSelector"

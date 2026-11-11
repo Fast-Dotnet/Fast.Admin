@@ -59,11 +59,11 @@ const props = defineProps({
 }
 
 .fa-field__title {
-	flex: 0 0 28%;
+	flex: var(--fa-cell-left-flex, 0 0 28%);
 	color: var(--wot-text-auxiliary);
 }
 
-:deep(.fa-field__content) {
+.fa-field__content {
 	flex: 1;
 	min-width: 0;
 	overflow-wrap: anywhere;

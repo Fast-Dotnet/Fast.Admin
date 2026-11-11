@@ -3,13 +3,7 @@
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput hide-search-time v-model:search-param="searchParam.value" @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #filter>
-					<FaCellPicker
-						title="商户类型"
-						v-model="searchParam.value.merchantType"
-						name="PaymentChannelEnum"
-						include-all
-						placeholder="请选择商户类型"
-					/>
+					<FaCellPicker title="商户类型" v-model="searchParam.value.merchantType" name="PaymentChannelEnum" radio />
 				</template>
 
 				<template #footer>

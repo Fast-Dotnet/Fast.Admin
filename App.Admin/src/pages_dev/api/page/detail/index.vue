@@ -2,7 +2,7 @@
 	<FaPopup ref="popupRef" title="接口详情" height="70%" position="bottom" closable>
 		<scroll-view scroll-y>
 			<view style="display: flex; flex-direction: column; gap: 10px">
-				<view class="popup__title">{{ state.formData.apiName }}</view>
+				<view class="log__title">{{ state.formData.apiName }}</view>
 				<view style="display: flex; gap: 16rpx; margin-top: 8rpx">
 					<FaTag name="HttpRequestActionEnum" :value="state.formData.action" />
 					<FaTag name="HttpRequestMethodEnum" :value="state.formData.method" />
@@ -26,7 +26,7 @@
 					<wd-tag v-for="tag in state.formData.tags" :key="tag">{{ tag }}</wd-tag>
 				</view>
 
-				<view class="popup__title">分组描述</view>
+				<view class="log__title">分组描述</view>
 				<rich-text :nodes="state.formData.description" />
 			</view>
 		</scroll-view>
@@ -66,7 +66,7 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
-.popup__title {
+.log__title {
 	font-size: var(--wot-typography-body-size-large);
 	font-weight: var(--wot-font-weight-semibold);
 	overflow-wrap: anywhere;

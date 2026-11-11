@@ -43,7 +43,7 @@ const emit = defineEmits<{
 }>();
 
 /** 当前选中的字典值 */
-const modelValue = defineModel<string | number | boolean>();
+const modelValue = defineModel<string | number | boolean>({ type: [String, Number, Boolean] });
 
 const appStore = useApp();
 // 当前字典中允许显示的选项

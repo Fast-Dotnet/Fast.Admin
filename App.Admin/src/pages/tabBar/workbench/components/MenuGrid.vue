@@ -11,7 +11,6 @@
 					original
 					:hide-image="false"
 					:enable-preview="false"
-					@click="emit('select', menu)"
 				/>
 				<FaIcon v-else :name="menu.icon || 'menu'" size="44rpx" />
 				<view v-if="props.editable" class="menu-item__check" :class="{ 'is-selected': props.selectedMenuCodes.includes(menu.menuCode) }">

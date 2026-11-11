@@ -3,6 +3,7 @@
 		v-bind="zPagingProps"
 		ref="paging"
 		:paging-class="normalizeClass(['z-paging__page', props.pagingClass])"
+		:paging-style="{ ...(props.usePageScroll ? { minHeight: 'var(--fa-paging-min-height, 0px)' } : {}), ...props.pagingStyle }"
 		:paging-content-style="{ minHeight: '120rpx', ...props.pagingContentStyle }"
 		:auto="props.auto ?? false"
 		:loading-more-enabled="props.pagination && props.loadingMoreEnabled"
@@ -14,7 +15,7 @@
 		@touch-direction-change="emit('touchDirectionChange', $event)"
 		@scroll-direction-change="emit('scrollDirectionChange', $event)"
 		@list-change="emit('listChange', $event)"
-		@is-load-failed-change="(isLoadFailed) => emit('isLoadFailedChange', isLoadFailed)"
+		@is-load-failed-change="emit('isLoadFailedChange', $event)"
 		@scrollend="emit('scrollend', $event)"
 		@empty-view-reload="emit('emptyViewReload', $event)"
 		@empty-view-click="emit('emptyViewClick')"
@@ -41,18 +42,18 @@
 		@inner-cell-click="(item, index?: number) => emit('innerCellClick', item, index)"
 		@virtual-top-height-change="emit('virtualTopHeightChange', $event)"
 	>
-		<slot :paged-list="pagedList" :search-param="toRef(searchParam)" :refresh="handleRefresh" />
+		<slot :paged-list="pagedList" :search-param="slotState.searchParam" :refresh="handleRefresh" />
 		<template v-if="slots.top" #top>
-			<slot name="top" :paged-list="pagedList" :search-param="toRef(searchParam)" :refresh="handleRefresh" />
+			<slot name="top" :paged-list="pagedList" :search-param="slotState.searchParam" :refresh="handleRefresh" />
 		</template>
 		<template v-if="slots.bottom" #bottom>
-			<slot name="bottom" :paged-list="pagedList" :search-param="toRef(searchParam)" :refresh="handleRefresh" />
+			<slot name="bottom" :paged-list="pagedList" :search-param="slotState.searchParam" :refresh="handleRefresh" />
 		</template>
 		<template v-if="slots.left" #left>
-			<slot name="left" :paged-list="pagedList" :search-param="toRef(searchParam)" :refresh="handleRefresh" />
+			<slot name="left" :paged-list="pagedList" :search-param="slotState.searchParam" :refresh="handleRefresh" />
 		</template>
 		<template v-if="slots.right" #right>
-			<slot name="right" :paged-list="pagedList" :search-param="toRef(searchParam)" :refresh="handleRefresh" />
+			<slot name="right" :paged-list="pagedList" :search-param="slotState.searchParam" :refresh="handleRefresh" />
 		</template>
 
 		<template v-if="slots.refresher" #refresher="{ refresherStatus }">
@@ -112,7 +113,7 @@
 
 <script setup lang="ts" generic="TResult, TInput extends string | number | boolean | PagedInput = PagedInput">
 import { onShow } from "@dcloudio/uni-app";
-import { computed, nextTick, normalizeClass, shallowRef, toRef, watch } from "vue";
+import { computed, nextTick, normalizeClass, shallowReactive, shallowRef, watch } from "vue";
 import { randomString, useProps } from "@fast-china/utils";
 import useZPaging from "z-paging/components/z-paging/js/hooks/useZPaging.js";
 import {
@@ -274,7 +275,7 @@ const props = defineProps({
 	},
 	/** 请求数据的函数 */
 	requestApi: {
-		type: Function as PropType<(params?: PagedInput) => Promise<PagedResult<TResult> | TResult[]>>,
+		type: Function as PropType<(params?: TInput) => Promise<PagedResult<TResult> | TResult[]>>,
 	},
 	/** 初始化参数 */
 	initParam: {
@@ -308,7 +309,7 @@ const zPagingProps = useProps(
 		...zPagingBackToTopProps,
 		...zPagingVirtualListProps,
 	},
-	["pagingClass", "pagingContentStyle", "auto", "loadingMoreEnabled"]
+	["pagingClass", "pagingStyle", "pagingContentStyle", "auto", "loadingMoreEnabled"]
 );
 
 type ZPagingEmit = ZPagingBaseEmit &
@@ -333,15 +334,35 @@ const slots = defineSlots<{
 	// 主体布局
 
 	/** 当前用于渲染的列表和查询条件 */
-	default?: (props: { pagedList: TResult[]; searchParam: Ref<PagedInput>; refresh: (pageIndex?: number) => Promise<void> }) => VNode[];
+	default?: (props: {
+		pagedList: TResult[];
+		searchParam: Ref<Partial<TInput extends PagedInput ? TInput : PagedInput>>;
+		refresh: (pageIndex?: number) => Promise<void>;
+	}) => VNode[];
 	/** 顶部区域，用于导航栏、搜索栏等 */
-	top?: (props: { pagedList: TResult[]; searchParam: Ref<PagedInput>; refresh: (pageIndex?: number) => Promise<void> }) => VNode[];
+	top?: (props: {
+		pagedList: TResult[];
+		searchParam: Ref<Partial<TInput extends PagedInput ? TInput : PagedInput>>;
+		refresh: (pageIndex?: number) => Promise<void>;
+	}) => VNode[];
 	/** 底部区域，用于底部操作栏等 */
-	bottom?: (props: { pagedList: TResult[]; searchParam: Ref<PagedInput>; refresh: (pageIndex?: number) => Promise<void> }) => VNode[];
+	bottom?: (props: {
+		pagedList: TResult[];
+		searchParam: Ref<Partial<TInput extends PagedInput ? TInput : PagedInput>>;
+		refresh: (pageIndex?: number) => Promise<void>;
+	}) => VNode[];
 	/** 列表左侧区域 */
-	left?: (props: { pagedList: TResult[]; searchParam: Ref<PagedInput>; refresh: (pageIndex?: number) => Promise<void> }) => VNode[];
+	left?: (props: {
+		pagedList: TResult[];
+		searchParam: Ref<Partial<TInput extends PagedInput ? TInput : PagedInput>>;
+		refresh: (pageIndex?: number) => Promise<void>;
+	}) => VNode[];
 	/** 列表右侧区域 */
-	right?: (props: { pagedList: TResult[]; searchParam: Ref<PagedInput>; refresh: (pageIndex?: number) => Promise<void> }) => VNode[];
+	right?: (props: {
+		pagedList: TResult[];
+		searchParam: Ref<Partial<TInput extends PagedInput ? TInput : PagedInput>>;
+		refresh: (pageIndex?: number) => Promise<void>;
+	}) => VNode[];
 
 	// 下拉刷新
 
@@ -394,7 +415,12 @@ const slots = defineSlots<{
 /** `v-model` 绑定的已加载列表 */
 const modelValue = defineModel<TResult[]>({ default: () => [] });
 /** 分页搜索参数 */
-const searchParam = defineModel<Partial<PagedInput>>("searchParam", { default: () => ({}) });
+const searchParam = defineModel<Partial<TInput extends PagedInput ? TInput : PagedInput>>("searchParam", {
+	default: () => ({}),
+	get: shallowReactive,
+});
+// 通过对象传递模型的 Ref，避免模板自动解包后把它变成值的快照。
+const slotState = { searchParam };
 
 const paging = shallowRef<ZPagingRef<TResult> & Pick<ComponentPublicInstance, "$forceUpdate"> & { pageReachBottom: () => void }>();
 
@@ -407,15 +433,12 @@ const pagedList = computed(() => (props.useVirtualList && !props.usePageScroll ?
 const handleQuery = async (pageNo: number, pageSize: number, from: ZPagingEnums.QueryFrom) => {
 	try {
 		if (props.requestApi) {
+			const requestParam = {};
 			const params =
 				typeof props.initParam === "string" || typeof props.initParam === "number" || typeof props.initParam === "boolean"
 					? props.initParam
-					: {
-							...(typeof props.initParam === "object" ? props.initParam : {}),
-							...searchParam.value,
-							...(props.pagination ? { pageIndex: pageNo, pageSize } : {}),
-						};
-			const apiRes = await props.requestApi(params as PagedInput);
+					: Object.assign(requestParam, props.initParam, searchParam.value, props.pagination ? { pageIndex: pageNo, pageSize } : {});
+			const apiRes = await props.requestApi(params);
 
 			let pageData = [] as TResult[];
 			let totalRows = 0;
@@ -465,14 +488,22 @@ const handleVirtualListChange = (list: TResult[]) => {
 	emit("virtualListChange", list);
 };
 
+/**
+ * 将页码重置为默认值并重新加载分页数据。
+ * @param animate - 是否播放下拉刷新动画，省略时使用 `showRefresherWhenReload`
+ */
+const handleReload = async (animate?: boolean) => {
+	// 先触发视图更新，避免小程序中带动画的重载卡在 z-paging 内部的 $nextTick。
+	paging.value.$forceUpdate();
+	return await paging.value.reload(animate);
+};
+
 /** 重新加载列表；传入页码时刷新至该页，省略时从首页加载。 */
 const handleRefresh = async (pageIndex?: number): Promise<void> => {
 	if (pageIndex) {
 		await paging.value.refreshToPage(pageIndex);
 	} else {
-		// 带动画的 reload 可能在没有视图更新时卡在 z-paging 的 $nextTick 中。
-		paging.value.$forceUpdate();
-		await paging.value.reload();
+		handleReload();
 	}
 };
 
@@ -517,7 +548,7 @@ defineExpose({
 	 * @param animate - 是否播放下拉刷新动画，省略时使用 `show-refresher-when-reload` 的值
 	 * @returns 本次重载完成后的总列表与是否已无更多数据
 	 */
-	reload: computed(() => paging.value?.reload),
+	reload: handleReload,
 	/**
 	 * 重新请求已加载页的全部数据，保留当前分页进度。
 	 *

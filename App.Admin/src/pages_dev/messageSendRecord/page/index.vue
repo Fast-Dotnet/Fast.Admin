@@ -9,14 +9,8 @@
 				@search="refresh()"
 			>
 				<template #filter>
-					<FaCellPicker title="成功" v-model="searchParam.value.isSuccess" name="BooleanEnum" include-all placeholder="请选择" />
-					<FaCellPicker
-						title="渠道"
-						v-model="searchParam.value.channel"
-						name="MessageSendChannelEnum"
-						include-all
-						placeholder="请选择渠道"
-					/>
+					<FaCellPicker title="成功" v-model="searchParam.value.isSuccess" name="BooleanEnum" radio />
+					<FaCellPicker title="渠道" v-model="searchParam.value.channel" name="MessageSendChannelEnum" placeholder="请选择" />
 				</template>
 			</FaSearchInput>
 		</template>

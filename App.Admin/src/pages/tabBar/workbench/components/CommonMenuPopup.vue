@@ -9,7 +9,6 @@
 		show-close-button
 		confirm-button-text="保存"
 		:disabled-confirm-button="!!state.dragState"
-		:close-on-click-modal="false"
 		@after-enter="measureLayout"
 		@close="handleDragCancel"
 		@confirm="handleConfirm"
@@ -518,10 +517,11 @@ defineExpose({
 	/* #ifdef H5 */
 	cursor: grab;
 	/* #endif */
-	:deep(.selected-menu__picture) {
-		// 由外层图标容器统一接收触摸，避免图片内部节点拦截拖拽事件。
-		pointer-events: none;
-	}
+}
+
+:deep(.selected-menu__picture) {
+	// 由外层图标容器统一接收触摸，避免图片内部节点拦截拖拽事件。
+	pointer-events: none;
 }
 
 /* #ifdef H5 */

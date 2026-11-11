@@ -2,16 +2,34 @@
 	<view class="page">
 		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" :disabled="state.formDisabled" border>
 			<wd-form-item title="配置编码" prop="configCode">
-				<wd-textarea v-model="state.formData.configCode" clearable :maxlength="50" placeholder="请输入配置编码" />
+				<wd-textarea
+					custom-style="--wot-textarea-inner-min-height: 150rpx"
+					v-model="state.formData.configCode"
+					clearable
+					:maxlength="50"
+					placeholder="请输入配置编码"
+				/>
 			</wd-form-item>
 			<wd-form-item title="配置名称" prop="configName">
 				<wd-input v-model="state.formData.configName" clearable :maxlength="50" placeholder="请输入配置名称" />
 			</wd-form-item>
 			<wd-form-item title="配置值" prop="configValue">
-				<wd-textarea v-model="state.formData.configValue" clearable :maxlength="500" placeholder="请输入配置值" />
+				<wd-textarea
+					custom-style="--wot-textarea-inner-min-height: 150rpx"
+					v-model="state.formData.configValue"
+					clearable
+					:maxlength="500"
+					placeholder="请输入配置值"
+				/>
 			</wd-form-item>
 			<wd-form-item title="备注" prop="remark">
-				<wd-textarea v-model="state.formData.remark" clearable :maxlength="200" placeholder="请输入备注" />
+				<wd-textarea
+					custom-style="--wot-textarea-inner-min-height: 150rpx"
+					v-model="state.formData.remark"
+					clearable
+					:maxlength="200"
+					placeholder="请输入备注"
+				/>
 			</wd-form-item>
 
 			<template v-if="state.pageMode === 'detail'">
@@ -37,7 +55,7 @@
 <script setup lang="ts">
 import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app";
 import { reactive, ref } from "vue";
-import { withDefineType } from "@fast-china/utils";
+import { throttle, withDefineType } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { configApi } from "@/api/services/Center/config";
 import { useFormSchema, useLoading, useMessageBox, useToast } from "@/hooks";
@@ -71,7 +89,7 @@ const state = reactive({
 	configId: withDefineType<string>(),
 });
 
-const handleConfirm = async () => {
+const handleConfirm = throttle(async () => {
 	const { valid } = await formRef.value.validate();
 	if (!valid) return;
 	useLoading.show();
@@ -91,7 +109,7 @@ const handleConfirm = async () => {
 	}
 	if (getCurrentPages().length > 1) router.back();
 	else router.replace("/pages_dev/config/page/index");
-};
+});
 
 const handleLoad = async () => {
 	switch (state.pageMode) {
@@ -135,9 +153,3 @@ onPullDownRefresh(() =>
 		.finally(() => uni.stopPullDownRefresh())
 );
 </script>
-
-<style lang="scss" scoped>
-:deep(.wd-textarea__inner) {
-	height: 150rpx;
-}
-</style>

@@ -39,6 +39,7 @@
 </template>
 
 <script setup lang="ts">
+import { throttle } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { positionApi } from "@/api/services/Admin/position";
 import { useMessageBox, useToast } from "@/hooks";
@@ -55,8 +56,9 @@ definePage({
 
 const router = useRouter();
 
-const handleOpen = (mode: IPageStateType, positionId?: string) =>
-	router.push(`/pages_admin/position/edit/index?mode=${mode}&positionId=${positionId}`);
+const handleOpen = throttle((mode: IPageStateType, positionId?: string) =>
+	router.push(`/pages_admin/position/edit/index?mode=${mode}&positionId=${positionId}`)
+);
 
 const handleDelete = (item: QueryPositionPagedOutput, refresh: () => Promise<void>) => {
 	const { positionId, rowVersion } = item;

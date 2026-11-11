@@ -1,5 +1,5 @@
 <template>
-	<wd-text v-bind="wdTextProps" :type="type" :text="dictionary?.label" @click="(evt: MouseEvent) => emit('click', evt)">
+	<wd-text v-if="props.value != null" v-bind="wdTextProps" :type="type" :text="dictionary?.label" @click="emit('click', $event)">
 		<template v-if="$slots.prefix" #prefix>
 			<slot name="prefix" />
 		</template>

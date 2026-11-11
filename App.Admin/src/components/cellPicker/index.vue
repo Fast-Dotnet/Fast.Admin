@@ -1,16 +1,41 @@
 <template>
 	<view class="fa-cell-picker">
-		<wd-cell v-bind="wdCellProps" :value="dictionaryLabel" @click="handleClick" />
-		<slot :visible="slotState.visible" :label="slotState.label">
-			<wd-picker :model-value="modelValues" v-model:visible="state.visible" :columns="dictionaries" @confirm="handleConfirm" />
+		<wd-cell
+			v-bind="wdCellProps"
+			:custom-class="`fa-cell-picker__cell ${props.customClass}`"
+			:value="props.radio ? undefined : dictionaryLabel"
+			:is-link="props.isLink && !props.radio && !formDisabled"
+			:clickable="props.clickable && !formDisabled"
+			@click="handleClick"
+		/>
+		<slot :visible="slotState.visible">
+			<wd-radio-group
+				v-if="props.radio"
+				:model-value="modelValues[0] ?? (props.includeAll ? allValue : undefined)"
+				direction="horizontal"
+				type="button"
+				@change="({ value }) => handleChange(value)"
+			>
+				<wd-radio v-for="item in dictionaries" :key="item.value" :value="item.value" :disabled="formDisabled || item.disabled">
+					{{ item.label }}
+				</wd-radio>
+			</wd-radio-group>
+			<wd-picker
+				v-else
+				:model-value="modelValues"
+				v-model:visible="visible"
+				:columns="dictionaries"
+				@confirm="({ value }) => handleChange(value[0])"
+			/>
 		</slot>
 	</view>
 </template>
 
 <script setup lang="ts" generic="TValue extends string | number | boolean">
-import { computed, reactive, toRefs } from "vue";
-import { randomString, useProps, withDefineType } from "@fast-china/utils";
+import { computed, ref } from "vue";
+import { randomString, useProps } from "@fast-china/utils";
 import { cellProps } from "@wot-ui/ui/components/wd-cell/types";
+import { useFormDisabled } from "@wot-ui/ui/composables";
 import { useApp } from "@/stores";
 import type { PickerOption } from "@wot-ui/ui/components/wd-picker-view/types";
 
@@ -47,11 +72,15 @@ const props = defineProps({
 	},
 	/** 字典名称 */
 	name: String,
+	/** 禁用选择 */
+	disabled: Boolean,
+	/** 在 Cell 下方直接显示单选按钮 */
+	radio: Boolean,
 	/** 是否在结果首部增加值为 null 的“全部”选项 */
 	includeAll: Boolean,
 });
 
-const wdCellProps = useProps(props, cellProps, ["value"]);
+const wdCellProps = useProps(props, cellProps, ["value", "customClass", "isLink", "clickable"]);
 
 const emit = defineEmits<{
 	/** 内容点击事件 */
@@ -60,14 +89,15 @@ const emit = defineEmits<{
 	change: [value: string | number];
 }>();
 
-const state = reactive({
-	visible: false,
-	label: withDefineType<string>(),
-});
-const slotState = toRefs(state);
+const visible = ref(false);
+const slotState = { visible };
+
+const formDisabled = useFormDisabled(props);
 
 const handleClick = () => {
-	state.visible = true;
+	if (!props.radio) {
+		visible.value = true;
+	}
 	emit("click");
 };
 
@@ -92,14 +122,11 @@ const dictionaries = computed<PickerOption[]>(() => {
 });
 // 字典值
 const dictionaryLabel = computed(
-	() =>
-		props.value ??
-		state.label ??
-		dictionaries.value.find((item) => item.rawValue === (modelValue.value === null ? allValue : modelValue.value))?.label
+	() => props.value ?? dictionaries.value.find((item) => item.rawValue === (modelValue.value === null ? allValue : modelValue.value))?.label
 );
 
-const handleConfirm = ({ value }: { value: (string | number)[] }) => {
-	const selectedValue = dictionaries.value.find((item) => item.value === value[0])?.rawValue;
+const handleChange = (value?: string | number) => {
+	const selectedValue = dictionaries.value.find((item) => item.value === value)?.rawValue;
 	modelValue.value = selectedValue;
 	emit("change", selectedValue);
 };
@@ -110,16 +137,13 @@ const handleConfirm = ({ value }: { value: (string | number)[] }) => {
 	border-bottom: var(--wot-stroke-main) solid var(--wot-border-main);
 }
 
-.wd-cell {
-	--wot-cell-arrow-margin-left: 0;
-	--wot-cell-bg: none;
-}
+:deep(.fa-cell-picker__cell) {
+	.wd-cell__left {
+		flex: var(--fa-cell-left-flex, 0 0 28%);
+	}
 
-:deep(.wd-cell__left) {
-	flex: 0 0 28%;
-}
-
-:deep(.wd-cell__arrow-right) {
-	--wot-cell-arrow-margin-left: 0;
+	.wd-cell__arrow-right {
+		--wot-cell-arrow-margin-left: 0;
+	}
 }
 </style>

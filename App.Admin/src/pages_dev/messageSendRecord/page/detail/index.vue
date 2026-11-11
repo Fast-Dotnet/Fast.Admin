@@ -2,7 +2,7 @@
 	<FaPopup ref="popupRef" title="消息详情" height="70%" position="bottom" closable>
 		<scroll-view scroll-y>
 			<view style="display: flex; flex-direction: column; gap: 10px">
-				<view class="popup__title">{{ state.formData.receiver }}</view>
+				<view class="log__title">{{ state.formData.receiver }}</view>
 				<FaField label="渠道">
 					<FaTag name="MessageSendChannelEnum" :value="state.formData.channel" />
 				</FaField>
@@ -17,7 +17,7 @@
 				<FaField label="操作系统" :value="state.formData.os" />
 				<FaField label="浏览器" :value="state.formData.browser" />
 
-				<view class="popup__title">消息内容</view>
+				<view class="log__title">消息内容</view>
 				<rich-text :nodes="state.formData.recordValue" />
 			</view>
 		</scroll-view>
@@ -26,7 +26,7 @@
 
 <script setup lang="ts">
 import { reactive, ref } from "vue";
-import { withDefineType } from "@fast-china/utils";
+import { throttle, withDefineType } from "@fast-china/utils";
 import { messageSendRecordApi } from "@/api/services/Center/messageSendRecord";
 import type { QueryMessageSendRecordDetailOutput } from "@/api/services/Center/messageSendRecord/models/QueryMessageSendRecordDetailOutput";
 import type { FaPopupInstance } from "@/components";
@@ -46,12 +46,12 @@ const state = reactive({
 	formData: withDefineType<QueryMessageSendRecordDetailOutput>({}),
 });
 
-const detail = (recordId?: string) => {
+const detail = throttle(async (recordId?: string) => {
 	if (!recordId) return;
-	popupRef.value?.open(async () => {
+	await popupRef.value?.open(async () => {
 		state.formData = await messageSendRecordApi.queryMessageSendRecordDetail(recordId);
 	});
-};
+});
 
 defineExpose({
 	detail,
@@ -59,7 +59,7 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
-.popup__title {
+.log__title {
 	font-size: var(--wot-typography-body-size-large);
 	font-weight: var(--wot-font-weight-semibold);
 	overflow-wrap: anywhere;

@@ -93,15 +93,18 @@
 	overflow-wrap: anywhere;
 }
 
-:deep(.wd-form-item) {
+:deep(.wd-form .wd-form-item) {
 	--wot-cell-bg: transparent;
 	--wot-cell-padding: 0;
 }
 
-:deep(.wd-form-item .wd-input) {
+:deep(.wd-form .wd-form-item .wd-input) {
 	--wot-input-bg: transparent;
 	--wot-input-inner-height: 24px;
 	--wot-input-padding: 12px 8rpx;
+}
+
+:deep(.page__credential-input) {
 	border-bottom: var(--wot-stroke-main) solid var(--wot-divider-main);
 }
 
@@ -124,7 +127,7 @@
 	color: var(--wot-text-auxiliary);
 }
 
-:deep(.page__agreement .wd-checkbox) {
+.page__agreement :deep(.wd-checkbox) {
 	--wot-checkbox-icon-size: 32rpx;
 }
 
@@ -148,12 +151,12 @@
 	padding-top: 64rpx;
 }
 
-:deep(.page__other .wd-divider) {
+.page__other :deep(.wd-divider) {
 	width: 100%;
 	font-size: 22rpx;
 }
 
-:deep(.wd-button.page__wechat) {
+.page__other :deep(.wd-button.page__wechat) {
 	width: 44px;
 	height: 44px;
 	padding: 0;

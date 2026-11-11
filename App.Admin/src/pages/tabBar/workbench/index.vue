@@ -76,7 +76,7 @@
 <script setup lang="ts">
 import { onLoad, onPullDownRefresh, onShareAppMessage, onShareTimeline } from "@dcloudio/uni-app";
 import { computed, reactive, ref, watch } from "vue";
-import { Local, withDefineType } from "@fast-china/utils";
+import { Local, throttle, withDefineType } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { employeeApi } from "@/api/services/Admin/employee/index.ts";
 import { CommonRoute } from "@/common";
@@ -191,11 +191,11 @@ const handleToggleGroup = (menuCode: string, index: number) => {
 	activeCollapseOverrides.value.set(menuCode, !isGroupCollapsed(menuCode, index));
 };
 
-const handleMenuClick = (menu: AuthMenuInfoDto) => {
+const handleMenuClick = throttle(async (menu: AuthMenuInfoDto) => {
 	if (menu.router) {
-		router.push(menu.router);
+		await router.push(menu.router);
 	} else if (menu.link) {
-		router.push({
+		await router.push({
 			path: CommonRoute.WebView,
 			query: {
 				url: encodeURIComponent(menu.link),
@@ -203,7 +203,7 @@ const handleMenuClick = (menu: AuthMenuInfoDto) => {
 			},
 		});
 	}
-};
+});
 
 const loadPage = async () => {
 	state.searchValue = "";

@@ -3,7 +3,7 @@
 		v-bind="wdAvatarProps"
 		:custom-class="`fa-avatar ${props.customClass}`"
 		:src="state.src"
-		@click.stop="(event: MouseEvent) => emit('click', event)"
+		@click="emit('click')"
 		@error="
 			(event: Event) => {
 				state.loadError ||= true;
@@ -50,7 +50,7 @@ const wdAvatarProps = useProps(props, avatarProps, ["customClass", "src"]);
 
 const emit = defineEmits<{
 	/** 点击事件 */
-	click: [event: MouseEvent];
+	click: [];
 	/** 当错误发生时触发 */
 	error: [event: Event];
 }>();
