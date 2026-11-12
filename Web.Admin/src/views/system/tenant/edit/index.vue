@@ -73,6 +73,7 @@
 <script setup lang="ts">
 import { reactive, useTemplateRef } from "vue";
 import { ElMessage } from "element-plus";
+import { type FaDialogInstance, type FaFormInstance, RegExps } from "fast-element-plus";
 import { withDefineType } from "@fast-china/utils";
 import { pinyin } from "pinyin-pro";
 import { CommonStatusEnum } from "@/api/enums/CommonStatusEnum";
@@ -80,7 +81,6 @@ import { EditionEnum } from "@/api/enums/EditionEnum";
 import { tenantApi } from "@/api/services/Center/tenant";
 import { fileApi } from "@/api/services/File";
 import type { FormRules } from "element-plus";
-import type { FaDialogInstance, FaFormInstance } from "fast-element-plus";
 import type { AddTenantInput } from "@/api/services/Center/tenant/models/AddTenantInput";
 import type { EditTenantInput } from "@/api/services/Center/tenant/models/EditTenantInput";
 
@@ -101,8 +101,14 @@ const state = reactive({
 		shortName: [{ required: true, message: "请输入租户简称", trigger: "blur" }],
 		spellName: [{ required: true, message: "请输入租户英文名称", trigger: "blur" }],
 		adminName: [{ required: true, message: "请输入管理员名称", trigger: "blur" }],
-		adminMobile: [{ required: true, message: "请输入管理员手机", trigger: "blur" }],
-		adminEmail: [{ required: true, message: "请输入管理员邮箱", trigger: "blur" }],
+		adminMobile: [
+			{ required: true, message: "请输入管理员手机", trigger: "blur" },
+			{ pattern: RegExps.Mobile, message: "请输入正确的手机号", trigger: "blur" },
+		],
+		adminEmail: [
+			{ required: true, message: "请输入管理员邮箱", trigger: "blur" },
+			{ pattern: RegExps.Email, message: "请输入正确的邮箱", trigger: "blur" },
+		],
 		robotName: [{ required: true, message: "请输入机器人名称", trigger: "blur" }],
 		logoUrl: [{ required: true, message: "请上传Logo", trigger: "change" }],
 	}),
