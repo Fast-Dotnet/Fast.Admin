@@ -275,9 +275,3 @@ defineExpose({
 	edit,
 });
 </script>
-
-<style lang="scss" scoped>
-.el-table__cell .el-form-item {
-	margin-bottom: 0;
-}
-</style>
