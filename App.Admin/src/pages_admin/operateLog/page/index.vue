@@ -16,7 +16,7 @@
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.createdTime" @click="editFormRef?.detail(item)">
+			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.createdTime" @click="detailFormRef?.detail(item)">
 				<template #titleExtra>
 					<view class="fa-card__title-view">
 						<FaTag name="OperateLogTypeEnum" :value="item.operateType" />
@@ -37,12 +37,12 @@
 		</template>
 	</FaPaging>
 
-	<OperateLogDetail ref="editFormRef" />
+	<OperateLogDetail ref="detailFormRef" />
 </template>
 <script setup lang="ts">
 import { ref } from "vue";
 import { operateLogApi } from "@/api/services/Admin/operateLog";
-import OperateLogDetail from "./detail/index.vue";
+import OperateLogDetail from "./components/detail.vue";
 
 definePage({
 	name: "AdminOperateLog",
@@ -52,5 +52,5 @@ definePage({
 	},
 });
 
-const editFormRef = ref<InstanceType<typeof OperateLogDetail>>();
+const detailFormRef = ref<InstanceType<typeof OperateLogDetail>>();
 </script>

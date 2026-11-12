@@ -38,14 +38,14 @@ const faDialogRef = useTemplateRef<FaDialogInstance>("faDialogRef");
 
 const state = reactive({
 	formData: withDefineType<QuerySerialRuleDetailOutput>({}),
-	dialogTitle: "序号",
+	dialogTitle: "单号",
 });
 
 const detail = (serialRuleId: string) => {
 	faDialogRef.value.open(async () => {
 		const apiRes = await serialApi.querySerialRuleDetail(serialRuleId);
 		state.formData = apiRes;
-		state.dialogTitle = `序号详情`;
+		state.dialogTitle = `单号详情`;
 	});
 };
 

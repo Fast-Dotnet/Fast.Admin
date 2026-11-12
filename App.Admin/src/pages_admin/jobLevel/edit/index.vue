@@ -1,6 +1,6 @@
 <template>
 	<view class="page">
-		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" :disabled="state.formDisabled" border>
+		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>
 			<wd-form-item title="职级名称" prop="jobLevelName">
 				<wd-input v-model="state.formData.jobLevelName" clearable :maxlength="20" placeholder="请输入职级名称" />
 			</wd-form-item>
@@ -16,24 +16,9 @@
 					placeholder="请输入备注"
 				/>
 			</wd-form-item>
-
-			<template v-if="state.pageMode === 'detail'">
-				<wd-form-item title="创建人" prop="createdUserName">
-					{{ state.formData.createdUserName }}
-				</wd-form-item>
-				<wd-form-item title="创建时间" prop="createdTime">
-					{{ state.formData.createdTime }}
-				</wd-form-item>
-				<wd-form-item title="更新人" prop="updatedUserName">
-					{{ state.formData.updatedUserName }}
-				</wd-form-item>
-				<wd-form-item title="更新时间" prop="updatedTime">
-					{{ state.formData.updatedTime }}
-				</wd-form-item>
-			</template>
 		</wd-form>
 
-		<wd-button custom-class="fa-form-submit" type="primary" :disabled="state.formDisabled" @click="handleConfirm">保存</wd-button>
+		<wd-button custom-class="fa-form-submit" type="primary" @click="handleConfirm">保存</wd-button>
 	</view>
 </template>
 
@@ -46,11 +31,11 @@ import { jobLevelApi } from "@/api/services/Admin/jobLevel";
 import { useFormSchema, useLoading, useMessageBox, useToast } from "@/hooks";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { AddJobLevelInput } from "@/api/services/Admin/jobLevel/models/AddJobLevelInput";
-import type { QueryJobLevelDetailOutput } from "@/api/services/Admin/jobLevel/models/QueryJobLevelDetailOutput";
+import type { EditJobLevelInput } from "@/api/services/Admin/jobLevel/models/EditJobLevelInput";
 
 definePage({
 	name: "AdminJobLevelEdit",
-	authCode: ["JobLevel:Detail", "JobLevel:Add", "JobLevel:Edit"],
+	authCode: ["JobLevel:Add", "JobLevel:Edit"],
 	style: {
 		navigationBarTitleText: "职级",
 		enablePullDownRefresh: true,
@@ -62,13 +47,12 @@ const router = useRouter();
 const formRef = ref<FormInstance>();
 
 const state = reactive({
-	formData: withDefineType<QueryJobLevelDetailOutput>({}),
-	formSchema: useFormSchema<AddJobLevelInput>({
+	formData: withDefineType<EditJobLevelInput & AddJobLevelInput>({}),
+	formSchema: useFormSchema<EditJobLevelInput & AddJobLevelInput>({
 		jobLevelName: { required: true, message: "请输入职级名称" },
 		level: { required: true, message: "请输入职级等级" },
 	}),
-	formDisabled: false,
-	pageMode: withDefineType<IPageStateType>("detail"),
+	pageMode: withDefineType<IPageStateType>("add"),
 	jobLevelId: withDefineType<string>(),
 });
 
@@ -91,26 +75,16 @@ const handleConfirm = throttle(async () => {
 		useLoading.hide();
 	}
 	if (getCurrentPages().length > 1) router.back();
-	else router.replace("/pages_dev/jobLevel/page/index");
+	else router.replace("/pages_admin/jobLevel/page/index");
 });
 
 const handleLoad = async () => {
 	switch (state.pageMode) {
-		case "detail":
-			{
-				state.formDisabled = true;
-				const apiRes = await jobLevelApi.queryJobLevelDetail(state.jobLevelId);
-				state.formData = apiRes;
-				uni.setNavigationBarTitle({ title: `职级详情 - ${apiRes.jobLevelName}` });
-			}
-			break;
 		case "add":
-			state.formDisabled = false;
 			uni.setNavigationBarTitle({ title: "添加职级" });
 			break;
 		case "edit":
 			{
-				state.formDisabled = false;
 				const apiRes = await jobLevelApi.queryJobLevelDetail(state.jobLevelId);
 				state.formData = apiRes;
 				uni.setNavigationBarTitle({ title: `编辑职级 - ${apiRes.jobLevelName}` });
@@ -120,7 +94,7 @@ const handleLoad = async () => {
 };
 
 onLoad((options: { mode?: IPageStateType; jobLevelId?: string }) => {
-	if (!options?.mode || ((options.mode === "edit" || options.mode === "detail") && !options?.jobLevelId)) {
+	if (!options?.mode || (options.mode === "edit" && !options?.jobLevelId)) {
 		useMessageBox.alert("参数异常");
 		return;
 	}

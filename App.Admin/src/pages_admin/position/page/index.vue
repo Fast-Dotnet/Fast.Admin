@@ -4,7 +4,7 @@
 			<FaSearchInput :filter="false" v-model:search-param="searchParam.value" @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #footer>
 					<FaAuth code="Position:Add">
-						<wd-button size="small" icon="plus" @click="handleOpen('add')">新增</wd-button>
+						<wd-button size="small" icon="plus" @click="handleEdit('add')">新增</wd-button>
 					</FaAuth>
 				</template>
 			</FaSearchInput>
@@ -16,7 +16,7 @@
 				:key="item.positionId"
 				:title="item.positionName"
 				code="Position:Detail"
-				@click="handleOpen('detail', item.positionId)"
+				@click="handleDetail(item.positionId)"
 			>
 				<FaField label="排序" :value="item.sort" />
 				<FaField label="备注" :value="item.remark" />
@@ -27,7 +27,7 @@
 
 				<template #footer>
 					<FaAuth code="Position:Edit">
-						<wd-button size="mini" type="primary" variant="plain" @click="handleOpen('edit', item.positionId)">编辑</wd-button>
+						<wd-button size="mini" type="primary" variant="plain" @click="handleEdit('edit', item.positionId)">编辑</wd-button>
 					</FaAuth>
 					<FaAuth code="Position:Delete">
 						<wd-button size="mini" type="danger" variant="plain" @click="handleDelete(item, refresh)">删除</wd-button>
@@ -55,7 +55,9 @@ definePage({
 
 const router = useRouter();
 
-const handleOpen = throttle((mode: IPageStateType, positionId?: string) =>
+const handleDetail = throttle((positionId: string) => router.push(`/pages_admin/position/detail/index?positionId=${positionId}`));
+
+const handleEdit = throttle((mode: IPageStateType, positionId?: string) =>
 	router.push(`/pages_admin/position/edit/index?mode=${mode}&positionId=${positionId}`)
 );
 

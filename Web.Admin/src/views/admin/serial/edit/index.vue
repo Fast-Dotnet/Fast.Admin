@@ -56,7 +56,7 @@ const state = reactive({
 		length: [{ required: true, message: "请输入长度", trigger: "blur" }],
 	}),
 	dialogState: withDefineType<IPageStateType>("add"),
-	dialogTitle: "序号",
+	dialogTitle: "单号",
 });
 
 const handleConfirm = () => {
@@ -79,7 +79,7 @@ const handleConfirm = () => {
 const add = () => {
 	faDialogRef.value.open(() => {
 		state.dialogState = "add";
-		state.dialogTitle = "添加序号";
+		state.dialogTitle = "添加单号";
 		state.formData = {
 			ruleType: SerialRuleTypeEnum.EmployeeNo,
 			dateType: SerialDateTypeEnum.Year,
@@ -93,7 +93,7 @@ const edit = (serialRuleId: string) => {
 		state.dialogState = "edit";
 		const apiRes = await serialApi.querySerialRuleDetail(serialRuleId);
 		state.formData = apiRes;
-		state.dialogTitle = `编辑序号`;
+		state.dialogTitle = `编辑单号`;
 	});
 };
 

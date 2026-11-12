@@ -4,7 +4,7 @@
 			<FaSearchInput :filter="false" v-model:search-param="searchParam.value" @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #footer>
 					<FaAuth code="JobLevel:Add">
-						<wd-button size="small" icon="plus" @click="handleOpen('add')">新增</wd-button>
+						<wd-button size="small" icon="plus" @click="handleEdit('add')">新增</wd-button>
 					</FaAuth>
 				</template>
 			</FaSearchInput>
@@ -16,7 +16,7 @@
 				:key="item.jobLevelId"
 				:title="item.jobLevelName"
 				code="JobLevel:Detail"
-				@click="handleOpen('detail', item.jobLevelId)"
+				@click="handleDetail(item.jobLevelId)"
 			>
 				<FaField label="等级" :value="item.level" />
 				<FaField label="备注" :value="item.remark" />
@@ -27,7 +27,7 @@
 
 				<template #footer>
 					<FaAuth code="JobLevel:Edit">
-						<wd-button size="mini" type="primary" variant="plain" @click="handleOpen('edit', item.jobLevelId)">编辑</wd-button>
+						<wd-button size="mini" type="primary" variant="plain" @click="handleEdit('edit', item.jobLevelId)">编辑</wd-button>
 					</FaAuth>
 					<FaAuth code="JobLevel:Delete">
 						<wd-button size="mini" type="danger" variant="plain" @click="handleDelete(item, refresh)">删除</wd-button>
@@ -55,7 +55,9 @@ definePage({
 
 const router = useRouter();
 
-const handleOpen = throttle((mode: IPageStateType, jobLevelId?: string) =>
+const handleDetail = throttle((jobLevelId: string) => router.push(`/pages_admin/jobLevel/detail/index?jobLevelId=${jobLevelId}`));
+
+const handleEdit = throttle((mode: IPageStateType, jobLevelId?: string) =>
 	router.push(`/pages_admin/jobLevel/edit/index?mode=${mode}&jobLevelId=${jobLevelId}`)
 );
 

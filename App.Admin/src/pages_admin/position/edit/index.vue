@@ -1,6 +1,6 @@
 <template>
 	<view class="page">
-		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" :disabled="state.formDisabled" border>
+		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>
 			<wd-form-item title="职位名称" prop="positionName">
 				<wd-input v-model="state.formData.positionName" clearable :maxlength="20" placeholder="请输入职位名称" />
 			</wd-form-item>
@@ -16,24 +16,9 @@
 					placeholder="请输入备注"
 				/>
 			</wd-form-item>
-
-			<template v-if="state.pageMode === 'detail'">
-				<wd-form-item title="创建人" prop="createdUserName">
-					{{ state.formData.createdUserName }}
-				</wd-form-item>
-				<wd-form-item title="创建时间" prop="createdTime">
-					{{ state.formData.createdTime }}
-				</wd-form-item>
-				<wd-form-item title="更新人" prop="updatedUserName">
-					{{ state.formData.updatedUserName }}
-				</wd-form-item>
-				<wd-form-item title="更新时间" prop="updatedTime">
-					{{ state.formData.updatedTime }}
-				</wd-form-item>
-			</template>
 		</wd-form>
 
-		<wd-button custom-class="fa-form-submit" type="primary" :disabled="state.formDisabled" @click="handleConfirm">保存</wd-button>
+		<wd-button custom-class="fa-form-submit" type="primary" @click="handleConfirm">保存</wd-button>
 	</view>
 </template>
 
@@ -46,13 +31,13 @@ import { positionApi } from "@/api/services/Admin/position";
 import { useFormSchema, useLoading, useMessageBox, useToast } from "@/hooks";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { AddPositionInput } from "@/api/services/Admin/position/models/AddPositionInput";
-import type { QueryPositionDetailOutput } from "@/api/services/Admin/position/models/QueryPositionDetailOutput";
+import type { EditPositionInput } from "@/api/services/Admin/position/models/EditPositionInput";
 
 definePage({
 	name: "AdminPositionEdit",
-	authCode: ["Position:Detail", "Position:Add", "Position:Edit"],
+	authCode: ["Position:Add", "Position:Edit"],
 	style: {
-		navigationBarTitleText: "职位管理",
+		navigationBarTitleText: "职位",
 		enablePullDownRefresh: true,
 	},
 });
@@ -62,13 +47,12 @@ const router = useRouter();
 const formRef = ref<FormInstance>();
 
 const state = reactive({
-	formData: withDefineType<QueryPositionDetailOutput>({ sort: 1 }),
-	formSchema: useFormSchema<AddPositionInput>({
+	formData: withDefineType<EditPositionInput & AddPositionInput>({ sort: 1 }),
+	formSchema: useFormSchema<EditPositionInput & AddPositionInput>({
 		positionName: { required: true, message: "请输入职位名称" },
 		sort: { required: true, message: "请输入排序" },
 	}),
-	formDisabled: false,
-	pageMode: withDefineType<IPageStateType>("detail"),
+	pageMode: withDefineType<IPageStateType>("add"),
 	positionId: withDefineType<string>(),
 });
 
@@ -96,21 +80,11 @@ const handleConfirm = throttle(async () => {
 
 const handleLoad = async () => {
 	switch (state.pageMode) {
-		case "detail":
-			{
-				state.formDisabled = true;
-				const apiRes = await positionApi.queryPositionDetail(state.positionId);
-				state.formData = apiRes;
-				uni.setNavigationBarTitle({ title: `职位详情 - ${apiRes.positionName}` });
-			}
-			break;
 		case "add":
-			state.formDisabled = false;
 			uni.setNavigationBarTitle({ title: "添加职位" });
 			break;
 		case "edit":
 			{
-				state.formDisabled = false;
 				const apiRes = await positionApi.queryPositionDetail(state.positionId);
 				state.formData = apiRes;
 				uni.setNavigationBarTitle({ title: `编辑职位 - ${apiRes.positionName}` });
@@ -120,7 +94,7 @@ const handleLoad = async () => {
 };
 
 onLoad((options: { mode?: IPageStateType; positionId?: string }) => {
-	if (!options?.mode || ((options.mode === "edit" || options.mode === "detail") && !options?.positionId)) {
+	if (!options?.mode || (options.mode === "edit" && !options?.positionId)) {
 		useMessageBox.alert("参数异常");
 		return;
 	}

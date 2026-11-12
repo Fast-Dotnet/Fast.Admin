@@ -4,7 +4,7 @@
 			<FaSearchInput :filter="false" v-model:search-param="searchParam.value" @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #footer>
 					<FaAuth code="Serial:Add">
-						<wd-button size="small" icon="plus" @click="handleOpen('add')">新增</wd-button>
+						<wd-button size="small" icon="plus" @click="handleEdit('add')">新增</wd-button>
 					</FaAuth>
 				</template>
 			</FaSearchInput>
@@ -16,7 +16,7 @@
 				:key="item.serialRuleId"
 				:title="item.prefix"
 				code="Serial:Detail"
-				@click="handleOpen('detail', item.serialRuleId)"
+				@click="handleDetail(item.serialRuleId)"
 			>
 				<template #titleExtra>
 					<view class="fa-card__title-view">
@@ -37,7 +37,7 @@
 
 				<template #footer>
 					<FaAuth code="Serial:Edit">
-						<wd-button size="mini" type="primary" variant="plain" @click="handleOpen('edit', item.serialRuleId)">编辑</wd-button>
+						<wd-button size="mini" type="primary" variant="plain" @click="handleEdit('edit', item.serialRuleId)">编辑</wd-button>
 					</FaAuth>
 				</template>
 			</FaCard>
@@ -60,7 +60,9 @@ definePage({
 
 const router = useRouter();
 
-const handleOpen = throttle((mode: IPageStateType, serialRuleId?: string) =>
+const handleDetail = throttle((serialRuleId: string) => router.push(`/pages_admin/serial/detail/index?serialRuleId=${serialRuleId}`));
+
+const handleEdit = throttle((mode: IPageStateType, serialRuleId?: string) =>
 	router.push(`/pages_admin/serial/edit/index?mode=${mode}&serialRuleId=${serialRuleId}`)
 );
 </script>
