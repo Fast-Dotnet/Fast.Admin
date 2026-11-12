@@ -50,7 +50,6 @@ import type { QueryPositionDetailOutput } from "@/api/services/Admin/position/mo
 
 definePage({
 	name: "AdminPositionEdit",
-	layout: "layout",
 	authCode: ["Position:Detail", "Position:Add", "Position:Edit"],
 	style: {
 		navigationBarTitleText: "职位管理",

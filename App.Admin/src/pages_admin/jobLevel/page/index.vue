@@ -47,7 +47,6 @@ import type { QueryJobLevelPagedOutput } from "@/api/services/Admin/jobLevel/mod
 
 definePage({
 	name: "AdminJobLevel",
-	layout: "layout",
 	authCode: "JobLevel:Paged",
 	style: {
 		navigationBarTitleText: "职级管理",

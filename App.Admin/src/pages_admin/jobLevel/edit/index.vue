@@ -50,7 +50,6 @@ import type { QueryJobLevelDetailOutput } from "@/api/services/Admin/jobLevel/mo
 
 definePage({
 	name: "AdminJobLevelEdit",
-	layout: "layout",
 	authCode: ["JobLevel:Detail", "JobLevel:Add", "JobLevel:Edit"],
 	style: {
 		navigationBarTitleText: "职级",

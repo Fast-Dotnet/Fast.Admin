@@ -46,7 +46,6 @@ import OperateLogDetail from "./detail/index.vue";
 
 definePage({
 	name: "AdminOperateLog",
-	layout: "layout",
 	authCode: "OperateLog:Paged",
 	style: {
 		navigationBarTitleText: "操作日志",

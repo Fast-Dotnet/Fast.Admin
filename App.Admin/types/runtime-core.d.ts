@@ -77,6 +77,7 @@ declare module "@uni-helper/vite-plugin-uni-pages" {
 		/**
 		 * 页面使用的布局
 		 *
+		 * @defaultValue "layout"
 		 * @remarks
 		 * - 设置为 `"layout"` 时使用默认布局；
 		 * - 设置为 `false` 时禁用布局，页面内容将直接渲染。

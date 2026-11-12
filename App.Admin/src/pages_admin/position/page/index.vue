@@ -47,7 +47,6 @@ import type { QueryPositionPagedOutput } from "@/api/services/Admin/position/mod
 
 definePage({
 	name: "AdminPosition",
-	layout: "layout",
 	authCode: "Position:Paged",
 	style: {
 		navigationBarTitleText: "职位管理",

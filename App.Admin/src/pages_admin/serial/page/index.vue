@@ -52,7 +52,6 @@ import { serialApi } from "@/api/services/Admin/serial";
 
 definePage({
 	name: "AdminSerial",
-	layout: "layout",
 	authCode: "Serial:Paged",
 	style: {
 		navigationBarTitleText: "单号配置",
