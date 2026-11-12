@@ -49,7 +49,6 @@ import { clientUserApi } from "@/api/services/Center/clientUser";
 
 definePage({
 	name: "SystemClientUser",
-	layout: "layout",
 	authCode: "ClientUser:Paged",
 	style: {
 		navigationBarTitleText: "客户端用户",

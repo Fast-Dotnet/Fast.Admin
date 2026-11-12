@@ -32,7 +32,6 @@ import type { PickerOption } from "@wot-ui/ui/components/wd-picker-view/types";
 
 definePage({
 	name: "SettingGeneral",
-	layout: "layout",
 	style: {
 		navigationBarTitleText: "通用",
 	},

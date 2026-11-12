@@ -101,7 +101,6 @@ import type { QueryTenantPagedOutput } from "@/api/services/Center/tenant/models
 
 definePage({
 	name: "SystemTenant",
-	layout: "layout",
 	authCode: "Tenant:Paged",
 	style: {
 		navigationBarTitleText: "租户管理",

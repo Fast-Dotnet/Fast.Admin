@@ -52,7 +52,6 @@ import { sysSerialApi } from "@/api/services/Center/sysSerial";
 
 definePage({
 	name: "DevSysSerial",
-	layout: "layout",
 	authCode: "SysSerial:Paged",
 	style: {
 		navigationBarTitleText: "序号配置",

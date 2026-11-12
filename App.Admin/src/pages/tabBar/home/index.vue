@@ -75,7 +75,6 @@ import { useApp, useUserInfo } from "@/stores";
 
 definePage({
 	name: "Home",
-	layout: "layout",
 	isTabBar: true,
 	style: {
 		navigationBarTitleText: "首页",

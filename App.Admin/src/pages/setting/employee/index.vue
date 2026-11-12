@@ -65,7 +65,6 @@ import type { QueryEmployeeDetailOutput } from "@/api/services/Admin/employee/mo
 
 definePage({
 	name: "SettingEmployee",
-	layout: "layout",
 	style: {
 		navigationBarTitleText: "个人资料",
 	},

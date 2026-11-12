@@ -48,7 +48,6 @@ import MessageSendRecordDetail from "./detail/index.vue";
 
 definePage({
 	name: "DevMessageSendRecord",
-	layout: "layout",
 	authCode: "MessageSendRecord:Paged",
 	style: {
 		navigationBarTitleText: "消息记录",

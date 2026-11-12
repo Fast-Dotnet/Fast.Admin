@@ -37,7 +37,6 @@ import SqlExecutionLogDetail from "./detail/index.vue";
 
 definePage({
 	name: "DevSqlExecutionLog",
-	layout: "layout",
 	authCode: "SqlExecutionLog:Paged",
 	style: {
 		navigationBarTitleText: "Sql执行日志",

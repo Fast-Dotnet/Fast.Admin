@@ -56,7 +56,6 @@ import type { QueryMerchantPagedOutput } from "@/api/services/Center/merchant/mo
 
 definePage({
 	name: "SystemMerchant",
-	layout: "layout",
 	authCode: "Merchant:Paged",
 	style: {
 		navigationBarTitleText: "商户号",

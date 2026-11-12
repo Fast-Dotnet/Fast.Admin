@@ -39,7 +39,6 @@ import SqlExceptionLogDetail from "./detail/index.vue";
 
 definePage({
 	name: "DevSqlExceptionLog",
-	layout: "layout",
 	authCode: "SqlExceptionLog:Paged",
 	style: {
 		navigationBarTitleText: "Sql异常日志",

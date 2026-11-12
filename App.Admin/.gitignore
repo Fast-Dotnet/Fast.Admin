@@ -12,6 +12,7 @@ node_modules
 # Type files
 types/components.d.ts
 types/pages.d.ts
+types/uni-layouts.d.ts
 
 # Pages files
 src/pages.json

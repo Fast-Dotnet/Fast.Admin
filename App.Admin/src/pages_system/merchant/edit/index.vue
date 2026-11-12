@@ -111,7 +111,6 @@ import type { QueryMerchantDetailOutput } from "@/api/services/Center/merchant/m
 
 definePage({
 	name: "SystemMerchantEdit",
-	layout: "layout",
 	authCode: ["Merchant:Detail", "Merchant:Add", "Merchant:Edit"],
 	style: {
 		navigationBarTitleText: "商户号",

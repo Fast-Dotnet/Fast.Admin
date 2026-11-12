@@ -69,7 +69,6 @@ import { useApp, useUserInfo } from "@/stores";
 
 definePage({
 	name: "Launcher",
-	layout: "layout",
 	footer: false,
 	watermark: false,
 	pageScroll: false,

@@ -25,7 +25,6 @@ import { useApp } from "@/stores";
 
 definePage({
 	name: "PrivacyAgreement",
-	layout: "layout",
 	watermark: false,
 	noLogin: true,
 	style: { navigationBarTitleText: "隐私政策" },

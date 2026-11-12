@@ -1,13 +1,12 @@
-import { readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import UniPlugin from "@dcloudio/vite-plugin-uni";
 import { defineConfig } from "vite";
 import UniHelperComponents from "@uni-helper/vite-plugin-uni-components";
+import { ZPagingResolver } from "@uni-helper/vite-plugin-uni-components/resolvers";
 import UniHelperLayouts from "@uni-helper/vite-plugin-uni-layouts";
 import UniHelperPages from "@uni-helper/vite-plugin-uni-pages";
 import { FastResolver } from "./resolver.fast";
 import { WotResolver } from "./resolver.wot-ui";
-import { ZPagingResolver } from "./resolver.z-paging";
 import { transformForwardedSlots } from "./uni-slot-forwarding";
 
 // 兼容插件的模块导出形式，优先使用 default 导出，否则使用模块本身。
@@ -83,15 +82,13 @@ export default defineConfig({
 			dir: "src/pages",
 			exclude: ["**/components/**/*.*"],
 			/* 自动扫描分包目录。 */
-			subPackages: readdirSync(fileURLToPath(new URL("./src", import.meta.url)), {
-				withFileTypes: true,
-			})
-				.filter((entry) => entry.isDirectory() && entry.name.startsWith("pages_"))
-				.map((entry) => `src/${entry.name}`)
-				.sort(),
+			subPackages: ["src/pages_*"],
 		}),
 		/* 页面 Layout。 */
-		UniHelperLayouts(),
+		UniHelperLayouts({
+			layout: "layout",
+			dts: "types/uni-layouts.d.ts",
+		}),
 		/* 组件自动导入。 */
 		UniHelperComponents({
 			dirs: [],

@@ -121,7 +121,6 @@ import type { FaPopupInstance } from "@/components";
 
 definePage({
 	name: "SettingAccount",
-	layout: "layout",
 	style: {
 		navigationBarTitleText: "账号安全",
 	},

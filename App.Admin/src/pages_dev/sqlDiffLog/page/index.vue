@@ -46,7 +46,6 @@ import SqlDiffLogDetail from "./detail/index.vue";
 
 definePage({
 	name: "DevSqlDiffLog",
-	layout: "layout",
 	authCode: "SqlDiffLog:Paged",
 	style: {
 		navigationBarTitleText: "Sql差异日志",

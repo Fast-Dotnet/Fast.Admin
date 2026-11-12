@@ -61,7 +61,6 @@ import type { AddComplaintInput } from "@/api/services/Center/complaint/models/A
 
 definePage({
 	name: "ComplaintSubmit",
-	layout: "layout",
 	style: { navigationBarTitleText: "意见反馈" },
 });
 

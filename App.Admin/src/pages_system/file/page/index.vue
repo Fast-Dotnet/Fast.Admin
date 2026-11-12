@@ -56,7 +56,6 @@ import FileDetail from "./detail/index.vue";
 
 definePage({
 	name: "SystemFile",
-	layout: "layout",
 	authCode: "File:Paged",
 	style: {
 		navigationBarTitleText: "文件存储",

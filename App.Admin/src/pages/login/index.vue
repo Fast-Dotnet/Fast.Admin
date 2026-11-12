@@ -102,7 +102,6 @@ import type { FaImageCaptchaInstance } from "@/components";
 
 definePage({
 	name: "Login",
-	layout: "layout",
 	noLogin: true,
 	authForbidView: true,
 	watermark: false,

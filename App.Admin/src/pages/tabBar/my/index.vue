@@ -81,7 +81,6 @@ import type { FaSwitchTenantPopupInstance } from "@/components/index.ts";
 
 definePage({
 	name: "My",
-	layout: "layout",
 	isTabBar: true,
 	style: {
 		navigationBarTitleText: "我的",

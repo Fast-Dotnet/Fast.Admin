@@ -30,7 +30,6 @@ import type { LoginTenantOutput } from "@/api/services/Auth/login/models/LoginTe
 
 definePage({
 	name: "SelectTenant",
-	layout: "layout",
 	noLogin: true,
 	authForbidView: true,
 	watermark: false,

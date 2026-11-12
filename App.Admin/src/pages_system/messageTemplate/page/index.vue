@@ -67,7 +67,6 @@ import type { QueryMessageTemplatePagedOutput } from "@/api/services/Center/mess
 
 definePage({
 	name: "SystemMessageTemplate",
-	layout: "layout",
 	authCode: "MessageTemplate:Paged",
 	style: {
 		navigationBarTitleText: "消息模板",

@@ -46,7 +46,6 @@ import RequestLogDetail from "./detail/index.vue";
 
 definePage({
 	name: "SystemRequestLog",
-	layout: "layout",
 	authCode: "RequestLog:Paged",
 	style: {
 		navigationBarTitleText: "请求日志",

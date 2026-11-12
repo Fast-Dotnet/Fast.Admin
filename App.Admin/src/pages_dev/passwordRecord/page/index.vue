@@ -51,7 +51,6 @@ import { passwordRecordApi } from "@/api/services/Center/passwordRecord";
 
 definePage({
 	name: "DevPasswordRecord",
-	layout: "layout",
 	authCode: "PasswordRecord:Paged",
 	style: {
 		navigationBarTitleText: "密码记录",

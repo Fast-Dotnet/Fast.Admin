@@ -43,7 +43,6 @@ import SqlTimeoutLogDetail from "./detail/index.vue";
 
 definePage({
 	name: "DevSqlTimeoutLog",
-	layout: "layout",
 	authCode: "SqlTimeoutLog:Paged",
 	style: {
 		navigationBarTitleText: "Sql超时日志",

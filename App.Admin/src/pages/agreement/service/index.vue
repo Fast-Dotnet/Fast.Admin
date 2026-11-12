@@ -25,7 +25,6 @@ import { useApp } from "@/stores";
 
 definePage({
 	name: "ServiceAgreement",
-	layout: "layout",
 	watermark: false,
 	noLogin: true,
 	style: { navigationBarTitleText: "服务协议" },

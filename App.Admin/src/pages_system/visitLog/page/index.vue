@@ -46,7 +46,6 @@ import VisitLogDetail from "./detail/index.vue";
 
 definePage({
 	name: "SystemVisitLog",
-	layout: "layout",
 	authCode: "VisitLog:Paged",
 	style: {
 		navigationBarTitleText: "访问日志",

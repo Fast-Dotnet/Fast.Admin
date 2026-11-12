@@ -6,7 +6,7 @@ import { defineConfig, globalIgnores } from "eslint/config";
 export default defineConfig([
 	...uniAppConfig,
 	...createMarkdownConfigs(),
-	globalIgnores(["src/uni-layouts.d.ts", "src/api/**"], "fast-admin/ignores"),
+	globalIgnores(["src/api/**"], "fast-admin/ignores"),
 	{
 		name: "fast-admin/linter-options",
 		linterOptions: {

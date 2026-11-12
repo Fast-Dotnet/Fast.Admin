@@ -36,7 +36,6 @@ import PayRecordDetail from "./detail/index.vue";
 
 definePage({
 	name: "SystemPayRecord",
-	layout: "layout",
 	authCode: "PayRecord:Paged",
 	style: {
 		navigationBarTitleText: "支付记录",

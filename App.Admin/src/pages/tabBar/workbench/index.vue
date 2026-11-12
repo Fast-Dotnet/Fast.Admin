@@ -89,7 +89,6 @@ import type { FaSwitchTenantPopupInstance } from "@/components";
 
 definePage({
 	name: "Workbench",
-	layout: "layout",
 	isTabBar: true,
 	style: {
 		navigationStyle: "custom",

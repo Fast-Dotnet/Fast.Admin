@@ -63,7 +63,6 @@ import type { QueryMessageTemplateDetailOutput } from "@/api/services/Center/mes
 
 definePage({
 	name: "SystemMessageTemplateEdit",
-	layout: "layout",
 	authCode: ["MessageTemplate:Detail", "MessageTemplate:Add", "MessageTemplate:Edit"],
 	style: {
 		navigationBarTitleText: "消息模板",

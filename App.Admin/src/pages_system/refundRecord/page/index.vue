@@ -36,7 +36,6 @@ import RefundRecordDetail from "./detail/index.vue";
 
 definePage({
 	name: "SystemRefundRecord",
-	layout: "layout",
 	authCode: "RefundRecord:Paged",
 	style: {
 		navigationBarTitleText: "退款记录",

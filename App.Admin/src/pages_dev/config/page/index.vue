@@ -53,7 +53,6 @@ import type { QueryConfigPagedOutput } from "@/api/services/Center/config/models
 
 definePage({
 	name: "DevConfig",
-	layout: "layout",
 	authCode: "Config:Paged",
 	style: {
 		navigationBarTitleText: "系统配置",

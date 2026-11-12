@@ -39,7 +39,6 @@ import ExceptionLogDetail from "./detail/index.vue";
 
 definePage({
 	name: "DevExceptionLog",
-	layout: "layout",
 	authCode: "ExceptionLog:Paged",
 	style: {
 		navigationBarTitleText: "异常日志",

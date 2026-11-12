@@ -39,7 +39,6 @@ import ApiDetail from "./detail/index.vue";
 
 definePage({
 	name: "DevApi",
-	layout: "layout",
 	authCode: "Api:Paged",
 	style: {
 		navigationBarTitleText: "接口管理",
