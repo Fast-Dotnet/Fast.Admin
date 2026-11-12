@@ -31,6 +31,18 @@ export interface QuerySysSerialRuleDetailOutput {
 	 */
 	length?: number;
 	/**
+	 * 最后一个序号
+	 */
+	lastSerial?: string;
+	/**
+	 * 最后一个序号编号
+	 */
+	lastSerialNo?: string;
+	/**
+	 * 最后一个序号生成时间
+	 */
+	lastTime?: string;
+	/**
 	 * 
 	 */
 	createdUserName?: string;

@@ -9,7 +9,7 @@ declare global {
 	type FaTableDataRange = "Past1D" | "Past3D" | "Past1W" | "Past1M" | "Past3M" | "Past6M" | "Past1Y" | "Past3Y";
 
 	/** 页面状态类型 */
-	type IPageStateType = "detail" | "add" | "edit" | "copy";
+	type IPageStateType = "add" | "edit" | "copy";
 
 	/** FaTable 枚举列的选项配置 */
 	interface FaTableEnumColumnCtx {

@@ -4,13 +4,11 @@
 		width="800"
 		:title="state.dialogTitle"
 		:show-fullscreen="false"
-		:show-confirm-button="!state.formDisabled"
-		:show-before-close="!state.formDisabled"
 		confirm-button-text="保存"
 		@confirm-click="handleConfirm"
 		@close="faFormRef.resetFields()"
 	>
-		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" :disabled="state.formDisabled" cols="1">
+		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" cols="1">
 			<FaFormItem prop="roleType" label="角色类型">
 				<RadioGroup name="RoleTypeEnum" v-model="state.formData.roleType" />
 			</FaFormItem>
@@ -75,8 +73,7 @@ const state = reactive({
 		sort: [{ required: true, message: "请输入排序", trigger: "blur" }],
 		dataScopeDepartmentIds: [{ required: true, message: "请选择自定义部门", trigger: "change" }],
 	}),
-	formDisabled: false,
-	dialogState: withDefineType<IPageStateType>("detail"),
+	dialogState: withDefineType<IPageStateType>("add"),
 	dialogTitle: "角色",
 	roleList: withDefineType<ElSelectorOutput<string>[]>([]),
 });
@@ -98,21 +95,10 @@ const handleConfirm = () => {
 	});
 };
 
-const detail = (roleId: string) => {
-	faDialogRef.value.open(async () => {
-		state.formDisabled = true;
-		const apiRes = await roleApi.queryRoleDetail(roleId);
-		state.formData = apiRes;
-		state.dialogTitle = `角色详情 - ${apiRes.roleName}`;
-		state.roleList = await roleApi.roleSelector();
-	});
-};
-
 const add = () => {
 	faDialogRef.value.open(async () => {
 		state.dialogState = "add";
 		state.dialogTitle = "添加角色";
-		state.formDisabled = false;
 		state.formData = {
 			roleType: RoleTypeEnum.Admin,
 			isSystemMenu: true,
@@ -128,7 +114,6 @@ const add = () => {
 const edit = (roleId: string) => {
 	faDialogRef.value.open(async () => {
 		state.dialogState = "edit";
-		state.formDisabled = false;
 		const apiRes = await roleApi.queryRoleDetail(roleId);
 		state.formData = apiRes;
 		state.dialogTitle = `编辑角色 - ${apiRes.roleName}`;
@@ -138,7 +123,6 @@ const edit = (roleId: string) => {
 
 defineExpose({
 	element: faDialogRef,
-	detail,
 	add,
 	edit,
 });

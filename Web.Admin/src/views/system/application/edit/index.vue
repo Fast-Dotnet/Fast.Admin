@@ -4,13 +4,11 @@
 		width="1000"
 		:title="state.dialogTitle"
 		:show-fullscreen="false"
-		:show-confirm-button="!state.formDisabled"
-		:show-before-close="!state.formDisabled"
 		confirm-button-text="保存"
 		@confirm-click="handleConfirm"
 		@close="faFormRef.resetFields()"
 	>
-		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" :disabled="state.formDisabled" cols="2">
+		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" cols="2">
 			<FaFormItem prop="edition" label="版本" span="2">
 				<RadioGroup name="EditionEnum" v-model="state.formData.edition" />
 			</FaFormItem>
@@ -61,8 +59,7 @@ const state = reactive({
 		themeColor: [{ required: true, message: "请选择主题色", trigger: "blur" }],
 		logoUrl: [{ required: true, message: "请上传Logo", trigger: "change" }],
 	}),
-	formDisabled: false,
-	dialogState: withDefineType<IPageStateType>("detail"),
+	dialogState: withDefineType<IPageStateType>("add"),
 	dialogTitle: "应用",
 });
 
@@ -83,20 +80,10 @@ const handleConfirm = () => {
 	});
 };
 
-const detail = (appId: string) => {
-	faDialogRef.value.open(async () => {
-		state.formDisabled = true;
-		const apiRes = await applicationApi.queryApplicationDetail(appId);
-		state.formData = apiRes;
-		state.dialogTitle = `应用详情 - ${apiRes.appName}`;
-	});
-};
-
 const add = () => {
 	faDialogRef.value.open(() => {
 		state.dialogState = "add";
 		state.dialogTitle = "添加应用";
-		state.formDisabled = false;
 		state.formData = {
 			edition: EditionEnum.None,
 		};
@@ -106,7 +93,6 @@ const add = () => {
 const edit = (appId: string) => {
 	faDialogRef.value.open(async () => {
 		state.dialogState = "edit";
-		state.formDisabled = false;
 		const apiRes = await applicationApi.queryApplicationDetail(appId);
 		state.formData = apiRes;
 		state.dialogTitle = `编辑应用 - ${apiRes.appName}`;
@@ -115,7 +101,6 @@ const edit = (appId: string) => {
 
 defineExpose({
 	element: faDialogRef,
-	detail,
 	add,
 	edit,
 });

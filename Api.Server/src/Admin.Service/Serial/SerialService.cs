@@ -66,20 +66,24 @@ public class SerialService : IDynamicApplication
         [Required(ErrorMessage = "序号规则Id不能为空")] long? serialRuleId)
     {
         QuerySerialRuleDetailOutput result = await _repository.Queryable<SerialRuleModel>()
-            .Where(wh => wh.SerialRuleId == serialRuleId)
-            .Select(sl => new QuerySerialRuleDetailOutput
+            .LeftJoin<SerialSettingModel>((t1, t2) => t1.RuleType == t2.RuleType)
+            .Where(t1 => t1.SerialRuleId == serialRuleId)
+            .Select((t1, t2) => new QuerySerialRuleDetailOutput
             {
-                SerialRuleId = sl.SerialRuleId,
-                RuleType = sl.RuleType,
-                Prefix = sl.Prefix,
-                DateType = sl.DateType,
-                Spacer = sl.Spacer,
-                Length = sl.Length,
-                CreatedUserName = sl.CreatedUserName,
-                CreatedTime = sl.CreatedTime,
-                UpdatedUserName = sl.UpdatedUserName,
-                UpdatedTime = sl.UpdatedTime,
-                RowVersion = sl.RowVersion
+                SerialRuleId = t1.SerialRuleId,
+                RuleType = t1.RuleType,
+                Prefix = t1.Prefix,
+                DateType = t1.DateType,
+                Spacer = t1.Spacer,
+                Length = t1.Length,
+                LastSerial = t2.LastSerial,
+                LastSerialNo = t2.LastSerialNo,
+                LastTime = t2.LastTime,
+                CreatedUserName = t1.CreatedUserName,
+                CreatedTime = t1.CreatedTime,
+                UpdatedUserName = t1.UpdatedUserName,
+                UpdatedTime = t1.UpdatedTime,
+                RowVersion = t1.RowVersion
             })
             .SingleAsync();
 

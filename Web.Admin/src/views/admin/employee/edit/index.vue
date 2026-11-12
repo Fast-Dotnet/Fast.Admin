@@ -4,13 +4,11 @@
 		width="1200"
 		:title="state.dialogTitle"
 		:show-fullscreen="false"
-		:show-confirm-button="!state.formDisabled"
-		:show-before-close="!state.formDisabled"
 		confirm-button-text="保存"
 		@confirm-click="handleConfirm"
 		@close="faFormRef.resetFields()"
 	>
-		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" :disabled="state.formDisabled" cols="3">
+		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" cols="3">
 			<FaLayoutGridItem span="3">
 				<el-divider content-position="left">组织架构</el-divider>
 			</FaLayoutGridItem>
@@ -27,7 +25,7 @@
 			</FaFormItem>
 			<FaFormItem prop="departmentId" label="部门">
 				<DepartmentTreeSelect
-					:disabled="state.formDisabled || !state.formData?.orgId"
+					:disabled="!state.formData?.orgId"
 					:org-id="state.formData.orgId"
 					v-model="state.formData.departmentId"
 					v-model:department-name="state.formData.departmentName"
@@ -172,8 +170,7 @@ const state = reactive({
 		idPhoto: [{ required: true, message: "请上传证件照", trigger: "change" }],
 		entryDate: [{ required: true, message: "请选择入职日期", trigger: "change" }],
 	}),
-	formDisabled: false,
-	dialogState: withDefineType<IPageStateType>("detail"),
+	dialogState: withDefineType<IPageStateType>("add"),
 	dialogTitle: "职员",
 	roleList: withDefineType<ElSelectorOutput<string>[]>([]),
 });
@@ -246,23 +243,10 @@ const handleConfirm = () => {
 	});
 };
 
-const detail = (employeeId: string) => {
-	faDialogRef.value.open(async () => {
-		state.formDisabled = true;
-		const apiRes = await employeeApi.queryEmployeeDetail(employeeId);
-		state.formData = apiRes;
-		state.formData.roleIds = apiRes.roleList.map((m) => m.roleId);
-		flattenPrimaryOrg(apiRes);
-		state.dialogTitle = `职员详情 - ${apiRes.employeeName}`;
-		state.roleList = await roleApi.roleSelector();
-	});
-};
-
 const add = () => {
 	faDialogRef.value.open(async () => {
 		state.dialogState = "add";
 		state.dialogTitle = "添加职员";
-		state.formDisabled = false;
 		state.formData = {
 			isPrincipal: false,
 			sex: GenderEnum.Unknown,
@@ -276,7 +260,6 @@ const add = () => {
 const edit = (employeeId: string) => {
 	faDialogRef.value.open(async () => {
 		state.dialogState = "edit";
-		state.formDisabled = false;
 		const apiRes = await employeeApi.queryEmployeeDetail(employeeId);
 		state.formData = apiRes;
 		state.formData.roleIds = apiRes.roleList.map((m) => m.roleId);
@@ -288,7 +271,6 @@ const edit = (employeeId: string) => {
 
 defineExpose({
 	element: faDialogRef,
-	detail,
 	add,
 	edit,
 });

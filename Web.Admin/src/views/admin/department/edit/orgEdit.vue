@@ -3,13 +3,11 @@
 		ref="faDialogRef"
 		width="500"
 		:title="state.dialogTitle"
-		:show-confirm-button="!state.formDisabled"
-		:show-before-close="!state.formDisabled"
 		confirm-button-text="保存"
 		@confirm-click="handleConfirm"
 		@close="faFormRef.resetFields()"
 	>
-		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" :disabled="state.formDisabled">
+		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules">
 			<FaFormItem prop="parentId" label="父级">
 				<FaTreeSelect
 					:request-api="organizationApi.organizationSelector"
@@ -85,8 +83,7 @@ const state = reactive({
 			{ max: 50, message: "邮箱不能超过50位字符", trigger: "blur" },
 		],
 	}),
-	formDisabled: false,
-	dialogState: withDefineType<IPageStateType>("detail"),
+	dialogState: withDefineType<IPageStateType>("add"),
 	dialogTitle: "机构",
 });
 
@@ -107,23 +104,10 @@ const handleConfirm = () => {
 	});
 };
 
-const detail = (orgId: string) => {
-	faDialogRef.value.open(async () => {
-		state.formDisabled = true;
-		const apiRes = await organizationApi.queryOrganizationDetail(orgId);
-		if (apiRes.parentId === "0") {
-			apiRes.parentId = undefined;
-		}
-		state.formData = apiRes;
-		state.dialogTitle = `机构详情 - ${apiRes.orgName}`;
-	});
-};
-
 const add = () => {
 	faDialogRef.value.open(() => {
 		state.dialogState = "add";
 		state.dialogTitle = "添加机构";
-		state.formDisabled = false;
 		state.formData = {
 			parentId: undefined,
 			parentName: undefined,
@@ -135,7 +119,6 @@ const add = () => {
 const edit = (orgId: string) => {
 	faDialogRef.value.open(async () => {
 		state.dialogState = "edit";
-		state.formDisabled = false;
 		const apiRes = await organizationApi.queryOrganizationDetail(orgId);
 		if (apiRes.parentId === "0") {
 			apiRes.parentId = undefined;
@@ -147,7 +130,6 @@ const edit = (orgId: string) => {
 
 defineExpose({
 	element: faDialogRef,
-	detail,
 	add,
 	edit,
 });

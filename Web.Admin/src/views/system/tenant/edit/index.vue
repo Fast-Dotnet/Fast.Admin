@@ -4,13 +4,11 @@
 		width="1000"
 		:title="state.dialogTitle"
 		:show-fullscreen="false"
-		:show-confirm-button="!state.formDisabled"
-		:show-before-close="!state.formDisabled"
 		confirm-button-text="保存"
 		@confirm-click="handleConfirm"
 		@close="faFormRef.resetFields()"
 	>
-		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" :disabled="state.formDisabled" cols="2">
+		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" cols="2">
 			<FaFormItem prop="tenantName" label="租户名称" span="2">
 				<el-input v-model="state.formData.tenantName" maxlength="30" placeholder="请输入租户名称" @input="handleSpellName" />
 			</FaFormItem>
@@ -26,6 +24,19 @@
 			<FaFormItem prop="edition" label="版本" span="2">
 				<RadioGroup name="EditionEnum" v-model="state.formData.edition" />
 			</FaFormItem>
+			<FaFormItem prop="robotName" label="机器人名称">
+				<el-input v-model="state.formData.robotName" maxlength="20" placeholder="请输入机器人名称" />
+			</FaFormItem>
+			<FaFormItem v-if="state.dialogState !== 'add'" prop="status" label="状态">
+				<RadioGroup button name="CommonStatusEnum" v-model="state.formData.status" />
+			</FaFormItem>
+			<FaFormItem prop="logoUrl" label="Logo" span="2">
+				<FaUploadImage v-model="state.formData.logoUrl" :upload-api="fileApi.uploadLogo" />
+			</FaFormItem>
+
+			<FaLayoutGridItem span="2">
+				<el-divider content-position="left">管理员信息</el-divider>
+			</FaLayoutGridItem>
 			<FaFormItem prop="adminName" label="管理员名称">
 				<el-input v-model="state.formData.adminName" maxlength="20" placeholder="请输入管理员名称" />
 			</FaFormItem>
@@ -54,17 +65,12 @@
 			<FaFormItem prop="adminPhone" label="管理员电话">
 				<el-input v-model="state.formData.adminPhone" maxlength="20" placeholder="请输入管理员电话" />
 			</FaFormItem>
-			<FaFormItem prop="robotName" label="机器人名称">
-				<el-input v-model="state.formData.robotName" maxlength="20" placeholder="请输入机器人名称" />
-			</FaFormItem>
-			<FaFormItem prop="aliyunSignName" label="阿里云签名名称">
+
+			<FaLayoutGridItem span="2">
+				<el-divider content-position="left">阿里云</el-divider>
+			</FaLayoutGridItem>
+			<FaFormItem prop="aliyunSignName" label="签名名称">
 				<el-input v-model="state.formData.aliyunSignName" maxlength="30" placeholder="请输入阿里云签名名称" />
-			</FaFormItem>
-			<FaFormItem v-if="state.dialogState !== 'add'" prop="status" label="状态">
-				<RadioGroup button name="CommonStatusEnum" v-model="state.formData.status" />
-			</FaFormItem>
-			<FaFormItem prop="logoUrl" label="Logo">
-				<FaUploadImage v-model="state.formData.logoUrl" :upload-api="fileApi.uploadLogo" />
 			</FaFormItem>
 		</FaForm>
 	</FaDialog>
@@ -112,8 +118,7 @@ const state = reactive({
 		robotName: [{ required: true, message: "请输入机器人名称", trigger: "blur" }],
 		logoUrl: [{ required: true, message: "请上传Logo", trigger: "change" }],
 	}),
-	formDisabled: false,
-	dialogState: withDefineType<IPageStateType>("detail"),
+	dialogState: withDefineType<IPageStateType>("add"),
 	dialogTitle: "租户",
 });
 
@@ -140,20 +145,10 @@ const handleConfirm = () => {
 	});
 };
 
-const detail = (tenantId: string) => {
-	faDialogRef.value.open(async () => {
-		state.formDisabled = true;
-		const apiRes = await tenantApi.queryTenantDetail(tenantId);
-		state.formData = apiRes;
-		state.dialogTitle = `租户详情 - ${apiRes.tenantName}`;
-	});
-};
-
 const add = () => {
 	faDialogRef.value.open(() => {
 		state.dialogState = "add";
 		state.dialogTitle = "添加租户";
-		state.formDisabled = false;
 		state.formData = {
 			edition: EditionEnum.Trial,
 			status: CommonStatusEnum.Enable,
@@ -164,7 +159,6 @@ const add = () => {
 const edit = (tenantId: string) => {
 	faDialogRef.value.open(async () => {
 		state.dialogState = "edit";
-		state.formDisabled = false;
 		const apiRes = await tenantApi.queryTenantDetail(tenantId);
 		state.formData = apiRes;
 		state.dialogTitle = `编辑租户 - ${apiRes.tenantName}`;
@@ -173,7 +167,6 @@ const edit = (tenantId: string) => {
 
 defineExpose({
 	element: faDialogRef,
-	detail,
 	add,
 	edit,
 });

@@ -27,9 +27,5 @@ export interface QueryTenantPagedInput extends PagedInput  {
 	 * 
 	 */
 	tenantType?: TenantTypeEnum;
-	/**
-	 * 
-	 */
-	readonly isOrderBy?: boolean;
 }
 

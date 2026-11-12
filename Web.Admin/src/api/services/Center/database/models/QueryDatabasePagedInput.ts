@@ -18,9 +18,5 @@ export interface QueryDatabasePagedInput extends PagedInput  {
 	 * 租户Id
 	 */
 	tenantId?: string;
-	/**
-	 * 
-	 */
-	readonly isOrderBy?: boolean;
 }
 

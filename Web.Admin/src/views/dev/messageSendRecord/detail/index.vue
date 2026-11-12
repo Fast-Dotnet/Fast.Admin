@@ -1,28 +1,25 @@
 <template>
 	<FaDialog ref="faDialogRef" width="1000" :title="state.dialogTitle" :show-confirm-button="false">
 		<FaForm :model="state.formData" detail-form cols="2">
-			<FaFormItem prop="channel" label="渠道">
-				<Text name="MessageSendChannelEnum" :value="state.formData.channel" />
+			<FaFormItem label="渠道">
+				<Tag name="MessageSendChannelEnum" :value="state.formData.channel" />
 			</FaFormItem>
-			<FaFormItem prop="isSuccess" label="状态">
-				<el-tag style="width: auto" :type="state.formData.isSuccess ? 'success' : 'danger'">
+			<FaFormItem label="状态">
+				<el-tag :type="state.formData.isSuccess ? 'success' : 'danger'">
 					{{ state.formData.isSuccess ? "成功" : "失败" }}
 				</el-tag>
 			</FaFormItem>
-			<FaFormItem prop="receiver" label="收件人">
-				<el-text type="primary" v-iconCopy="state.formData.receiver">
+			<FaFormItem label="收件人">
+				<el-text type="primary">
 					{{ state.formData.receiver }}
 				</el-text>
 			</FaFormItem>
-			<FaFormItem prop="createdTime" label="发送时间">
+			<FaFormItem label="发送时间">
 				{{ state.formData.createdTime }}
 			</FaFormItem>
-			<FaLayoutGridItem span="2">
-				<FaFormItem prop="title" label="标题">
-					{{ state.formData.title || "-" }}
-				</FaFormItem>
-			</FaLayoutGridItem>
+			<FaFormItem label="标题" :value="state.formData.title" :span="2" />
 		</FaForm>
+
 		<el-divider content-position="left">内容</el-divider>
 		<iframe
 			v-if="state.formData.channel === MessageSendChannelEnum.Email"
@@ -39,9 +36,7 @@
 			show-icon
 			:theme="configStore.layout.isDark ? 'dark' : 'light'"
 		/>
-		<pre v-else class="message-send-record-detail__text">
-					{{ state.formData.recordValue || "-" }}
-				</pre>
+		<pre v-else class="message-send-record-detail__text">{{ state.formData.recordValue || "-" }}</pre>
 	</FaDialog>
 </template>
 
@@ -57,7 +52,7 @@ import type { JSONDataType } from "vue-json-pretty/types/utils";
 import type { QueryMessageSendRecordDetailOutput } from "@/api/services/Center/messageSendRecord/models/QueryMessageSendRecordDetailOutput";
 
 defineOptions({
-	name: "DevMessageSendRecordEdit",
+	name: "DevMessageSendRecordDetail",
 });
 
 const configStore = useConfig();

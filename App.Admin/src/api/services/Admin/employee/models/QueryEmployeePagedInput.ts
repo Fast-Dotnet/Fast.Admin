@@ -17,9 +17,5 @@ export interface QueryEmployeePagedInput extends PagedInput  {
 	 * 部门Id
 	 */
 	departmentId?: string;
-	/**
-	 * 
-	 */
-	readonly isOrderBy?: boolean;
 }
 

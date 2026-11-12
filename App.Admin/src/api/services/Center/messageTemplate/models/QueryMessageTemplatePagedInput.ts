@@ -6,9 +6,5 @@ export interface QueryMessageTemplatePagedInput extends PagedInput  {
 	 * 租户Id
 	 */
 	tenantId?: string;
-	/**
-	 * 
-	 */
-	readonly isOrderBy?: boolean;
 }
 

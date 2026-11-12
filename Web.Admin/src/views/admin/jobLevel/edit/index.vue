@@ -4,13 +4,11 @@
 		width="600"
 		:title="state.dialogTitle"
 		:show-fullscreen="false"
-		:show-confirm-button="!state.formDisabled"
-		:show-before-close="!state.formDisabled"
 		confirm-button-text="保存"
 		@confirm-click="handleConfirm"
 		@close="faFormRef.resetFields()"
 	>
-		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" :disabled="state.formDisabled" cols="1">
+		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" cols="1">
 			<FaFormItem prop="jobLevelName" label="职级名称">
 				<el-input v-model="state.formData.jobLevelName" maxlength="20" placeholder="请输入职级名称" />
 			</FaFormItem>
@@ -49,8 +47,7 @@ const state = reactive({
 		jobLevelName: [{ required: true, message: "请输入职级名称", trigger: "blur" }],
 		level: [{ required: true, message: "请输入职级等级", trigger: "blur" }],
 	}),
-	formDisabled: false,
-	dialogState: withDefineType<IPageStateType>("detail"),
+	dialogState: withDefineType<IPageStateType>("add"),
 	dialogTitle: "职级",
 });
 
@@ -71,20 +68,10 @@ const handleConfirm = () => {
 	});
 };
 
-const detail = (jobLevelId: string) => {
-	faDialogRef.value.open(async () => {
-		state.formDisabled = true;
-		const apiRes = await jobLevelApi.queryJobLevelDetail(jobLevelId);
-		state.formData = apiRes;
-		state.dialogTitle = `职级详情 - ${apiRes.jobLevelName}`;
-	});
-};
-
 const add = () => {
 	faDialogRef.value.open(() => {
 		state.dialogState = "add";
 		state.dialogTitle = "添加职级";
-		state.formDisabled = false;
 		state.formData = {};
 	});
 };
@@ -92,7 +79,6 @@ const add = () => {
 const edit = (jobLevelId: string) => {
 	faDialogRef.value.open(async () => {
 		state.dialogState = "edit";
-		state.formDisabled = false;
 		const apiRes = await jobLevelApi.queryJobLevelDetail(jobLevelId);
 		state.formData = apiRes;
 		state.dialogTitle = `编辑职级 - ${apiRes.jobLevelName}`;
@@ -101,7 +87,6 @@ const edit = (jobLevelId: string) => {
 
 defineExpose({
 	element: faDialogRef,
-	detail,
 	add,
 	edit,
 });

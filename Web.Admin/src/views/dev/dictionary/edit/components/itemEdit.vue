@@ -3,14 +3,13 @@
 		ref="faDialogRef"
 		width="800"
 		:title="state.dialogTitle"
-		:show-confirm-button="!state.formDisabled"
-		:show-before-close="!state.formDisabled"
+		:show-fullscreen="false"
 		confirm-button-text="保存"
 		@confirm-click="handleConfirm"
 		@close="faFormRef.resetFields()"
 	>
-		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" :disabled="state.formDisabled" cols="2">
-			<FaFormItem prop="label" label="字典项名称">
+		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" cols="2">
+			<FaFormItem prop="label" label="名称">
 				<el-input v-model="state.formData.label" maxlength="50" placeholder="请输入字典项名称" />
 			</FaFormItem>
 			<FaFormItem prop="value" label="字典项值">
@@ -74,8 +73,7 @@ const state = reactive({
 		value: [{ required: true, message: "请输入字典项值", trigger: "blur" }],
 		order: [{ required: true, message: "请输入排序", trigger: "blur" }],
 	}),
-	formDisabled: false,
-	dialogState: withDefineType<IPageStateType>("detail"),
+	dialogState: withDefineType<IPageStateType>("add"),
 	dialogTitle: "数据字典项",
 	tableIndex: withDefineType<number>(),
 });
@@ -94,19 +92,10 @@ const handleConfirm = () => {
 	});
 };
 
-const detail = (row: EditDictionaryItemInput) => {
-	faDialogRef.value.open(() => {
-		state.formDisabled = true;
-		state.formData = { ...row };
-		state.dialogTitle = `数据字典项详情 - ${row.label}`;
-	});
-};
-
 const add = () => {
 	faDialogRef.value.open(() => {
 		state.dialogState = "add";
 		state.dialogTitle = "添加数据字典项";
-		state.formDisabled = false;
 		state.formData = {
 			type: TagTypeEnum.Primary,
 			visible: true,
@@ -118,7 +107,6 @@ const add = () => {
 const edit = (row: EditDictionaryItemInput, index: number) => {
 	faDialogRef.value.open(() => {
 		state.dialogState = "edit";
-		state.formDisabled = false;
 		state.tableIndex = index;
 		state.formData = { ...row };
 		state.dialogTitle = `编辑数据字典项 - ${row.label}`;
@@ -127,7 +115,6 @@ const edit = (row: EditDictionaryItemInput, index: number) => {
 
 defineExpose({
 	element: faDialogRef,
-	detail,
 	add,
 	edit,
 });

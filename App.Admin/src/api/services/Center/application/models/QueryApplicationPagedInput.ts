@@ -8,9 +8,5 @@ export interface QueryApplicationPagedInput extends PagedInput  {
 	 * 
 	 */
 	edition?: EditionEnum;
-	/**
-	 * 
-	 */
-	readonly isOrderBy?: boolean;
 }
 

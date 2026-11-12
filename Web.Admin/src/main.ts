@@ -9,7 +9,7 @@ import type { Component } from "vue";
 if (import.meta.env.DEV) {
 	await import("element-plus/dist/index.css");
 	await import("element-plus/theme-chalk/dark/css-vars.css");
-	await import("fast-element-plus/style.css");
+	await import("fast-element-plus/index.css");
 	await import("vue-json-pretty/lib/styles.css");
 }
 await import("./styles/index.scss");

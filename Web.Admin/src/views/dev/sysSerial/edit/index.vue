@@ -4,18 +4,16 @@
 		width="500"
 		:title="state.dialogTitle"
 		:show-fullscreen="false"
-		:show-confirm-button="!state.formDisabled"
-		:show-before-close="!state.formDisabled"
 		confirm-button-text="保存"
 		@confirm-click="handleConfirm"
 		@close="faFormRef.resetFields()"
 	>
-		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" :disabled="state.formDisabled">
-			<FaFormItem prop="prefix" label="前缀">
-				<el-input v-model="state.formData.prefix" maxlength="5" placeholder="请输入前缀" />
-			</FaFormItem>
+		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules">
 			<FaFormItem v-if="state.dialogState !== 'edit'" prop="ruleType" label="规则类型">
 				<RadioGroup name="SysSerialRuleTypeEnum" v-model="state.formData.ruleType" />
+			</FaFormItem>
+			<FaFormItem prop="prefix" label="前缀">
+				<el-input v-model="state.formData.prefix" maxlength="5" placeholder="请输入前缀" />
 			</FaFormItem>
 			<FaFormItem prop="dateType" label="时间类型">
 				<RadioGroup name="SerialDateTypeEnum" v-model="state.formData.dateType" />
@@ -57,8 +55,7 @@ const state = reactive({
 	formRules: withDefineType<FormRules<EditSysSerialRuleInput & AddSysSerialRuleInput>>({
 		length: [{ required: true, message: "请输入长度", trigger: "blur" }],
 	}),
-	formDisabled: false,
-	dialogState: withDefineType<IPageStateType>("detail"),
+	dialogState: withDefineType<IPageStateType>("add"),
 	dialogTitle: "序号",
 });
 
@@ -79,21 +76,10 @@ const handleConfirm = () => {
 	});
 };
 
-const detail = (serialRuleId: string) => {
-	faDialogRef.value.open(async () => {
-		state.dialogState = "detail";
-		state.formDisabled = true;
-		const apiRes = await sysSerialApi.querySysSerialRuleDetail(serialRuleId);
-		state.formData = apiRes;
-		state.dialogTitle = `序号详情`;
-	});
-};
-
 const add = () => {
 	faDialogRef.value.open(() => {
 		state.dialogState = "add";
 		state.dialogTitle = "添加序号";
-		state.formDisabled = false;
 		state.formData = {
 			ruleType: SysSerialRuleTypeEnum.AppNo,
 			dateType: SerialDateTypeEnum.Year,
@@ -105,7 +91,6 @@ const add = () => {
 const edit = (serialRuleId: string) => {
 	faDialogRef.value.open(async () => {
 		state.dialogState = "edit";
-		state.formDisabled = false;
 		const apiRes = await sysSerialApi.querySysSerialRuleDetail(serialRuleId);
 		state.formData = apiRes;
 		state.dialogTitle = `编辑序号`;
@@ -114,7 +99,6 @@ const edit = (serialRuleId: string) => {
 
 defineExpose({
 	element: faDialogRef,
-	detail,
 	add,
 	edit,
 });

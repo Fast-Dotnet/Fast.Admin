@@ -3,7 +3,7 @@
 		<FaTable ref="faTableRef" row-key="mainId" :request-api="databaseApi.queryDatabasePaged" :columns="searchColumns" hide-search-time>
 			<!-- 表格按钮操作区域 -->
 			<template #header>
-				<el-button v-auth="'Database:Add'" type="primary" :icon="Plus" @click="editFormRef.add()">新增</el-button>
+				<el-button v-auth="'Database:Add'" type="primary" :icon="Plus" @click="addFormRef.add()">新增</el-button>
 			</template>
 
 			<FaTableColumn prop="tenantName" label="租户名称" fixed="left" width="200" small-width="180" sortable />
@@ -12,16 +12,7 @@
 			<FaTableColumn prop="publicIp" label="公网Ip地址" width="150" small-width="130" copy sortable />
 			<FaTableColumn prop="intranetIp" label="内网Ip地址" width="150" small-width="130" sortable />
 			<FaTableColumn prop="port" label="端口号" width="100" small-width="80" sortable />
-			<FaTableColumn
-				prop="dbName"
-				label="数据库名称"
-				width="200"
-				small-width="180"
-				copy
-				sortable
-				link
-				:click="({ row }) => editFormRef.detail(row.mainId)"
-			/>
+			<FaTableColumn prop="dbName" label="数据库名称" width="200" small-width="180" copy sortable />
 			<FaTableColumn prop="dbUser" label="数据库用户" width="150" small-width="130" sortable />
 			<FaTableColumn prop="commandTimeOut" label="超时时间" width="120" small-width="100" sortable tag>
 				<template #default="{ row }: { row: QueryDatabasePagedOutput }">
@@ -49,7 +40,6 @@
 
 			<!-- 表格操作 -->
 			<template #operation="{ row }: { row: QueryDatabasePagedOutput }">
-				<el-button v-auth="'Database:Detail'" size="small" plain @click="editFormRef.detail(row.mainId)">详情</el-button>
 				<el-button v-auth="'Database:Edit'" size="small" plain type="primary" @click="editFormRef.edit(row.mainId)">编辑</el-button>
 				<el-button v-auth="'Database:Delete'" size="small" plain type="danger" @click="handleDelete(row)">删除</el-button>
 				<el-button v-if="!row.isInitialized" v-auth="'Database:Edit'" size="small" plain type="warning" @click="handleInitDatabase(row)">
@@ -57,6 +47,7 @@
 				</el-button>
 			</template>
 		</FaTable>
+		<DatabaseAdd ref="addFormRef" @ok="faTableRef.refresh()" />
 		<DatabaseEdit ref="editFormRef" @ok="faTableRef.refresh()" />
 	</div>
 </template>
@@ -67,6 +58,7 @@ import { Plus } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { databaseApi } from "@/api/services/Center/database";
 import { useApp } from "@/stores";
+import DatabaseAdd from "./add/index.vue";
 import DatabaseEdit from "./edit/index.vue";
 import type { FaTableColumnCtx, FaTableInstance } from "fast-element-plus";
 import type { QueryDatabasePagedOutput } from "@/api/services/Center/database/models/QueryDatabasePagedOutput";
@@ -81,6 +73,7 @@ const sugarDbType = appStore.getDictionary("SugarDbType");
 const booleanEnum = appStore.getDictionary("BooleanEnum");
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
+const addFormRef = useTemplateRef<InstanceType<typeof DatabaseAdd>>("addFormRef");
 const editFormRef = useTemplateRef<InstanceType<typeof DatabaseEdit>>("editFormRef");
 
 /** 处理删除 */

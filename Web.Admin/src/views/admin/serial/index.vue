@@ -52,10 +52,11 @@
 
 			<!-- 表格操作 -->
 			<template #operation="{ row }: { row: QuerySerialRulePagedOutput }">
-				<el-button v-auth="'Serial:Detail'" size="small" plain @click="editFormRef.detail(row.serialRuleId)">详情</el-button>
+				<el-button v-auth="'Serial:Detail'" size="small" plain @click="detailFormRef.detail(row.serialRuleId)">详情</el-button>
 				<el-button v-auth="'Serial:Edit'" size="small" plain type="primary" @click="editFormRef.edit(row.serialRuleId)">编辑</el-button>
 			</template>
 		</FaTable>
+		<SerialDetail ref="detailFormRef" />
 		<SerialEdit ref="editFormRef" @ok="faTableRef.refresh()" />
 	</div>
 </template>
@@ -65,6 +66,7 @@ import { useTemplateRef } from "vue";
 import { Plus } from "@element-plus/icons-vue";
 import { serialApi } from "@/api/services/Admin/serial";
 import { useApp } from "@/stores";
+import SerialDetail from "./detail/index.vue";
 import SerialEdit from "./edit/index.vue";
 import type { FaTableInstance } from "fast-element-plus";
 import type { QuerySerialRulePagedOutput } from "@/api/services/Admin/serial/models/QuerySerialRulePagedOutput";
@@ -76,5 +78,6 @@ defineOptions({
 const appStore = useApp();
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
+const detailFormRef = useTemplateRef<InstanceType<typeof SerialDetail>>("detailFormRef");
 const editFormRef = useTemplateRef<InstanceType<typeof SerialEdit>>("editFormRef");
 </script>

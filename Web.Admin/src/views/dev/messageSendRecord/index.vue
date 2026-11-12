@@ -7,7 +7,7 @@
 			data-search-range="Past3M"
 		>
 			<FaTableColumn prop="channel" label="渠道" width="120" small-width="100" sortable tag :enum="messageSendChannelEnum" />
-			<FaTableColumn prop="receiver" label="收件人" width="200" small-width="180" sortable :show-overflow-tooltip="false" />
+			<FaTableColumn prop="receiver" label="收件人" width="200" small-width="180" copy sortable :show-overflow-tooltip="false" />
 			<FaTableColumn prop="title" label="标题" width="300" small-width="280" sortable :show-overflow-tooltip="false" />
 			<FaTableColumn prop="isSuccess" label="成功" width="100" small-width="80" sortable tag :enum="booleanEnum" />
 			<FaTableColumn
@@ -40,10 +40,10 @@
 			</FaTableColumn>
 
 			<template #operation="{ row }: { row?: QueryMessageSendRecordPagedOutput }">
-				<el-button v-auth="'MessageSendRecord:Detail'" size="small" plain @click="editFormRef.detail(row.recordId)">详情</el-button>
+				<el-button v-auth="'MessageSendRecord:Detail'" size="small" plain @click="detailFormRef.detail(row.recordId)">详情</el-button>
 			</template>
 		</FaTable>
-		<MessageSendRecordEdit ref="editFormRef" />
+		<MessageSendRecordDetail ref="detailFormRef" />
 	</div>
 </template>
 
@@ -52,7 +52,7 @@ import { useTemplateRef } from "vue";
 import { formatChineseRelativeTime } from "@fast-china/utils";
 import { messageSendRecordApi } from "@/api/services/Center/messageSendRecord";
 import { useApp } from "@/stores";
-import MessageSendRecordEdit from "./edit/index.vue";
+import MessageSendRecordDetail from "./detail/index.vue";
 import type { FaTableColumnCtx } from "fast-element-plus";
 import type { QueryMessageSendRecordPagedOutput } from "@/api/services/Center/messageSendRecord/models/QueryMessageSendRecordPagedOutput";
 
@@ -64,7 +64,7 @@ const appStore = useApp();
 const messageSendChannelEnum = appStore.getDictionary("MessageSendChannelEnum");
 const booleanEnum = appStore.getDictionary("BooleanEnum");
 
-const editFormRef = useTemplateRef<InstanceType<typeof MessageSendRecordEdit>>("editFormRef");
+const detailFormRef = useTemplateRef<InstanceType<typeof MessageSendRecordDetail>>("detailFormRef");
 
 const searchColumns: FaTableColumnCtx[] = [
 	{

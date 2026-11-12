@@ -4,13 +4,11 @@
 		width="1000"
 		:title="state.dialogTitle"
 		:show-fullscreen="false"
-		:show-confirm-button="!state.formDisabled"
-		:show-before-close="!state.formDisabled"
 		confirm-button-text="保存"
 		@confirm-click="handleConfirm"
 		@close="faFormRef.resetFields()"
 	>
-		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" :disabled="state.formDisabled" cols="2">
+		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" cols="2">
 			<FaFormItem prop="appKey" label="应用标识">
 				<ApplicationClientSelect v-model="state.formData.appKey" />
 			</FaFormItem>
@@ -51,25 +49,22 @@
 				<RadioGroup name="CommonStatusEnum" v-model="state.formData.status" />
 			</FaFormItem>
 			<FaFormItem prop="fileUrl" label="应用包" span="2" tips="更换包类型后需要重新上传。新增保存后版本即启用。">
-				<el-input v-if="state.formDisabled" :model-value="state.formData.fileUrl" type="textarea" :rows="2" />
-				<template v-else>
-					<FaUpload
-						v-model="state.formData.fileUrl"
-						:upload-api="handleUpload"
-						:before-upload="handleBeforeUpload"
-						:accept="packageAccept"
-						:max-size="512 * 1024"
-					>
-						<div class="el-upload__text">
-							将应用包拖到此处，或
-							<em>点击上传</em>
-						</div>
-						<template #tip>
-							<div class="el-upload__tip">支持 {{ packageAccept }}，单个文件不超过 512 MB</div>
-						</template>
-					</FaUpload>
-					<el-progress v-if="state.uploading" :percentage="state.uploadProgress" indeterminate />
-				</template>
+				<FaUpload
+					v-model="state.formData.fileUrl"
+					:upload-api="handleUpload"
+					:before-upload="handleBeforeUpload"
+					:accept="packageAccept"
+					:max-size="512 * 1024"
+				>
+					<div class="el-upload__text">
+						将应用包拖到此处，或
+						<em>点击上传</em>
+					</div>
+					<template #tip>
+						<div class="el-upload__tip">支持 {{ packageAccept }}，单个文件不超过 512 MB</div>
+					</template>
+				</FaUpload>
+				<el-progress v-if="state.uploading" :percentage="state.uploadProgress" indeterminate />
 			</FaFormItem>
 			<FaFormItem prop="updateContent" label="更新说明" span="2">
 				<el-input type="textarea" v-model="state.formData.updateContent" :rows="4" maxlength="4000" placeholder="请输入更新说明" />
@@ -136,8 +131,7 @@ const state = reactive({
 			},
 		],
 	}),
-	formDisabled: false,
-	dialogState: withDefineType<IPageStateType>("detail"),
+	dialogState: withDefineType<IPageStateType>("add"),
 	dialogTitle: "应用版本",
 	uploading: false,
 	uploadProgress: 0,
@@ -213,20 +207,10 @@ const handleConfirm = () => {
 	});
 };
 
-const detail = (recordId: string) => {
-	faDialogRef.value.open(async () => {
-		state.formDisabled = true;
-		const apiRes = await applicationVersionApi.queryApplicationVersionDetail(recordId);
-		state.formData = apiRes;
-		state.dialogTitle = `应用版本详情 - ${apiRes.versionName}`;
-	});
-};
-
 const add = () => {
 	faDialogRef.value.open(() => {
 		state.dialogState = "add";
 		state.dialogTitle = "添加应用版本";
-		state.formDisabled = false;
 		state.uploadProgress = 0;
 		state.formData = {
 			packageType: ApplicationPackageTypeEnum.FullPackage,
@@ -238,7 +222,6 @@ const add = () => {
 const edit = (recordId: string) => {
 	faDialogRef.value.open(async () => {
 		state.dialogState = "edit";
-		state.formDisabled = false;
 		state.uploadProgress = 0;
 		const apiRes = await applicationVersionApi.queryApplicationVersionDetail(recordId);
 		state.formData = apiRes;
@@ -248,7 +231,6 @@ const edit = (recordId: string) => {
 
 defineExpose({
 	element: faDialogRef,
-	detail,
 	add,
 	edit,
 });

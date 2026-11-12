@@ -30,7 +30,7 @@ import type { FaDialogInstance, FaFormInstance } from "fast-element-plus";
 import type { AddApplicationTokenInput } from "@/api/services/Center/applicationToken/models/AddApplicationTokenInput";
 
 defineOptions({
-	name: "SystemApplicationTokenEdit",
+	name: "SystemApplicationTokenAdd",
 });
 
 const emit = defineEmits(["ok"]);

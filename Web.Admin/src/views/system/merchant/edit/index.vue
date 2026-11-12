@@ -4,13 +4,11 @@
 		width="800"
 		:title="state.dialogTitle"
 		:show-fullscreen="false"
-		:show-confirm-button="!state.formDisabled"
-		:show-before-close="!state.formDisabled"
 		confirm-button-text="保存"
 		@confirm-click="handleConfirm"
 		@close="faFormRef.resetFields()"
 	>
-		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" :disabled="state.formDisabled" cols="1">
+		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" cols="1">
 			<FaFormItem prop="merchantType" label="商户类型">
 				<RadioGroup name="PaymentChannelEnum" v-model="state.formData.merchantType" />
 			</FaFormItem>
@@ -23,12 +21,23 @@
 			<FaFormItem prop="merchantSecret" label="商户密钥">
 				<el-input type="textarea" v-model="state.formData.merchantSecret" :rows="2" maxlength="200" placeholder="请输入商户密钥" />
 			</FaFormItem>
+			<FaFormItem prop="remark" label="备注">
+				<el-input type="textarea" v-model="state.formData.remark" :rows="2" maxlength="200" placeholder="请输入备注" />
+			</FaFormItem>
+
+			<FaLayoutGridItem span="1">
+				<el-divider content-position="left">公钥信息</el-divider>
+			</FaLayoutGridItem>
 			<FaFormItem prop="publicSerialNum" label="公钥序号">
 				<el-input type="textarea" v-model="state.formData.publicSerialNum" :rows="2" maxlength="200" placeholder="请输入公钥序号" />
 			</FaFormItem>
 			<FaFormItem prop="publicKey" label="公钥">
 				<el-input type="textarea" v-model="state.formData.publicKey" :rows="5" maxlength="4096" placeholder="请输入公钥" />
 			</FaFormItem>
+
+			<FaLayoutGridItem span="1">
+				<el-divider content-position="left">证书信息</el-divider>
+			</FaLayoutGridItem>
 			<FaFormItem prop="certSerialNum" label="证书序号">
 				<el-input type="textarea" v-model="state.formData.certSerialNum" :rows="2" maxlength="200" placeholder="请输入证书序号" />
 			</FaFormItem>
@@ -37,9 +46,6 @@
 			</FaFormItem>
 			<FaFormItem prop="certPrivateKey" label="证书私钥">
 				<el-input type="textarea" v-model="state.formData.certPrivateKey" :rows="5" maxlength="4096" placeholder="请输入证书私钥" />
-			</FaFormItem>
-			<FaFormItem prop="remark" label="备注">
-				<el-input type="textarea" v-model="state.formData.remark" :rows="2" maxlength="200" placeholder="请输入备注" />
 			</FaFormItem>
 		</FaForm>
 	</FaDialog>
@@ -57,7 +63,7 @@ import type { AddMerchantInput } from "@/api/services/Center/merchant/models/Add
 import type { EditMerchantInput } from "@/api/services/Center/merchant/models/EditMerchantInput";
 
 defineOptions({
-	name: "DevConfigEdit",
+	name: "SystemMerchantEdit",
 });
 
 const emit = defineEmits(["ok"]);
@@ -71,8 +77,7 @@ const state = reactive({
 		merchantName: [{ required: true, message: "请输入商户名称", trigger: "blur" }],
 		merchantNo: [{ required: true, message: "请输入商户号", trigger: "blur" }],
 	}),
-	formDisabled: false,
-	dialogState: withDefineType<IPageStateType>("detail"),
+	dialogState: withDefineType<IPageStateType>("add"),
 	dialogTitle: "商户号",
 });
 
@@ -93,20 +98,10 @@ const handleConfirm = () => {
 	});
 };
 
-const detail = (merchantId: string) => {
-	faDialogRef.value.open(async () => {
-		state.formDisabled = true;
-		const apiRes = await merchantApi.queryMerchantDetail(merchantId);
-		state.formData = apiRes;
-		state.dialogTitle = `商户号详情 - ${apiRes.merchantNo}`;
-	});
-};
-
 const add = () => {
 	faDialogRef.value.open(() => {
 		state.dialogState = "add";
 		state.dialogTitle = "添加商户号";
-		state.formDisabled = false;
 		state.formData = {
 			merchantType: PaymentChannelEnum.WeChat,
 		};
@@ -116,7 +111,6 @@ const add = () => {
 const edit = (merchantId: string) => {
 	faDialogRef.value.open(async () => {
 		state.dialogState = "edit";
-		state.formDisabled = false;
 		const apiRes = await merchantApi.queryMerchantDetail(merchantId);
 		state.formData = apiRes;
 		state.dialogTitle = `编辑商户号 - ${apiRes.merchantNo}`;
@@ -125,7 +119,6 @@ const edit = (merchantId: string) => {
 
 defineExpose({
 	element: faDialogRef,
-	detail,
 	add,
 	edit,
 });

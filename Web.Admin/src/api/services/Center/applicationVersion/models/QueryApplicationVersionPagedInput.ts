@@ -14,9 +14,5 @@ export interface QueryApplicationVersionPagedInput extends PagedInput  {
 	 * 
 	 */
 	status?: CommonStatusEnum;
-	/**
-	 * 
-	 */
-	readonly isOrderBy?: boolean;
 }
 

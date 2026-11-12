@@ -17,7 +17,7 @@
 				class-name="fa-table__line-height-normal-column"
 			>
 				<template #default="{ row }: { row: QueryEmployeePagedOutput }">
-					<el-button link type="primary" @click="editFormRef.detail(row.employeeId)">{{ row.employeeName }}</el-button>
+					<el-button link type="primary" @click="detailFormRef.detail(row.employeeId)">{{ row.employeeName }}</el-button>
 					<br />
 					工号：
 					<span v-iconCopy="row.employeeNo">{{ row.employeeNo }}</span>
@@ -109,7 +109,7 @@
 			<!-- 表格操作 -->
 			<template #operation="{ row }: { row: QueryEmployeePagedOutput }">
 				<div style="margin-bottom: 5px">
-					<el-button v-auth="'Employee:Detail'" size="small" plain @click="editFormRef.detail(row.employeeId)">详情</el-button>
+					<el-button v-auth="'Employee:Detail'" size="small" plain @click="detailFormRef.detail(row.employeeId)">详情</el-button>
 					<el-button
 						v-if="row.status !== EmployeeStatusEnum.Resigned"
 						v-auth="'Employee:Edit'"
@@ -165,7 +165,7 @@
 								</el-dropdown-item>
 								<el-dropdown-item
 									v-if="row.status !== EmployeeStatusEnum.Resigned && row.employeeId !== userInfoStore.employeeId"
-									@click="resignedEditFormRef.open(row.employeeId)"
+									@click="resignedFormRef.open(row.employeeId)"
 								>
 									职员离职
 								</el-dropdown-item>
@@ -197,8 +197,9 @@
 				</template>
 			</template>
 		</FaTable>
+		<EmployeeDetail ref="detailFormRef" />
 		<EmployeeEdit ref="editFormRef" @ok="faTableRef.refresh()" />
-		<ResignedEdit ref="resignedEditFormRef" @ok="faTableRef.refresh()" />
+		<EmployeeResigned ref="resignedFormRef" @ok="faTableRef.refresh()" />
 		<BindAccount ref="bindAccountFormRef" @ok="faTableRef.refresh()" />
 	</div>
 </template>
@@ -212,9 +213,10 @@ import { CommonStatusEnum } from "@/api/enums/CommonStatusEnum";
 import { EmployeeStatusEnum } from "@/api/enums/EmployeeStatusEnum";
 import { employeeApi } from "@/api/services/Admin/employee";
 import { useApp, useUserInfo } from "@/stores";
-import BindAccount from "./edit/bindAccount.vue";
+import BindAccount from "./bindAccount/index.vue";
+import EmployeeDetail from "./detail/index.vue";
 import EmployeeEdit from "./edit/index.vue";
-import ResignedEdit from "./edit/resignedEdit.vue";
+import EmployeeResigned from "./resigned/index.vue";
 import type { FaTableColumnCtx, FaTableInstance } from "fast-element-plus";
 import type { QueryEmployeePagedOutput } from "@/api/services/Admin/employee/models/QueryEmployeePagedOutput";
 
@@ -227,8 +229,9 @@ const genderEnum = appStore.getDictionary("GenderEnum");
 const employeeStatusEnum = appStore.getDictionary("EmployeeStatusEnum");
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
+const detailFormRef = useTemplateRef<InstanceType<typeof EmployeeDetail>>("detailFormRef");
 const editFormRef = useTemplateRef<InstanceType<typeof EmployeeEdit>>("editFormRef");
-const resignedEditFormRef = useTemplateRef<InstanceType<typeof ResignedEdit>>("resignedEditFormRef");
+const resignedFormRef = useTemplateRef<InstanceType<typeof EmployeeResigned>>("resignedFormRef");
 const bindAccountFormRef = useTemplateRef<InstanceType<typeof BindAccount>>("bindAccountFormRef");
 const userInfoStore = useUserInfo();
 

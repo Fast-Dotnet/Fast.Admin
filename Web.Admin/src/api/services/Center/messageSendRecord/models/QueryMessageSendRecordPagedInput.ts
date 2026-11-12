@@ -13,9 +13,5 @@ export interface QueryMessageSendRecordPagedInput extends PagedInput  {
 	 * 是否成功
 	 */
 	isSuccess?: boolean;
-	/**
-	 * 
-	 */
-	readonly isOrderBy?: boolean;
 }
 

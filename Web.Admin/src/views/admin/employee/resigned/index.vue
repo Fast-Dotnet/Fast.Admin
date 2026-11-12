@@ -37,7 +37,7 @@ import type { FaDialogInstance, FaFormInstance } from "fast-element-plus";
 import type { EmployeeResignedInput } from "@/api/services/Admin/employee/models/EmployeeResignedInput";
 
 defineOptions({
-	name: "AdminEmployeeResignedEdit",
+	name: "AdminEmployeeResigned",
 });
 
 const emit = defineEmits(["ok"]);

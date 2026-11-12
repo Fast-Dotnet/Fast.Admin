@@ -4,13 +4,11 @@
 		width="1000"
 		:title="state.dialogTitle"
 		:show-fullscreen="false"
-		:show-confirm-button="!state.formDisabled"
-		:show-before-close="!state.formDisabled"
 		confirm-button-text="保存"
 		@confirm-click="handleConfirm"
 		@close="faFormRef.resetFields()"
 	>
-		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" :disabled="state.formDisabled" cols="2">
+		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" cols="2">
 			<FaFormItem label="应用" span="2">
 				<el-input :model-value="props.appName" disabled />
 			</FaFormItem>
@@ -124,8 +122,7 @@ const state = reactive({
 		environmentType: [{ required: true, message: "请选择环境类型", trigger: "change" }],
 		requestTimeout: [{ required: true, message: "请输入请求超时时间", trigger: "blur" }],
 	}),
-	formDisabled: false,
-	dialogState: withDefineType<IPageStateType>("detail"),
+	dialogState: withDefineType<IPageStateType>("add"),
 	dialogTitle: "应用标识",
 });
 
@@ -163,20 +160,10 @@ const handleConfirm = () => {
 	});
 };
 
-const detail = (recordId: string) => {
-	faDialogRef.value.open(async () => {
-		state.formDisabled = true;
-		const apiRes = await applicationClientApi.queryApplicationClientDetail(recordId);
-		state.formData = { ...apiRes, loginComponent: apiRes.loginComponent ?? "" };
-		state.dialogTitle = `应用标识详情 - ${apiRes.appKey}`;
-	});
-};
-
 const add = () => {
 	faDialogRef.value.open(() => {
 		state.dialogState = "add";
 		state.dialogTitle = "添加应用标识";
-		state.formDisabled = false;
 		state.formData = {
 			appId: props.appId,
 			appType: AppEnvironmentEnum.Web,
@@ -191,7 +178,6 @@ const add = () => {
 const edit = (recordId: string) => {
 	faDialogRef.value.open(async () => {
 		state.dialogState = "edit";
-		state.formDisabled = false;
 		const apiRes = await applicationClientApi.queryApplicationClientDetail(recordId);
 		state.formData = { ...apiRes, loginComponent: apiRes.loginComponent ?? "" };
 		state.dialogTitle = `编辑应用标识 - ${apiRes.appKey}`;
@@ -200,7 +186,6 @@ const edit = (recordId: string) => {
 
 defineExpose({
 	element: faDialogRef,
-	detail,
 	add,
 	edit,
 });

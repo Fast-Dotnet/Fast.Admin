@@ -4,13 +4,11 @@
 		width="500"
 		:title="state.dialogTitle"
 		:show-fullscreen="false"
-		:show-confirm-button="!state.formDisabled"
-		:show-before-close="!state.formDisabled"
 		confirm-button-text="保存"
 		@confirm-click="handleConfirm"
 		@close="faFormRef.resetFields()"
 	>
-		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" :disabled="state.formDisabled">
+		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules">
 			<FaFormItem prop="tableName" label="表格名称">
 				<el-input v-model="state.formData.tableName" maxlength="50" placeholder="请输入表格名称" />
 			</FaFormItem>
@@ -46,8 +44,7 @@ const state = reactive({
 	formRules: withDefineType<FormRules<EditTableConfigInput & AddTableConfigInput>>({
 		tableName: [{ required: true, message: "请输入表格名称", trigger: "blur" }],
 	}),
-	formDisabled: false,
-	dialogState: withDefineType<IPageStateType>("detail"),
+	dialogState: withDefineType<IPageStateType>("add"),
 	dialogTitle: "表格",
 	copyTableId: withDefineType<string>(undefined),
 });
@@ -76,20 +73,10 @@ const handleConfirm = () => {
 	});
 };
 
-const detail = (tableId: string) => {
-	faDialogRef.value.open(async () => {
-		state.formDisabled = true;
-		const apiRes = await tableApi.queryTableConfigDetail(tableId);
-		state.formData = apiRes;
-		state.dialogTitle = `表格详情 - ${apiRes.tableName}`;
-	});
-};
-
 const add = () => {
 	faDialogRef.value.open(() => {
 		state.dialogState = "add";
 		state.dialogTitle = "添加表格";
-		state.formDisabled = false;
 		state.formData = {};
 	});
 };
@@ -97,7 +84,6 @@ const add = () => {
 const edit = (tableId: string) => {
 	faDialogRef.value.open(async () => {
 		state.dialogState = "edit";
-		state.formDisabled = false;
 		const apiRes = await tableApi.queryTableConfigDetail(tableId);
 		state.formData = apiRes;
 		state.dialogTitle = `编辑表格 - ${apiRes.tableName}`;
@@ -108,14 +94,12 @@ const copy = (tableId: string) => {
 	faDialogRef.value.open(() => {
 		state.copyTableId = tableId;
 		state.dialogState = "copy";
-		state.formDisabled = false;
 		state.dialogTitle = "复制表格配置";
 	});
 };
 
 defineExpose({
 	element: faDialogRef,
-	detail,
 	add,
 	edit,
 	copy,

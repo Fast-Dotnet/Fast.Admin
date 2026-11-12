@@ -12,7 +12,7 @@
 				class-name="fa-table__line-height-normal-column"
 			>
 				<template #default="{ row }: { row: QueryAccountPagedOutput }">
-					<el-button link type="primary" @click="editFormRef.detail(row.accountId)">{{ row.nickName }}</el-button>
+					<el-button link type="primary" @click="detailFormRef.detail(row.accountId)">{{ row.nickName }}</el-button>
 					<br />
 					手机：
 					<span v-iconCopy="row.mobile">{{ row.mobile }}</span>
@@ -122,7 +122,7 @@
 
 			<!-- 表格操作 -->
 			<template #operation="{ row }: { row: QueryAccountPagedOutput }">
-				<el-button v-auth="'Account:Detail'" size="small" plain @click="editFormRef.detail(row.accountId)">详情</el-button>
+				<el-button v-auth="'Account:Detail'" size="small" plain @click="detailFormRef.detail(row.accountId)">详情</el-button>
 				<el-button v-auth="'Account:ResetPassword'" size="small" plain type="warning" @click="handleResetPassword(row)">重置密码</el-button>
 				<el-button v-if="row.isLock" v-auth="'Account:Unlock'" size="small" plain type="warning" @click="handleUnlock(row)">解锁</el-button>
 				<el-button
@@ -138,7 +138,7 @@
 				<el-button v-else v-auth="'Account:Status'" size="small" plain type="warning" @click="handleChangeStatus(row)">启用</el-button>
 			</template>
 		</FaTable>
-		<AccountEdit ref="editFormRef" @ok="faTableRef.refresh()" />
+		<AccountDetail ref="detailFormRef" />
 	</div>
 </template>
 
@@ -149,7 +149,7 @@ import { formatChineseRelativeTime } from "@fast-china/utils";
 import { CommonStatusEnum } from "@/api/enums/CommonStatusEnum";
 import { accountApi } from "@/api/services/Center/account";
 import { useApp } from "@/stores";
-import AccountEdit from "./edit/index.vue";
+import AccountDetail from "./detail/index.vue";
 import type { FaTableInstance } from "fast-element-plus";
 import type { QueryAccountPagedOutput } from "@/api/services/Center/account/models/QueryAccountPagedOutput";
 
@@ -160,7 +160,7 @@ defineOptions({
 const appStore = useApp();
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
-const editFormRef = useTemplateRef<InstanceType<typeof AccountEdit>>("editFormRef");
+const detailFormRef = useTemplateRef<InstanceType<typeof AccountDetail>>("detailFormRef");
 
 /** 处理重置密码 */
 const handleResetPassword = (row: QueryAccountPagedOutput) => {

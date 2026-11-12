@@ -9,9 +9,5 @@ export interface QueryComplaintPagedInput extends PagedInput  {
 	 * 
 	 */
 	complaintType?: ComplaintTypeEnum;
-	/**
-	 * 
-	 */
-	readonly isOrderBy?: boolean;
 }
 

@@ -53,6 +53,11 @@ public class QueryRoleDetailOutput : PagedOutput
     public List<long> DataScopeDepartmentIds { get; set; }
 
     /// <summary>
+    /// 自定义数据范围部门名称集合
+    /// </summary>
+    public List<string> DataScopeDepartmentNames { get; set; }
+
+    /// <summary>
     /// 可分配的角色Id集合
     /// </summary>
     [SugarColumn(IsJson = true)]

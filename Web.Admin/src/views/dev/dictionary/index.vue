@@ -3,7 +3,7 @@
 		<FaTable ref="faTableRef" row-key="dictionaryId" :request-api="dictionaryApi.queryDictionaryPaged" hide-search-time>
 			<!-- 表格按钮操作区域 -->
 			<template #header>
-				<el-button v-auth="'Dictionary:Add'" type="primary" :icon="Plus" @click="editFormRef.add()">新增</el-button>
+				<el-button v-auth="'Dictionary:Add'" type="primary" :icon="Plus" @click="addFormRef.add()">新增</el-button>
 			</template>
 
 			<FaTableColumn
@@ -15,7 +15,7 @@
 				sortable
 				copy
 				link
-				:click="({ row }) => editFormRef.detail(row.dictionaryId)"
+				:click="({ row }) => detailFormRef.detail(row.dictionaryId)"
 			/>
 			<FaTableColumn prop="dictionaryName" label="字典名称" width="300" small-width="280" sortable />
 			<FaTableColumn
@@ -69,11 +69,13 @@
 			/>
 			<!-- 表格操作 -->
 			<template #operation="{ row }: { row: QueryDictionaryPagedOutput }">
-				<el-button v-auth="'Dictionary:Detail'" size="small" plain @click="editFormRef.detail(row.dictionaryId)">详情</el-button>
+				<el-button v-auth="'Dictionary:Detail'" size="small" plain @click="detailFormRef.detail(row.dictionaryId)">详情</el-button>
 				<el-button v-auth="'Dictionary:Edit'" size="small" plain type="primary" @click="editFormRef.edit(row.dictionaryId)">编辑</el-button>
 				<el-button v-auth="'Dictionary:Delete'" size="small" plain type="danger" @click="handleDelete(row)">删除</el-button>
 			</template>
 		</FaTable>
+		<DictionaryDetail ref="detailFormRef" />
+		<DictionaryAdd ref="addFormRef" @ok="faTableRef.refresh()" />
 		<DictionaryEdit ref="editFormRef" @ok="faTableRef.refresh()" />
 	</div>
 </template>
@@ -83,6 +85,8 @@ import { useTemplateRef } from "vue";
 import { Plus } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { dictionaryApi } from "@/api/services/Center/dictionary";
+import DictionaryAdd from "./add/index.vue";
+import DictionaryDetail from "./detail/index.vue";
 import DictionaryEdit from "./edit/index.vue";
 import type { FaTableInstance } from "fast-element-plus";
 import type { QueryDictionaryPagedOutput } from "@/api/services/Center/dictionary/models/QueryDictionaryPagedOutput";
@@ -92,6 +96,8 @@ defineOptions({
 });
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
+const detailFormRef = useTemplateRef<InstanceType<typeof DictionaryDetail>>("detailFormRef");
+const addFormRef = useTemplateRef<InstanceType<typeof DictionaryAdd>>("addFormRef");
 const editFormRef = useTemplateRef<InstanceType<typeof DictionaryEdit>>("editFormRef");
 
 /** 处理删除 */

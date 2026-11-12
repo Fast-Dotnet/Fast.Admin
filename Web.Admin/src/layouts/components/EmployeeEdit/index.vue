@@ -9,12 +9,10 @@
 		@close="faFormRef?.resetFields()"
 	>
 		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" cols="2">
-			<FaFormItem prop="employeeNo" label="工号">
-				<el-text type="info">{{ state.formData.employeeNo }}</el-text>
+			<FaFormItem label="工号">
+				<el-text type="primary">{{ state.formData.employeeNo }}</el-text>
 			</FaFormItem>
-			<FaFormItem prop="entryDate" label="入职日期">
-				{{ state.formData.entryDate }}
-			</FaFormItem>
+			<FaFormItem label="入职日期" :value="state.formData.entryDate" />
 			<FaFormItem prop="employeeName" label="职员名称">
 				<el-input v-model="state.formData.employeeName" maxlength="20" placeholder="请输入职员名称" />
 			</FaFormItem>
@@ -38,22 +36,17 @@
 			<FaFormItem prop="idPhoto" label="证件照">
 				<FaUploadImage v-model="state.formData.idPhoto" :upload-api="fileApi.uploadIdPhoto" />
 			</FaFormItem>
-
-			<FaLayoutGridItem span="2">
-				<el-divider content-position="left">机构信息</el-divider>
-			</FaLayoutGridItem>
-
-			<FaLayoutGridItem span="3" style="min-height: 300px; max-height: 500px">
-				<FaTable :data="state.formData.orgList" :pagination="false" :header-card="false">
-					<FaTableColumn prop="orgName" label="机构" width="280" />
-					<FaTableColumn prop="departmentName" label="部门" width="280" />
-					<FaTableColumn prop="isPrimary" label="主部门" width="80" tag :enum="booleanEnum" />
-					<FaTableColumn prop="positionName" label="职位" width="280" />
-					<FaTableColumn prop="jobLevelName" label="职级" width="280" />
-					<FaTableColumn prop="isPrincipal" label="负责人" width="80" tag :enum="booleanEnum" />
-				</FaTable>
-			</FaLayoutGridItem>
 		</FaForm>
+
+		<el-divider content-position="left">机构信息</el-divider>
+		<FaTable style="height: 300px" :data="state.formData.orgList" :pagination="false" :header-card="false">
+			<FaTableColumn prop="isPrimary" label="主部门" width="80" tag :enum="booleanEnum" />
+			<FaTableColumn prop="orgName" label="机构" width="200" />
+			<FaTableColumn prop="departmentName" label="部门" width="180" />
+			<FaTableColumn prop="isPrincipal" label="负责人" width="80" tag :enum="booleanEnum" />
+			<FaTableColumn prop="positionName" label="职位" width="180" />
+			<FaTableColumn prop="jobLevelName" label="职级" width="180" />
+		</FaTable>
 	</FaDialog>
 </template>
 

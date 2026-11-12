@@ -2,8 +2,9 @@
 	<FaTable row-key="dictionaryItemId" :data="modelValue">
 		<!-- 表格按钮操作区域 -->
 		<template #header>
-			<el-button :disabled="props.disabled" type="primary" :icon="Plus" @click="editFormRef.add()">新增字典项</el-button>
+			<el-button type="primary" :icon="Plus" @click="editFormRef.add()">新增字典项</el-button>
 		</template>
+
 		<FaTableColumn prop="label" label="字典项名称" width="120" small-width="100" />
 		<FaTableColumn prop="value" label="字典项值" width="120" small-width="100" />
 		<FaTableColumn
@@ -46,11 +47,11 @@
 		<FaTableColumn prop="tips" label="提示" width="120" small-width="100" sortable />
 		<!-- 表格操作 -->
 		<template #operation="{ row, $index }: { row: EditDictionaryItemInput; $index: number }">
-			<el-button size="small" plain @click="editFormRef.detail(row)">详情</el-button>
-			<el-button :disabled="props.disabled" size="small" plain type="primary" @click="editFormRef.edit(row, $index)">编辑</el-button>
-			<el-button :disabled="props.disabled" size="small" plain type="danger" @click="handleDelete(row, $index)">删除</el-button>
+			<el-button size="small" plain type="primary" @click="editFormRef.edit(row, $index)">编辑</el-button>
+			<el-button size="small" plain type="danger" @click="handleDelete(row, $index)">删除</el-button>
 		</template>
 	</FaTable>
+
 	<DictionaryEditItemEdit ref="editFormRef" v-model="modelValue" />
 </template>
 
@@ -63,11 +64,6 @@ import type { EditDictionaryItemInput } from "@/api/services/Center/dictionary/m
 
 defineOptions({
 	name: "DevDictionaryEditItemTable",
-});
-
-const props = defineProps({
-	/** 是否禁用 */
-	disabled: Boolean,
 });
 
 // v-model绑定值

@@ -38,6 +38,10 @@ export interface QueryRoleDetailOutput {
 	 */
 	dataScopeDepartmentIds?: string[];
 	/**
+	 * 自定义数据范围部门名称集合
+	 */
+	dataScopeDepartmentNames?: string[];
+	/**
 	 * 可分配的角色Id集合
 	 */
 	assignableRoleIds?: string[];

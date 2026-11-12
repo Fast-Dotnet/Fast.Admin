@@ -11,6 +11,6 @@
 import { Page403 } from "@fast-element-plus/icons-vue";
 
 defineOptions({
-	name: "403",
+	name: "Forbidden",
 });
 </script>

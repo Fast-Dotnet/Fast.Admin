@@ -16,9 +16,5 @@ export interface QueryTenantOnlineUserPagedInput extends PagedInput  {
 	 * 职员Id
 	 */
 	employeeId?: string;
-	/**
-	 * 
-	 */
-	readonly isOrderBy?: boolean;
 }
 

@@ -13,9 +13,5 @@ export interface QueryRolePagedInput extends PagedInput  {
 	 * 
 	 */
 	dataScopeType?: DataScopeTypeEnum;
-	/**
-	 * 
-	 */
-	readonly isOrderBy?: boolean;
 }
 

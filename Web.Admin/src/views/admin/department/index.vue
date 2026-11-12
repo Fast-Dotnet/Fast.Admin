@@ -38,7 +38,7 @@
 					copy
 					sortable
 					link
-					:click="({ row }) => editFormRef.detail(row.departmentId)"
+					:click="({ row }) => detailFormRef.detail(row.departmentId)"
 				/>
 				<FaTableColumn
 					prop="departmentCode"
@@ -48,7 +48,7 @@
 					copy
 					sortable
 					link
-					:click="({ row }) => editFormRef.detail(row.departmentId)"
+					:click="({ row }) => detailFormRef.detail(row.departmentId)"
 				/>
 				<FaTableColumn prop="contacts" label="联系人" width="150" small-width="130" sortable />
 				<FaTableColumn prop="phone" label="电话" width="150" small-width="130" sortable />
@@ -77,7 +77,7 @@
 
 				<!-- 表格操作 -->
 				<template #operation="{ row }: { row: QueryDepartmentPagedOutput }">
-					<el-button v-auth="'Department:Detail'" size="small" plain @click="editFormRef.detail(row.departmentId)">详情</el-button>
+					<el-button v-auth="'Department:Detail'" size="small" plain @click="detailFormRef.detail(row.departmentId)">详情</el-button>
 					<el-button v-auth="'Department:Edit'" size="small" plain type="primary" @click="editFormRef.edit(row.departmentId)">
 						编辑
 					</el-button>
@@ -86,6 +86,7 @@
 			</FaTable>
 		</div>
 		<FaContextMenu ref="faContextMenuRef" :data="state.contextMenuList" />
+		<DepartmentDetail ref="detailFormRef" />
 		<DepartmentEdit ref="editFormRef" @ok="faTableRef.refresh()" />
 		<OrgEdit ref="orgEditFormRef" @ok="orgTreeRef.refresh()" />
 	</div>
@@ -99,6 +100,7 @@ import { withDefineType } from "@fast-china/utils";
 import { departmentApi } from "@/api/services/Admin/department";
 import { organizationApi } from "@/api/services/Admin/organization";
 import { useApp } from "@/stores";
+import DepartmentDetail from "./detail/index.vue";
 import DepartmentEdit from "./edit/index.vue";
 import OrgEdit from "./edit/orgEdit.vue";
 import type { ElTreeOutput, FaContextMenuData, FaContextMenuInstance, FaTableInstance, FaTreeInstance } from "fast-element-plus";
@@ -113,6 +115,7 @@ const appStore = useApp();
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
 const orgTreeRef = useTemplateRef<FaTreeInstance>("orgTreeRef");
 const faContextMenuRef = useTemplateRef<FaContextMenuInstance>("faContextMenuRef");
+const detailFormRef = useTemplateRef<InstanceType<typeof DepartmentDetail>>("detailFormRef");
 const editFormRef = useTemplateRef<InstanceType<typeof DepartmentEdit>>("editFormRef");
 const orgEditFormRef = useTemplateRef<InstanceType<typeof OrgEdit>>("orgEditFormRef");
 

@@ -38,9 +38,5 @@ export interface QueryMenuPagedInput extends PagedInput  {
 	 * 
 	 */
 	status?: CommonStatusEnum;
-	/**
-	 * 
-	 */
-	readonly isOrderBy?: boolean;
 }
 

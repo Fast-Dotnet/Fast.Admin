@@ -53,16 +53,7 @@
 				tag
 				:enum="appStore.getDictionary('EnvironmentTypeEnum')"
 			/>
-			<FaTableColumn
-				prop="templateCode"
-				label="模板Code"
-				width="300"
-				small-width="280"
-				copy
-				sortable
-				link
-				:click="({ row }) => editFormRef.detail(row.recordId)"
-			/>
+			<FaTableColumn prop="templateCode" label="模板Code" width="300" small-width="280" copy sortable />
 			<FaTableColumn prop="createdTime" label="创建时间" width="240" small-width="220" sortable type="timeInfo" />
 			<FaTableColumn
 				prop="updatedTime"
@@ -75,7 +66,6 @@
 			/>
 
 			<template #operation="{ row }: { row: QueryMessageTemplatePagedOutput }">
-				<el-button v-auth="'MessageTemplate:Detail'" size="small" plain @click="editFormRef.detail(row.recordId)">详情</el-button>
 				<el-button v-auth="'MessageTemplate:Edit'" size="small" plain type="primary" @click="editFormRef.edit(row.recordId)">编辑</el-button>
 				<el-button v-auth="'MessageTemplate:Delete'" size="small" plain type="danger" @click="handleDelete(row)">删除</el-button>
 			</template>

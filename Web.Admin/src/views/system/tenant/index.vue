@@ -16,7 +16,7 @@
 				copy
 				sortable
 				link
-				:click="({ row }) => editFormRef.detail(row.tenantId)"
+				:click="({ row }) => detailFormRef.detail(row.tenantId)"
 			/>
 			<FaTableColumn prop="tenantNo" label="租户编号" width="150" small-width="130" copy sortable />
 			<FaTableColumn prop="tenantCode" label="租户编码" width="120" small-width="100" sortable />
@@ -44,7 +44,7 @@
 
 			<!-- 表格操作 -->
 			<template #operation="{ row }: { row: QueryTenantPagedOutput }">
-				<el-button v-auth="'Tenant:Detail'" size="small" plain @click="editFormRef.detail(row.tenantId)">详情</el-button>
+				<el-button v-auth="'Tenant:Detail'" size="small" plain @click="detailFormRef.detail(row.tenantId)">详情</el-button>
 				<el-button v-auth="'Tenant:Edit'" size="small" plain type="primary" @click="editFormRef.edit(row.tenantId)">编辑</el-button>
 				<el-button
 					v-if="row.status == CommonStatusEnum.Enable"
@@ -59,6 +59,7 @@
 				<el-button v-else v-auth="'Tenant:Status'" size="small" plain type="warning" @click="handleChangeStatus(row)">启用</el-button>
 			</template>
 		</FaTable>
+		<TenantDetail ref="detailFormRef" />
 		<TenantEdit ref="editFormRef" @ok="faTableRef.refresh()" />
 	</div>
 </template>
@@ -70,6 +71,7 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import { CommonStatusEnum } from "@/api/enums/CommonStatusEnum";
 import { tenantApi } from "@/api/services/Center/tenant";
 import { useApp } from "@/stores";
+import TenantDetail from "./detail/index.vue";
 import TenantEdit from "./edit/index.vue";
 import type { FaTableColumnCtx, FaTableInstance } from "fast-element-plus";
 import type { QueryTenantPagedOutput } from "@/api/services/Center/tenant/models/QueryTenantPagedOutput";
@@ -84,6 +86,7 @@ const commonStatusEnum = appStore.getDictionary("CommonStatusEnum");
 const editionEnum = appStore.getDictionary("EditionEnum");
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
+const detailFormRef = useTemplateRef<InstanceType<typeof TenantDetail>>("detailFormRef");
 const editFormRef = useTemplateRef<InstanceType<typeof TenantEdit>>("editFormRef");
 
 /** 处理状态变更 */

@@ -8,9 +8,5 @@ export interface QueryDepartmentPagedInput extends PagedInput  {
 	 * 机构Id
 	 */
 	orgId?: string;
-	/**
-	 * 
-	 */
-	readonly isOrderBy?: boolean;
 }
 

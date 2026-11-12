@@ -2,7 +2,7 @@ declare global {
 	/**
 	 * 页面状态类型
 	 */
-	type IPageStateType = "detail" | "add" | "edit" | "copy";
+	type IPageStateType = "add" | "edit" | "copy";
 
 	/**
 	 * element-plus 中文语言包

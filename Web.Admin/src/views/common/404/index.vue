@@ -11,6 +11,6 @@
 import { Page404 } from "@fast-element-plus/icons-vue";
 
 defineOptions({
-	name: "404",
+	name: "NotFound",
 });
 </script>

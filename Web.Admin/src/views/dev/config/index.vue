@@ -16,7 +16,7 @@
 				copy
 				sortable
 				link
-				:click="({ row }) => editFormRef.detail(row.configId)"
+				:click="({ row }) => detailFormRef.detail(row.configId)"
 			/>
 			<FaTableColumn prop="configName" label="配置名称" width="200" small-width="180" sortable />
 			<FaTableColumn prop="configValue" label="配置值" width="300" small-width="280" sortable />
@@ -34,11 +34,12 @@
 
 			<!-- 表格操作 -->
 			<template #operation="{ row }: { row: QueryConfigPagedOutput }">
-				<el-button v-auth="'Config:Detail'" size="small" plain @click="editFormRef.detail(row.configId)">详情</el-button>
+				<el-button v-auth="'Config:Detail'" size="small" plain @click="detailFormRef.detail(row.configId)">详情</el-button>
 				<el-button v-auth="'Config:Edit'" size="small" plain type="primary" @click="editFormRef.edit(row.configId)">编辑</el-button>
 				<el-button v-auth="'Config:Edit'" size="small" plain type="warning" @click="handleDelete(row)">删除缓存</el-button>
 			</template>
 		</FaTable>
+		<ConfigDetail ref="detailFormRef" />
 		<ConfigEdit ref="editFormRef" @ok="faTableRef.refresh()" />
 	</div>
 </template>
@@ -48,6 +49,7 @@ import { useTemplateRef } from "vue";
 import { Delete, Plus } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { configApi } from "@/api/services/Center/config";
+import ConfigDetail from "./detail/index.vue";
 import ConfigEdit from "./edit/index.vue";
 import type { FaTableInstance } from "fast-element-plus";
 import type { QueryConfigPagedOutput } from "@/api/services/Center/config/models/QueryConfigPagedOutput";
@@ -57,6 +59,7 @@ defineOptions({
 });
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
+const detailFormRef = useTemplateRef<InstanceType<typeof ConfigDetail>>("detailFormRef");
 const editFormRef = useTemplateRef<InstanceType<typeof ConfigEdit>>("editFormRef");
 
 /** 处理删除缓存 */

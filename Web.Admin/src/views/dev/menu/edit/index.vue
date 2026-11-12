@@ -4,13 +4,11 @@
 		width="1800"
 		full-height
 		:title="state.dialogTitle"
-		:show-confirm-button="!state.formDisabled"
-		:show-before-close="!state.formDisabled"
 		confirm-button-text="保存"
 		@confirm-click="handleConfirm"
 		@close="faFormRef.resetFields()"
 	>
-		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" :disabled="state.formDisabled" cols="4" label-width="120">
+		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" cols="4" label-width="120">
 			<FaLayoutGridItem span="4">
 				<el-divider content-position="left">菜单信息</el-divider>
 			</FaLayoutGridItem>
@@ -136,7 +134,7 @@
 			</template>
 		</FaForm>
 
-		<ButtonTable v-model="state.formData.buttonList" :disabled="state.formDisabled" />
+		<ButtonTable v-model="state.formData.buttonList" />
 	</FaDialog>
 </template>
 
@@ -195,8 +193,7 @@ const state = reactive({
 		link: [{ required: true, message: "请输入内链/外链地址", trigger: "blur" }],
 		sort: [{ required: true, message: "请输入排序", trigger: "blur" }],
 	}),
-	formDisabled: false,
-	dialogState: withDefineType<IPageStateType>("detail"),
+	dialogState: withDefineType<IPageStateType>("add"),
 	dialogTitle: "菜单",
 	componentList: withDefineType<ElSelectorOutput<string>[]>([]),
 	componentValue: [],
@@ -278,7 +275,6 @@ const add = () => {
 	faDialogRef.value.open(async () => {
 		state.dialogState = "add";
 		state.dialogTitle = "添加菜单";
-		state.formDisabled = false;
 		state.formData = {
 			parentId: undefined,
 			menuType: MenuTypeEnum.Catalog,
@@ -300,7 +296,6 @@ const add = () => {
 const edit = (menuId: string) => {
 	faDialogRef.value.open(async () => {
 		state.dialogState = "edit";
-		state.formDisabled = false;
 		const apiRes = await menuApi.queryMenuDetail(menuId);
 		if (apiRes.parentId === "0") {
 			apiRes.parentId = undefined;

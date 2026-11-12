@@ -12,9 +12,5 @@ export interface QuerySqlTimeoutLogPagedInput extends PagedInput  {
 	 * 租户Id
 	 */
 	tenantId?: string;
-	/**
-	 * 
-	 */
-	readonly isOrderBy?: boolean;
 }
 

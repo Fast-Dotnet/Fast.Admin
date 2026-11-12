@@ -41,7 +41,6 @@ const state = reactive({
 	formRules: withDefineType<FormRules<HandleComplaintInput>>({
 		handleDescription: [{ required: true, message: "请输入处理描述", trigger: "blur" }],
 	}),
-	dialogState: withDefineType<IPageStateType>("detail"),
 	dialogTitle: "处理投诉",
 });
 

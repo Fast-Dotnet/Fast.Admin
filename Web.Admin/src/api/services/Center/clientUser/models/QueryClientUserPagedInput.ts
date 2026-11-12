@@ -13,9 +13,5 @@ export interface QueryClientUserPagedInput extends PagedInput  {
 	 * 
 	 */
 	sex?: GenderEnum;
-	/**
-	 * 
-	 */
-	readonly isOrderBy?: boolean;
 }
 

@@ -15,7 +15,7 @@
 				copy
 				sortable
 				link
-				:click="({ row }) => editFormRef.detail(row.roleId)"
+				:click="({ row }) => detailFormRef.detail(row.roleId)"
 			/>
 			<FaTableColumn prop="roleCode" label="角色编码" width="200" small-width="180" copy sortable />
 			<FaTableColumn prop="roleType" label="角色类型" width="120" small-width="100" sortable tag :enum="roleTypeEnum" />
@@ -35,16 +35,17 @@
 
 			<!-- 表格操作 -->
 			<template #operation="{ row }: { row: QueryRolePagedOutput }">
-				<el-button v-auth="'Role:Detail'" size="small" plain @click="editFormRef.detail(row.roleId)">详情</el-button>
+				<el-button v-auth="'Role:Detail'" size="small" plain @click="detailFormRef.detail(row.roleId)">详情</el-button>
 				<el-button v-auth="'Role:Edit'" size="small" plain type="primary" @click="editFormRef.edit(row.roleId)">编辑</el-button>
-				<el-button v-if="!row.isSystemMenu" v-auth="'Role:Edit'" size="small" plain type="success" @click="authEditRef.open(row.roleId)">
+				<el-button v-if="!row.isSystemMenu" v-auth="'Role:Edit'" size="small" plain type="success" @click="authFormRef.open(row.roleId)">
 					授权
 				</el-button>
 				<el-button v-auth="'Role:Delete'" size="small" plain type="danger" @click="handleDelete(row)">删除</el-button>
 			</template>
 		</FaTable>
+		<RoleDetail ref="detailFormRef" />
 		<RoleEdit ref="editFormRef" @ok="faTableRef.refresh()" />
-		<AuthEdit ref="authEditRef" @ok="faTableRef.refresh()" />
+		<RoleAuth ref="authFormRef" @ok="faTableRef.refresh()" />
 	</div>
 </template>
 
@@ -54,7 +55,8 @@ import { Plus } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { roleApi } from "@/api/services/Admin/role";
 import { useApp } from "@/stores";
-import AuthEdit from "./edit/authEdit.vue";
+import RoleAuth from "./auth/index.vue";
+import RoleDetail from "./detail/index.vue";
 import RoleEdit from "./edit/index.vue";
 import type { FaTableColumnCtx, FaTableInstance } from "fast-element-plus";
 import type { QueryRolePagedOutput } from "@/api/services/Admin/role/models/QueryRolePagedOutput";
@@ -68,8 +70,9 @@ const roleTypeEnum = appStore.getDictionary("RoleTypeEnum");
 const dataScopeTypeEnum = appStore.getDictionary("DataScopeTypeEnum");
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
+const detailFormRef = useTemplateRef<InstanceType<typeof RoleDetail>>("detailFormRef");
 const editFormRef = useTemplateRef<InstanceType<typeof RoleEdit>>("editFormRef");
-const authEditRef = useTemplateRef<InstanceType<typeof AuthEdit>>("authEditRef");
+const authFormRef = useTemplateRef<InstanceType<typeof RoleAuth>>("authFormRef");
 
 /** 处理删除 */
 const handleDelete = (row: QueryRolePagedOutput) => {

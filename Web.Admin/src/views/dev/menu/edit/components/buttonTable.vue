@@ -4,7 +4,7 @@
 		<FaTable row-key="dictionaryItemId" :data="modelValue">
 			<!-- 表格按钮操作区域 -->
 			<template #header>
-				<el-button :disabled="props.disabled" type="primary" :icon="Plus" @click="editFormRef.add()">新增按钮</el-button>
+				<el-button type="primary" :icon="Plus" @click="editFormRef.add()">新增按钮</el-button>
 			</template>
 			<FaTableColumn prop="buttonName" label="按钮名称" width="120" small-width="100" />
 			<FaTableColumn prop="buttonCode" label="按钮编码" width="200" small-width="200" />
@@ -16,9 +16,8 @@
 			<FaTableColumn prop="status" label="状态" width="100" small-width="80" tag :enum="commonStatusEnum" />
 			<!-- 表格操作 -->
 			<template #operation="{ row, $index }: { row: EditMenuButtonInput; $index: number }">
-				<el-button size="small" plain @click="editFormRef.detail(row)">详情</el-button>
-				<el-button :disabled="props.disabled" size="small" plain type="primary" @click="editFormRef.edit(row, $index)">编辑</el-button>
-				<el-button :disabled="props.disabled" size="small" plain type="danger" @click="handleDelete(row, $index)">删除</el-button>
+				<el-button size="small" plain type="primary" @click="editFormRef.edit(row, $index)">编辑</el-button>
+				<el-button size="small" plain type="danger" @click="handleDelete(row, $index)">删除</el-button>
 			</template>
 		</FaTable>
 	</div>
@@ -35,11 +34,6 @@ import type { EditMenuButtonInput } from "@/api/services/Center/menu/models/Edit
 
 defineOptions({
 	name: "DevMenuEditButtonTable",
-});
-
-const props = defineProps({
-	/** 是否禁用 */
-	disabled: Boolean,
 });
 
 const appStore = useApp();

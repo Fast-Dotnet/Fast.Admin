@@ -64,11 +64,12 @@
 
 			<!-- 表格操作 -->
 			<template #operation="{ row }: { row: QueryApplicationVersionPagedOutput }">
-				<el-button v-auth="'AppVersion:Detail'" size="small" plain @click="editFormRef.detail(row.recordId)">详情</el-button>
+				<el-button v-auth="'AppVersion:Detail'" size="small" plain @click="detailFormRef.detail(row.recordId)">详情</el-button>
 				<el-button v-auth="'AppVersion:Edit'" size="small" plain type="primary" @click="editFormRef.edit(row.recordId)">编辑</el-button>
 				<el-button v-auth="'AppVersion:Detail'" size="small" plain type="success" @click="handleDownload(row)">下载</el-button>
 			</template>
 		</FaTable>
+		<ApplicationVersionDetail ref="detailFormRef" />
 		<ApplicationVersionEdit ref="editFormRef" @ok="faTableRef.refresh()" />
 	</div>
 </template>
@@ -80,6 +81,7 @@ import { ApplicationPackageTypeEnum } from "@/api/enums/ApplicationPackageTypeEn
 import { applicationVersionApi } from "@/api/services/Center/applicationVersion";
 import { fileApi } from "@/api/services/File";
 import { useApp } from "@/stores";
+import ApplicationVersionDetail from "./detail/index.vue";
 import ApplicationVersionEdit from "./edit/index.vue";
 import type { FaTableColumnCtx, FaTableInstance } from "fast-element-plus";
 import type { QueryApplicationVersionPagedOutput } from "@/api/services/Center/applicationVersion/models/QueryApplicationVersionPagedOutput";
@@ -93,6 +95,7 @@ const applicationPackageTypeEnum = appStore.getDictionary("ApplicationPackageTyp
 const commonStatusEnum = appStore.getDictionary("CommonStatusEnum");
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
+const detailFormRef = useTemplateRef<InstanceType<typeof ApplicationVersionDetail>>("detailFormRef");
 const editFormRef = useTemplateRef<InstanceType<typeof ApplicationVersionEdit>>("editFormRef");
 
 /** 下载 */

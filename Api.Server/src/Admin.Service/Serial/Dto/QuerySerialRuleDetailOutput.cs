@@ -43,4 +43,19 @@ public class QuerySerialRuleDetailOutput : PagedOutput
     /// 长度
     /// </summary>
     public int Length { get; set; }
+
+    /// <summary>
+    /// 最后一个序号
+    /// </summary>
+    public long? LastSerial { get; set; }
+
+    /// <summary>
+    /// 最后一个序号编号
+    /// </summary>
+    public string LastSerialNo { get; set; }
+
+    /// <summary>
+    /// 最后一个序号生成时间
+    /// </summary>
+    public DateTime? LastTime { get; set; }
 }

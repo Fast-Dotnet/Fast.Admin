@@ -16,9 +16,5 @@ export interface QueryOperateLogPagedInput extends PagedInput  {
 	 * 业务单号
 	 */
 	bizId?: string;
-	/**
-	 * 
-	 */
-	readonly isOrderBy?: boolean;
 }
 

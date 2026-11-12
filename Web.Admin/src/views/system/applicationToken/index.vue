@@ -3,7 +3,7 @@
 		<FaTable ref="faTableRef" row-key="recordId" :request-api="applicationTokenApi.queryApplicationTokenPaged" hide-search-time>
 			<!-- 表格按钮操作区域 -->
 			<template #header>
-				<el-button v-auth="'AppToken:Add'" type="primary" :icon="Plus" @click="editFormRef.add()">新增</el-button>
+				<el-button v-auth="'AppToken:Add'" type="primary" :icon="Plus" @click="addFormRef.add()">新增</el-button>
 			</template>
 
 			<FaTableColumn prop="appKey" label="应用标识" fixed="left" width="240" small-width="220" copy sortable />
@@ -44,7 +44,7 @@
 				<el-button v-auth="'AppToken:Delete'" size="small" plain type="danger" @click="handleDelete(row)">删除</el-button>
 			</template>
 		</FaTable>
-		<ApplicationTokenEdit ref="editFormRef" @ok="faTableRef.refresh()" />
+		<ApplicationTokenAdd ref="addFormRef" @ok="faTableRef.refresh()" />
 	</div>
 </template>
 
@@ -54,7 +54,7 @@ import { Plus } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { applicationTokenApi } from "@/api/services/Center/applicationToken";
 import { useApp } from "@/stores";
-import ApplicationTokenEdit from "./edit/index.vue";
+import ApplicationTokenAdd from "./add/index.vue";
 import type { FaTableInstance } from "fast-element-plus";
 import type { QueryApplicationTokenPagedOutput } from "@/api/services/Center/applicationToken/models/QueryApplicationTokenPagedOutput";
 
@@ -65,7 +65,7 @@ defineOptions({
 const appStore = useApp();
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
-const editFormRef = useTemplateRef<InstanceType<typeof ApplicationTokenEdit>>("editFormRef");
+const addFormRef = useTemplateRef<InstanceType<typeof ApplicationTokenAdd>>("addFormRef");
 
 /** 处理刷新 */
 const handleRefresh = (row: QueryApplicationTokenPagedOutput) => {

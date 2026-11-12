@@ -133,7 +133,7 @@ import { axiosUtil } from "@fast-china/axios";
 import { logger, withDefineType } from "@fast-china/utils";
 
 defineOptions({
-	name: "SystemMonitor",
+	name: "SystemSystemMonitor",
 });
 
 const state = reactive({

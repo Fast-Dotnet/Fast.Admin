@@ -4,13 +4,11 @@
 		width="500"
 		:title="state.dialogTitle"
 		:show-fullscreen="false"
-		:show-confirm-button="!state.formDisabled"
-		:show-before-close="!state.formDisabled"
 		confirm-button-text="保存"
 		@confirm-click="handleConfirm"
 		@close="faFormRef.resetFields()"
 	>
-		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" :disabled="state.formDisabled" cols="1">
+		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" cols="1">
 			<FaFormItem prop="buttonName" label="按钮名称">
 				<el-input v-model="state.formData.buttonName" maxlength="50" placeholder="请输入按钮名称" />
 			</FaFormItem>
@@ -80,8 +78,7 @@ const state = reactive({
 		buttonName: [{ required: true, message: "请输入按钮名称", trigger: "blur" }],
 		sort: [{ required: true, message: "请输入排序", trigger: "blur" }],
 	}),
-	formDisabled: false,
-	dialogState: withDefineType<IPageStateType>("detail"),
+	dialogState: withDefineType<IPageStateType>("add"),
 	dialogTitle: "按钮",
 	tableIndex: withDefineType<number>(),
 });
@@ -125,20 +122,10 @@ const handleFlagsEnum = () => {
 	}
 };
 
-const detail = (row: EditMenuButtonInput) => {
-	faDialogRef.value.open(() => {
-		state.formDisabled = true;
-		state.formData = { ...row };
-		state.dialogTitle = `按钮详情 - ${row.buttonName}`;
-		handleFlagsEnum();
-	});
-};
-
 const add = () => {
 	faDialogRef.value.open(() => {
 		state.dialogState = "add";
 		state.dialogTitle = "添加按钮";
-		state.formDisabled = false;
 		state.formData = {
 			edition: EditionEnum.None,
 			hasWeb: true,
@@ -153,7 +140,6 @@ const add = () => {
 const edit = (row: EditMenuButtonInput, index: number) => {
 	faDialogRef.value.open(() => {
 		state.dialogState = "edit";
-		state.formDisabled = false;
 		state.tableIndex = index;
 		state.formData = { ...row };
 		state.dialogTitle = `编辑按钮 - ${row.buttonName}`;
@@ -163,7 +149,6 @@ const edit = (row: EditMenuButtonInput, index: number) => {
 
 defineExpose({
 	element: faDialogRef,
-	detail,
 	add,
 	edit,
 });

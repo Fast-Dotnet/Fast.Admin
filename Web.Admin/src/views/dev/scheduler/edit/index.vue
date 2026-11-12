@@ -282,7 +282,7 @@ const state = reactive({
 		requestUrl: [{ required: true, message: "请输入请求Url", trigger: "blur" }],
 		requestMethod: [{ required: true, message: "请选择请求方式", trigger: "change" }],
 	}),
-	dialogState: withDefineType<IPageStateType>("detail"),
+	dialogState: withDefineType<IPageStateType>("add"),
 	dialogTitle: "调度作业",
 	cronLogs: withDefineType<string[]>([]),
 	requestHeaderObj: withDefineType<{ key: string; value: string }[]>([]),

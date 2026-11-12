@@ -219,6 +219,14 @@ public class RoleService : IDynamicApplication
             throw new UserFriendlyException("数据不存在！");
         }
 
+        if (result.DataScopeDepartmentIds is {Count: > 0})
+        {
+            result.DataScopeDepartmentNames = await _repository.Queryable<DepartmentModel>()
+                .Where(wh => result.DataScopeDepartmentIds.Contains(wh.DepartmentId))
+                .Select(sl => sl.DepartmentName)
+                .ToListAsync();
+        }
+
         return result;
     }
 
@@ -612,25 +620,17 @@ public class RoleService : IDynamicApplication
     [Permission(PermissionConst.Role.Edit, PermissionConst.Employee.Edit)]
     public async Task<List<ElSelectorOutput<long>>> QueryAuthMenu()
     {
-        // 查询应用信息
-        ApplicationClientModel applicationModel = await ApplicationContext.GetApplication(GlobalContext.Origin);
-
-        if (!applicationModel.AppType.HasFlag(GlobalContext.DeviceType))
-        {
-            throw new UserFriendlyException("应用类型不匹配！");
-        }
-
-        // 查询租户信息
-        TenantModel tenantModel = await TenantContext.GetTenant(_user.TenantNo);
+        (ApplicationClientModel applicationModel, TenantModel tenantModel) = await GetAuthorizationContext();
 
         // 查询当前用户角色。RoleType 只作为初始化模板，运行时授权统一读取关联表
         List<long> roleIds = _user.RoleIdList ?? [];
 
-        ISugarQueryable<MenuModel> menuQueryable = _centerRepository.Queryable<MenuModel>()
+        ISugarQueryable<MenuModel> availableMenus = _centerRepository.Queryable<MenuModel>()
             .Where(wh => wh.AppId == applicationModel.AppId)
             .Where(wh => wh.Status == CommonStatusEnum.Enable)
-            .Where(wh => tenantModel.Edition >= wh.Edition)
-            .Where(wh => wh.MenuType != MenuTypeEnum.Catalog);
+            .Where(wh => tenantModel.Edition >= wh.Edition);
+
+        ISugarQueryable<MenuModel> menuQueryable = availableMenus.Clone().Where(wh => wh.MenuType != MenuTypeEnum.Catalog);
 
         ISugarQueryable<ButtonModel> buttonQueryable = _centerRepository.Queryable<ButtonModel>()
             .Where(wh => wh.AppId == applicationModel.AppId)
@@ -661,6 +661,9 @@ public class RoleService : IDynamicApplication
             {
                 sl.MenuId,
                 sl.MenuName,
+                sl.ParentId,
+                sl.ParentIds,
+                sl.Sort,
                 sl.HasMobile,
                 sl.HasWeb,
                 sl.HasDesktop
@@ -682,30 +685,52 @@ public class RoleService : IDynamicApplication
             })
             .ToListAsync();
 
-        var result = new List<ElSelectorOutput<long>>();
+        var catalogList = await availableMenus.Clone()
+            .Where(wh => wh.MenuType == MenuTypeEnum.Catalog && wh.ParentId == 0)
+            .Select(sl => new {sl.MenuId, sl.MenuName, sl.Sort})
+            .ToListAsync();
+        var catalogs = catalogList.ToDictionary(catalog => catalog.MenuId);
+        var buttonsByMenu = buttonList.ToLookup(button => button.MenuId);
+        var modules = new Dictionary<long, ElSelectorOutput<long>>();
+        var result = new List<(int Sort, ElSelectorOutput<long> Node)>();
 
-        foreach (var menuInfo in menuList.ToList())
+        foreach (var menuInfo in menuList)
         {
             var item = new ElSelectorOutput<long>
             {
                 Value = menuInfo.MenuId,
                 Label = menuInfo.MenuName,
                 Data = new {menuInfo.HasMobile, menuInfo.HasWeb, menuInfo.HasDesktop},
-                Children = []
+                Children = buttonsByMenu[menuInfo.MenuId]
+                    .Select(button => new ElSelectorOutput<long>
+                    {
+                        Value = button.ButtonId,
+                        Label = button.ButtonName,
+                        Data = new {button.HasMobile, button.HasWeb, button.HasDesktop}
+                    })
+                    .ToList()
             };
-            foreach (var buttonInfo in buttonList.Where(wh => wh.MenuId == menuInfo.MenuId).ToList())
+
+            long moduleId = menuInfo.ParentIds?.FirstOrDefault(catalogs.ContainsKey) ?? 0;
+            if (menuInfo.ParentId == 0 || !catalogs.TryGetValue(moduleId == 0 ? menuInfo.ParentId : moduleId, out var catalog))
             {
-                item.Children.Add(new ElSelectorOutput<long>
-                {
-                    Value = buttonInfo.ButtonId,
-                    Label = buttonInfo.ButtonName,
-                    Data = new {buttonInfo.HasMobile, buttonInfo.HasWeb, buttonInfo.HasDesktop}
-                });
+                result.Add((menuInfo.Sort, item));
+                continue;
             }
 
-            result.Add(item);
+            if (!modules.TryGetValue(catalog.MenuId, out ElSelectorOutput<long> module))
+            {
+                module = new ElSelectorOutput<long>
+                {
+                    Value = catalog.MenuId, Label = catalog.MenuName, Data = new {IsModule = true}, Children = []
+                };
+                modules.Add(catalog.MenuId, module);
+                result.Add((catalog.Sort, module));
+            }
+
+            module.Children.Add(item);
         }
 
-        return result;
+        return result.OrderBy(node => node.Sort).Select(node => node.Node).ToList();
     }
 }

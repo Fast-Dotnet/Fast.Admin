@@ -30,16 +30,7 @@
 						</el-button>
 					</template>
 
-					<FaTableColumn
-						prop="appKey"
-						label="应用标识"
-						fixed="left"
-						width="220"
-						small-width="200"
-						copy
-						link
-						:click="({ row }) => clientEditFormRef.detail(row.recordId)"
-					/>
+					<FaTableColumn prop="appKey" label="应用标识" fixed="left" width="220" small-width="200" copy />
 					<FaTableColumn prop="appType" label="应用类型" width="200" small-width="180">
 						<template #default="{ row: clientRow }: { row: QueryApplicationClientOutput }">
 							<TagFlag name="AppEnvironmentEnum" :value="clientRow.appType" />
@@ -82,17 +73,6 @@
 
 					<template #operation="{ row: clientRow }: { row: QueryApplicationClientOutput }">
 						<el-button
-							v-auth="'AppClient:Detail'"
-							size="small"
-							plain
-							@click="
-								handleClientData(row);
-								clientEditFormRef.detail(clientRow.recordId);
-							"
-						>
-							详情
-						</el-button>
-						<el-button
 							v-auth="'AppClient:Edit'"
 							size="small"
 							plain
@@ -112,16 +92,7 @@
 			</template>
 
 			<FaTableColumn prop="logoUrl" label="Logo" fixed="left" width="70" small-width="50" sortable type="image" />
-			<FaTableColumn
-				prop="appName"
-				label="应用名称"
-				width="200"
-				small-width="180"
-				copy
-				sortable
-				link
-				:click="({ row }) => editFormRef.detail(row.appId)"
-			/>
+			<FaTableColumn prop="appName" label="应用名称" width="200" small-width="180" copy sortable />
 			<FaTableColumn prop="appNo" label="应用编号" width="150" small-width="130" copy sortable />
 			<FaTableColumn prop="edition" label="版本" width="120" small-width="100" sortable tag :enum="editionEnum" />
 			<FaTableColumn prop="themeColor" label="主题色" width="120" small-width="100" sortable>
@@ -146,7 +117,6 @@
 
 			<!-- 表格操作 -->
 			<template #operation="{ row }: { row: QueryApplicationPagedOutput }">
-				<el-button v-auth="'App:Detail'" size="small" plain @click="editFormRef.detail(row.appId)">详情</el-button>
 				<el-button v-auth="'App:Edit'" size="small" plain type="primary" @click="editFormRef.edit(row.appId)">编辑</el-button>
 				<el-button v-auth="'App:Delete'" size="small" plain type="danger" @click="handleDelete(row)">删除</el-button>
 			</template>

@@ -15,7 +15,7 @@
 				copy
 				sortable
 				link
-				:click="({ row }) => editFormRef.detail(row.positionId)"
+				:click="({ row }) => detailFormRef.detail(row.positionId)"
 			/>
 			<FaTableColumn prop="sort" label="排序" width="100" small-width="80" sortable />
 			<FaTableColumn prop="remark" label="备注" width="200" small-width="180" sortable />
@@ -32,11 +32,12 @@
 
 			<!-- 表格操作 -->
 			<template #operation="{ row }: { row: QueryPositionPagedOutput }">
-				<el-button v-auth="'Position:Detail'" size="small" plain @click="editFormRef.detail(row.positionId)">详情</el-button>
+				<el-button v-auth="'Position:Detail'" size="small" plain @click="detailFormRef.detail(row.positionId)">详情</el-button>
 				<el-button v-auth="'Position:Edit'" size="small" plain type="primary" @click="editFormRef.edit(row.positionId)">编辑</el-button>
 				<el-button v-auth="'Position:Delete'" size="small" plain type="danger" @click="handleDelete(row)">删除</el-button>
 			</template>
 		</FaTable>
+		<PositionDetail ref="detailFormRef" />
 		<PositionEdit ref="editFormRef" @ok="faTableRef.refresh()" />
 	</div>
 </template>
@@ -46,6 +47,7 @@ import { useTemplateRef } from "vue";
 import { Plus } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { positionApi } from "@/api/services/Admin/position";
+import PositionDetail from "./detail/index.vue";
 import PositionEdit from "./edit/index.vue";
 import type { FaTableInstance } from "fast-element-plus";
 import type { QueryPositionPagedOutput } from "@/api/services/Admin/position/models/QueryPositionPagedOutput";
@@ -55,6 +57,7 @@ defineOptions({
 });
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
+const detailFormRef = useTemplateRef<InstanceType<typeof PositionDetail>>("detailFormRef");
 const editFormRef = useTemplateRef<InstanceType<typeof PositionEdit>>("editFormRef");
 
 /** 处理删除 */

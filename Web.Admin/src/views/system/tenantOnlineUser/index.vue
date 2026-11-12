@@ -161,13 +161,13 @@ const searchColumns: FaTableColumnCtx[] = [
 	{
 		pureSearch: true,
 		prop: "accountId",
-		label: "昵称/手机",
+		label: "账号",
 		search: { el: "AccountSelectPage" },
 	},
 	{
 		pureSearch: true,
 		prop: "employeeId",
-		label: "姓名/工号/部门",
+		label: "职员",
 		search: { el: "EmployeeSelectPage" },
 	},
 ];
