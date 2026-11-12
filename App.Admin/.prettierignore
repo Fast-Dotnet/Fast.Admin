@@ -3,6 +3,7 @@ dist
 node_modules
 .pnpm-store
 pnpm-lock.yaml
+src/uni-layouts.d.ts
 
 src/api/*
 

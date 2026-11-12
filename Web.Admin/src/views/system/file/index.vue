@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<FaTable row-key="fileId" :request-api="fileApi.queryFilePaged" :columns="searchColumns">
+		<FaTable row-key="fileId" :request-api="fileApi.queryFilePaged" :columns="searchColumns" hide-search-time>
 			<FaTableColumn prop="fileObjectName" label="唯一标识" fixed="left" width="200" small-width="180" copy sortable />
 			<FaTableColumn prop="fileSuffix" label="后缀" width="100" small-width="80" sortable tag />
 			<FaTableColumn prop="fileMimeType" label="Mime类型" width="120" small-width="100" sortable tag />
