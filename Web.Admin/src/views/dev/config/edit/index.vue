@@ -9,8 +9,11 @@
 		@close="faFormRef.resetFields()"
 	>
 		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules">
-			<FaFormItem prop="configCode" label="配置编码">
+			<FaFormItem v-if="state.dialogState === 'add'" prop="configCode" label="配置编码">
 				<el-input v-model="state.formData.configCode" maxlength="50" placeholder="请输入配置编码" />
+			</FaFormItem>
+			<FaFormItem v-else prop="configCode" label="配置编码">
+				{{ state.formData.configCode }}
 			</FaFormItem>
 			<FaFormItem prop="configName" label="配置名称">
 				<el-input v-model="state.formData.configName" maxlength="50" placeholder="请输入配置名称" />

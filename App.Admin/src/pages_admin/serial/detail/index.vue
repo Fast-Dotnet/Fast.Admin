@@ -1,6 +1,6 @@
 <template>
 	<view class="page">
-		<wd-cell-group center border>
+		<wd-cell-group border>
 			<wd-cell title="规则类型">
 				<FaTag name="SerialRuleTypeEnum" :value="state.formData.ruleType" />
 			</wd-cell>

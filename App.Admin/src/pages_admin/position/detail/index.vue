@@ -1,6 +1,6 @@
 <template>
 	<view class="page">
-		<wd-cell-group center border>
+		<wd-cell-group border>
 			<wd-cell title="职位名称" :value="state.formData.positionName" />
 			<wd-cell title="排序" :value="state.formData.sort" />
 			<wd-cell title="备注" :value="state.formData.remark" />

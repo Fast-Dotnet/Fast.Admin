@@ -1,14 +1,15 @@
 <template>
 	<view class="page">
-		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" :disabled="state.formDisabled" border>
+		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>
 			<wd-form-item title="配置编码" prop="configCode">
-				<wd-textarea
-					custom-style="--wot-textarea-inner-min-height: 150rpx"
+				<wd-input
+					v-if="state.pageMode === 'add'"
 					v-model="state.formData.configCode"
 					clearable
 					:maxlength="50"
 					placeholder="请输入配置编码"
 				/>
+				<text v-else>{{ state.formData.configCode }}</text>
 			</wd-form-item>
 			<wd-form-item title="配置名称" prop="configName">
 				<wd-input v-model="state.formData.configName" clearable :maxlength="50" placeholder="请输入配置名称" />
@@ -31,24 +32,9 @@
 					placeholder="请输入备注"
 				/>
 			</wd-form-item>
-
-			<template v-if="state.pageMode === 'detail'">
-				<wd-form-item title="创建人" prop="createdUserName">
-					{{ state.formData.createdUserName }}
-				</wd-form-item>
-				<wd-form-item title="创建时间" prop="createdUserName">
-					{{ state.formData.createdTime }}
-				</wd-form-item>
-				<wd-form-item title="更新人" prop="updatedUserName">
-					{{ state.formData.updatedUserName }}
-				</wd-form-item>
-				<wd-form-item title="更新时间" prop="updatedTime">
-					{{ state.formData.updatedTime }}
-				</wd-form-item>
-			</template>
 		</wd-form>
 
-		<wd-button custom-class="fa-form-submit" type="primary" :disabled="state.formDisabled" @click="handleConfirm">保存</wd-button>
+		<wd-button custom-class="fa-form-submit" type="primary" @click="handleConfirm">保存</wd-button>
 	</view>
 </template>
 
@@ -61,11 +47,11 @@ import { configApi } from "@/api/services/Center/config";
 import { useFormSchema, useLoading, useMessageBox, useToast } from "@/hooks";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { AddConfigInput } from "@/api/services/Center/config/models/AddConfigInput";
-import type { QueryConfigDetailOutput } from "@/api/services/Center/config/models/QueryConfigDetailOutput";
+import type { EditConfigInput } from "@/api/services/Center/config/models/EditConfigInput";
 
 definePage({
 	name: "DevConfigEdit",
-	authCode: ["Config:Detail", "Config:Edit"],
+	authCode: "Config:Edit",
 	style: {
 		navigationBarTitleText: "配置",
 		enablePullDownRefresh: true,
@@ -77,14 +63,13 @@ const router = useRouter();
 const formRef = ref<FormInstance>();
 
 const state = reactive({
-	formData: withDefineType<QueryConfigDetailOutput>({}),
-	formSchema: useFormSchema<AddConfigInput>({
+	formData: withDefineType<EditConfigInput & AddConfigInput>({}),
+	formSchema: useFormSchema<EditConfigInput & AddConfigInput>({
 		configCode: { required: true, message: "请输入配置编码" },
 		configName: { required: true, message: "请输入配置名称" },
 		configValue: { required: true, message: "请输入配置值" },
 	}),
-	formDisabled: false,
-	pageMode: withDefineType<IPageStateType>("detail"),
+	pageMode: withDefineType<IPageStateType>("add"),
 	configId: withDefineType<string>(),
 });
 
@@ -112,21 +97,11 @@ const handleConfirm = throttle(async () => {
 
 const handleLoad = async () => {
 	switch (state.pageMode) {
-		case "detail":
-			{
-				state.formDisabled = true;
-				const apiRes = await configApi.queryConfigDetail(state.configId);
-				state.formData = apiRes;
-				uni.setNavigationBarTitle({ title: `配置详情 - ${apiRes.configName}` });
-			}
-			break;
 		case "add":
-			state.formDisabled = false;
 			uni.setNavigationBarTitle({ title: "添加配置" });
 			break;
 		case "edit":
 			{
-				state.formDisabled = false;
 				const apiRes = await configApi.queryConfigDetail(state.configId);
 				state.formData = apiRes;
 				uni.setNavigationBarTitle({ title: `编辑配置 - ${apiRes.configName}` });
@@ -136,7 +111,7 @@ const handleLoad = async () => {
 };
 
 onLoad((options: { mode?: IPageStateType; configId?: string }) => {
-	if (!options?.mode || ((options.mode === "edit" || options.mode === "detail") && !options?.configId)) {
+	if (!options?.mode || (options.mode === "edit" && !options?.configId)) {
 		useMessageBox.alert("参数异常");
 		return;
 	}

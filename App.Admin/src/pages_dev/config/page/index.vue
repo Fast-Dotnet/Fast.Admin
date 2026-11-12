@@ -4,7 +4,7 @@
 			<FaSearchInput :filter="false" v-model:search-param="searchParam.value" @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #footer>
 					<FaAuth code="Config:Edit">
-						<wd-button size="small" icon="plus" @click="handleOpen('add')">新增</wd-button>
+						<wd-button size="small" icon="plus" @click="handleEdit('add')">新增</wd-button>
 						<wd-button size="small" icon="delete" type="warning" variant="plain" @click="handleDeleteAll(refresh)">
 							清除全部缓存
 						</wd-button>
@@ -14,13 +14,7 @@
 		</template>
 
 		<template #default="{ pagedList, refresh }">
-			<FaCard
-				v-for="item in pagedList"
-				:key="item.configId"
-				:title="item.configCode"
-				code="Config:Detail"
-				@click="handleOpen('detail', item.configId)"
-			>
+			<FaCard v-for="item in pagedList" :key="item.configId" :title="item.configCode" code="Config:Detail" @click="handleDetail(item.configId)">
 				<FaField label="配置名称" :value="item.configName" />
 				<FaField label="配置值">
 					<text v-if="item.configValue" class="config-value">{{ item.configValue }}</text>
@@ -33,7 +27,7 @@
 
 				<template #footer>
 					<FaAuth code="Config:Edit">
-						<wd-button size="mini" type="primary" variant="plain" @click="handleOpen('edit', item.configId)">编辑</wd-button>
+						<wd-button size="mini" type="primary" variant="plain" @click="handleEdit('edit', item.configId)">编辑</wd-button>
 					</FaAuth>
 					<FaAuth code="Config:Edit">
 						<wd-button size="mini" type="warning" variant="plain" @click="handleDelete(item, refresh)">清除缓存</wd-button>
@@ -61,7 +55,9 @@ definePage({
 
 const router = useRouter();
 
-const handleOpen = throttle((mode: IPageStateType, configId?: string) =>
+const handleDetail = throttle((configId: string) => router.push(`/pages_dev/config/detail/index?configId=${configId}`));
+
+const handleEdit = throttle((mode: IPageStateType, configId?: string) =>
 	router.push(`/pages_dev/config/edit/index?mode=${mode}&configId=${configId}`)
 );
 
