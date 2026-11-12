@@ -1,5 +1,5 @@
 <template>
-	<ElSpace warp>
+	<ElSpace wrap>
 		<ElTag
 			v-for="item in dictionaries"
 			:key="String(item.value)"
