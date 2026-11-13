@@ -16,3 +16,24 @@
 	overflow-wrap: anywhere;
 	white-space: pre-wrap;
 }
+
+.fa-field__copy {
+	display: inline-flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	gap: 4px;
+	min-height: 32px;
+	margin: 0;
+	padding: 0 8px;
+	border: 0;
+	border-radius: 6px;
+	background: transparent;
+	color: var(--wot-primary-6);
+	font-size: 12px;
+	line-height: 1.4;
+
+	&::after {
+		border: 0;
+	}
+}
