@@ -82,7 +82,7 @@ const state = reactive({
 		}
 
 		.wd-cell__right {
-			flex: unset;
+			flex: 0 0 auto;
 		}
 
 		.wd-switch {

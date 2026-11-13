@@ -29,7 +29,14 @@
 					<FaIcon custom-class="wd-cell__icon" name="accountSafe" />
 				</template>
 			</wd-cell>
-			<wd-cell title="工作空间" clickable is-link :value="userInfoStore.tenantName" @click="switchTenantPopupRef?.open()">
+			<wd-cell
+				title="工作空间"
+				custom-class="my-workspace-cell"
+				clickable
+				is-link
+				:value="userInfoStore.tenantName"
+				@click="switchTenantPopupRef?.open()"
+			>
 				<template #prefix>
 					<FaIcon custom-class="wd-cell__icon" name="tenant" />
 				</template>

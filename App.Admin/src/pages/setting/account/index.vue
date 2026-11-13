@@ -269,7 +269,7 @@ onLoad(() => {
 }
 
 :deep(.top-cell-group .wd-cell__right) {
-	flex: unset;
+	flex: 0 0 auto;
 }
 
 .btn__avatar {

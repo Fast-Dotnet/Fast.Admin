@@ -5,6 +5,7 @@ import { loadPlugins } from "./plugins";
 import router from "./router";
 import { loadPinia } from "./stores";
 import "./styles/index.scss";
+import "./components/index.scss";
 
 export function createApp(): { app: App; Pinia: typeof Pinia } {
 	const app = createSSRApp(AppVue);

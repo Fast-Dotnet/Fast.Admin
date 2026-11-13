@@ -33,8 +33,19 @@
 				</button>
 			</view>
 		</view>
-		<view class="fa-popup__body">
-			<slot :loading="state.loading" />
+		<view
+			class="fa-popup__body"
+			:class="{
+				'fa-popup__body--no-scroll': props.bodyScroll !== 'auto',
+				'fa-popup__body--scroll-view': props.bodyScroll === 'scroll-view',
+			}"
+		>
+			<scroll-view v-if="props.bodyScroll === 'scroll-view'" class="fa-popup__scroll-view" scroll-y>
+				<view class="fa-popup__scroll-content">
+					<slot :loading="state.loading" />
+				</view>
+			</scroll-view>
+			<slot v-else :loading="state.loading" />
 		</view>
 		<view v-if="hasFooter()" class="fa-popup__footer">
 			<slot name="footer" :loading="state.loading" :close="handleCloseClick" />
@@ -66,6 +77,7 @@
 </template>
 
 <script setup lang="ts">
+import { onHide } from "@dcloudio/uni-app";
 import { computed, nextTick, reactive, toRef } from "vue";
 import { addCssUnit, callOptionalFunction, definePropType, useProps } from "@fast-china/utils";
 import { popupProps } from "@wot-ui/ui/components/wd-popup/types";
@@ -83,11 +95,6 @@ defineOptions({
 
 const props = defineProps({
 	...popupProps,
-	/** 弹窗层级 */
-	zIndex: {
-		type: Number,
-		default: 200,
-	},
 	/** 是否开启圆角,开启后根据弹出位置自动适配（底部弹出→上圆角，顶部弹出→下圆角，居中→四圆角）*/
 	round: {
 		type: Boolean,
@@ -97,6 +104,11 @@ const props = defineProps({
 	width: [String, Number],
 	/** 弹窗高度，数字按 px 处理 */
 	height: [String, Number],
+	/** 正文滚动方式。auto 使用正文的 CSS 滚动，scroll-view 需要指定弹窗高度，none 由插槽内容接管滚动。 */
+	bodyScroll: {
+		type: definePropType<"auto" | "scroll-view" | "none">(String),
+		default: "auto",
+	},
 	/** 弹窗显示后的初始化回调，优先于 open 方法传入的回调 */
 	afterOpen: {
 		type: definePropType<() => void | Promise<void>>(Function),
@@ -222,6 +234,16 @@ const handleCloseClick = () => {
 	handleClose();
 };
 
+// #ifdef H5
+onHide(() => {
+	// 传送到 body 的弹窗需要随页面隐藏一起关闭。
+	if (props.rootPortal && state.visible) {
+		state.visible = false;
+		emit("close");
+	}
+});
+// #endif
+
 defineExpose({
 	/** 加载状态 */
 	loading: toRef(state, "loading"),
@@ -235,128 +257,3 @@ defineExpose({
 	doLoading: handleLoading,
 });
 </script>
-
-<style lang="scss" scoped>
-:deep(.fa-popup) {
-	--wot-popup-radius: var(--wot-radius-extra-large);
-
-	display: flex;
-	flex-direction: column;
-	box-sizing: border-box;
-	overflow: hidden;
-}
-
-:deep(.fa-popup__with-footer) {
-	--wot-popup-bg: var(--wot-filled-oppo);
-}
-
-.fa-popup__header {
-	position: relative;
-	flex-shrink: 0;
-	display: flex;
-	align-items: center;
-	min-height: 52px;
-	padding: 0 4px;
-	border-bottom: 1px solid var(--wot-border-light);
-	background: var(--wot-filled-oppo);
-}
-
-.fa-popup__header--floating {
-	position: absolute;
-	top: 12px;
-	right: 4px;
-	z-index: 1;
-	min-height: 0;
-	padding: 0;
-	border: 0;
-	background: transparent;
-
-	.fa-popup__header-actions {
-		flex-basis: auto;
-	}
-}
-
-.fa-popup__title-prefix,
-.fa-popup__header-actions {
-	display: flex;
-	flex: 0 0 64px;
-	align-items: center;
-}
-
-.fa-popup__header--with-prefix {
-	padding: 0 var(--fa-spacing-page, 12px);
-
-	.fa-popup__title-prefix,
-	.fa-popup__header-actions {
-		flex-basis: 25%;
-		min-width: 44px;
-		max-width: 80px;
-	}
-}
-
-.fa-popup__title-prefix {
-	overflow: hidden;
-}
-
-.fa-popup__header-actions {
-	justify-content: flex-end;
-}
-
-.fa-popup__title {
-	flex: 1;
-	min-width: 0;
-	padding: 12rpx 0;
-	font-size: var(--wot-typography-body-size-large);
-	font-weight: var(--wot-font-weight-semibold);
-	text-align: center;
-	overflow-wrap: anywhere;
-}
-
-.fa-popup__close {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 44px;
-	height: 44px;
-	margin: 0;
-	padding: 0;
-	border: 0;
-	background: transparent;
-
-	&::after {
-		border: 0;
-	}
-}
-
-.fa-popup__close-icon {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 32px;
-	height: 32px;
-	border-radius: var(--wot-radius-full);
-	color: var(--wot-popup-close-color, var(--wot-icon-auxiliary));
-	background: var(--wot-filled-bottom);
-}
-
-.fa-popup__body {
-	display: flex;
-	flex: 1;
-	flex-direction: column;
-	padding: 20rpx;
-	background: var(--wot-filled-bottom);
-	min-width: 0;
-	min-height: 0;
-	overflow: auto;
-}
-
-.fa-popup__footer {
-	display: flex;
-	flex-shrink: 0;
-	align-items: center;
-	gap: 20rpx;
-	padding: 24rpx var(--fa-spacing-page);
-	border-top: 1px solid var(--wot-border-light);
-	background: var(--wot-filled-oppo);
-}
-</style>

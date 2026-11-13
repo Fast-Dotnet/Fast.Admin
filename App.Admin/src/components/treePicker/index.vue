@@ -2,6 +2,8 @@
 	<FaPopup
 		ref="faPopupRef"
 		custom-class="fa-tree-picker"
+		custom-style="--fa-popup-body-padding: 0;"
+		body-scroll="none"
 		:title="props.title"
 		:height="props.height"
 		:z-index="props.zIndex"
@@ -36,15 +38,7 @@
 			</wd-empty>
 
 			<template v-else-if="tabList.length">
-				<wd-tabs
-					ref="tabsRef"
-					custom-class="fa-tree-picker__tabs"
-					v-model="activeTab"
-					slidable="always"
-					line-theme="underline"
-					:slidable-num="3"
-					:map-num="0"
-				>
+				<wd-tabs ref="tabsRef" v-model="activeTab" slidable="always" line-theme="underline" :slidable-num="3" :map-num="0">
 					<wd-tab v-for="(tab, index) in tabList" :key="index" :name="index" :title="tab.title" />
 				</wd-tabs>
 				<scroll-view :key="activeTab" class="fa-tree-picker__list" scroll-y>
@@ -52,6 +46,7 @@
 						<wd-cell
 							v-for="item in tabList[activeTab]?.options"
 							:key="item.value"
+							center
 							:clickable="!item.disabled"
 							:custom-class="selectedList[activeTab] === item ? 'fa-tree-picker__cell--selected' : ''"
 							:custom-style="item.disabled ? 'opacity: 0.5;' : ''"
@@ -376,46 +371,3 @@ defineExpose({
 	doLoading: computed(() => faPopupRef.value?.doLoading),
 });
 </script>
-
-<style lang="scss" scoped>
-.fa-tree-picker.fa-popup .fa-popup__body {
-	padding: 0;
-	overflow: hidden;
-}
-
-.fa-tree-picker .fa-search-input {
-	flex-shrink: 0;
-	border-bottom: var(--wot-stroke-main) solid var(--wot-border-main);
-}
-
-.fa-tree-picker__tabs {
-	flex-shrink: 0;
-}
-
-.fa-tree-picker__list {
-	flex: 1;
-	min-height: 0;
-	height: 0;
-	background: var(--wot-filled-oppo);
-
-	:deep(.wd-cell__wrapper) {
-		align-items: center;
-	}
-
-	:deep(.wd-cell__left) {
-		flex: 1;
-	}
-
-	:deep(.wd-cell__right) {
-		flex: unset;
-	}
-}
-
-.fa-tree-picker__cell--selected {
-	--wot-cell-bg: var(--wot-primary-1);
-}
-
-.wot-theme-dark .fa-tree-picker__cell--selected {
-	--wot-cell-bg: var(--wot-primary-3);
-}
-</style>

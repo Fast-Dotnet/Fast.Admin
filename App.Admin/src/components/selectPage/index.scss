@@ -1,0 +1,26 @@
+.fa-select-page__cell--selected {
+	--wot-cell-bg: var(--wot-primary-1);
+}
+
+.wot-theme-dark .fa-select-page__cell--selected {
+	--wot-cell-bg: var(--wot-primary-3);
+}
+
+.fa-select-page {
+	.fa-search-input {
+		border-bottom: var(--wot-stroke-main) solid var(--wot-border-main);
+	}
+
+	.zp-paging-container {
+		padding: 0;
+	}
+
+	.z-paging-content-full {
+		flex: 1;
+		min-height: 0;
+	}
+
+	.wd-cell__right {
+		flex: 0 0 auto;
+	}
+}

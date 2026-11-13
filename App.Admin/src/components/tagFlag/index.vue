@@ -77,12 +77,3 @@ const dictionaries = computed(() => {
 	});
 });
 </script>
-
-<style lang="scss" scoped>
-.fa-tag-flag {
-	display: inline-flex;
-	align-items: center;
-	flex-wrap: wrap;
-	gap: 12rpx;
-}
-</style>

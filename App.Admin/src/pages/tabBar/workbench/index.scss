@@ -1,7 +1,7 @@
 .workbench-header {
 	position: sticky;
 	top: 0;
-	z-index: 10;
+	z-index: 101;
 	padding: var(--fa-spacing-page);
 	// 自定义导航由页面容纳状态栏和顶部安全区。
 	padding-top: calc(max(var(--fa-status-bar-height, 0px), var(--fa-area-inset-top, 0px)) + var(--fa-spacing-page));

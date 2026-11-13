@@ -2,7 +2,7 @@
 	<view class="fa-cell-picker">
 		<wd-cell
 			v-bind="wdCellProps"
-			:custom-class="`fa-cell-picker__cell ${props.customClass}`"
+			:custom-class="props.customClass"
 			:value="props.radio ? undefined : dictionaryLabel"
 			:is-link="props.isLink && !props.radio && !formDisabled"
 			:clickable="props.clickable && !formDisabled"
@@ -32,6 +32,7 @@
 </template>
 
 <script setup lang="ts" generic="TValue extends string | number | boolean">
+import { onHide } from "@dcloudio/uni-app";
 import { computed, ref } from "vue";
 import { randomString, useProps } from "@fast-china/utils";
 import { cellProps } from "@wot-ui/ui/components/wd-cell/types";
@@ -130,20 +131,10 @@ const handleChange = (value?: string | number) => {
 	modelValue.value = selectedValue;
 	emit("change", selectedValue);
 };
+
+// #ifdef H5
+onHide(() => {
+	visible.value = false;
+});
+// #endif
 </script>
-
-<style lang="scss" scoped>
-.fa-cell-picker {
-	border-bottom: var(--wot-stroke-main) solid var(--wot-border-main);
-}
-
-:deep(.fa-cell-picker__cell) {
-	.wd-cell__left {
-		flex: var(--fa-cell-left-flex, 0 0 28%);
-	}
-
-	.wd-cell__arrow-right {
-		--wot-cell-arrow-margin-left: 0;
-	}
-}
-</style>

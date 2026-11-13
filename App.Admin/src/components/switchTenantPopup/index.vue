@@ -1,17 +1,15 @@
 <template>
 	<FaPopup ref="popupRef" title="切换工作空间" height="70%" position="bottom" closable>
-		<scroll-view class="tenant-list" scroll-y>
-			<view v-for="item in tenantList" :key="item.userKey" class="tenant-card" @click="handleTenantLogin(item)">
-				<image class="tenant-card__image" :src="item.logoUrl" mode="aspectFill" />
-				<view class="tenant-card__content">
-					<view class="tenant-card__name">{{ item.tenantName }}</view>
-					<view class="tenant-card__meta">{{ item.departmentName || "无部门" }} · {{ item.employeeName }}</view>
-				</view>
-				<FaTag size="small" name="EditionEnum" :value="item.edition" />
-				<wd-icon v-if="item.userKey === userInfoStore.userKey" name="check" size="28rpx" color="var(--wot-primary-6)" />
-				<wd-icon v-else name="arrow-right" size="28rpx" color="var(--wot-text-auxiliary)" />
+		<view v-for="item in tenantList" :key="item.userKey" class="fa-tenant-card" @click="handleTenantLogin(item)">
+			<image class="fa-tenant-card__image" :src="item.logoUrl" mode="aspectFill" />
+			<view class="fa-tenant-card__content">
+				<view class="fa-tenant-card__name">{{ item.tenantName }}</view>
+				<view class="fa-tenant-card__meta">{{ item.departmentName || "无部门" }} · {{ item.employeeName }}</view>
 			</view>
-		</scroll-view>
+			<FaTag size="small" name="EditionEnum" :value="item.edition" />
+			<wd-icon v-if="item.userKey === userInfoStore.userKey" name="check" size="28rpx" color="var(--wot-primary-6)" />
+			<wd-icon v-else name="arrow-right" size="28rpx" color="var(--wot-text-auxiliary)" />
+		</view>
 	</FaPopup>
 </template>
 
@@ -77,56 +75,3 @@ defineExpose({
 	open,
 });
 </script>
-
-<style lang="scss" scoped>
-.tenant-list {
-	flex: 1;
-	min-height: 0;
-	height: 0;
-}
-
-.tenant-card {
-	padding: 24rpx;
-	display: flex;
-	gap: 18rpx;
-	align-items: center;
-	background-color: var(--wot-card-bg);
-	border-radius: var(--wot-radius-large);
-	box-shadow: var(--fa-shadow-subtle);
-	overflow: hidden;
-	transition: box-shadow var(--fa-motion-duration-normal) var(--fa-motion-easing-standard);
-
-	&:not(:last-child) {
-		margin-bottom: 24rpx;
-	}
-}
-
-.tenant-card__image {
-	flex: none;
-	width: 84rpx;
-	height: 84rpx;
-	border-radius: 18rpx;
-	box-shadow: var(--fa-shadow-ambient);
-}
-
-.tenant-card__content {
-	flex: 1;
-	overflow: hidden;
-}
-
-.tenant-card__name {
-	font-weight: var(--wot-font-weight-semibold);
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-
-.tenant-card__meta {
-	margin-top: 6rpx;
-	color: var(--wot-text-auxiliary);
-	font-size: 24rpx;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-</style>

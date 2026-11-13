@@ -29,7 +29,3 @@ const props = defineProps({
 	mask: Boolean,
 });
 </script>
-
-<style lang="scss" scoped>
-@use "./index.scss";
-</style>

@@ -2,6 +2,8 @@
 	<FaPopup
 		ref="faPopupRef"
 		custom-class="fa-select-page"
+		custom-style="--fa-popup-body-padding: 0;"
+		body-scroll="none"
 		:title="props.title"
 		:height="props.height"
 		:z-index="props.zIndex"
@@ -13,14 +15,15 @@
 	>
 		<FaPaging
 			ref="faPagingRef"
-			style="flex: 1; min-height: 0"
-			paging-class="fa-select-page__list"
 			v-model:search-param="searchParam"
 			:data="localData"
 			:request-api="props.requestApi"
 			:init-param="props.initParam"
 			:pagination="props.pagination"
 			:auto="false"
+			:fixed="false"
+			:refresher-enabled="!!props.requestApi"
+			:show-refresher-when-reload="!!props.requestApi"
 			:use-page-scroll="false"
 			:use-virtual-list="props.useVirtualList"
 		>
@@ -45,6 +48,7 @@
 						<wd-cell
 							v-for="cItem in item.children"
 							:key="cItem.value"
+							center
 							:clickable="!cItem.disabled"
 							:custom-class="cItem.rawValue === modelValue ? 'fa-select-page__cell--selected' : ''"
 							:custom-style="cItem.disabled ? 'opacity: 0.5;' : ''"
@@ -73,6 +77,7 @@
 					<wd-cell
 						v-for="item in handleData(pagedList)"
 						:key="item.value"
+						center
 						:clickable="!item.disabled"
 						:custom-class="item.rawValue === modelValue ? 'fa-select-page__cell--selected' : ''"
 						:custom-style="item.disabled ? 'opacity: 0.5;' : ''"
@@ -305,39 +310,3 @@ defineExpose({
 	doLoading: computed(() => faPopupRef.value?.doLoading),
 });
 </script>
-
-<style lang="scss" scoped>
-.fa-search-input {
-	border-bottom: var(--wot-stroke-main) solid var(--wot-border-main);
-}
-
-.fa-select-page__cell--selected {
-	--wot-cell-bg: var(--wot-primary-1);
-}
-
-.wot-theme-dark .fa-select-page__cell--selected {
-	--wot-cell-bg: var(--wot-primary-3);
-}
-
-:deep(.fa-select-page.fa-popup > .fa-popup__body) {
-	padding: 0;
-}
-
-:deep(.fa-select-page__list) {
-	.zp-paging-container {
-		padding: 0;
-	}
-
-	.wd-cell__wrapper {
-		align-items: center;
-	}
-
-	.wd-cell__left {
-		flex: 1;
-	}
-
-	.wd-cell__right {
-		flex: unset;
-	}
-}
-</style>

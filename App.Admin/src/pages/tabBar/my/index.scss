@@ -54,6 +54,10 @@
 	text-align: center;
 }
 
+:deep(.wd-cell-group .wd-cell:not(.my-workspace-cell) .wd-cell__right) {
+	flex: 0 0 auto;
+}
+
 .btn__exit-login {
 	--wot-button-radius-main: var(--wot-radius-extra-large);
 	--wot-button-danger-plain-bg: var(--wot-filled-oppo);

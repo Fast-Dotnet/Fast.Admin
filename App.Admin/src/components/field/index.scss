@@ -1,0 +1,18 @@
+.fa-field {
+	display: flex;
+	align-items: baseline;
+	gap: 10rpx;
+	font-size: var(--wot-typography-body-size-main);
+}
+
+.fa-field__title {
+	flex: var(--fa-cell-left-flex, 0 0 28%);
+	color: var(--wot-text-auxiliary);
+}
+
+.fa-field__content {
+	flex: 1;
+	min-width: 0;
+	overflow-wrap: anywhere;
+	white-space: pre-wrap;
+}

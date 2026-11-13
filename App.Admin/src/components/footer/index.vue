@@ -33,18 +33,3 @@ if (/^\d{1,3}(?:\.\d{1,3}){3}$/.test(host) || host === "localhost") {
 			: host; // localhost 或 IP
 }
 </script>
-
-<style lang="scss" scoped>
-.fa-footer {
-	height: var(--fa-footer-height, 40px);
-	font-size: var(--wot-typography-label-size-main);
-	color: var(--wot-text-auxiliary);
-	letter-spacing: 0.5px;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	transition: height var(--fa-motion-duration-normal) var(--fa-motion-easing-standard);
-	overflow: hidden;
-}
-</style>

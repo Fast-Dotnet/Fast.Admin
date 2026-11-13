@@ -8,18 +8,18 @@
 	align-items: center;
 	gap: 10rpx;
 
-	:deep(.wd-input__icon) {
+	.wd-input {
+		--wot-input-bg: var(--wot-filled-bottom);
+		--wot-input-inner-height: var(--fa-size-search-height);
+		--wot-input-padding: 0 20rpx;
+
+		flex: 1;
+		border-radius: var(--wot-radius-full);
+	}
+
+	.wd-input__icon {
 		font-size: var(--wot-typography-title-size-main);
 	}
-}
-
-:deep(.fa-search-input__input) {
-	--wot-input-bg: var(--wot-filled-bottom);
-	--wot-input-inner-height: var(--fa-size-search-height);
-	--wot-input-padding: 0 20rpx;
-
-	flex: 1;
-	border-radius: var(--wot-radius-full);
 
 	.wd-input__suffix .wd-button {
 		margin-left: 5px;
@@ -48,49 +48,49 @@
 	font-size: var(--wot-typography-label-size-main);
 }
 
-:deep(.fa-search-input__popup.fa-popup > .fa-popup__body) {
-	padding: 0;
-}
-
 .fa-search-input__filters {
+	flex: 1;
+	min-height: 0;
+	height: 0;
+
 	--fa-cell-left-flex: 0 0 28%;
 	--wot-cell-arrow-margin-left: 0;
 	--wot-cell-bg: transparent;
 
-	:deep(.uni-scroll-view-content) {
+	.uni-scroll-view-content {
 		display: flex;
 		flex-direction: column;
 		gap: 10rpx;
 	}
 
 	// 嵌套弹窗中的单元格使用自己的布局和主题色。
-	:deep(.wd-popup) {
+	.wd-popup {
 		--fa-cell-left-flex: initial;
 		--wot-cell-arrow-margin-left: initial;
 		--wot-cell-bg: initial;
 	}
 
 	// 插槽在 H5 和小程序中可能有包装层，按后代匹配单选组和按钮。
-	:deep(.wd-radio-group) {
+	.wd-radio-group {
 		padding-left: var(--wot-cell-padding, var(--wot-padding-loose));
 		border-bottom: var(--wot-stroke-main) solid var(--wot-border-main);
 	}
 
-	:deep(.fa-search-input__date-ranges) {
+	.fa-search-input__date-ranges {
 		border-bottom: 0;
 	}
 
-	:deep(.wd-radio.is-button) {
+	.wd-radio.is-button {
 		--wot-radio-button-margin: 0 10rpx 10rpx 0;
 		--wot-radio-button-bg: var(--wot-filled-oppo);
 	}
 
-	:deep(.wd-radio.is-button:not(.is-checked)) {
+	.wd-radio.is-button:not(.is-checked) {
 		border: var(--wot-stroke-main) solid var(--wot-border-main);
 	}
 
 	// 嵌套选择器的弹窗使用自己的单选列表布局。
-	:deep(.wd-popup .wd-radio-group) {
+	.wd-popup .wd-radio-group {
 		padding-left: 0;
 		border-bottom: 0;
 	}

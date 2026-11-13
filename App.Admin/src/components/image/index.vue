@@ -16,7 +16,7 @@
 		"
 	>
 		<template #loading>
-			<wd-icon custom-class="fa-image__loading" class-prefix="iconfont" name="loadingImage" />
+			<FaIcon custom-class="fa-image__loading" name="loadingImage" />
 		</template>
 		<template #error>
 			<image class="fa-image__error" :src="notImage" mode="scaleToFill" />
@@ -131,26 +131,3 @@ defineExpose({
 	src: toRef(state, "src"),
 });
 </script>
-
-<style lang="scss" scoped>
-.fa-image.is-small {
-	padding: calc(var(--height) * 0.1);
-}
-
-:deep(.fa-image__loading) {
-	width: var(--width);
-	height: var(--height);
-	text-align: center;
-	line-height: var(--height);
-	font-size: calc(var(--width) * 0.8);
-	background-color: var(--wot-filled-oppo);
-	color: var(--wot-text-placeholder);
-}
-
-.fa-image__error {
-	width: calc(var(--width) * 0.8);
-	height: calc(var(--height) * 0.8);
-	padding-top: calc(var(--height) * 0.1);
-	padding-left: calc(var(--width) * 0.1);
-}
-</style>

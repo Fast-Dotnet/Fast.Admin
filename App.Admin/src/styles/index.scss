@@ -47,8 +47,17 @@ page {
 }
 
 /* #ifdef H5 */
+/* H5 首帧也由公共布局的 Wot TabBar 负责显示。 */
+uni-app > uni-tabbar {
+	display: none;
+}
+
 uni-page-head > .uni-page-head {
 	z-index: 101;
+}
+
+uni-page-refresh > .uni-page-refresh {
+	z-index: 100;
 }
 /* #endif */
 

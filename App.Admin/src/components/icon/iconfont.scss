@@ -1,17 +1,32 @@
+/* #ifndef APP-PLUS || H5 */
 @font-face {
 	font-family: "iconfont"; /* Project id 4686202 */
 	src:
-		url("iconfont.woff2?t=1764079455076") format("woff2"),
-		url("iconfont.woff?t=1764079455076") format("woff"),
-		url("iconfont.ttf?t=1764079455076") format("truetype");
+		url("https://at.alicdn.com/t/c/font_4686202_mdrtik9yjsn.woff?t=1791565739575") format("woff"),
+		url("https://at.alicdn.com/t/c/font_4686202_mdrtik9yjsn.ttf?t=1791565739575") format("truetype");
 }
+/* #endif */
+
+/*  #ifdef  APP-PLUS || H5  */
+@font-face {
+	font-family: "iconfont"; /* Project id 4686202 */
+	src: url("./iconfont.ttf") format("truetype");
+}
+/*  #endif  */
 
 .iconfont {
 	font-family: "iconfont" !important;
 	font-size: 16px;
+	font-weight: normal;
 	font-style: normal;
+	font-variant: normal;
+	text-transform: none;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+}
+
+.fa-icon-schedule:before {
+	content: "\e63f";
 }
 
 .fa-icon-evening:before {

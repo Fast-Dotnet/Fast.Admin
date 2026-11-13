@@ -12,7 +12,6 @@
 
 <script setup lang="ts">
 import { baseProps } from "@wot-ui/ui/common/props";
-import "./iconfont.css";
 
 defineOptions({
 	name: "Icon",
@@ -43,3 +42,7 @@ const emit = defineEmits<{
 	click: [event: MouseEvent];
 }>();
 </script>
+
+<style lang="scss" scoped>
+@use "./iconfont.scss";
+</style>

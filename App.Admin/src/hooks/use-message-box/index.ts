@@ -9,7 +9,6 @@ type MessageBoxConfirmOptions = Omit<DialogOptions, "beforeConfirm"> & {
 
 const defaultTitle = "温馨提示";
 const defaultTheme: DialogTheme = "text";
-const defaultZIndex = 1001;
 
 /**
  * 显示确认弹窗。
@@ -32,14 +31,12 @@ function confirm(messageOrOptions: MessageBoxConfirmOptions | string, options: M
 			? {
 					title: options.title ?? defaultTitle,
 					theme: options.theme ?? defaultTheme,
-					zIndex: options.zIndex ?? defaultZIndex,
 					...options,
 					msg: messageOrOptions,
 				}
 			: {
 					title: messageOrOptions.title ?? defaultTitle,
 					theme: messageOrOptions.theme ?? defaultTheme,
-					zIndex: messageOrOptions.zIndex ?? defaultZIndex,
 					...messageOrOptions,
 				};
 
@@ -86,11 +83,10 @@ export const useMessageBox = {
 				type: "show",
 				options:
 					typeof options === "string"
-						? { title: defaultTitle, theme: defaultTheme, zIndex: defaultZIndex, msg: options }
+						? { title: defaultTitle, theme: defaultTheme, msg: options }
 						: {
 								title: options.title ?? defaultTitle,
 								theme: options.theme ?? defaultTheme,
-								zIndex: options.zIndex ?? defaultZIndex,
 								...options,
 							},
 				then: (res) => resolve(res),
@@ -110,11 +106,10 @@ export const useMessageBox = {
 				type: "alert",
 				options:
 					typeof options === "string"
-						? { title: defaultTitle, theme: defaultTheme, zIndex: defaultZIndex, msg: options }
+						? { title: defaultTitle, theme: defaultTheme, msg: options }
 						: {
 								title: options.title ?? defaultTitle,
 								theme: options.theme ?? defaultTheme,
-								zIndex: options.zIndex ?? defaultZIndex,
 								...options,
 							},
 				then: (res) => resolve(res),
@@ -135,11 +130,10 @@ export const useMessageBox = {
 				type: "prompt",
 				options:
 					typeof options === "string"
-						? { title: defaultTitle, theme: defaultTheme, zIndex: defaultZIndex, msg: options }
+						? { title: defaultTitle, theme: defaultTheme, msg: options }
 						: {
 								title: options.title ?? defaultTitle,
 								theme: options.theme ?? defaultTheme,
-								zIndex: options.zIndex ?? defaultZIndex,
 								...options,
 							},
 				then: (res) => resolve(res),

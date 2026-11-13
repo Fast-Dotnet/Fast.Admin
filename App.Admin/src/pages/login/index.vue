@@ -72,7 +72,7 @@
 		<!-- #endif -->
 	</view>
 
-	<wd-dialog selector="confirm_agreement_dialog">
+	<wd-dialog selector="confirm_agreement_dialog" :root-portal="false">
 		<view class="page__agreement-text">
 			我已阅读并同意
 			<text @click.stop="router.push(CommonRoute.ServiceAgreement)">《服务协议》</text>

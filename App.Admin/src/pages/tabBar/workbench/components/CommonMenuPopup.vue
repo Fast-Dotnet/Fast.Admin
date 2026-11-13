@@ -1,6 +1,7 @@
 <template>
 	<FaPopup
 		ref="popupRef"
+		body-scroll="none"
 		height="76%"
 		position="bottom"
 		title="编辑常用应用"

@@ -1,0 +1,11 @@
+.fa-cell-picker {
+	border-bottom: var(--wot-stroke-main) solid var(--wot-border-main);
+
+	.wd-cell {
+		--wot-cell-arrow-margin-left: 0;
+	}
+
+	.wd-cell__left {
+		flex: var(--fa-cell-left-flex, 0 0 28%) !important;
+	}
+}

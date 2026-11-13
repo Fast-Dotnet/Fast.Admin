@@ -4,7 +4,6 @@
 			<slot name="prefix" />
 			<wd-input
 				v-model="modelValue"
-				custom-class="fa-search-input__input"
 				:disabled="props.disabled"
 				clearable
 				:placeholder="props.placeholder ? props.placeholder : props.scan ? '请输入或扫描您想要搜索的内容' : '请输入您想要搜索的内容'"
@@ -17,7 +16,7 @@
 				<template #prefix>
 					<view style="display: flex">
 						<FaIcon v-if="props.scan" custom-class="wd-input__icon" name="scan" @click="handleScanClick" />
-						<wd-icon v-else custom-class="wd-input__icon" name="search" />
+						<wd-icon v-else custom-class="wd-input__icon" name="search-line" />
 					</view>
 				</template>
 				<template #suffix v-if="props.search">
@@ -36,7 +35,8 @@
 		<FaPopup
 			v-if="props.filter"
 			ref="filterPopupRef"
-			custom-class="fa-search-input__popup"
+			custom-style="--fa-popup-body-padding: 0;"
+			body-scroll="none"
 			title="高级筛选"
 			height="60%"
 			position="bottom"
@@ -356,7 +356,3 @@ defineExpose({
 	searchParam: computed(() => searchParam.value),
 });
 </script>
-
-<style lang="scss" scoped>
-@use "./index.scss";
-</style>

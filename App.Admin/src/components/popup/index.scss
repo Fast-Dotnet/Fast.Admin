@@ -1,0 +1,145 @@
+.fa-popup {
+	display: flex;
+	flex-direction: column;
+	box-sizing: border-box;
+	color: var(--wot-text-main);
+	overflow: hidden !important;
+}
+
+.fa-popup__with-footer {
+	--wot-popup-bg: var(--wot-filled-oppo);
+}
+
+.fa-popup__header {
+	position: relative;
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	min-height: 52px;
+	padding: 0 4px;
+	border-bottom: 1px solid var(--wot-border-light);
+	background: var(--wot-filled-oppo);
+}
+
+.fa-popup__title-prefix {
+	overflow: hidden;
+}
+
+.fa-popup__header-actions {
+	justify-content: flex-end;
+}
+
+.fa-popup__title-prefix,
+.fa-popup__header-actions {
+	display: flex;
+	flex: 0 0 64px;
+	align-items: center;
+}
+
+.fa-popup__header--floating {
+	position: absolute;
+	top: 12px;
+	right: 4px;
+	z-index: 1;
+	min-height: 0;
+	padding: 0;
+	border: 0;
+	background: transparent;
+
+	.fa-popup__header-actions {
+		flex-basis: auto;
+	}
+}
+
+.fa-popup__header--with-prefix {
+	padding: 0 var(--fa-spacing-page, 12px);
+
+	.fa-popup__title-prefix,
+	.fa-popup__header-actions {
+		flex-basis: 25%;
+		min-width: 44px;
+		max-width: 80px;
+	}
+}
+
+.fa-popup__title {
+	flex: 1;
+	min-width: 0;
+	padding: 12rpx 0;
+	font-size: var(--wot-typography-body-size-large);
+	font-weight: var(--wot-font-weight-semibold);
+	text-align: center;
+	overflow-wrap: anywhere;
+}
+
+.fa-popup__close {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: transparent;
+
+	&::after {
+		border: 0;
+	}
+}
+
+.fa-popup__close-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	border-radius: var(--wot-radius-full);
+	color: var(--wot-popup-close-color, var(--wot-icon-auxiliary));
+	background: var(--wot-filled-bottom);
+}
+
+.fa-popup__body {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	padding: var(--fa-popup-body-padding, 20rpx);
+	background: var(--wot-filled-bottom);
+	min-width: 0;
+	min-height: 0;
+	overflow: auto;
+	overscroll-behavior-y: contain;
+
+	// 保留正文子项的自然高度，使用 flex-basis: 0 的内部列表仍可填满剩余空间。
+	> * {
+		flex-shrink: 0;
+	}
+}
+
+.fa-popup__body--no-scroll {
+	overflow: hidden;
+}
+
+.fa-popup__body--scroll-view {
+	padding: 0;
+}
+
+.fa-popup__scroll-view {
+	flex: 1;
+	min-height: 0;
+	height: 0;
+}
+
+.fa-popup__scroll-content {
+	padding: var(--fa-popup-body-padding, 20rpx);
+}
+
+.fa-popup__footer {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	gap: 20rpx;
+	padding: 24rpx var(--fa-spacing-page);
+	border-top: 1px solid var(--wot-border-light);
+	background: var(--wot-filled-oppo);
+}

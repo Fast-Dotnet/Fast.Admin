@@ -1,3 +1,36 @@
+@keyframes fa-loading-page {
+	0% {
+		background-position:
+			0 0,
+			0 100%,
+			100% 100%;
+	}
+	25% {
+		background-position:
+			100% 0,
+			0 100%,
+			100% 100%;
+	}
+	50% {
+		background-position:
+			100% 0,
+			0 0,
+			100% 100%;
+	}
+	75% {
+		background-position:
+			100% 0,
+			0 0,
+			0 100%;
+	}
+	100% {
+		background-position:
+			100% 100%,
+			0 0,
+			0 100%;
+	}
+}
+
 .fa-loading-page {
 	background-color: var(--wot-filled-oppo);
 	bottom: 0;
@@ -6,62 +39,33 @@
 	right: 0;
 	top: 0;
 	z-index: 2002;
-	@keyframes loading {
-		0% {
-			background-position:
-				0 0,
-				0 100%,
-				100% 100%;
-		}
-		25% {
-			background-position:
-				100% 0,
-				0 100%,
-				100% 100%;
-		}
-		50% {
-			background-position:
-				100% 0,
-				0 0,
-				100% 100%;
-		}
-		75% {
-			background-position:
-				100% 0,
-				0 0,
-				0 100%;
-		}
-		100% {
-			background-position:
-				100% 100%,
-				0 0,
-				0 100%;
-		}
+}
+
+.fa-loading-page__box {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	align-items: center;
+	position: absolute;
+	text-align: center;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 100%;
+
+	.box-icon {
+		width: 40px;
+		aspect-ratio: 1;
+		--g1: conic-gradient(from 90deg at 2px 2px, #0000 90deg, var(--wot-primary-6) 0);
+		--g2: conic-gradient(from -90deg at 16px 16px, #0000 90deg, var(--wot-primary-6) 0);
+		background: var(--g1), var(--g1), var(--g1), var(--g2), var(--g2), var(--g2);
+		background-size: 18px 18px;
+		background-repeat: no-repeat;
+		animation: fa-loading-page 1.2s infinite;
 	}
-	.fa-loading-page__box {
-		display: flex;
-		flex-direction: column;
-		gap: 5px;
-		align-items: center;
-		position: absolute;
-		text-align: center;
-		top: 50%;
-		transform: translateY(-50%);
-		width: 100%;
-		.box-icon {
-			width: 40px;
-			aspect-ratio: 1;
-			--g1: conic-gradient(from 90deg at 2px 2px, #0000 90deg, var(--wot-primary-6) 0);
-			--g2: conic-gradient(from -90deg at 16px 16px, #0000 90deg, var(--wot-primary-6) 0);
-			background: var(--g1), var(--g1), var(--g1), var(--g2), var(--g2), var(--g2);
-			background-size: 18px 18px;
-			background-repeat: no-repeat;
-			animation: loading 1.2s infinite;
-		}
-		.box-text {
-			color: var(--wot-primary-6);
-			font-size: var(--wot-typography-body-size-main);
-			margin: 3px 0;
-		}
+
+	.box-text {
+		color: var(--wot-primary-6);
+		font-size: var(--wot-typography-body-size-main);
+		margin: 3px 0;
 	}
 }

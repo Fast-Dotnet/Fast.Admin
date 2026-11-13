@@ -26,7 +26,6 @@
 				shape="round"
 				:active-color="configStore.layout.themeColor"
 				inactive-color="var(--wot-text-secondary)"
-				:z-index="9"
 				bordered
 				fixed
 				placeholder
@@ -53,9 +52,9 @@
 		<!-- 消息通知 -->
 		<wd-notify selector="#fast_notify" />
 		<!-- 轻提示 -->
-		<wd-toast selector="#fast_toast" :z-index="2099" />
+		<wd-toast selector="#fast_toast" />
 		<!-- 消息弹窗 -->
-		<wd-dialog selector="#fast_dialog" :z-index="1001">
+		<wd-dialog selector="#fast_dialog">
 			<template v-if="wdHookState.wdDialogState.loading" #actions>
 				<view style="padding: var(--wot-padding-super-loose) 0 0">
 					<wd-button custom-class="wd-dialog__actions-btn wd-dialog__actions-btn--confirm" type="info" variant="plain" block loading>

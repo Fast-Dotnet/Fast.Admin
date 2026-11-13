@@ -4,11 +4,11 @@
 			<view class="page-heading__title">{{ state.nickName ? `你好，${state.nickName}` : "欢迎回来" }}</view>
 			<view class="page-heading__description">选择一个工作空间，开始今天的工作。</view>
 		</view>
-		<view v-for="item in state.tenantList" :key="item.userKey" class="tenant-card" @click="handleTenantLogin(item.userKey)">
-			<image class="tenant-card__image" :src="item.logoUrl" mode="aspectFill" />
-			<view class="tenant-card__content">
-				<view class="tenant-card__name">{{ item.tenantName }}</view>
-				<view class="tenant-card__meta">{{ item.departmentName || "无部门" }} · {{ item.employeeName }}</view>
+		<view v-for="item in state.tenantList" :key="item.userKey" class="fa-tenant-card" @click="handleTenantLogin(item.userKey)">
+			<image class="fa-tenant-card__image" :src="item.logoUrl" mode="aspectFill" />
+			<view class="fa-tenant-card__content">
+				<view class="fa-tenant-card__name">{{ item.tenantName }}</view>
+				<view class="fa-tenant-card__meta">{{ item.departmentName || "无部门" }} · {{ item.employeeName }}</view>
 			</view>
 			<FaTag size="small" name="EditionEnum" :value="item.edition" />
 			<wd-icon name="arrow-right" size="28rpx" color="var(--wot-text-auxiliary)" />
@@ -99,50 +99,5 @@ onLoad(() => {
 	font-size: var(--wot-typography-body-size-main);
 	line-height: 1.6;
 	color: var(--wot-text-secondary);
-}
-
-.tenant-card {
-	padding: 24rpx;
-	display: flex;
-	gap: 18rpx;
-	align-items: center;
-	background-color: var(--wot-card-bg);
-	border-radius: var(--wot-radius-large);
-	box-shadow: var(--fa-shadow-subtle);
-	overflow: hidden;
-	transition: box-shadow var(--fa-motion-duration-normal) var(--fa-motion-easing-standard);
-
-	&:not(:last-child) {
-		margin-bottom: 24rpx;
-	}
-}
-
-.tenant-card__image {
-	flex: none;
-	width: 84rpx;
-	height: 84rpx;
-	border-radius: 18rpx;
-	box-shadow: var(--fa-shadow-ambient);
-}
-
-.tenant-card__content {
-	flex: 1;
-	overflow: hidden;
-}
-
-.tenant-card__name {
-	font-weight: var(--wot-font-weight-semibold);
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-
-.tenant-card__meta {
-	margin-top: 6rpx;
-	color: var(--wot-text-auxiliary);
-	font-size: 24rpx;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
 }
 </style>

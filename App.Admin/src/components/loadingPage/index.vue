@@ -27,7 +27,3 @@ const props = defineProps({
 	},
 });
 </script>
-
-<style lang="scss" scoped>
-@use "./index.scss";
-</style>

@@ -1,0 +1,29 @@
+.fa-tree-picker {
+	.fa-search-input {
+		flex-shrink: 0;
+		border-bottom: var(--wot-stroke-main) solid var(--wot-border-main);
+	}
+
+	.wd-tabs {
+		flex-shrink: 0;
+	}
+}
+
+.fa-tree-picker__list {
+	flex: 1;
+	min-height: 0;
+	height: 0;
+	background: var(--wot-filled-oppo);
+
+	.wd-cell__right {
+		flex: 0 0 auto;
+	}
+}
+
+.fa-tree-picker__cell--selected {
+	--wot-cell-bg: var(--wot-primary-1);
+}
+
+.wot-theme-dark .fa-tree-picker__cell--selected {
+	--wot-cell-bg: var(--wot-primary-3);
+}
