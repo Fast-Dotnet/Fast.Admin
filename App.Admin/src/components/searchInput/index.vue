@@ -66,13 +66,7 @@
 								@confirm="handleDateTimeConfirm"
 							/>
 
-							<wd-radio-group
-								custom-class="fa-search-input__date-ranges"
-								v-model="state.dataSearchRange"
-								direction="horizontal"
-								type="button"
-								@change="handleDateRangeChange"
-							>
+							<wd-radio-group v-model="state.dataSearchRange" direction="horizontal" type="button" @change="handleDateRangeChange">
 								<wd-radio v-for="(item, index) in dataSearchRangeList" :key="index" :value="item.value">
 									{{ item.label }}
 								</wd-radio>

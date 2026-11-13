@@ -80,8 +80,10 @@
 		border-bottom: var(--wot-stroke-main) solid var(--wot-border-main);
 	}
 
-	.fa-search-input__date-ranges {
-		border-bottom: 0;
+	.fa-cell-picker {
+		.wd-radio-group {
+			border-bottom: 0;
+		}
 	}
 
 	.wd-radio.is-button {
