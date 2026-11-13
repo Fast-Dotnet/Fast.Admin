@@ -3,11 +3,12 @@
 }
 
 .fa-image__loading {
+	--wot-icon-font-size: calc(var(--width) * 0.8);
+
 	width: var(--width);
 	height: var(--height);
 	text-align: center;
-	line-height: var(--height);
-	font-size: calc(var(--width) * 0.8);
+	line-height: var(--height) !important;
 	background-color: var(--wot-filled-oppo);
 	color: var(--wot-text-placeholder);
 }

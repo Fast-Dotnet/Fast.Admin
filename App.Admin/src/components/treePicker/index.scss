@@ -15,8 +15,10 @@
 	height: 0;
 	background: var(--wot-filled-oppo);
 
-	.wd-cell__right {
-		flex: 0 0 auto;
+	.wd-cell {
+		.wd-cell__right {
+			flex: 0 0 auto;
+		}
 	}
 }
 

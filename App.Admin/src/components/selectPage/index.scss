@@ -20,7 +20,9 @@
 		min-height: 0;
 	}
 
-	.wd-cell__right {
-		flex: 0 0 auto;
+	.wd-cell {
+		.wd-cell__right {
+			flex: 0 0 auto;
+		}
 	}
 }

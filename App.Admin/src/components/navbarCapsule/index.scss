@@ -20,8 +20,9 @@
 
 	.wd-icon,
 	.fa-icon {
+		--wot-icon-font-size: 20px;
+
 		width: 42px;
-		font-size: 20px;
 		color: var(--wot-navbar-color, var(--wot-text-main));
 		cursor: pointer;
 
