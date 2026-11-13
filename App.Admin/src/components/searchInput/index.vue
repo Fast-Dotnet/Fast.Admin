@@ -24,7 +24,7 @@
 				</template>
 			</wd-input>
 			<view v-if="props.filter" class="fa-search-input__filter" @click="filterPopupRef?.open()">
-				<FaIcon custom-class="wd-input__icon" name="filter" />
+				<FaIcon name="filter" />
 				<text class="fa-search-input__filter-text">筛选</text>
 			</view>
 			<slot name="suffix" />
