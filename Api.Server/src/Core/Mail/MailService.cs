@@ -14,6 +14,7 @@ using Fast.SqlSugar;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MimeKit;
 using SqlSugar;
@@ -441,6 +442,9 @@ public class MailService : IMailService, ISingletonDependency
             // 写入消息发送记录
             try
             {
+                HttpContext httpContext = FastContext.HttpContext;
+                IUser user = httpContext.RequestServices.GetService<IUser>();
+
                 // 独立客户端不加载 AOP，避免记录写入再次触发 SQL 审计
                 using var db = new SqlSugarClient(SqlSugarContext.GetConnectionConfig(SqlSugarContext.ConnectionSettings));
                 var messageSendRecordList = receiveEmails.Select(receiver => new MessageSendRecordModel
@@ -450,10 +454,11 @@ public class MailService : IMailService, ISingletonDependency
                         Title = title,
                         RecordValue = content.HtmlBody ?? content.TextBody ?? string.Empty,
                         IsSuccess = isSuccess,
+                        CreatedUserId = user?.EmployeeId > 0 ? user.EmployeeId : null,
+                        CreatedUserName = user?.EmployeeName,
                         CreatedTime = sendTime
                     })
                     .ToList();
-                HttpContext httpContext = FastContext.HttpContext;
                 foreach (MessageSendRecordModel item in messageSendRecordList)
                 {
                     item.RecordCreate(httpContext);

@@ -10,6 +10,8 @@ using System.Text.RegularExpressions;
 using CSRedis;
 using Fast.Center.Domain;
 using Fast.SqlSugar;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SqlSugar;
 
@@ -242,6 +244,9 @@ public class SmsService : ISmsService, ISingletonDependency
             // 写入消息发送记录
             try
             {
+                HttpContext httpContext = FastContext.HttpContext;
+                IUser user = httpContext.RequestServices.GetService<IUser>();
+
                 // 独立客户端不加载 AOP，避免记录写入再次触发 SQL 审计
                 using var db = new SqlSugarClient(SqlSugarContext.GetConnectionConfig(SqlSugarContext.ConnectionSettings));
                 var messageSendRecordModel = new MessageSendRecordModel
@@ -251,9 +256,11 @@ public class SmsService : ISmsService, ISingletonDependency
                     Title = templateCode,
                     RecordValue = templateParam?.ToJsonString(),
                     IsSuccess = isSuccess,
+                    CreatedUserId = user?.EmployeeId > 0 ? user.EmployeeId : null,
+                    CreatedUserName = user?.EmployeeName,
                     CreatedTime = sendTime
                 };
-                messageSendRecordModel.RecordCreate(FastContext.HttpContext);
+                messageSendRecordModel.RecordCreate(httpContext);
 
                 await db.Insertable(messageSendRecordModel).ExecuteCommandAsync();
             }
