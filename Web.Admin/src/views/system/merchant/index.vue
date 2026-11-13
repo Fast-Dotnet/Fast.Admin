@@ -16,7 +16,7 @@
 				small-width="180"
 				copy
 				sortable
-				link
+				:link="userInfoStore.hasButtonPermission('Merchant:Detail')"
 				:click="({ row }) => detailFormRef.detail(row.merchantId)"
 			/>
 			<FaTableColumn prop="remark" label="备注" width="200" small-width="180" sortable />
@@ -48,7 +48,7 @@ import { useTemplateRef } from "vue";
 import { Plus } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { merchantApi } from "@/api/services/Center/merchant";
-import { useApp } from "@/stores";
+import { useApp, useUserInfo } from "@/stores";
 import MerchantDetail from "./detail/index.vue";
 import MerchantEdit from "./edit/index.vue";
 import type { FaTableColumnCtx, FaTableInstance } from "fast-element-plus";
@@ -59,6 +59,7 @@ defineOptions({
 });
 
 const appStore = useApp();
+const userInfoStore = useUserInfo();
 const paymentChannelEnum = appStore.getDictionary("PaymentChannelEnum");
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");

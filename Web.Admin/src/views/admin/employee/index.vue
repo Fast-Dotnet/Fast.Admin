@@ -17,7 +17,15 @@
 				class-name="fa-table__line-height-normal-column"
 			>
 				<template #default="{ row }: { row: QueryEmployeePagedOutput }">
-					<el-button link type="primary" @click="detailFormRef.detail(row.employeeId)">{{ row.employeeName }}</el-button>
+					<el-button
+						v-if="userInfoStore.hasButtonPermission('Employee:Detail')"
+						link
+						type="primary"
+						@click="detailFormRef.detail(row.employeeId)"
+					>
+						{{ row.employeeName }}
+					</el-button>
+					<span v-else>{{ row.employeeName }}</span>
 					<br />
 					工号：
 					<span v-iconCopy="row.employeeNo">{{ row.employeeNo }}</span>

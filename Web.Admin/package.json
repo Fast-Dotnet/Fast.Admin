@@ -38,7 +38,7 @@
 		"dayjs": "^1.11.23",
 		"echarts": "^6.1.0",
 		"element-plus": "^2.14.8",
-		"fast-element-plus": "^2.0.29",
+		"fast-element-plus": "^2.0.30",
 		"nprogress": "^0.2.0",
 		"pinia": "^4.1.0",
 		"pinia-plugin-persistedstate": "^4.7.1",

@@ -75,7 +75,7 @@ const AuthDirective: Directive = {
 		el.__tag_originClick__ = vNode.props?.onClick;
 
 		// 仅超级管理员直接通过，其他用户任意命中一个权限码即可。
-		el.__auth_isAuth__ = userInfoStore.isSuperAdmin || el.__tag__.some((code) => userInfoStore.buttonCodeList.includes(code));
+		el.__auth_isAuth__ = userInfoStore.hasButtonPermission(el.__tag__);
 
 		// 权限判断
 		if (el.__auth_isAuth__) {

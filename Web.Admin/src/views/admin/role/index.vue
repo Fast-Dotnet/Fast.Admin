@@ -14,7 +14,7 @@
 				small-width="180"
 				copy
 				sortable
-				link
+				:link="userInfoStore.hasButtonPermission('Role:Detail')"
 				:click="({ row }) => detailFormRef.detail(row.roleId)"
 			/>
 			<FaTableColumn prop="roleCode" label="角色编码" width="200" small-width="180" copy sortable />
@@ -54,7 +54,7 @@ import { useTemplateRef } from "vue";
 import { Plus } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { roleApi } from "@/api/services/Admin/role";
-import { useApp } from "@/stores";
+import { useApp, useUserInfo } from "@/stores";
 import RoleAuth from "./auth/index.vue";
 import RoleDetail from "./detail/index.vue";
 import RoleEdit from "./edit/index.vue";
@@ -66,6 +66,7 @@ defineOptions({
 });
 
 const appStore = useApp();
+const userInfoStore = useUserInfo();
 const roleTypeEnum = appStore.getDictionary("RoleTypeEnum");
 const dataScopeTypeEnum = appStore.getDictionary("DataScopeTypeEnum");
 

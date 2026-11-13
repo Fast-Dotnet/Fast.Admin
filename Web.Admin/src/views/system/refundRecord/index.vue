@@ -35,7 +35,7 @@
 			<FaTableColumn prop="orderAmount" label="订单金额" width="120" small-width="100" sortable type="d2">
 				<template #default="{ row }: { row: RefundRecordModel }">￥{{ (row.orderAmount ?? 0).toFixed(2) }}</template>
 			</FaTableColumn>
-			<FaTableColumn prop="refundId" label="交易流水号" width="200" small-width="180" sortable :show-overflow-tooltip="false" />
+			<FaTableColumn prop="refundId" label="退款流水号" width="200" small-width="180" copy sortable />
 			<FaTableColumn prop="refundStatus" label="退款状态" width="150" small-width="130" sortable />
 			<FaTableColumn prop="refundTime" label="退款信息" width="280" small-width="260" sortable class-name="fa-table__line-height-normal-column">
 				<template #default="{ row }: { row: RefundRecordModel }">

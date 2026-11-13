@@ -12,7 +12,15 @@
 				class-name="fa-table__line-height-normal-column"
 			>
 				<template #default="{ row }: { row: QueryAccountPagedOutput }">
-					<el-button link type="primary" @click="detailFormRef.detail(row.accountId)">{{ row.nickName }}</el-button>
+					<el-button
+						v-if="userInfoStore.hasButtonPermission('Account:Detail')"
+						link
+						type="primary"
+						@click="detailFormRef.detail(row.accountId)"
+					>
+						{{ row.nickName }}
+					</el-button>
+					<span v-else>{{ row.nickName }}</span>
 					<br />
 					手机：
 					<span v-iconCopy="row.mobile">{{ row.mobile }}</span>
@@ -148,7 +156,7 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import { formatChineseRelativeTime } from "@fast-china/utils";
 import { CommonStatusEnum } from "@/api/enums/CommonStatusEnum";
 import { accountApi } from "@/api/services/Center/account";
-import { useApp } from "@/stores";
+import { useApp, useUserInfo } from "@/stores";
 import AccountDetail from "./detail/index.vue";
 import type { FaTableInstance } from "fast-element-plus";
 import type { QueryAccountPagedOutput } from "@/api/services/Center/account/models/QueryAccountPagedOutput";
@@ -158,6 +166,7 @@ defineOptions({
 });
 
 const appStore = useApp();
+const userInfoStore = useUserInfo();
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
 const detailFormRef = useTemplateRef<InstanceType<typeof AccountDetail>>("detailFormRef");

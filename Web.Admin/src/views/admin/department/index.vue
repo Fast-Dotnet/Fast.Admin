@@ -37,19 +37,10 @@
 					small-width="180"
 					copy
 					sortable
-					link
+					:link="userInfoStore.hasButtonPermission('Department:Detail')"
 					:click="({ row }) => detailFormRef.detail(row.departmentId)"
 				/>
-				<FaTableColumn
-					prop="departmentCode"
-					label="部门编码"
-					width="200"
-					small-width="180"
-					copy
-					sortable
-					link
-					:click="({ row }) => detailFormRef.detail(row.departmentId)"
-				/>
+				<FaTableColumn prop="departmentCode" label="部门编码" width="200" small-width="180" copy sortable />
 				<FaTableColumn prop="contacts" label="联系人" width="150" small-width="130" sortable />
 				<FaTableColumn prop="phone" label="电话" width="150" small-width="130" sortable />
 				<FaTableColumn prop="email" label="邮箱" width="150" small-width="130" sortable />
@@ -99,7 +90,7 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import { withDefineType } from "@fast-china/utils";
 import { departmentApi } from "@/api/services/Admin/department";
 import { organizationApi } from "@/api/services/Admin/organization";
-import { useApp } from "@/stores";
+import { useApp, useUserInfo } from "@/stores";
 import DepartmentDetail from "./detail/index.vue";
 import DepartmentEdit from "./edit/index.vue";
 import OrgEdit from "./edit/orgEdit.vue";
@@ -111,6 +102,7 @@ defineOptions({
 });
 
 const appStore = useApp();
+const userInfoStore = useUserInfo();
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
 const orgTreeRef = useTemplateRef<FaTreeInstance>("orgTreeRef");

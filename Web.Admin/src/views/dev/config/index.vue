@@ -15,7 +15,7 @@
 				small-width="280"
 				copy
 				sortable
-				link
+				:link="userInfoStore.hasButtonPermission('Config:Detail')"
 				:click="({ row }) => detailFormRef.detail(row.configId)"
 			/>
 			<FaTableColumn prop="configName" label="配置名称" width="200" small-width="180" sortable />
@@ -49,6 +49,7 @@ import { useTemplateRef } from "vue";
 import { Delete, Plus } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { configApi } from "@/api/services/Center/config";
+import { useUserInfo } from "@/stores";
 import ConfigDetail from "./detail/index.vue";
 import ConfigEdit from "./edit/index.vue";
 import type { FaTableInstance } from "fast-element-plus";
@@ -59,6 +60,7 @@ defineOptions({
 });
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
+const userInfoStore = useUserInfo();
 const detailFormRef = useTemplateRef<InstanceType<typeof ConfigDetail>>("detailFormRef");
 const editFormRef = useTemplateRef<InstanceType<typeof ConfigEdit>>("editFormRef");
 

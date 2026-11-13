@@ -15,7 +15,7 @@
 				small-width="180"
 				copy
 				sortable
-				link
+				:link="userInfoStore.hasButtonPermission('Tenant:Detail')"
 				:click="({ row }) => detailFormRef.detail(row.tenantId)"
 			/>
 			<FaTableColumn prop="tenantNo" label="租户编号" width="150" small-width="130" copy sortable />
@@ -70,7 +70,7 @@ import { Plus } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { CommonStatusEnum } from "@/api/enums/CommonStatusEnum";
 import { tenantApi } from "@/api/services/Center/tenant";
-import { useApp } from "@/stores";
+import { useApp, useUserInfo } from "@/stores";
 import TenantDetail from "./detail/index.vue";
 import TenantEdit from "./edit/index.vue";
 import type { FaTableColumnCtx, FaTableInstance } from "fast-element-plus";
@@ -81,6 +81,7 @@ defineOptions({
 });
 
 const appStore = useApp();
+const userInfoStore = useUserInfo();
 const tenantTypeEnum = appStore.getDictionary("TenantTypeEnum");
 const commonStatusEnum = appStore.getDictionary("CommonStatusEnum");
 const editionEnum = appStore.getDictionary("EditionEnum");

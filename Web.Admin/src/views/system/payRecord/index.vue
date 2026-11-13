@@ -35,7 +35,7 @@
 			<FaTableColumn prop="orderAmount" label="订单金额" width="120" small-width="100" sortable type="d2">
 				<template #default="{ row }: { row: PayRecordModel }">￥{{ (row.orderAmount ?? 0).toFixed(2) }}</template>
 			</FaTableColumn>
-			<FaTableColumn prop="transactionId" label="交易流水号" width="200" small-width="180" sortable :show-overflow-tooltip="false" />
+			<FaTableColumn prop="transactionId" label="交易流水号" width="200" small-width="180" copy sortable />
 			<FaTableColumn
 				prop="paymentTime"
 				label="支付信息"

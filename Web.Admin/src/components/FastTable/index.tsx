@@ -1,9 +1,9 @@
-import { Fragment, computed, defineComponent, onMounted, shallowReactive, shallowRef } from "vue";
+import { Fragment, type PropType, computed, defineComponent, onMounted, shallowReactive, shallowRef } from "vue";
 import { ElDropdownItem, ElMessage, ElMessageBox, dayjs } from "element-plus";
 import { FaTable, faTableEmits, faTableProps } from "fast-element-plus";
 import { debounce, makeSlots, useEmits, useExpose, useProps, useRender, useWindowSize, withDefineType } from "@fast-china/utils";
 import { tableApi } from "@/api/services/Center/table";
-import { useApp } from "@/stores";
+import { useApp, useUserInfo } from "@/stores";
 import type { FaTableColumnCtx, FaTableInstance, FaTableSlots } from "fast-element-plus";
 
 /**
@@ -27,6 +27,8 @@ export default defineComponent({
 			type: Boolean,
 			default: true,
 		},
+		/** 表格链接所需的按钮权限，多个权限码任一命中即可 */
+		permission: [String, Array] as PropType<string | string[]>,
 	},
 	emits: {
 		...faTableEmits,
@@ -37,6 +39,7 @@ export default defineComponent({
 		const faTableRef = shallowRef<FaTableInstance | null>(null);
 
 		const appStore = useApp();
+		const userInfoStore = useUserInfo();
 		const { width: windowWidth } = useWindowSize();
 
 		const state = shallowReactive({
@@ -226,19 +229,20 @@ export default defineComponent({
 			});
 		};
 
-		// 小屏取消业务列固定，组件库内置列保持原有固定行为
 		const responsiveColumns = computed(() => {
-			if (!isSmallScreen.value) return state.columns;
+			const hideLinks = !!props.permission && !userInfoStore.hasButtonPermission(props.permission);
+			if (!isSmallScreen.value && !hideLinks) return state.columns;
 
 			const componentColumnTypes = new Set(["expand", "selection", "index"]);
-			const cancelBusinessColumnFixed = (columns: FaTableColumnCtx[]): FaTableColumnCtx[] =>
+			const adaptColumns = (columns: FaTableColumnCtx[]): FaTableColumnCtx[] =>
 				columns.map((column) => ({
 					...column,
-					...(!componentColumnTypes.has(column.type ?? "") && { fixed: false }),
-					...(column._children?.length && { _children: cancelBusinessColumnFixed(column._children) }),
+					...(isSmallScreen.value && !componentColumnTypes.has(column.type ?? "") && { fixed: false }),
+					...(hideLinks && column.link && { link: false }),
+					...(column._children?.length && { _children: adaptColumns(column._children) }),
 				}));
 
-			return cancelBusinessColumnFixed(state.columns);
+			return adaptColumns(state.columns);
 		});
 
 		/** 优先加载传入列或本地缓存，否则请求服务端列配置。 */

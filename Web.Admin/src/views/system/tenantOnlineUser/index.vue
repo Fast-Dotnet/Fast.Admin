@@ -51,20 +51,9 @@
 				</template>
 			</FaTableColumn>
 			<FaTableColumn prop="deviceType" label="设备类型" width="120" small-width="100" sortable tag :enum="appEnvironmentEnum" />
-			<FaTableColumn
-				prop="deviceId"
-				label="设备Id/会话Id"
-				width="300"
-				small-width="280"
-				sortable
-				class-name="fa-table__line-height-normal-column"
-			>
-				<template #default="{ row }: { row: TenantOnlineUserModel }">
-					<span>{{ row.deviceId }}</span>
-					<br />
-					<span>{{ row.sessionId }}</span>
-				</template>
-			</FaTableColumn>
+			<FaTableColumn prop="deviceId" label="设备Id" width="300" small-width="280" sortable />
+			<FaTableColumn prop="sessionId" label="会话Id" width="300" small-width="280" copy sortable />
+
 			<FaTableColumn prop="isSuperAdmin" label="超级管理员" width="120" small-width="100" sortable tag :enum="booleanEnum" />
 			<FaTableColumn prop="isAdmin" label="管理员" width="100" small-width="80" sortable tag :enum="booleanEnum" />
 			<FaTableColumn prop="isOnline" label="在线" width="100" small-width="80" sortable tag :enum="booleanEnum" />
@@ -104,7 +93,6 @@
 				</template>
 			</FaTableColumn>
 			<FaTableColumn prop="offlineTime" label="下线时间" width="180" small-width="160" sortable type="dateTime" date-fix />
-			<FaTableColumn prop="sessionId" label="会话Id" width="300" small-width="280" copy sortable />
 
 			<!-- 表格操作 -->
 			<template #operation="{ row }: { row: TenantOnlineUserModel }">

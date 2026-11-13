@@ -14,7 +14,7 @@
 				small-width="280"
 				sortable
 				copy
-				link
+				:link="userInfoStore.hasButtonPermission('Dictionary:Detail')"
 				:click="({ row }) => detailFormRef.detail(row.dictionaryId)"
 			/>
 			<FaTableColumn prop="dictionaryName" label="字典名称" width="300" small-width="280" sortable />
@@ -85,6 +85,7 @@ import { useTemplateRef } from "vue";
 import { Plus } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { dictionaryApi } from "@/api/services/Center/dictionary";
+import { useUserInfo } from "@/stores";
 import DictionaryAdd from "./add/index.vue";
 import DictionaryDetail from "./detail/index.vue";
 import DictionaryEdit from "./edit/index.vue";
@@ -96,6 +97,7 @@ defineOptions({
 });
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
+const userInfoStore = useUserInfo();
 const detailFormRef = useTemplateRef<InstanceType<typeof DictionaryDetail>>("detailFormRef");
 const addFormRef = useTemplateRef<InstanceType<typeof DictionaryAdd>>("addFormRef");
 const editFormRef = useTemplateRef<InstanceType<typeof DictionaryEdit>>("editFormRef");

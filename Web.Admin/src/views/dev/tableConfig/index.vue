@@ -6,17 +6,7 @@
 				<el-button v-auth="'Table:Add'" type="primary" :icon="Plus" @click="editFormRef.add()">新增</el-button>
 			</template>
 
-			<FaTableColumn
-				prop="tableKey"
-				label="表格Key"
-				fixed="left"
-				width="200"
-				small-width="180"
-				sortable
-				copy
-				link
-				:click="({ row }) => detailFormRef.detail(row.tableId)"
-			/>
+			<FaTableColumn prop="tableKey" label="表格Key" fixed="left" width="200" small-width="180" sortable copy />
 			<FaTableColumn prop="tableName" label="表格名称" width="400" small-width="380" sortable />
 			<FaTableColumn prop="remark" label="备注" width="200" small-width="180" sortable />
 			<FaTableColumn prop="createdTime" label="创建时间" type="timeInfo" width="240" small-width="220" sortable />
@@ -34,7 +24,6 @@
 			/>
 			<!-- 表格操作 -->
 			<template #operation="{ row }: { row: QueryTableConfigPagedOutput }">
-				<el-button v-auth="'Table:Detail'" size="small" plain @click="detailFormRef.detail(row.tableId)">详情</el-button>
 				<el-button v-auth="'Table:Edit'" size="small" plain type="primary" @click="editFormRef.edit(row.tableId)">编辑</el-button>
 				<el-button v-auth="'Table:Edit'" size="small" plain type="info" @click="editFormRef.copy(row.tableId)">复制</el-button>
 				<el-button v-auth="'Table:Edit'" size="small" plain type="success" @click="handleColumnConfigClick(row)">配置列</el-button>
@@ -42,7 +31,6 @@
 			</template>
 		</FaTable>
 		<TableColumnConfig v-show="state.isEdit" ref="tableColumnConfigRef" @back="handleBack" @ok="faTableRef.refresh()" />
-		<TableConfigDetail ref="detailFormRef" />
 		<TableConfigEdit ref="editFormRef" @ok="faTableRef.refresh()" />
 	</div>
 </template>
@@ -53,7 +41,6 @@ import { Plus } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { tableApi } from "@/api/services/Center/table";
 import TableColumnConfig from "./config/index.vue";
-import TableConfigDetail from "./detail/index.vue";
 import TableConfigEdit from "./edit/index.vue";
 import type { FaTableInstance } from "fast-element-plus";
 import type { QueryTableConfigPagedOutput } from "@/api/services/Center/table/models/QueryTableConfigPagedOutput";
@@ -63,7 +50,6 @@ defineOptions({
 });
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
-const detailFormRef = useTemplateRef<InstanceType<typeof TableConfigDetail>>("detailFormRef");
 const editFormRef = useTemplateRef<InstanceType<typeof TableConfigEdit>>("editFormRef");
 const tableColumnConfigRef = useTemplateRef<InstanceType<typeof TableColumnConfig>>("tableColumnConfigRef");
 

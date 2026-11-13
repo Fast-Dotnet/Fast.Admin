@@ -215,6 +215,10 @@ input {
 		}
 	}
 
+	.fa__display_lr-r > :first-child {
+		max-height: min(240px, 40%);
+	}
+
 	.el-dialog:where(:not(.is-fullscreen)) {
 		max-width: calc(100vw - 32px);
 	}
