@@ -4,6 +4,7 @@
 			v-bind="wdCellProps"
 			:custom-class="props.customClass"
 			:value="props.radio ? undefined : dictionaryLabel"
+			:placeholder="props.radio ? undefined : props.placeholder"
 			:is-link="props.isLink && !props.radio && !formDisabled"
 			:clickable="props.clickable && !formDisabled"
 			@click="handleClick"
@@ -30,7 +31,7 @@
 				v-else
 				ref="popupRef"
 				custom-class="fa-cell-picker__popup"
-				custom-style="--fa-popup-body-padding: 0; min-height: min(240px, 60%); max-height: 60%;"
+				custom-style="--fa-popup-body-padding: 0;"
 				:title="props.title"
 				:z-index="210"
 				position="bottom"
@@ -94,6 +95,11 @@ const props = defineProps({
 		type: [Number, String],
 		default: undefined,
 	},
+	/** 弹窗选择未选中时的占位文字 */
+	placeholder: {
+		type: String,
+		default: "请选择",
+	},
 	/** 是否展示右侧箭头并开启点击反馈 */
 	isLink: {
 		type: Boolean,
@@ -116,7 +122,7 @@ const props = defineProps({
 	includeAll: Boolean,
 });
 
-const wdCellProps = useProps(props, cellProps, ["value", "customClass", "isLink", "clickable"]);
+const wdCellProps = useProps(props, cellProps, ["value", "placeholder", "customClass", "isLink", "clickable"]);
 
 const emit = defineEmits<{
 	/** 内容点击事件 */

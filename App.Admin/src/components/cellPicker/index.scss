@@ -29,6 +29,9 @@
 }
 
 .fa-cell-picker__popup {
+	min-height: min(240px, 60%) !important;
+	max-height: 60% !important;
+
 	.wd-cell-group {
 		--fa-cell-left-flex: 1;
 	}
