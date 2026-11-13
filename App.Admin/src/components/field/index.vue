@@ -11,7 +11,7 @@
 				{{ props.value }}
 			</text>
 		</slot>
-		<button v-if="props.copyable && props.value != null" class="fa-field__copy" hover-class="none" @click.stop="handleCopy">
+		<button v-if="props.copyable && props.value != null && props.value !== ''" class="fa-field__copy" hover-class="none" @click.stop="handleCopy">
 			<wd-icon name="copy" size="14px" />
 			<text>复制</text>
 		</button>
@@ -19,7 +19,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
 import { addCssUnit } from "@fast-china/utils";
 
 defineOptions({
