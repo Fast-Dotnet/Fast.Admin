@@ -6,6 +6,14 @@
 		:custom-style="configStore.layout.themeStyle"
 	>
 		<FaWatermark v-if="state.watermark" />
+
+		<!-- #ifdef H5 -->
+		<button v-if="showH5NavbarWorkbench" class="fa-layout__navbar-workbench" @click="handleNavbarWorkbench">
+			<FaIcon name="workbench" size="16px" />
+			<text>工作台</text>
+		</button>
+		<!-- #endif -->
+
 		<view :class="['fa-main', { 'fa-main__tabBar': state.isTabBar, 'fa-main__page-scroll': state.pageScroll === false }]" :style="mainStyle">
 			<slot v-if="state.rendered" />
 			<!-- 页脚 -->
@@ -151,6 +159,11 @@ const state = reactive({
 	rendered: false,
 });
 
+// #ifdef H5
+const showH5NavbarWorkbench = ref(false);
+const handleNavbarWorkbench = () => router.pushTab(CommonRoute.Workbench);
+// #endif
+
 /** 主题 */
 const theme = computed(() => (configStore.layout.isDark ? "dark" : "light"));
 
@@ -273,6 +286,11 @@ onLoad(() => {
 onShow(() => {
 	handleWatch();
 	configStore.applyPageTheme();
+
+	// #ifdef H5
+	const { path, style, isTabBar } = router.currentRoute.value;
+	showH5NavbarWorkbench.value = getCurrentPages().length === 1 && !isTabBar && path !== CommonRoute.Login && style?.navigationStyle !== "custom";
+	// #endif
 });
 onHide(() => {
 	// 隐藏页面停止消费，避免多个页面布局同时响应同一提示请求。

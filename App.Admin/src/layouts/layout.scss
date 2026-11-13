@@ -8,6 +8,37 @@
 	background-color: var(--wot-filled-bottom);
 }
 
+/* #ifdef H5 */
+.fa-layout__navbar-workbench {
+	position: fixed;
+	top: env(safe-area-inset-top, 0px);
+	left: var(--window-left, 0px);
+	// 高于 H5 原生导航栏，低于业务弹窗。
+	z-index: 102;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 5px;
+	width: 72px;
+	height: 44px;
+	margin: 0;
+	padding: 0 0 0 12px;
+	border: 0;
+	border-radius: 0;
+	color: var(--wot-navbar-color);
+	color: color-mix(in srgb, var(--wot-navbar-color) 78%, var(--wot-navbar-bg));
+	background-color: var(--wot-navbar-bg);
+	font-size: 13px;
+	font-weight: 400;
+	line-height: 1;
+	white-space: nowrap;
+
+	&::after {
+		border: 0;
+	}
+}
+/* #endif */
+
 .fa-main {
 	// 通过继承传给 z-paging 根节点，避开小程序的组件层级。
 	--fa-paging-min-height: var(--main-height);

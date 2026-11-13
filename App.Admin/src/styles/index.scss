@@ -46,6 +46,12 @@ page {
 	/* #endif */
 }
 
+/* #ifdef H5 */
+uni-page-head > .uni-page-head {
+	z-index: 101;
+}
+/* #endif */
+
 view,
 text,
 image,
