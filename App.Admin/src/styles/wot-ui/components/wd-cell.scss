@@ -8,6 +8,8 @@
 }
 
 .wd-cell {
+	--wot-cell-arrow-size: 16px;
+
 	.wd-cell__left {
 		flex: var(--fa-cell-left-flex, 1) !important;
 	}
