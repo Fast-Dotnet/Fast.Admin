@@ -1,11 +1,17 @@
 <template>
 	<FaPaging :request-api="payRecordApi.queryPayRecordPaged">
 		<template #top="{ searchParam, refresh }">
-			<FaSearchInput :filter="false" v-model:search-param="searchParam.value" @confirm="refresh()" @clear="refresh()" @search="refresh()" />
+			<FaSearchInput
+				data-search-range="Past1M"
+				v-model:search-param="searchParam.value"
+				@confirm="refresh()"
+				@clear="refresh()"
+				@search="refresh()"
+			/>
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.bizOrderNo" @click="editFormRef?.detail(item)">
+			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.bizOrderNo" @click="detailFormRef?.detail(item)">
 				<template #titleExtra>
 					<view class="fa-card__title-view">
 						<FaTag name="PaymentChannelEnum" :value="item.paymentChannel" />
@@ -17,7 +23,7 @@
 				<FaField label="UnionId" :value="item.unionId" />
 				<FaField label="收款商户号" :value="item.merchantNo" />
 				<FaField label="订单金额" :value="`￥${(item.orderAmount ?? 0).toFixed(2)}`" color="var(--wot-text-auxiliary)" />
-				<FaField label="支付金额" :value="`￥${(item.paymentAmount ?? 0).toFixed(2) || 0.0} `" color="var(--wot-warning-main)" />
+				<FaField label="支付金额" :value="`￥${(item.paymentAmount ?? 0).toFixed(2)}`" color="var(--wot-warning-main)" />
 				<FaField label="已支付">
 					<FaTag name="BooleanEnum" :value="item.isPaid" />
 				</FaField>
@@ -26,13 +32,13 @@
 		</template>
 	</FaPaging>
 
-	<PayRecordDetail ref="editFormRef" />
+	<PayRecordDetail ref="detailFormRef" />
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
 import { payRecordApi } from "@/api/services/Center/payRecord";
-import PayRecordDetail from "./detail/index.vue";
+import PayRecordDetail from "./components/detail.vue";
 
 definePage({
 	name: "SystemPayRecord",
@@ -42,5 +48,5 @@ definePage({
 	},
 });
 
-const editFormRef = ref<InstanceType<typeof PayRecordDetail>>();
+const detailFormRef = ref<InstanceType<typeof PayRecordDetail>>();
 </script>

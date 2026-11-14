@@ -9,7 +9,7 @@
 			</wd-form-item>
 			<wd-form-item title="备注" prop="remark">
 				<wd-textarea
-					custom-style="--wot-textarea-inner-min-height: 150rpx"
+					custom-style="--fa-textarea-height: 75px"
 					v-model="state.formData.remark"
 					clearable
 					:maxlength="200"

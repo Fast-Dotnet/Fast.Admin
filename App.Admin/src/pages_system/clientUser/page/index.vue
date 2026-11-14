@@ -4,7 +4,7 @@
 			<FaSearchInput v-model:search-param="searchParam.value" hide-search-time @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #filter>
 					<FaApplicationSelect v-model="searchParam.value.appId" />
-					<FaCellPicker title="性别" v-model="searchParam.value.sex" name="GenderEnum" radio />
+					<FaCellPicker title="性别" v-model="searchParam.value.sex" name="GenderEnum" radio clearable />
 				</template>
 			</FaSearchInput>
 		</template>

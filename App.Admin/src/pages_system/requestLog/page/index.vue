@@ -5,23 +5,25 @@
 				<template #filter>
 					<FaAccountSelect v-model="searchParam.value.accountId" />
 					<FaTenantSelect v-if="userInfoStore.isSuperAdmin" v-model="searchParam.value.tenantId" />
-					<FaCellPicker title="成功" v-model="searchParam.value.isSuccess" name="BooleanEnum" radio />
-					<FaCellPicker title="操作方式" v-model="searchParam.value.operationAction" name="HttpRequestActionEnum" radio />
-					<FaCellPicker title="请求方式" v-model="searchParam.value.requestMethod" name="HttpRequestMethodEnum" radio />
+					<FaCellPicker title="成功" v-model="searchParam.value.isSuccess" name="BooleanEnum" radio clearable />
+					<FaCellPicker title="操作方式" v-model="searchParam.value.operationAction" name="HttpRequestActionEnum" radio clearable />
+					<FaCellPicker title="请求方式" v-model="searchParam.value.requestMethod" name="HttpRequestMethodEnum" radio clearable />
 				</template>
 			</FaSearchInput>
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.createdTime" @click="editFormRef?.detail(item)">
+			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.createdTime" @click="detailFormRef?.detail(item)">
 				<template #titleExtra>
 					<view class="fa-card__title-view">
-						<FaTag name="HttpRequestActionEnum" :value="item.operationAction" />
 						<FaTag name="HttpRequestMethodEnum" :value="item.requestMethod" />
-						<FaTag name="BooleanEnum" :value="item.isSuccess" />
+						<FaTag name="HttpRequestActionEnum" :value="item.operationAction" />
 					</view>
 				</template>
 				<FaField label="昵称" :value="`${item.nickName} · ${item.mobile}`" />
+				<FaField label="成功">
+					<FaTag name="BooleanEnum" :value="item.isSuccess" />
+				</FaField>
 				<FaField label="操作名称" :value="item.operationName" />
 				<FaField label="请求地址" :value="item.location" />
 				<FaField label="耗时" :value="`${(Number(item.elapsedTime ?? 0) / 1000).toFixed(4)}秒`" color="var(--wot-text-auxiliary)" />
@@ -36,13 +38,14 @@
 		</template>
 	</FaPaging>
 
-	<RequestLogDetail ref="editFormRef" />
+	<RequestLogDetail ref="detailFormRef" />
 </template>
+
 <script setup lang="ts">
 import { ref } from "vue";
 import { requestLogApi } from "@/api/services/Center/requestLog";
 import { useUserInfo } from "@/stores";
-import RequestLogDetail from "./detail/index.vue";
+import RequestLogDetail from "./components/detail.vue";
 
 definePage({
 	name: "SystemRequestLog",
@@ -53,5 +56,6 @@ definePage({
 });
 
 const userInfoStore = useUserInfo();
-const editFormRef = ref<InstanceType<typeof RequestLogDetail>>();
+
+const detailFormRef = ref<InstanceType<typeof RequestLogDetail>>();
 </script>

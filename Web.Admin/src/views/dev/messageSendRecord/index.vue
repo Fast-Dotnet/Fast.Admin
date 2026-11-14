@@ -10,6 +10,7 @@
 			<FaTableColumn prop="receiver" label="收件人" width="200" small-width="180" copy sortable :show-overflow-tooltip="false" />
 			<FaTableColumn prop="title" label="标题" width="300" small-width="280" sortable :show-overflow-tooltip="false" />
 			<FaTableColumn prop="isSuccess" label="成功" width="100" small-width="80" sortable tag :enum="booleanEnum" />
+			<FaTableColumn prop="createdUserName" label="发送人" width="180" small-width="160" sortable />
 			<FaTableColumn
 				prop="createdTime"
 				label="发送时间"

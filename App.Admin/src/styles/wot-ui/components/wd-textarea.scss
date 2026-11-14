@@ -1,8 +1,8 @@
-/* Fast 风格：独立文本域使用圆角，表单项内的文本域沿用表单轮廓 */
+/* Fast 风格：独立文本域使用圆角 */
 .wd-textarea {
 	border-radius: var(--wot-radius-large);
-}
 
-.wd-form-item .wd-textarea {
-	border-radius: 0;
+	.wd-textarea__inner {
+		height: var(--fa-textarea-height);
+	}
 }

@@ -11,13 +11,7 @@
 		</template>
 
 		<template #default="{ pagedList, refresh }">
-			<FaCard
-				v-for="item in pagedList"
-				:key="item.positionId"
-				:title="item.positionName"
-				code="Position:Detail"
-				@click="handleDetail(item.positionId)"
-			>
+			<FaCard v-for="item in pagedList" :key="item.positionId" :title="item.positionName">
 				<FaField label="排序" :value="item.sort" />
 				<FaField label="备注" :value="item.remark" />
 				<FaField label="创建人" :value="item.createdUserName" />
@@ -55,10 +49,14 @@ definePage({
 
 const router = useRouter();
 
-const handleDetail = throttle((positionId: string) => router.push(`/pages_admin/position/detail/index?positionId=${positionId}`));
-
 const handleEdit = throttle((mode: IPageStateType, positionId?: string) =>
-	router.push(`/pages_admin/position/edit/index?mode=${mode}&positionId=${positionId}`)
+	router.push({
+		path: "/pages_admin/position/edit/index",
+		query: {
+			mode,
+			positionId,
+		},
+	})
 );
 
 const handleDelete = (item: QueryPositionPagedOutput, refresh: () => Promise<void>) => {

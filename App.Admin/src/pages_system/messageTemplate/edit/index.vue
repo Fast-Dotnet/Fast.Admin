@@ -1,51 +1,23 @@
 <template>
 	<view class="page">
-		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" :disabled="state.formDisabled" border>
-			<template v-if="state.pageMode === 'detail'">
-				<wd-form-item title="租户">
-					<text v-if="state.formData.tenantName">{{ state.formData.tenantName }}</text>
-					<text v-else style="color: var(--wot-text-placeholder)">未指定租户</text>
-				</wd-form-item>
-				<wd-form-item title="应用标识">
-					<text v-if="state.formData.appKey">{{ state.formData.appKey }}</text>
-					<text v-else style="color: var(--wot-text-placeholder)">{{ state.formData.tenantName ? "不区分应用" : "全局模板" }}</text>
-				</wd-form-item>
-			</template>
-			<template v-else>
-				<FaTenantSelect v-model="state.formData.tenantId" v-model:tenant-name="state.formData.tenantName" />
-				<FaApplicationClientSelect v-model="state.formData.appKey" />
-			</template>
-
+		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>
+			<FaTenantSelect v-model="state.formData.tenantId" v-model:tenant-name="state.formData.tenantName" />
+			<FaApplicationClientSelect v-model="state.formData.appKey" />
 			<wd-form-item title="模板类型" prop="templateType">
-				<FaRadioGroup v-model="state.formData.templateType" name="MessageTemplateTypeEnum" />
+				<FaRadioGroup name="MessageTemplateTypeEnum" v-model="state.formData.templateType" type="button" />
 			</wd-form-item>
 			<wd-form-item title="模板Code" prop="templateCode">
 				<wd-textarea
-					custom-style="--wot-textarea-inner-min-height: 100rpx"
+					custom-style="--fa-textarea-height: 50px"
 					v-model="state.formData.templateCode"
 					clearable
 					:maxlength="50"
 					placeholder="请输入模板Code"
 				/>
 			</wd-form-item>
-
-			<template v-if="state.pageMode === 'detail'">
-				<wd-form-item title="创建人" prop="createdUserName">
-					{{ state.formData.createdUserName }}
-				</wd-form-item>
-				<wd-form-item title="创建时间" prop="createdTime">
-					{{ state.formData.createdTime }}
-				</wd-form-item>
-				<wd-form-item title="更新人" prop="updatedUserName">
-					{{ state.formData.updatedUserName }}
-				</wd-form-item>
-				<wd-form-item title="更新时间" prop="updatedTime">
-					{{ state.formData.updatedTime }}
-				</wd-form-item>
-			</template>
 		</wd-form>
 
-		<wd-button v-if="!state.formDisabled" custom-class="fa-form-submit" type="primary" @click="handleConfirm">保存</wd-button>
+		<wd-button custom-class="fa-form-submit" type="primary" @click="handleConfirm">保存</wd-button>
 	</view>
 </template>
 
@@ -59,11 +31,11 @@ import { messageTemplateApi } from "@/api/services/Center/messageTemplate";
 import { useFormSchema, useLoading, useMessageBox, useToast } from "@/hooks";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { AddMessageTemplateInput } from "@/api/services/Center/messageTemplate/models/AddMessageTemplateInput";
-import type { QueryMessageTemplateDetailOutput } from "@/api/services/Center/messageTemplate/models/QueryMessageTemplateDetailOutput";
+import type { EditMessageTemplateInput } from "@/api/services/Center/messageTemplate/models/EditMessageTemplateInput";
 
 definePage({
 	name: "SystemMessageTemplateEdit",
-	authCode: ["MessageTemplate:Detail", "MessageTemplate:Add", "MessageTemplate:Edit"],
+	authCode: ["MessageTemplate:Add", "MessageTemplate:Edit"],
 	style: {
 		navigationBarTitleText: "消息模板",
 		enablePullDownRefresh: true,
@@ -75,13 +47,12 @@ const router = useRouter();
 const formRef = ref<FormInstance>();
 
 const state = reactive({
-	formData: withDefineType<QueryMessageTemplateDetailOutput>({ templateType: MessageTemplateTypeEnum.RegisterVerifyCode }),
-	formSchema: useFormSchema<AddMessageTemplateInput>({
+	formData: withDefineType<AddMessageTemplateInput & EditMessageTemplateInput>({ templateType: MessageTemplateTypeEnum.RegisterVerifyCode }),
+	formSchema: useFormSchema<AddMessageTemplateInput & EditMessageTemplateInput>({
 		templateType: { required: true, message: "请选择模板类型" },
 		templateCode: { required: true, message: "请输入模板Code" },
 	}),
-	formDisabled: true,
-	pageMode: withDefineType<IPageStateType>("detail"),
+	pageMode: withDefineType<IPageStateType>("add"),
 	recordId: withDefineType<string>(),
 });
 
@@ -109,21 +80,11 @@ const handleConfirm = throttle(async () => {
 
 const handleLoad = async () => {
 	switch (state.pageMode) {
-		case "detail":
-			{
-				state.formDisabled = true;
-				const apiRes = await messageTemplateApi.queryMessageTemplateDetail(state.recordId);
-				state.formData = apiRes;
-				uni.setNavigationBarTitle({ title: `消息模板详情 - ${apiRes.templateCode}` });
-			}
-			break;
 		case "add":
-			state.formDisabled = false;
 			uni.setNavigationBarTitle({ title: "添加消息模板" });
 			break;
 		case "edit":
 			{
-				state.formDisabled = false;
 				const apiRes = await messageTemplateApi.queryMessageTemplateDetail(state.recordId);
 				state.formData = apiRes;
 				uni.setNavigationBarTitle({ title: `编辑消息模板 - ${apiRes.templateCode}` });
@@ -133,7 +94,7 @@ const handleLoad = async () => {
 };
 
 onLoad((options: { mode?: IPageStateType; recordId?: string }) => {
-	if (!options?.mode || ((options.mode === "edit" || options.mode === "detail") && !options?.recordId)) {
+	if (!options?.mode || (options.mode === "edit" && !options?.recordId)) {
 		useMessageBox.alert("参数异常");
 		return;
 	}

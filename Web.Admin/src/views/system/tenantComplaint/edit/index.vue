@@ -48,7 +48,7 @@ const handleConfirm = () => {
 	faDialogRef.value.close(async () => {
 		await faFormRef.value.validateScrollToField();
 		await complaintApi.handleComplaint(state.formData);
-		ElMessage.success("新增成功！");
+		ElMessage.success("处理成功！");
 		emit("ok");
 	});
 };

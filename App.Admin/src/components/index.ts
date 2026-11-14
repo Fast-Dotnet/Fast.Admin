@@ -32,6 +32,8 @@ import TagFlag from "./tagFlag/index.vue";
 import TenantSelect from "./tenantSelect/index.vue";
 import Text from "./text/index.vue";
 import TreePicker from "./treePicker/index.vue";
+import UploadImage from "./uploadImage/index.vue";
+import UploadImages from "./uploadImages/index.vue";
 import Watermark from "./watermark/index.vue";
 import type { ComponentExposed } from "vue-component-type-helpers";
 
@@ -113,5 +115,9 @@ export type FaTreePickerInstance<
 	TResult extends ElTreeOutput = ElTreeOutput<TValue>,
 	TInput extends string | number | boolean | PagedInput = PagedInput,
 > = ComponentExposed<typeof TreePicker<TValue, TResult, TInput>>;
+export { UploadImage };
+export type FaUploadImageInstance = InstanceType<typeof UploadImage>;
+export { UploadImages };
+export type FaUploadImagesInstance = InstanceType<typeof UploadImages>;
 export { Watermark };
 export type FaWatermarkInstance = InstanceType<typeof Watermark>;

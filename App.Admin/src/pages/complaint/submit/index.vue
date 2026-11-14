@@ -22,12 +22,19 @@
 			</wd-form-item>
 
 			<wd-form-item title="联系邮箱" prop="contactEmail">
-				<wd-input v-model="state.formData.contactEmail" clearable type="text" inputmode="email" placeholder="请输入联系邮箱" />
+				<wd-input
+					v-model="state.formData.contactEmail"
+					clearable
+					type="text"
+					inputmode="email"
+					:maxlength="50"
+					placeholder="请输入联系邮箱"
+				/>
 			</wd-form-item>
 
 			<wd-form-item title="投诉描述" prop="description">
 				<wd-textarea
-					custom-style="--wot-textarea-inner-min-height: 150rpx"
+					custom-style="--fa-textarea-height: 75px"
 					v-model="state.formData.description"
 					clearable
 					:maxlength="200"
@@ -102,7 +109,16 @@ const complaintPickerLabel = computed(() => complaintTypeEnum.find((item) => ite
 /** 处理上传 */
 const handleUpload: UploadMethod = (file, formData, options) => {
 	fileApi
-		.uploadFile(file.url)
+		.uploadFile(file.url, (progress) =>
+			options.onProgress(
+				{
+					progress: Math.round((progress.progress ?? 0) * 100),
+					totalBytesSent: progress.loaded,
+					totalBytesExpectedToSend: progress.total ?? 0,
+				},
+				file
+			)
+		)
 		.then((res) => {
 			options.onSuccess({ data: res, statusCode: 200 }, file, formData);
 		})

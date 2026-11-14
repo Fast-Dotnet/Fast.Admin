@@ -10,10 +10,10 @@
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.createdTime" @click="editFormRef?.detail(item)">
+			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.createdTime" @click="detailFormRef?.detail(item)">
 				<FaField label="昵称" :value="`${item.nickName} · ${item.mobile}`" />
 				<FaField
-					label="秒数"
+					label="执行秒数"
 					:value="item.executeSeconds == null ? '--' : `${item.executeSeconds.toFixed(4)}秒`"
 					color="var(--wot-text-auxiliary)"
 				/>
@@ -28,12 +28,13 @@
 		</template>
 	</FaPaging>
 
-	<SqlExecutionLogDetail ref="editFormRef" />
+	<SqlExecutionLogDetail ref="detailFormRef" />
 </template>
+
 <script setup lang="ts">
 import { ref } from "vue";
 import { sqlExecutionLogApi } from "@/api/services/Center/sqlExecutionLog";
-import SqlExecutionLogDetail from "./detail/index.vue";
+import SqlExecutionLogDetail from "./components/detail.vue";
 
 definePage({
 	name: "DevSqlExecutionLog",
@@ -43,5 +44,5 @@ definePage({
 	},
 });
 
-const editFormRef = ref<InstanceType<typeof SqlExecutionLogDetail>>();
+const detailFormRef = ref<InstanceType<typeof SqlExecutionLogDetail>>();
 </script>

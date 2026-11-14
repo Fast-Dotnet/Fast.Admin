@@ -10,8 +10,8 @@
 			>
 				<template #filter>
 					<FaAccountSelect v-model="searchParam.value.accountId" />
-					<FaCellPicker title="操作类型" v-model="searchParam.value.operationType" name="PasswordOperationTypeEnum" radio />
-					<FaCellPicker title="类型" v-model="searchParam.value.type" name="PasswordTypeEnum" radio />
+					<FaCellPicker title="操作类型" v-model="searchParam.value.operationType" name="PasswordOperationTypeEnum" radio clearable />
+					<FaCellPicker title="类型" v-model="searchParam.value.type" name="PasswordTypeEnum" radio clearable />
 				</template>
 			</FaSearchInput>
 		</template>

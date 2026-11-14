@@ -1,0 +1,10 @@
+.fa-radio-group {
+	.wd-radio.is-button {
+		--wot-radio-button-margin: 0 10rpx 10rpx 0;
+		--wot-radio-button-bg: var(--wot-filled-oppo);
+	}
+
+	.wd-radio.is-button:not(.is-checked) {
+		border: var(--wot-stroke-main) solid var(--wot-border-main);
+	}
+}

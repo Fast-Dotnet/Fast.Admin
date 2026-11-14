@@ -53,6 +53,10 @@ export interface QueryMessageSendRecordDetailOutput {
 	 */
 	ip?: string;
 	/**
+	 * 创建人
+	 */
+	createdUserName?: string;
+	/**
 	 * 创建时间
 	 */
 	createdTime?: string;

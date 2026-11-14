@@ -1,22 +1,22 @@
-.zp-page-top {
-	padding-bottom: 20rpx;
-	max-width: var(--fa-layout-max-width, 440px);
-	margin: 0 auto;
-	background: var(--wot-filled-bottom);
-}
+.z-paging-content {
+	.zp-page-top {
+		padding-bottom: 20rpx;
+		max-width: var(--fa-layout-max-width, 440px);
+		margin: 0 auto;
+		background: var(--wot-filled-bottom);
+	}
 
-.zp-paging-container {
-	padding: 0 var(--fa-spacing-page);
-}
+	.zp-paging-container {
+		padding: 0 var(--fa-spacing-page);
+	}
 
-/* 分页的固定控件与加载视图位于导航栏和业务弹窗下方。 */
-.z-paging__page {
+	/* 分页的固定控件与加载视图位于导航栏和业务弹窗下方。 */
 	.zp-page-bottom,
 	.zp-back-to-top {
-		z-index: 80;
+		z-index: 80 !important;
 	}
 
 	.zp-loading-fixed {
-		z-index: 100;
+		z-index: 100 !important;
 	}
 }

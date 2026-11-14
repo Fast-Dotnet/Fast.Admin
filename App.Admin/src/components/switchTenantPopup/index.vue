@@ -20,8 +20,8 @@ import { LoginStatusEnum } from "@/api/enums/LoginStatusEnum";
 import { loginApi } from "@/api/services/Auth/login";
 import { useToast } from "@/hooks";
 import { useUserInfo } from "@/stores";
+import FaPopup from "../popup/index.vue";
 import type { LoginTenantOutput } from "@/api/services/Auth/login/models/LoginTenantOutput";
-import type { FaPopupInstance } from "@/components";
 
 defineOptions({
 	name: "SwitchTenantPopup",
@@ -39,7 +39,7 @@ const emit = defineEmits<{
 
 const userInfoStore = useUserInfo();
 
-const popupRef = ref<FaPopupInstance>();
+const popupRef = ref<InstanceType<typeof FaPopup>>();
 const tenantList = ref<LoginTenantOutput[]>([]);
 
 /** 处理租户登录 */

@@ -22,25 +22,27 @@ export const fileApi = {
 	/**
 	 * 下载文件
 	 */
-	download(data: DownloadFileInput, autoDownloadFile = true): Promise<AxiosResponse<Blob | ArrayBuffer | string>> {
+	download(data: DownloadFileInput, autoDownloadFile = true, onDownloadProgress?: (event: AxiosProgressEvent) => void): Promise<AxiosResponse<Blob | ArrayBuffer | string>> {
 		return axiosUtil.request<AxiosResponse<Blob | ArrayBuffer | string>>({
 			url: "/file/download",
 			method: "post",
 			data,
 			responseType: "blob",
 			autoDownloadFile,
+			onDownloadProgress,
 			requestType: "download",
 		});
 	},
 	/**
 	 * 上传Logo
 	 */
-	uploadLogo(filePath: string, onUploadProgress?: (progressEvent: AxiosProgressEvent) => void): Promise<string> {
+	uploadLogo(filePath: string, formData?: Record<string, any>, onUploadProgress?: (event: AxiosProgressEvent) => void): Promise<string> {
 		return axiosUtil.request<string>({
 			url: "/file/uploadLogo",
 			method: "upload",
 			name: "file",
 			filePath,
+			formData,
 			onUploadProgress,
 			cancelDuplicateRequest: false,
 			requestType: "upload",
@@ -49,12 +51,13 @@ export const fileApi = {
 	/**
 	 * 上传头像
 	 */
-	uploadAvatar(filePath: string, onUploadProgress?: (progressEvent: AxiosProgressEvent) => void): Promise<string> {
+	uploadAvatar(filePath: string, formData?: Record<string, any>, onUploadProgress?: (event: AxiosProgressEvent) => void): Promise<string> {
 		return axiosUtil.request<string>({
 			url: "/file/uploadAvatar",
 			method: "upload",
 			name: "file",
 			filePath,
+			formData,
 			onUploadProgress,
 			cancelDuplicateRequest: false,
 			requestType: "upload",
@@ -63,12 +66,13 @@ export const fileApi = {
 	/**
 	 * 上传证件照
 	 */
-	uploadIdPhoto(filePath: string, onUploadProgress?: (progressEvent: AxiosProgressEvent) => void): Promise<string> {
+	uploadIdPhoto(filePath: string, formData?: Record<string, any>, onUploadProgress?: (event: AxiosProgressEvent) => void): Promise<string> {
 		return axiosUtil.request<string>({
 			url: "/file/uploadIdPhoto",
 			method: "upload",
 			name: "file",
 			filePath,
+			formData,
 			onUploadProgress,
 			cancelDuplicateRequest: false,
 			requestType: "upload",
@@ -77,12 +81,13 @@ export const fileApi = {
 	/**
 	 * 上传安装包
 	 */
-	uploadPackage(filePath: string, onUploadProgress?: (progressEvent: AxiosProgressEvent) => void): Promise<string> {
+	uploadPackage(filePath: string, formData?: Record<string, any>, onUploadProgress?: (event: AxiosProgressEvent) => void): Promise<string> {
 		return axiosUtil.request<string>({
 			url: "/file/uploadPackage",
 			method: "upload",
 			name: "file",
 			filePath,
+			formData,
 			onUploadProgress,
 			cancelDuplicateRequest: false,
 			requestType: "upload",
@@ -91,12 +96,13 @@ export const fileApi = {
 	/**
 	 * 上传富文本
 	 */
-	uploadEditor(filePath: string, onUploadProgress?: (progressEvent: AxiosProgressEvent) => void): Promise<string> {
+	uploadEditor(filePath: string, formData?: Record<string, any>, onUploadProgress?: (event: AxiosProgressEvent) => void): Promise<string> {
 		return axiosUtil.request<string>({
 			url: "/file/uploadEditor",
 			method: "upload",
 			name: "file",
 			filePath,
+			formData,
 			onUploadProgress,
 			cancelDuplicateRequest: false,
 			requestType: "upload",
@@ -105,12 +111,13 @@ export const fileApi = {
 	/**
 	 * 上传文件
 	 */
-	uploadFile(filePath: string, onUploadProgress?: (progressEvent: AxiosProgressEvent) => void): Promise<string> {
+	uploadFile(filePath: string, formData?: Record<string, any>, onUploadProgress?: (event: AxiosProgressEvent) => void): Promise<string> {
 		return axiosUtil.request<string>({
 			url: "/file/uploadFile",
 			method: "upload",
 			name: "file",
 			filePath,
+			formData,
 			onUploadProgress,
 			cancelDuplicateRequest: false,
 			requestType: "upload",

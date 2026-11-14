@@ -88,9 +88,9 @@
 	"
 >
 import { computed, nextTick, ref, shallowRef, watch } from "vue";
+import FaPopup from "../popup/index.vue";
 import type { TabsInstance } from "@wot-ui/ui/components/wd-tabs/types";
 import type { PropType, Ref } from "vue";
-import type { FaPopupInstance } from "@/components";
 
 defineOptions({
 	name: "TreePicker",
@@ -183,7 +183,7 @@ const selectedLabel = defineModel<string>("label");
 /** 搜索参数 */
 const searchParam: Ref<Partial<TInput extends PagedInput ? TInput : PagedInput>> = ref({});
 
-const faPopupRef = ref<FaPopupInstance>();
+const faPopupRef = ref<InstanceType<typeof FaPopup>>();
 const tabsRef = ref<TabsInstance>();
 
 /** 激活的 Tab */

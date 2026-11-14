@@ -81,7 +81,6 @@ import { onHide } from "@dcloudio/uni-app";
 import { computed, nextTick, reactive, toRef } from "vue";
 import { addCssUnit, callOptionalFunction, definePropType, useProps } from "@fast-china/utils";
 import { popupProps } from "@wot-ui/ui/components/wd-popup/types";
-import FaLoading from "../loading/index.vue";
 import type { VNode } from "vue";
 
 defineOptions({

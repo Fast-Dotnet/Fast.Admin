@@ -9,8 +9,8 @@
 				@search="refresh()"
 			>
 				<template #filter>
-					<FaCellPicker title="成功" v-model="searchParam.value.isSuccess" name="BooleanEnum" radio />
-					<FaCellPicker title="渠道" v-model="searchParam.value.channel" name="MessageSendChannelEnum" placeholder="请选择" />
+					<FaCellPicker title="成功" v-model="searchParam.value.isSuccess" name="BooleanEnum" radio clearable />
+					<FaCellPicker title="渠道" v-model="searchParam.value.channel" name="MessageSendChannelEnum" clearable />
 				</template>
 			</FaSearchInput>
 		</template>
@@ -21,7 +21,7 @@
 				:key="item.recordId"
 				:title="item.receiver"
 				code="MessageSendRecord:Detail"
-				@click="editFormRef.detail(item.recordId)"
+				@click="detailFormRef?.detail(item.recordId)"
 			>
 				<template #titleExtra>
 					<view class="fa-card__title-view">
@@ -33,18 +33,24 @@
 				<FaField label="成功">
 					<FaTag name="BooleanEnum" :value="item.isSuccess" />
 				</FaField>
+				<FaField label="发送人" :value="item.createdUserName" />
 				<FaField label="发送时间" :value="item.createdTime" />
+				<FaField label="地区" :value="`${item.province ?? ''} - ${item.city ?? ''}`" />
+				<FaField label="Ip" :value="item.ip" />
+				<FaField label="设备" :value="item.device" />
+				<FaField label="操作系统" :value="item.os" />
+				<FaField label="浏览器" :value="item.browser" />
 			</FaCard>
 		</template>
 	</FaPaging>
 
-	<MessageSendRecordDetail ref="editFormRef" />
+	<MessageSendRecordDetail ref="detailFormRef" />
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
 import { messageSendRecordApi } from "@/api/services/Center/messageSendRecord";
-import MessageSendRecordDetail from "./detail/index.vue";
+import MessageSendRecordDetail from "./components/detail.vue";
 
 definePage({
 	name: "DevMessageSendRecord",
@@ -54,5 +60,5 @@ definePage({
 	},
 });
 
-const editFormRef = ref<InstanceType<typeof MessageSendRecordDetail>>();
+const detailFormRef = ref<InstanceType<typeof MessageSendRecordDetail>>();
 </script>

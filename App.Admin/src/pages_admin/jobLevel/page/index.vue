@@ -11,13 +11,7 @@
 		</template>
 
 		<template #default="{ pagedList, refresh }">
-			<FaCard
-				v-for="item in pagedList"
-				:key="item.jobLevelId"
-				:title="item.jobLevelName"
-				code="JobLevel:Detail"
-				@click="handleDetail(item.jobLevelId)"
-			>
+			<FaCard v-for="item in pagedList" :key="item.jobLevelId" :title="item.jobLevelName">
 				<FaField label="等级" :value="item.level" />
 				<FaField label="备注" :value="item.remark" />
 				<FaField label="创建人" :value="item.createdUserName" />
@@ -55,10 +49,14 @@ definePage({
 
 const router = useRouter();
 
-const handleDetail = throttle((jobLevelId: string) => router.push(`/pages_admin/jobLevel/detail/index?jobLevelId=${jobLevelId}`));
-
 const handleEdit = throttle((mode: IPageStateType, jobLevelId?: string) =>
-	router.push(`/pages_admin/jobLevel/edit/index?mode=${mode}&jobLevelId=${jobLevelId}`)
+	router.push({
+		path: "/pages_admin/jobLevel/edit/index",
+		query: {
+			mode,
+			jobLevelId,
+		},
+	})
 );
 
 const handleDelete = (item: QueryJobLevelPagedOutput, refresh: () => Promise<void>) => {

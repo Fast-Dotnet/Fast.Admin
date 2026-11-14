@@ -1,0 +1,17 @@
+.wd-form-item {
+	/* 表单内的文本域沿用表单轮廓。 */
+	.wd-textarea {
+		border-radius: 0;
+	}
+
+	/* 表单内由按钮组提供换行间距，最后一行不额外留白。 */
+	.fa-radio-group--button {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10rpx;
+
+		.wd-radio.is-button {
+			--wot-radio-button-margin: 0;
+		}
+	}
+}

@@ -1,11 +1,17 @@
 <template>
 	<FaPaging :request-api="refundRecordApi.queryRefundRecordPaged">
 		<template #top="{ searchParam, refresh }">
-			<FaSearchInput :filter="false" v-model:search-param="searchParam.value" @confirm="refresh()" @clear="refresh()" @search="refresh()" />
+			<FaSearchInput
+				data-search-range="Past1M"
+				v-model:search-param="searchParam.value"
+				@confirm="refresh()"
+				@clear="refresh()"
+				@search="refresh()"
+			/>
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.bizOrderNo" @click="editFormRef?.detail(item)">
+			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.bizOrderNo" @click="detailFormRef?.detail(item)">
 				<template #titleExtra>
 					<view class="fa-card__title-view">
 						<FaTag name="PaymentChannelEnum" :value="item.paymentChannel" />
@@ -17,22 +23,23 @@
 				<FaField label="UnionId" :value="item.unionId" />
 				<FaField label="退款商户号" :value="item.merchantNo" />
 				<FaField label="订单金额" :value="`￥${(item.orderAmount ?? 0).toFixed(2)}`" color="var(--wot-text-auxiliary)" />
-				<FaField label="退款金额" :value="`￥${(item.refundAmount ?? 0).toFixed(2) || 0.0} `" color="var(--wot-danger-main)" />
+				<FaField label="退款金额" :value="`￥${(item.refundAmount ?? 0).toFixed(2)}`" color="var(--wot-danger-main)" />
 				<FaField label="已退款">
 					<FaTag name="BooleanEnum" :value="item.isRefunded" />
 				</FaField>
+				<FaField label="退款状态" :value="item.refundStatus" />
 				<FaField label="退款时间" :value="item.refundTime" />
 			</FaCard>
 		</template>
 	</FaPaging>
 
-	<RefundRecordDetail ref="editFormRef" />
+	<RefundRecordDetail ref="detailFormRef" />
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
 import { refundRecordApi } from "@/api/services/Center/refundRecord";
-import RefundRecordDetail from "./detail/index.vue";
+import RefundRecordDetail from "./components/detail.vue";
 
 definePage({
 	name: "SystemRefundRecord",
@@ -42,5 +49,5 @@ definePage({
 	},
 });
 
-const editFormRef = ref<InstanceType<typeof RefundRecordDetail>>();
+const detailFormRef = ref<InstanceType<typeof RefundRecordDetail>>();
 </script>

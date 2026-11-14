@@ -3,9 +3,9 @@
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput v-model:search-param="searchParam.value" hide-search-time @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #filter>
-					<FaCellPicker title="状态" v-model="searchParam.value.status" name="CommonStatusEnum" radio />
-					<FaCellPicker title="版本" v-model="searchParam.value.edition" name="EditionEnum" radio />
-					<FaCellPicker title="租户类型" v-model="searchParam.value.tenantType" name="TenantTypeEnum" radio />
+					<FaCellPicker title="状态" v-model="searchParam.value.status" name="CommonStatusEnum" radio clearable />
+					<FaCellPicker title="版本" v-model="searchParam.value.edition" name="EditionEnum" radio clearable />
+					<FaCellPicker title="租户类型" v-model="searchParam.value.tenantType" name="TenantTypeEnum" radio clearable />
 					<wd-cell title="管理员手机" center>
 						<wd-input
 							custom-class="is-compact"
@@ -28,14 +28,14 @@
 				</template>
 				<template #footer>
 					<FaAuth code="Tenant:Add">
-						<wd-button size="small" icon="plus" @click="handleOpen('add')">新增</wd-button>
+						<wd-button size="small" icon="plus" @click="handleEdit('add')">新增</wd-button>
 					</FaAuth>
 				</template>
 			</FaSearchInput>
 		</template>
 
 		<template #default="{ pagedList, refresh }">
-			<FaCard v-for="item in pagedList" :key="item.tenantId" code="Tenant:Detail" @click="handleOpen('detail', item.tenantId)">
+			<FaCard v-for="item in pagedList" :key="item.tenantId" code="Tenant:Detail" @click="handleDetail(item.tenantId)">
 				<view style="display: flex; align-items: center; gap: 20rpx; margin-bottom: 24rpx">
 					<FaImage :src="item.logoUrl" width="88rpx" height="88rpx" original round />
 					<view style="flex: 1; display: flex; flex-direction: column">
@@ -70,7 +70,7 @@
 
 				<template #footer>
 					<FaAuth code="Tenant:Edit">
-						<wd-button size="mini" type="primary" variant="plain" @click="handleOpen('edit', item.tenantId)">编辑</wd-button>
+						<wd-button size="mini" type="primary" variant="plain" @click="handleEdit('edit', item.tenantId)">编辑</wd-button>
 					</FaAuth>
 					<FaAuth v-if="item.tenantType !== TenantTypeEnum.System" code="Tenant:Status">
 						<wd-button
@@ -109,8 +109,16 @@ definePage({
 
 const router = useRouter();
 
-const handleOpen = throttle((mode: IPageStateType, tenantId?: string) =>
-	router.push(`/pages_system/tenant/edit/index?mode=${mode}&tenantId=${tenantId}`)
+const handleDetail = throttle((tenantId: string) => router.push(`/pages_system/tenant/detail/index?tenantId=${tenantId}`));
+
+const handleEdit = throttle((mode: IPageStateType, tenantId?: string) =>
+	router.push({
+		path: "/pages_system/tenant/edit/index",
+		query: {
+			mode,
+			tenantId,
+		},
+	})
 );
 
 const handleChangeStatus = (item: QueryTenantPagedOutput, refresh: () => Promise<void>) => {

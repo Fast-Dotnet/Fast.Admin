@@ -85,6 +85,17 @@ textarea {
 	background-color: var(--wot-filled-bottom);
 }
 
+/* 详情页面基础容器 */
+.page__detail {
+	.wd-cell {
+		--fa-cell-left-flex: 0 0 28%;
+
+		.wd-cell__value {
+			text-align: left;
+		}
+	}
+}
+
 /* 表单提交按钮 */
 .wd-button.fa-form-submit {
 	display: block !important;

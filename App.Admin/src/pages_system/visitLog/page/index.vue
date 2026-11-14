@@ -11,13 +11,13 @@
 				<template #filter>
 					<FaAccountSelect v-model="searchParam.value.accountId" />
 					<FaTenantSelect v-if="userInfoStore.isSuperAdmin" v-model="searchParam.value.tenantId" />
-					<FaCellPicker title="访问类型" v-model="searchParam.value.visitType" name="VisitTypeEnum" radio />
+					<FaCellPicker title="访问类型" v-model="searchParam.value.visitType" name="VisitTypeEnum" radio clearable />
 				</template>
 			</FaSearchInput>
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.createdTime" @click="editFormRef?.detail(item)">
+			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.createdTime" @click="detailFormRef?.detail(item)">
 				<template #titleExtra>
 					<view class="fa-card__title-view">
 						<FaTag name="VisitTypeEnum" :value="item.visitType" />
@@ -36,13 +36,14 @@
 		</template>
 	</FaPaging>
 
-	<VisitLogDetail ref="editFormRef" />
+	<VisitLogDetail ref="detailFormRef" />
 </template>
+
 <script setup lang="ts">
 import { ref } from "vue";
 import { visitLogApi } from "@/api/services/Center/visitLog";
 import { useUserInfo } from "@/stores";
-import VisitLogDetail from "./detail/index.vue";
+import VisitLogDetail from "./components/detail.vue";
 
 definePage({
 	name: "SystemVisitLog",
@@ -54,5 +55,5 @@ definePage({
 
 const userInfoStore = useUserInfo();
 
-const editFormRef = ref<InstanceType<typeof VisitLogDetail>>();
+const detailFormRef = ref<InstanceType<typeof VisitLogDetail>>();
 </script>

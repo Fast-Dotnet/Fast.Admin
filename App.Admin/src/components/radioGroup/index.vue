@@ -1,5 +1,10 @@
 <template>
-	<wd-radio-group v-bind="wdRadioGroupProps" v-model="modelValue" @change="({ value }) => emit('change', value)">
+	<wd-radio-group
+		v-bind="wdRadioGroupProps"
+		:custom-class="`fa-radio-group ${props.type === 'button' ? 'fa-radio-group--button' : ''} ${props.customClass}`"
+		v-model="modelValue"
+		@change="({ value }) => emit('change', value)"
+	>
 		<wd-radio
 			v-for="(item, index) in dictionaries"
 			:key="index"
@@ -35,7 +40,7 @@ const props = defineProps({
 	},
 });
 
-const wdRadioGroupProps = useProps(props, radioGroupProps, ["modelValue"]);
+const wdRadioGroupProps = useProps(props, radioGroupProps, ["customClass", "modelValue"]);
 
 const emit = defineEmits<{
 	/** 当绑定值变化时触发的事件 */

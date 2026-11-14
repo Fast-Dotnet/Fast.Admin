@@ -10,7 +10,7 @@
 			>
 				<template #filter>
 					<FaEmployeeSelect v-model="searchParam.value.employeeId" placeholder="全部" />
-					<FaCellPicker title="操作类型" v-model="searchParam.value.operateType" name="OperateLogTypeEnum" radio />
+					<FaCellPicker title="操作类型" v-model="searchParam.value.operateType" name="OperateLogTypeEnum" radio clearable />
 				</template>
 			</FaSearchInput>
 		</template>
@@ -23,7 +23,7 @@
 					</view>
 				</template>
 
-				<FaField label="姓名" :value="[item.createdUserName, item.employeeNo].filter(Boolean).join(' · ')" />
+				<FaField label="姓名" :value="`${item.createdUserName} · ${item.employeeNo}`" />
 				<FaField label="手机" :value="item.mobile" />
 				<FaField label="标题" :value="item.title" />
 				<FaField label="业务编码" :value="item.bizNo" />
@@ -39,6 +39,7 @@
 
 	<OperateLogDetail ref="detailFormRef" />
 </template>
+
 <script setup lang="ts">
 import { ref } from "vue";
 import { operateLogApi } from "@/api/services/Admin/operateLog";

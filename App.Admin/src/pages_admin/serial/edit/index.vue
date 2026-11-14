@@ -2,22 +2,16 @@
 	<view class="page">
 		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>
 			<wd-form-item v-if="state.pageMode === 'add'" title="规则类型" prop="ruleType">
-				<wd-radio-group v-model="state.formData.ruleType" type="button" direction="horizontal">
-					<wd-radio v-for="item in serialRuleTypeEnum" :key="String(item.value)" :value="item.value">{{ item.label }}</wd-radio>
-				</wd-radio-group>
+				<FaRadioGroup name="SerialRuleTypeEnum" v-model="state.formData.ruleType" type="button" />
 			</wd-form-item>
 			<wd-form-item title="前缀" prop="prefix">
 				<wd-input v-model="state.formData.prefix" clearable :maxlength="5" placeholder="请输入前缀" />
 			</wd-form-item>
 			<wd-form-item title="时间类型" prop="dateType">
-				<wd-radio-group v-model="state.formData.dateType" type="button" direction="horizontal">
-					<wd-radio v-for="item in serialDateTypeEnum" :key="String(item.value)" :value="item.value">{{ item.label }}</wd-radio>
-				</wd-radio-group>
+				<FaRadioGroup name="SerialDateTypeEnum" v-model="state.formData.dateType" type="button" />
 			</wd-form-item>
 			<wd-form-item title="分隔符" prop="spacer">
-				<wd-radio-group v-model="state.formData.spacer" type="button" direction="horizontal">
-					<wd-radio v-for="item in serialSpacerEnum" :key="String(item.value)" :value="item.value">{{ item.label }}</wd-radio>
-				</wd-radio-group>
+				<FaRadioGroup name="SerialSpacerEnum" v-model="state.formData.spacer" type="button" />
 			</wd-form-item>
 			<wd-form-item title="长度" prop="length">
 				<wd-input-number v-model="state.formData.length" :min="1" :max="6" />
@@ -38,7 +32,6 @@ import { SerialRuleTypeEnum } from "@/api/enums/SerialRuleTypeEnum";
 import { SerialSpacerEnum } from "@/api/enums/SerialSpacerEnum";
 import { serialApi } from "@/api/services/Admin/serial";
 import { useFormSchema, useLoading, useMessageBox, useToast } from "@/hooks";
-import { useApp } from "@/stores";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { AddSerialRuleInput } from "@/api/services/Admin/serial/models/AddSerialRuleInput";
 import type { EditSerialRuleInput } from "@/api/services/Admin/serial/models/EditSerialRuleInput";
@@ -53,12 +46,6 @@ definePage({
 });
 
 const router = useRouter();
-
-const appStore = useApp();
-
-const serialRuleTypeEnum = appStore.getDictionary("SerialRuleTypeEnum");
-const serialDateTypeEnum = appStore.getDictionary("SerialDateTypeEnum");
-const serialSpacerEnum = appStore.getDictionary("SerialSpacerEnum");
 
 const formRef = ref<FormInstance>();
 

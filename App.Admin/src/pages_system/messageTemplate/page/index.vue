@@ -7,7 +7,7 @@
 				</template>
 				<template #footer>
 					<FaAuth code="MessageTemplate:Add">
-						<wd-button size="small" icon="plus" @click="handleOpen('add')">新增</wd-button>
+						<wd-button size="small" icon="plus" @click="handleEdit('add')">新增</wd-button>
 					</FaAuth>
 				</template>
 			</FaSearchInput>
@@ -19,7 +19,7 @@
 				:key="item.recordId"
 				:title="item.templateCode"
 				code="MessageTemplate:Detail"
-				@click="handleOpen('detail', item.recordId)"
+				@click="detailFormRef?.detail(item.recordId)"
 			>
 				<template #titleExtra>
 					<FaTag name="MessageTemplateTypeEnum" :value="item.templateType" />
@@ -47,7 +47,7 @@
 
 				<template #footer>
 					<FaAuth code="MessageTemplate:Edit">
-						<wd-button size="mini" type="primary" variant="plain" @click="handleOpen('edit', item.recordId)">编辑</wd-button>
+						<wd-button size="mini" type="primary" variant="plain" @click="handleEdit('edit', item.recordId)">编辑</wd-button>
 					</FaAuth>
 					<FaAuth code="MessageTemplate:Delete">
 						<wd-button size="mini" type="danger" variant="plain" @click="handleDelete(item, refresh)">删除</wd-button>
@@ -56,13 +56,17 @@
 			</FaCard>
 		</template>
 	</FaPaging>
+
+	<MessageTemplateDetail ref="detailFormRef" />
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import { throttle } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { messageTemplateApi } from "@/api/services/Center/messageTemplate";
 import { useMessageBox, useToast } from "@/hooks";
+import MessageTemplateDetail from "./components/detail.vue";
 import type { QueryMessageTemplatePagedOutput } from "@/api/services/Center/messageTemplate/models/QueryMessageTemplatePagedOutput";
 
 definePage({
@@ -75,8 +79,16 @@ definePage({
 
 const router = useRouter();
 
-const handleOpen = throttle((mode: IPageStateType, recordId?: string) =>
-	router.push(`/pages_system/messageTemplate/edit/index?mode=${mode}&recordId=${recordId}`)
+const detailFormRef = ref<InstanceType<typeof MessageTemplateDetail>>();
+
+const handleEdit = throttle((mode: IPageStateType, recordId?: string) =>
+	router.push({
+		path: "/pages_system/messageTemplate/edit/index",
+		query: {
+			mode,
+			recordId,
+		},
+	})
 );
 
 const handleDelete = (item: QueryMessageTemplatePagedOutput, refresh: () => Promise<void>) => {

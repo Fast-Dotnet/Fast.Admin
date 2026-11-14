@@ -118,9 +118,8 @@
 import { computed, ref, watch } from "vue";
 import FaPaging from "../paging/index.vue";
 import FaPopup from "../popup/index.vue";
-import FaSearchInput from "../searchInput/index.vue";
 import type { PropType, Ref } from "vue";
-import type { FaPagingInstance, FaPopupInstance } from "@/components";
+import type { ComponentExposed } from "vue-component-type-helpers";
 
 defineOptions({
 	name: "SelectPage",
@@ -220,8 +219,8 @@ const selectedLabel = defineModel<string>("label");
 /** 分页搜索参数 */
 const searchParam: Ref<Partial<TInput extends PagedInput ? TInput : PagedInput>> = ref({});
 
-const faPopupRef = ref<FaPopupInstance>();
-const faPagingRef = ref<FaPagingInstance<TResult, TInput>>();
+const faPopupRef = ref<InstanceType<typeof FaPopup>>();
+const faPagingRef = ref<ComponentExposed<typeof FaPaging<TResult, TInput>>>();
 
 const getLabel = (item: TResult) => {
 	const { label } = props.props;

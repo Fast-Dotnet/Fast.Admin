@@ -51,6 +51,7 @@ public class MessageSendRecordService : IDynamicApplication
                 Province = sl.Province,
                 City = sl.City,
                 Ip = sl.Ip,
+                CreatedUserName = sl.CreatedUserName,
                 CreatedTime = sl.CreatedTime
             })
             .OrderByIF(input.IsOrderBy, ob => ob.CreatedTime, OrderByType.Desc)
@@ -82,6 +83,7 @@ public class MessageSendRecordService : IDynamicApplication
                 Province = sl.Province,
                 City = sl.City,
                 Ip = sl.Ip,
+                CreatedUserName = sl.CreatedUserName,
                 CreatedTime = sl.CreatedTime
             })
             .SingleAsync();

@@ -5,13 +5,13 @@
 				<template #filter>
 					<FaAccountSelect v-model="searchParam.value.accountId" />
 					<FaTenantSelect v-model="searchParam.value.tenantId" />
-					<FaCellPicker title="差异类型" v-model="searchParam.value.diffType" name="DiffLogTypeEnum" radio />
+					<FaCellPicker title="差异类型" v-model="searchParam.value.diffType" name="DiffLogTypeEnum" radio clearable />
 				</template>
 			</FaSearchInput>
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.createdTime" @click="editFormRef?.detail(item)">
+			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.createdTime" @click="detailFormRef?.detail(item)">
 				<template #titleExtra>
 					<view class="fa-card__title-view">
 						<FaTag name="DiffLogTypeEnum" :value="item.diffType" />
@@ -22,7 +22,7 @@
 				<FaField label="表名称" :value="item.tableName" />
 				<FaField label="表描述" :value="item.tableDescription" />
 				<FaField
-					label="秒数"
+					label="执行秒数"
 					:value="item.executeSeconds == null ? '--' : `${item.executeSeconds.toFixed(4)}秒`"
 					color="var(--wot-text-auxiliary)"
 				/>
@@ -37,12 +37,13 @@
 		</template>
 	</FaPaging>
 
-	<SqlDiffLogDetail ref="editFormRef" />
+	<SqlDiffLogDetail ref="detailFormRef" />
 </template>
+
 <script setup lang="ts">
 import { ref } from "vue";
 import { sqlDiffLogApi } from "@/api/services/Center/sqlDiffLog";
-import SqlDiffLogDetail from "./detail/index.vue";
+import SqlDiffLogDetail from "./components/detail.vue";
 
 definePage({
 	name: "DevSqlDiffLog",
@@ -52,5 +53,5 @@ definePage({
 	},
 });
 
-const editFormRef = ref<InstanceType<typeof SqlDiffLogDetail>>();
+const detailFormRef = ref<InstanceType<typeof SqlDiffLogDetail>>();
 </script>

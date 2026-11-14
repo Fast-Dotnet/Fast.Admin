@@ -14,6 +14,9 @@
 					{{ state.formData.receiver }}
 				</el-text>
 			</FaFormItem>
+			<FaFormItem label="发送人">
+				{{ state.formData.createdUserName }}
+			</FaFormItem>
 			<FaFormItem label="发送时间">
 				{{ state.formData.createdTime }}
 			</FaFormItem>

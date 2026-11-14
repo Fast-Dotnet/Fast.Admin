@@ -16,10 +16,10 @@
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.createdTime" @click="editFormRef?.detail(item)">
+			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.createdTime" @click="detailFormRef?.detail(item)">
 				<FaField label="昵称" :value="`${item.nickName} · ${item.mobile}`" />
 				<FaField
-					label="秒数"
+					label="超时秒数"
 					:value="item.timeoutSeconds == null ? '--' : `${item.timeoutSeconds.toFixed(4)}秒`"
 					color="var(--wot-text-auxiliary)"
 				/>
@@ -34,12 +34,13 @@
 		</template>
 	</FaPaging>
 
-	<SqlTimeoutLogDetail ref="editFormRef" />
+	<SqlTimeoutLogDetail ref="detailFormRef" />
 </template>
+
 <script setup lang="ts">
 import { ref } from "vue";
 import { sqlTimeoutLogApi } from "@/api/services/Center/sqlTimeoutLog";
-import SqlTimeoutLogDetail from "./detail/index.vue";
+import SqlTimeoutLogDetail from "./components/detail.vue";
 
 definePage({
 	name: "DevSqlTimeoutLog",
@@ -49,5 +50,5 @@ definePage({
 	},
 });
 
-const editFormRef = ref<InstanceType<typeof SqlTimeoutLogDetail>>();
+const detailFormRef = ref<InstanceType<typeof SqlTimeoutLogDetail>>();
 </script>

@@ -58,7 +58,13 @@ const router = useRouter();
 const handleDetail = throttle((configId: string) => router.push(`/pages_dev/config/detail/index?configId=${configId}`));
 
 const handleEdit = throttle((mode: IPageStateType, configId?: string) =>
-	router.push(`/pages_dev/config/edit/index?mode=${mode}&configId=${configId}`)
+	router.push({
+		path: "/pages_dev/config/edit/index",
+		query: {
+			mode,
+			configId,
+		},
+	})
 );
 
 const handleDelete = (item: QueryConfigPagedOutput, refresh: () => Promise<void>) => {

@@ -11,19 +11,11 @@
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard
-				v-for="item in pagedList"
-				:key="item.serialRuleId"
-				:title="item.prefix"
-				code="SysSerial:Detail"
-				@click="handleDetail(item.serialRuleId)"
-			>
-				<template #titleExtra>
-					<view class="fa-card__title-view">
-						<FaTag name="SysSerialRuleTypeEnum" :value="item.ruleType" />
-					</view>
-				</template>
-
+			<FaCard v-for="item in pagedList" :key="item.serialRuleId">
+				<FaField label="规则类型">
+					<FaTag name="SysSerialRuleTypeEnum" :value="item.ruleType" />
+				</FaField>
+				<FaField label="前缀" :value="item.prefix" />
 				<FaField label="时间类型">
 					<FaText name="SerialDateTypeEnum" :value="item.dateType" />
 				</FaField>
@@ -34,6 +26,10 @@
 				<FaField label="最后序号" :value="item.lastSerial" />
 				<FaField label="最后编号" :value="item.lastSerialNo" />
 				<FaField label="最后生成时间" :value="item.lastTime" />
+				<FaField label="创建人" :value="item.createdUserName" />
+				<FaField label="创建时间" :value="item.createdTime" />
+				<FaField label="更新人" :value="item.updatedUserName" />
+				<FaField label="更新时间" :value="item.updatedTime" />
 
 				<template #footer>
 					<FaAuth code="SysSerial:Edit">
@@ -60,9 +56,13 @@ definePage({
 
 const router = useRouter();
 
-const handleDetail = throttle((serialRuleId: string) => router.push(`/pages_dev/sysSerial/detail/index?serialRuleId=${serialRuleId}`));
-
 const handleEdit = throttle((mode: IPageStateType, serialRuleId?: string) =>
-	router.push(`/pages_dev/sysSerial/edit/index?mode=${mode}&serialRuleId=${serialRuleId}`)
+	router.push({
+		path: "/pages_dev/sysSerial/edit/index",
+		query: {
+			mode,
+			serialRuleId,
+		},
+	})
 );
 </script>

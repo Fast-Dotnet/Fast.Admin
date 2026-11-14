@@ -16,7 +16,7 @@
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.createdTime" @click="editFormRef?.detail(item)">
+			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.createdTime" @click="detailFormRef?.detail(item)">
 				<FaField label="昵称" :value="`${item.nickName} · ${item.mobile}`" />
 				<FaField label="异常信息" :value="item.message" color="var(--wot-danger-main)" />
 				<FaField label="部门" :value="item.departmentName" />
@@ -30,12 +30,13 @@
 		</template>
 	</FaPaging>
 
-	<SqlExceptionLogDetail ref="editFormRef" />
+	<SqlExceptionLogDetail ref="detailFormRef" />
 </template>
+
 <script setup lang="ts">
 import { ref } from "vue";
 import { sqlExceptionLogApi } from "@/api/services/Center/sqlExceptionLog";
-import SqlExceptionLogDetail from "./detail/index.vue";
+import SqlExceptionLogDetail from "./components/detail.vue";
 
 definePage({
 	name: "DevSqlExceptionLog",
@@ -45,5 +46,5 @@ definePage({
 	},
 });
 
-const editFormRef = ref<InstanceType<typeof SqlExceptionLogDetail>>();
+const detailFormRef = ref<InstanceType<typeof SqlExceptionLogDetail>>();
 </script>

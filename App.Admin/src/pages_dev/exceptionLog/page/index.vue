@@ -16,7 +16,7 @@
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.createdTime" @click="editFormRef?.detail(item)">
+			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.createdTime" @click="detailFormRef?.detail(item)">
 				<FaField label="昵称" :value="`${item.nickName} · ${item.mobile}`" />
 				<FaField label="异常信息" :value="item.message" color="var(--wot-danger-main)" />
 				<FaField label="部门" :value="item.departmentName" />
@@ -30,12 +30,13 @@
 		</template>
 	</FaPaging>
 
-	<ExceptionLogDetail ref="editFormRef" />
+	<ExceptionLogDetail ref="detailFormRef" />
 </template>
+
 <script setup lang="ts">
 import { ref } from "vue";
 import { exceptionLogApi } from "@/api/services/Center/exceptionLog";
-import ExceptionLogDetail from "./detail/index.vue";
+import ExceptionLogDetail from "./components/detail.vue";
 
 definePage({
 	name: "DevExceptionLog",
@@ -45,5 +46,5 @@ definePage({
 	},
 });
 
-const editFormRef = ref<InstanceType<typeof ExceptionLogDetail>>();
+const detailFormRef = ref<InstanceType<typeof ExceptionLogDetail>>();
 </script>

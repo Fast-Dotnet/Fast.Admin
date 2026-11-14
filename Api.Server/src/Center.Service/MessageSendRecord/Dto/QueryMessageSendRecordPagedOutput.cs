@@ -70,6 +70,11 @@ public class QueryMessageSendRecordPagedOutput
     public virtual string Ip { get; set; }
 
     /// <summary>
+    /// 创建人
+    /// </summary>
+    public string CreatedUserName { get; set; }
+
+    /// <summary>
     /// 创建时间
     /// </summary>
     [SugarSearchTime]
