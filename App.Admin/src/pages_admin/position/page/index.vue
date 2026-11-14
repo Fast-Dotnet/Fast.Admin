@@ -69,7 +69,7 @@ const handleDelete = (item: QueryPositionPagedOutput) => {
 		async beforeConfirm() {
 			await positionApi.deletePosition({ positionId, rowVersion });
 			useToast.success("删除成功！");
-			faPagingRef.value.reload();
+			faPagingRef.value.refresh();
 		},
 	});
 };

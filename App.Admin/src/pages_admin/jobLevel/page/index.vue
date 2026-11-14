@@ -69,7 +69,7 @@ const handleDelete = (item: QueryJobLevelPagedOutput) => {
 		async beforeConfirm() {
 			await jobLevelApi.deleteJobLevel({ jobLevelId, rowVersion });
 			useToast.success("删除成功！");
-			faPagingRef.value.reload();
+			faPagingRef.value.refresh();
 		},
 	});
 };

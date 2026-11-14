@@ -125,7 +125,7 @@ const handleChangeStatus = (item: QueryTenantPagedOutput) => {
 		async beforeConfirm() {
 			await tenantApi.changeStatus({ tenantId, rowVersion });
 			useToast.success("操作成功！");
-			faPagingRef.value.reload();
+			faPagingRef.value.refresh();
 		},
 	});
 };

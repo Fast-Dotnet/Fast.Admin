@@ -40,7 +40,7 @@
 	</FaPaging>
 
 	<ComplaintDetail ref="detailFormRef" />
-	<ComplaintHandle ref="handleFormRef" @ok="pagingRef.reload()" />
+	<ComplaintHandle ref="handleFormRef" @ok="pagingRef.refresh()" />
 </template>
 
 <script setup lang="ts">

@@ -83,7 +83,7 @@ const handleDelete = (item: QueryMerchantPagedOutput) => {
 		async beforeConfirm() {
 			await merchantApi.deleteMerchant({ merchantId, rowVersion });
 			useToast.success("删除成功！");
-			faPagingRef.value.reload();
+			faPagingRef.value.refresh();
 		},
 	});
 };

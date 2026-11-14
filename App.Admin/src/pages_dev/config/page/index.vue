@@ -79,7 +79,7 @@ const handleDelete = (item: QueryConfigPagedOutput) => {
 		async beforeConfirm() {
 			await configApi.deleteConfigCache({ configCode });
 			useToast.success("删除成功！");
-			faPagingRef.value.reload();
+			faPagingRef.value.refresh();
 		},
 	});
 };
@@ -89,7 +89,7 @@ const handleDeleteAll = () => {
 		async beforeConfirm() {
 			await configApi.deleteAllConfigCache();
 			useToast.success("删除成功！");
-			faPagingRef.value.reload();
+			faPagingRef.value.refresh();
 		},
 	});
 };

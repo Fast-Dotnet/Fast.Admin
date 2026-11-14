@@ -95,7 +95,7 @@ const handleDelete = (item: QueryMessageTemplatePagedOutput) => {
 		async beforeConfirm() {
 			await messageTemplateApi.deleteMessageTemplate({ recordId, rowVersion });
 			useToast.success("删除成功！");
-			faPagingRef.value.reload();
+			faPagingRef.value.refresh();
 		},
 	});
 };

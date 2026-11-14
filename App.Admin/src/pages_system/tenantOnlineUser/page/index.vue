@@ -84,7 +84,7 @@ const handleForceOffline = (item: TenantOnlineUserModel) => {
 		async beforeConfirm() {
 			await tenantOnlineUserApi.forceOffline({ connectionId });
 			useToast.success("强制下线成功！");
-			faPagingRef.value.reload();
+			faPagingRef.value.refresh();
 		},
 	});
 };

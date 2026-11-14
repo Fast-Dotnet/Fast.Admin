@@ -39,7 +39,7 @@
 	</FaPaging>
 
 	<TenantComplaintDetail ref="detailFormRef" />
-	<TenantComplaintHandle ref="handleFormRef" @ok="pagingRef.reload()" />
+	<TenantComplaintHandle ref="handleFormRef" @ok="pagingRef.refresh()" />
 </template>
 
 <script setup lang="ts">

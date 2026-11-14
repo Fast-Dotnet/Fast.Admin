@@ -67,7 +67,7 @@ const handleRefresh = (item: QueryApplicationTokenPagedOutput) => {
 		async beforeConfirm() {
 			await applicationTokenApi.refreshApplicationToken({ recordId: item.recordId });
 			useToast.success("刷新成功！");
-			faPagingRef.value.reload();
+			faPagingRef.value.refresh();
 		},
 	});
 };
@@ -77,7 +77,7 @@ const handleDelete = (item: QueryApplicationTokenPagedOutput) => {
 		async beforeConfirm() {
 			await applicationTokenApi.deleteApplicationToken({ recordId: item.recordId });
 			useToast.success("删除成功！");
-			faPagingRef.value.reload();
+			faPagingRef.value.refresh();
 		},
 	});
 };
