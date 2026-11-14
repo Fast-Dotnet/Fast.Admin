@@ -1,5 +1,5 @@
 <template>
-	<FaPaging :request-api="jobLevelApi.queryJobLevelPaged">
+	<FaPaging ref="faPagingRef" :request-api="jobLevelApi.queryJobLevelPaged">
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput :filter="false" v-model:search-param="searchParam.value" @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #footer>
@@ -10,7 +10,7 @@
 			</FaSearchInput>
 		</template>
 
-		<template #default="{ pagedList, refresh }">
+		<template #default="{ pagedList }">
 			<FaCard v-for="item in pagedList" :key="item.jobLevelId" :title="item.jobLevelName">
 				<FaField label="等级" :value="item.level" />
 				<FaField label="备注" :value="item.remark" />
@@ -24,7 +24,7 @@
 						<wd-button size="mini" type="primary" variant="plain" @click="handleEdit('edit', item.jobLevelId)">编辑</wd-button>
 					</FaAuth>
 					<FaAuth code="JobLevel:Delete">
-						<wd-button size="mini" type="danger" variant="plain" @click="handleDelete(item, refresh)">删除</wd-button>
+						<wd-button size="mini" type="danger" variant="plain" @click="handleDelete(item)">删除</wd-button>
 					</FaAuth>
 				</template>
 			</FaCard>
@@ -33,11 +33,13 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import { throttle } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { jobLevelApi } from "@/api/services/Admin/jobLevel";
 import { useMessageBox, useToast } from "@/hooks";
 import type { QueryJobLevelPagedOutput } from "@/api/services/Admin/jobLevel/models/QueryJobLevelPagedOutput";
+import type { FaPagingInstance } from "@/components";
 
 definePage({
 	name: "AdminJobLevel",
@@ -49,6 +51,8 @@ definePage({
 
 const router = useRouter();
 
+const faPagingRef = ref<FaPagingInstance>();
+
 const handleEdit = throttle((mode: IPageStateType, jobLevelId?: string) =>
 	router.push({
 		path: "/pages_admin/jobLevel/edit/index",
@@ -59,13 +63,13 @@ const handleEdit = throttle((mode: IPageStateType, jobLevelId?: string) =>
 	})
 );
 
-const handleDelete = (item: QueryJobLevelPagedOutput, refresh: () => Promise<void>) => {
+const handleDelete = (item: QueryJobLevelPagedOutput) => {
 	const { jobLevelId, rowVersion } = item;
 	useMessageBox.confirm("确定删除此记录？", {
 		async beforeConfirm() {
 			await jobLevelApi.deleteJobLevel({ jobLevelId, rowVersion });
 			useToast.success("删除成功！");
-			refresh();
+			faPagingRef.value.reload();
 		},
 	});
 };

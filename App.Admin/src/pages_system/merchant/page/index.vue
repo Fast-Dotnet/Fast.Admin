@@ -1,5 +1,5 @@
 <template>
-	<FaPaging :request-api="merchantApi.queryMerchantPaged">
+	<FaPaging ref="faPagingRef" :request-api="merchantApi.queryMerchantPaged">
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput hide-search-time v-model:search-param="searchParam.value" @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #filter>
@@ -14,7 +14,7 @@
 			</FaSearchInput>
 		</template>
 
-		<template #default="{ pagedList, refresh }">
+		<template #default="{ pagedList }">
 			<FaCard
 				v-for="item in pagedList"
 				:key="item.merchantId"
@@ -36,7 +36,7 @@
 						<wd-button size="mini" type="primary" variant="plain" @click="handleEdit('edit', item.merchantId)">编辑</wd-button>
 					</FaAuth>
 					<FaAuth code="Merchant:Delete">
-						<wd-button size="mini" type="danger" variant="plain" @click="handleDelete(item, refresh)">删除</wd-button>
+						<wd-button size="mini" type="danger" variant="plain" @click="handleDelete(item)">删除</wd-button>
 					</FaAuth>
 				</template>
 			</FaCard>
@@ -45,11 +45,13 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import { throttle } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { merchantApi } from "@/api/services/Center/merchant";
 import { useMessageBox, useToast } from "@/hooks";
 import type { QueryMerchantPagedOutput } from "@/api/services/Center/merchant/models/QueryMerchantPagedOutput";
+import type { FaPagingInstance } from "@/components";
 
 definePage({
 	name: "SystemMerchant",
@@ -60,6 +62,8 @@ definePage({
 });
 
 const router = useRouter();
+
+const faPagingRef = ref<FaPagingInstance>();
 
 const handleDetail = throttle((merchantId: string) => router.push(`/pages_system/merchant/detail/index?merchantId=${merchantId}`));
 
@@ -73,13 +77,13 @@ const handleEdit = throttle((mode: IPageStateType, merchantId?: string) =>
 	})
 );
 
-const handleDelete = (item: QueryMerchantPagedOutput, refresh: () => Promise<void>) => {
+const handleDelete = (item: QueryMerchantPagedOutput) => {
 	const { merchantId, rowVersion } = item;
 	useMessageBox.confirm("确定删除此记录？", {
 		async beforeConfirm() {
 			await merchantApi.deleteMerchant({ merchantId, rowVersion });
 			useToast.success("删除成功！");
-			refresh();
+			faPagingRef.value.reload();
 		},
 	});
 };

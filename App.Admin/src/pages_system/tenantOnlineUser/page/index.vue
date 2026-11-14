@@ -1,5 +1,5 @@
 <template>
-	<FaPaging :request-api="tenantOnlineUserApi.queryTenantOnlineUserPaged">
+	<FaPaging ref="faPagingRef" :request-api="tenantOnlineUserApi.queryTenantOnlineUserPaged">
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput v-model:search-param="searchParam.value" hide-search-time @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #filter>
@@ -10,7 +10,7 @@
 			</FaSearchInput>
 		</template>
 
-		<template #default="{ pagedList, refresh }">
+		<template #default="{ pagedList }">
 			<FaCard v-for="item in pagedList" :key="item.connectionId" @click="detailFormRef?.detail(item)">
 				<view style="display: flex; align-items: center; gap: 20rpx; margin-bottom: 24rpx">
 					<FaImage :src="item.avatar" width="88rpx" height="88rpx" original round />
@@ -49,7 +49,7 @@
 
 				<template v-if="item.isOnline" #footer>
 					<FaAuth code="TenantOnlineUser:ForceOffline">
-						<wd-button size="mini" type="warning" variant="plain" @click="handleForceOffline(item, refresh)">强制下线</wd-button>
+						<wd-button size="mini" type="warning" variant="plain" @click="handleForceOffline(item)">强制下线</wd-button>
 					</FaAuth>
 				</template>
 			</FaCard>
@@ -65,6 +65,7 @@ import { tenantOnlineUserApi } from "@/api/services/Center/tenantOnlineUser";
 import { useMessageBox, useToast } from "@/hooks";
 import TenantOnlineUserDetail from "./components/detail.vue";
 import type { TenantOnlineUserModel } from "@/api/services/Center/tenantOnlineUser/models/TenantOnlineUserModel";
+import type { FaPagingInstance } from "@/components";
 
 definePage({
 	name: "SystemTenantOnlineUser",
@@ -74,15 +75,16 @@ definePage({
 	},
 });
 
+const faPagingRef = ref<FaPagingInstance>();
 const detailFormRef = ref<InstanceType<typeof TenantOnlineUserDetail>>();
 
-const handleForceOffline = (item: TenantOnlineUserModel, refresh: () => Promise<void>) => {
+const handleForceOffline = (item: TenantOnlineUserModel) => {
 	const { connectionId, mobile } = item;
 	useMessageBox.confirm(`确定踢掉账号：【${mobile}】`, {
 		async beforeConfirm() {
 			await tenantOnlineUserApi.forceOffline({ connectionId });
 			useToast.success("强制下线成功！");
-			refresh();
+			faPagingRef.value.reload();
 		},
 	});
 };

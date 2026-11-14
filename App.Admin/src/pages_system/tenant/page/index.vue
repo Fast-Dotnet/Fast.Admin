@@ -1,5 +1,5 @@
 <template>
-	<FaPaging :request-api="tenantApi.queryTenantPaged">
+	<FaPaging ref="faPagingRef" :request-api="tenantApi.queryTenantPaged">
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput v-model:search-param="searchParam.value" hide-search-time @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #filter>
@@ -34,7 +34,7 @@
 			</FaSearchInput>
 		</template>
 
-		<template #default="{ pagedList, refresh }">
+		<template #default="{ pagedList }">
 			<FaCard v-for="item in pagedList" :key="item.tenantId" code="Tenant:Detail" @click="handleDetail(item.tenantId)">
 				<view style="display: flex; align-items: center; gap: 20rpx; margin-bottom: 24rpx">
 					<FaImage :src="item.logoUrl" width="88rpx" height="88rpx" original round />
@@ -72,11 +72,11 @@
 							size="mini"
 							type="danger"
 							variant="plain"
-							@click="handleChangeStatus(item, refresh)"
+							@click="handleChangeStatus(item)"
 						>
 							禁用
 						</wd-button>
-						<wd-button v-else size="mini" type="warning" variant="plain" @click="handleChangeStatus(item, refresh)">启用</wd-button>
+						<wd-button v-else size="mini" type="warning" variant="plain" @click="handleChangeStatus(item)">启用</wd-button>
 					</FaAuth>
 				</template>
 			</FaCard>
@@ -85,6 +85,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import { throttle } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { CommonStatusEnum } from "@/api/enums/CommonStatusEnum";
@@ -92,6 +93,7 @@ import { TenantTypeEnum } from "@/api/enums/TenantTypeEnum";
 import { tenantApi } from "@/api/services/Center/tenant";
 import { useMessageBox, useToast } from "@/hooks";
 import type { QueryTenantPagedOutput } from "@/api/services/Center/tenant/models/QueryTenantPagedOutput";
+import type { FaPagingInstance } from "@/components";
 
 definePage({
 	name: "SystemTenant",
@@ -102,6 +104,8 @@ definePage({
 });
 
 const router = useRouter();
+
+const faPagingRef = ref<FaPagingInstance>();
 
 const handleDetail = throttle((tenantId: string) => router.push(`/pages_system/tenant/detail/index?tenantId=${tenantId}`));
 
@@ -115,13 +119,13 @@ const handleEdit = throttle((mode: IPageStateType, tenantId?: string) =>
 	})
 );
 
-const handleChangeStatus = (item: QueryTenantPagedOutput, refresh: () => Promise<void>) => {
+const handleChangeStatus = (item: QueryTenantPagedOutput) => {
 	const { tenantId, status, rowVersion } = item;
 	useMessageBox.confirm(`确定${status === CommonStatusEnum.Enable ? "禁用" : "启用"}租户？`, {
 		async beforeConfirm() {
 			await tenantApi.changeStatus({ tenantId, rowVersion });
 			useToast.success("操作成功！");
-			refresh();
+			faPagingRef.value.reload();
 		},
 	});
 };

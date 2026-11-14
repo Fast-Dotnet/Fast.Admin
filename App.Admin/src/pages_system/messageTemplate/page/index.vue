@@ -1,5 +1,5 @@
 <template>
-	<FaPaging :request-api="messageTemplateApi.queryMessageTemplatePaged">
+	<FaPaging ref="faPagingRef" :request-api="messageTemplateApi.queryMessageTemplatePaged">
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput v-model:search-param="searchParam.value" hide-search-time @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #filter>
@@ -13,7 +13,7 @@
 			</FaSearchInput>
 		</template>
 
-		<template #default="{ pagedList, refresh }">
+		<template #default="{ pagedList }">
 			<FaCard
 				v-for="item in pagedList"
 				:key="item.recordId"
@@ -46,7 +46,7 @@
 						<wd-button size="mini" type="primary" variant="plain" @click="handleEdit('edit', item.recordId)">编辑</wd-button>
 					</FaAuth>
 					<FaAuth code="MessageTemplate:Delete">
-						<wd-button size="mini" type="danger" variant="plain" @click="handleDelete(item, refresh)">删除</wd-button>
+						<wd-button size="mini" type="danger" variant="plain" @click="handleDelete(item)">删除</wd-button>
 					</FaAuth>
 				</template>
 			</FaCard>
@@ -64,6 +64,7 @@ import { messageTemplateApi } from "@/api/services/Center/messageTemplate";
 import { useMessageBox, useToast } from "@/hooks";
 import MessageTemplateDetail from "./components/detail.vue";
 import type { QueryMessageTemplatePagedOutput } from "@/api/services/Center/messageTemplate/models/QueryMessageTemplatePagedOutput";
+import type { FaPagingInstance } from "@/components";
 
 definePage({
 	name: "SystemMessageTemplate",
@@ -75,6 +76,7 @@ definePage({
 
 const router = useRouter();
 
+const faPagingRef = ref<FaPagingInstance>();
 const detailFormRef = ref<InstanceType<typeof MessageTemplateDetail>>();
 
 const handleEdit = throttle((mode: IPageStateType, recordId?: string) =>
@@ -87,13 +89,13 @@ const handleEdit = throttle((mode: IPageStateType, recordId?: string) =>
 	})
 );
 
-const handleDelete = (item: QueryMessageTemplatePagedOutput, refresh: () => Promise<void>) => {
+const handleDelete = (item: QueryMessageTemplatePagedOutput) => {
 	const { recordId, rowVersion } = item;
 	useMessageBox.confirm("确定要删除消息模板？", {
 		async beforeConfirm() {
 			await messageTemplateApi.deleteMessageTemplate({ recordId, rowVersion });
 			useToast.success("删除成功！");
-			refresh();
+			faPagingRef.value.reload();
 		},
 	});
 };

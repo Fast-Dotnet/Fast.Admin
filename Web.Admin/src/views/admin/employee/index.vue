@@ -100,8 +100,8 @@
 			</FaTableColumn>
 			<FaTableColumn prop="sex" label="性别" width="100" small-width="80" sortable tag :enum="genderEnum" />
 			<FaTableColumn prop="status" label="状态" width="100" small-width="80" sortable tag :enum="employeeStatusEnum" />
-			<FaTableColumn prop="entryDate" label="入职日期" width="180" small-width="160" sortable type="dateTime" date-fix />
-			<FaTableColumn prop="resignDate" label="离职日期" width="180" small-width="160" sortable type="dateTime" date-fix />
+			<FaTableColumn prop="entryDate" label="入职日期" width="120" small-width="100" sortable type="date" date-fix />
+			<FaTableColumn prop="resignDate" label="离职日期" width="120" small-width="100" sortable type="date" date-fix />
 			<FaTableColumn prop="remark" label="备注" width="200" small-width="180" sortable />
 			<FaTableColumn prop="createdTime" label="创建时间" width="240" small-width="220" sortable type="timeInfo" />
 			<FaTableColumn

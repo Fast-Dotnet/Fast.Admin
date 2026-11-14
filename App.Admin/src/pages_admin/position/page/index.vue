@@ -1,5 +1,5 @@
 <template>
-	<FaPaging :request-api="positionApi.queryPositionPaged">
+	<FaPaging ref="faPagingRef" :request-api="positionApi.queryPositionPaged">
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput :filter="false" v-model:search-param="searchParam.value" @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #footer>
@@ -10,7 +10,7 @@
 			</FaSearchInput>
 		</template>
 
-		<template #default="{ pagedList, refresh }">
+		<template #default="{ pagedList }">
 			<FaCard v-for="item in pagedList" :key="item.positionId" :title="item.positionName">
 				<FaField label="排序" :value="item.sort" />
 				<FaField label="备注" :value="item.remark" />
@@ -24,7 +24,7 @@
 						<wd-button size="mini" type="primary" variant="plain" @click="handleEdit('edit', item.positionId)">编辑</wd-button>
 					</FaAuth>
 					<FaAuth code="Position:Delete">
-						<wd-button size="mini" type="danger" variant="plain" @click="handleDelete(item, refresh)">删除</wd-button>
+						<wd-button size="mini" type="danger" variant="plain" @click="handleDelete(item)">删除</wd-button>
 					</FaAuth>
 				</template>
 			</FaCard>
@@ -33,11 +33,13 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import { throttle } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { positionApi } from "@/api/services/Admin/position";
 import { useMessageBox, useToast } from "@/hooks";
 import type { QueryPositionPagedOutput } from "@/api/services/Admin/position/models/QueryPositionPagedOutput";
+import type { FaPagingInstance } from "@/components";
 
 definePage({
 	name: "AdminPosition",
@@ -49,6 +51,8 @@ definePage({
 
 const router = useRouter();
 
+const faPagingRef = ref<FaPagingInstance>();
+
 const handleEdit = throttle((mode: IPageStateType, positionId?: string) =>
 	router.push({
 		path: "/pages_admin/position/edit/index",
@@ -59,13 +63,13 @@ const handleEdit = throttle((mode: IPageStateType, positionId?: string) =>
 	})
 );
 
-const handleDelete = (item: QueryPositionPagedOutput, refresh: () => Promise<void>) => {
+const handleDelete = (item: QueryPositionPagedOutput) => {
 	const { positionId, rowVersion } = item;
 	useMessageBox.confirm("确定删除此记录？", {
 		async beforeConfirm() {
 			await positionApi.deletePosition({ positionId, rowVersion });
 			useToast.success("删除成功！");
-			refresh();
+			faPagingRef.value.reload();
 		},
 	});
 };
