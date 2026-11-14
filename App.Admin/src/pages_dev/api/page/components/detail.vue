@@ -1,41 +1,40 @@
 <template>
 	<FaPopup ref="popupRef" title="接口详情" height="70%" position="bottom" closable>
 		<view style="display: flex; flex-direction: column; gap: 10px">
-			<FaField label="接口名称" :value="state.formData.apiName" />
-			<FaField label="接口地址" :value="state.formData.apiUrl" copyable />
+			<FaField label="接口名称" :value="formData.apiName" />
+			<FaField label="接口地址" :value="formData.apiUrl" copyable />
 			<FaField label="请求方式">
-				<FaTag name="HttpRequestMethodEnum" :value="state.formData.method" />
+				<FaTag name="HttpRequestMethodEnum" :value="formData.method" />
 			</FaField>
 			<FaField label="操作方式">
-				<FaTag name="HttpRequestActionEnum" :value="state.formData.action" />
+				<FaTag name="HttpRequestActionEnum" :value="formData.action" />
 			</FaField>
-			<FaField label="模块名称" :value="state.formData.moduleName" />
-			<FaField label="服务名称" :value="state.formData.serviceName" />
-			<FaField label="分组名称" :value="state.formData.groupName" />
-			<FaField label="分组标题" :value="state.formData.groupTitle" />
+			<FaField label="模块名称" :value="formData.moduleName" />
+			<FaField label="服务名称" :value="formData.serviceName" />
+			<FaField label="分组名称" :value="formData.groupName" />
+			<FaField label="分组标题" :value="formData.groupTitle" />
 			<FaField label="授权检测">
-				<FaTag name="BooleanEnum" :value="state.formData.hasAuth" />
+				<FaTag name="BooleanEnum" :value="formData.hasAuth" />
 			</FaField>
 			<FaField label="权限检测">
-				<FaTag name="BooleanEnum" :value="state.formData.hasPermission" />
+				<FaTag name="BooleanEnum" :value="formData.hasPermission" />
 			</FaField>
-			<FaField label="版本" :value="state.formData.version" />
-			<FaField label="排序" :value="state.formData.sort" />
-			<FaField label="创建时间" :value="state.formData.createdTime" />
-			<FaField label="更新时间" :value="state.formData.updatedTime" />
-			<view v-if="state.formData.tags?.length" style="display: flex; gap: 16rpx; margin-top: 8rpx">
-				<wd-tag v-for="(tag, index) in state.formData.tags" :key="index">{{ tag }}</wd-tag>
+			<FaField label="版本" :value="formData.version" />
+			<FaField label="排序" :value="formData.sort" />
+			<FaField label="创建时间" :value="formData.createdTime" />
+			<FaField label="更新时间" :value="formData.updatedTime" />
+			<view v-if="formData.tags?.length" style="display: flex; gap: 16rpx; margin-top: 8rpx">
+				<wd-tag v-for="(tag, index) in formData.tags" :key="index">{{ tag }}</wd-tag>
 			</view>
 
 			<view class="log__title">分组描述</view>
-			<rich-text :nodes="state.formData.description" />
+			<rich-text :nodes="formData.description" />
 		</view>
 	</FaPopup>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "vue";
-import { withDefineType } from "@fast-china/utils";
+import { ref, shallowRef } from "vue";
 import type { ApiInfoModel } from "@/api/services/Center/api/models/ApiInfoModel";
 import type { FaPopupInstance } from "@/components";
 
@@ -50,13 +49,11 @@ defineOptions({
 
 const popupRef = ref<FaPopupInstance>();
 
-const state = reactive({
-	formData: withDefineType<ApiInfoModel>({}),
-});
+const formData = shallowRef<ApiInfoModel>();
 
 const detail = (data: ApiInfoModel) => {
-	popupRef.value?.open(() => {
-		state.formData = data;
+	popupRef.value.open(() => {
+		formData.value = data;
 	});
 };
 

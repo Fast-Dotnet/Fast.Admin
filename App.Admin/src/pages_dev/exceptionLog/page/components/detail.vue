@@ -8,7 +8,8 @@
 			<FaField label="方法名" :value="state.formData.methodName" />
 			<FaField label="异常源" :value="state.formData.source" />
 			<FaField label="部门" :value="state.formData.departmentName" />
-			<FaField label="地区" :value="`${state.formData.province} - ${state.formData.city}`" />
+			<FaField label="省份" :value="state.formData.province" />
+			<FaField label="城市" :value="state.formData.city" />
 			<FaField label="Ip" :value="state.formData.ip" />
 			<FaField label="时间" :value="state.formData.createdTime" />
 			<FaField label="设备" :value="state.formData.device" />
@@ -90,7 +91,7 @@ const handleCopy = async (content: string) => {
 };
 
 const detail = (data: ExceptionLogModel) => {
-	popupRef.value?.open(() => {
+	popupRef.value.open(() => {
 		state.formData = data;
 		state.paramsText = data.paramsObj ?? "";
 		if (state.paramsText) {

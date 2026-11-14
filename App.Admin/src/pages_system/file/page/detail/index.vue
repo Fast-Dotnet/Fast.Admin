@@ -18,10 +18,11 @@
 				<FaField label="类型" :value="state.formData.fileMimeType" />
 				<FaField label="大小" :value="formatFileSize(state.formData.fileSizeKb)" />
 				<FaField label="存储路径" :value="state.formData.filePath" selectable />
-				<FaField label="访问地址" :value="state.formData.fileLocation" selectable />
+				<FaField label="访问地址" :value="state.formData.fileLocation" copyable />
 				<FaField label="哈希" :value="state.formData.fileHash" selectable />
 				<FaField label="名称" :value="state.formData.fileOriginName" />
-				<FaField label="地区" :value="`${state.formData.uploadProvince} - ${state.formData.uploadCity}`" />
+				<FaField label="省份" :value="state.formData.uploadProvince" />
+				<FaField label="城市" :value="state.formData.uploadCity" />
 				<FaField label="Ip" :value="state.formData.uploadIp" />
 				<FaField label="设备" :value="state.formData.uploadDevice" />
 				<FaField label="操作系统" :value="state.formData.uploadOS" />

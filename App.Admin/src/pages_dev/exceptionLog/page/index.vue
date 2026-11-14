@@ -17,14 +17,11 @@
 
 		<template #default="{ pagedList }">
 			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.createdTime" @click="detailFormRef?.detail(item)">
-				<FaField label="昵称" :value="`${item.nickName} · ${item.mobile}`" />
+				<FaField label="账号" :value="[item.nickName, item.mobile].filter(Boolean).join(' · ')" />
 				<FaField label="异常信息" :value="item.message" color="var(--wot-danger-main)" />
-				<FaField label="部门" :value="item.departmentName" />
-				<FaField label="地区" :value="`${item.province} - ${item.city}`" />
-				<FaField label="Ip" :value="item.ip" />
-				<FaField label="设备" :value="item.device" />
-				<FaField label="操作系统" :value="item.os" />
-				<FaField label="浏览器" :value="item.browser" />
+				<FaField label="类名" :value="item.className" />
+				<FaField label="方法名" :value="item.methodName" />
+				<FaField label="异常源" :value="item.source" />
 				<FaField label="租户" :value="item.tenantName" />
 			</FaCard>
 		</template>

@@ -11,7 +11,7 @@
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.serialRuleId">
+			<FaCard v-for="item in pagedList" :key="item.serialRuleId" @click="detailFormRef?.detail(item)">
 				<FaField label="规则类型">
 					<FaTag name="SerialRuleTypeEnum" :value="item.ruleType" />
 				</FaField>
@@ -23,13 +23,7 @@
 					<FaText name="SerialSpacerEnum" :value="item.spacer" />
 				</FaField>
 				<FaField label="长度" :value="item.length" />
-				<FaField label="最后序号" :value="item.lastSerial" />
 				<FaField label="最后编号" :value="item.lastSerialNo" />
-				<FaField label="最后生成时间" :value="item.lastTime" />
-				<FaField label="创建人" :value="item.createdUserName" />
-				<FaField label="创建时间" :value="item.createdTime" />
-				<FaField label="更新人" :value="item.updatedUserName" />
-				<FaField label="更新时间" :value="item.updatedTime" />
 
 				<template #footer>
 					<FaAuth code="Serial:Edit">
@@ -39,12 +33,16 @@
 			</FaCard>
 		</template>
 	</FaPaging>
+
+	<SerialDetail ref="detailFormRef" />
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import { throttle } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { serialApi } from "@/api/services/Admin/serial";
+import SerialDetail from "./components/detail.vue";
 
 definePage({
 	name: "AdminSerial",
@@ -55,6 +53,8 @@ definePage({
 });
 
 const router = useRouter();
+
+const detailFormRef = ref<InstanceType<typeof SerialDetail>>();
 
 const handleEdit = throttle((mode: IPageStateType, serialRuleId?: string) =>
 	router.push({

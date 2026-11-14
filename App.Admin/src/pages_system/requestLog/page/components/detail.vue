@@ -18,7 +18,8 @@
 			<FaField label="类名" :value="state.formData.className" />
 			<FaField label="方法名" :value="state.formData.methodName" />
 			<FaField label="部门" :value="state.formData.departmentName" />
-			<FaField label="地区" :value="`${state.formData.province} - ${state.formData.city}`" />
+			<FaField label="省份" :value="state.formData.province" />
+			<FaField label="城市" :value="state.formData.city" />
 			<FaField label="Ip" :value="state.formData.ip" />
 			<FaField label="请求时间" :value="state.formData.createdTime" />
 			<FaField label="设备" :value="state.formData.device" />
@@ -129,7 +130,7 @@ const handleCopy = async (content: string) => {
 };
 
 const detail = (data: RequestLogModel) => {
-	popupRef.value?.open(() => {
+	popupRef.value.open(() => {
 		state.formData = data;
 		const canViewContent = userInfoStore.isSuperAdmin || userInfoStore.isAdmin;
 		state.paramText = canViewContent ? formatLogContent(data.param) : "";

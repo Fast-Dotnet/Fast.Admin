@@ -19,9 +19,8 @@
 				<FaField label="模块名称" :value="item.moduleName" />
 				<FaField label="服务名称" :value="item.serviceName" />
 				<FaField label="分组名称" :value="item.groupName" />
-				<FaField label="分组标题" :value="item.groupTitle" />
-				<FaField label="版本" :value="item.version" />
-				<view style="display: flex; gap: 16rpx; margin-top: 8rpx">
+				<FaField label="分组" :value="item.groupTitle" />
+				<view v-if="item.hasAuth || item.hasPermission" style="display: flex; gap: 16rpx; margin-top: 8rpx">
 					<wd-tag v-if="item.hasAuth" type="primary">需登录</wd-tag>
 					<wd-tag v-if="item.hasPermission" type="warning">权限校验</wd-tag>
 				</view>

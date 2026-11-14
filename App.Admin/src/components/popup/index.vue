@@ -40,12 +40,14 @@
 				'fa-popup__body--scroll-view': props.bodyScroll === 'scroll-view',
 			}"
 		>
-			<scroll-view v-if="props.bodyScroll === 'scroll-view'" class="fa-popup__scroll-view" scroll-y>
-				<view class="fa-popup__scroll-content">
-					<slot :loading="state.loading" />
-				</view>
-			</scroll-view>
-			<slot v-else :loading="state.loading" />
+			<template v-if="!state.rendering">
+				<scroll-view v-if="props.bodyScroll === 'scroll-view'" class="fa-popup__scroll-view" scroll-y>
+					<view class="fa-popup__scroll-content">
+						<slot :loading="state.loading" />
+					</view>
+				</scroll-view>
+				<slot v-else :loading="state.loading" />
+			</template>
 		</view>
 		<view v-if="hasFooter()" class="fa-popup__footer">
 			<slot name="footer" :loading="state.loading" :close="handleCloseClick" />
@@ -169,6 +171,7 @@ const slots = defineSlots<{
 const state = reactive({
 	loading: false,
 	visible: false,
+	rendering: true,
 	style: computed(() => {
 		let result = "";
 		if (props.width) {
@@ -190,10 +193,12 @@ const hasFooter = () => !!slots.footer || props.showCloseButton || props.showCon
 
 const handleOpen = async (openFunction?: () => void | Promise<void>) => {
 	state.visible = true;
+	state.rendering = true;
 	await nextTick();
 	state.loading = true;
 	try {
 		await callOptionalFunction(props.afterOpen ?? openFunction);
+		state.rendering = false;
 		emit("open");
 	} catch (error) {
 		state.visible = false;
@@ -209,6 +214,7 @@ const handleClose = async (closeFunction?: () => void | Promise<void>) => {
 		await callOptionalFunction(closeFunction);
 		emit("close");
 		state.visible = false;
+		state.rendering = false;
 	} finally {
 		state.loading = false;
 	}

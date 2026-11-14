@@ -11,26 +11,25 @@
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.createdTime" @click="detailFormRef?.detail(item)">
+			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.tableName" @click="detailFormRef?.detail(item)">
 				<template #titleExtra>
 					<view class="fa-card__title-view">
 						<FaTag name="DiffLogTypeEnum" :value="item.diffType" />
 					</view>
 				</template>
 
-				<FaField label="昵称" :value="`${item.nickName} · ${item.mobile}`" />
-				<FaField label="表名称" :value="item.tableName" />
+				<FaField label="账号" :value="[item.nickName, item.mobile].filter(Boolean).join(' · ')" />
 				<FaField label="表描述" :value="item.tableDescription" />
+				<FaField label="执行时间" :value="item.createdTime" />
 				<FaField
 					label="执行秒数"
 					:value="item.executeSeconds == null ? '--' : `${item.executeSeconds.toFixed(4)}秒`"
 					color="var(--wot-text-auxiliary)"
 				/>
 				<FaField label="部门" :value="item.departmentName" />
-				<FaField label="地区" :value="`${item.province} - ${item.city}`" />
+				<FaField label="地区" :value="[item.province, item.city].filter(Boolean).join(' - ')" />
 				<FaField label="Ip" :value="item.ip" />
-				<FaField label="设备" :value="item.device" />
-				<FaField label="操作系统" :value="item.os" />
+				<FaField label="设备" :value="[item.device, item.os].filter(Boolean).join(' · ')" />
 				<FaField label="浏览器" :value="item.browser" />
 				<FaField label="租户" :value="item.tenantName" />
 			</FaCard>

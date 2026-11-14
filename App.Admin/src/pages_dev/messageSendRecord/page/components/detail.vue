@@ -6,12 +6,13 @@
 				<FaText name="MessageSendChannelEnum" :value="state.formData.channel" />
 			</FaField>
 			<FaField label="标题" :value="state.formData.title" />
-			<FaField label="成功">
+			<FaField label="发送结果">
 				<FaTag name="BooleanEnum" :value="state.formData.isSuccess" />
 			</FaField>
 			<FaField label="发送人" :value="state.formData.createdUserName" />
 			<FaField label="发送时间" :value="state.formData.createdTime" />
-			<FaField label="地区" :value="`${state.formData.province ?? ''} - ${state.formData.city ?? ''}`" />
+			<FaField label="省份" :value="state.formData.province" />
+			<FaField label="城市" :value="state.formData.city" />
 			<FaField label="Ip" :value="state.formData.ip" />
 			<FaField label="设备" :value="state.formData.device" />
 			<FaField label="操作系统" :value="state.formData.os" />
@@ -19,7 +20,7 @@
 
 			<view class="log-content__title">消息内容</view>
 			<text v-if="state.formData.channel === MessageSendChannelEnum.Email" class="log-content__empty">暂不支持邮件预览</text>
-			<text v-else-if="state.contentText" class="log-content__text" selectable>{{ state.contentText }}</text>
+			<text v-else-if="state.contentText" class="log-content__text" selectable user-select>{{ state.contentText }}</text>
 			<text v-else class="log-content__empty">暂无内容</text>
 		</view>
 	</FaPopup>
@@ -49,9 +50,8 @@ const state = reactive({
 	contentText: "",
 });
 
-const detail = throttle(async (recordId?: string) => {
-	if (!recordId) return;
-	await popupRef.value?.open(async () => {
+const detail = throttle(async (recordId: string) => {
+	await popupRef.value.open(async () => {
 		const apiRes = await messageSendRecordApi.queryMessageSendRecordDetail(recordId);
 		state.formData = apiRes;
 		if (apiRes.channel !== MessageSendChannelEnum.Email) {

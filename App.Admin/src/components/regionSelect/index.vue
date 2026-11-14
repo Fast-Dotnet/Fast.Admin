@@ -1,5 +1,6 @@
 <template>
 	<FaCellPicker
+		v-bind="$attrs"
 		:title="props.title"
 		:value="modelValue ? [provinceName, cityName, districtName].filter(Boolean).join(' / ') : ''"
 		:is-link="!props.disabled"

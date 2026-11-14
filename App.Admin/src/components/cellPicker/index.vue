@@ -1,8 +1,30 @@
 <template>
-	<view class="fa-cell-picker">
+	<view :class="{ 'fa-cell-picker': !props.prop }">
+		<wd-form-item
+			v-if="props.prop"
+			v-bind="wdFormItemProps"
+			:value="props.radio ? undefined : dictionaryLabel"
+			:placeholder="props.radio ? undefined : props.placeholder"
+			:is-link="props.isLink && !props.radio"
+			:clickable="props.clickable"
+			:disabled="formDisabled"
+			@click="handleClick"
+		>
+			<template v-if="props.radio && props.clearable && modelValue != null && !formDisabled">
+				<button class="fa-cell-picker__clear" style="margin-left: auto" hover-class="none" @click.stop="handleClear">
+					<wd-icon name="close-circle" size="16px" />
+				</button>
+			</template>
+			<template v-else-if="!props.radio">
+				<text v-if="dictionaryLabel == null || dictionaryLabel === ''" class="wd-form-item__placeholder">
+					{{ props.placeholder }}
+				</text>
+				<text v-else>{{ dictionaryLabel }}</text>
+			</template>
+		</wd-form-item>
 		<wd-cell
+			v-else
 			v-bind="wdCellProps"
-			:custom-class="props.customClass"
 			:value="props.radio ? undefined : dictionaryLabel"
 			:placeholder="props.radio ? undefined : props.placeholder"
 			:is-link="props.isLink && !props.radio && !formDisabled"
@@ -69,6 +91,7 @@ import { onHide } from "@dcloudio/uni-app";
 import { computed, ref } from "vue";
 import { randomString, useProps } from "@fast-china/utils";
 import { cellProps } from "@wot-ui/ui/components/wd-cell/types";
+import { formItemProps } from "@wot-ui/ui/components/wd-form-item/types.ts";
 import { useFormDisabled } from "@wot-ui/ui/composables";
 import { useApp } from "@/stores";
 import FaPopup from "../popup/index.vue";
@@ -85,6 +108,7 @@ defineOptions({
 
 const props = defineProps({
 	...cellProps,
+	...formItemProps,
 	/** 标题 */
 	title: {
 		type: String,
@@ -122,7 +146,8 @@ const props = defineProps({
 	includeAll: Boolean,
 });
 
-const wdCellProps = useProps(props, cellProps, ["value", "placeholder", "customClass", "isLink", "clickable"]);
+const wdCellProps = useProps(props, cellProps, ["value", "placeholder", "isLink", "clickable"]);
+const wdFormItemProps = useProps(props, formItemProps, ["value", "placeholder", "isLink", "clickable", "disabled"]);
 
 const emit = defineEmits<{
 	/** 内容点击事件 */

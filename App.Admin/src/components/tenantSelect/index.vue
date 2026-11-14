@@ -1,5 +1,5 @@
 <template>
-	<FaCellPicker :title="props.title" :value="tenantName" :is-link="!props.disabled" placeholder="请选择租户">
+	<FaCellPicker v-bind="$attrs" :title="props.title" :value="tenantName" :is-link="!props.disabled" placeholder="请选择租户">
 		<template #default="{ visible }">
 			<FaSelectPage
 				title="租户选择"

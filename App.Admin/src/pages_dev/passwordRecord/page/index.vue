@@ -39,7 +39,7 @@
 				</view>
 				<FaField label="账号Key" :value="item.accountKey" />
 				<FaField label="邮箱" :value="item.email" />
-				<FaField label="类型">
+				<FaField label="密码类型">
 					<FaTag name="PasswordTypeEnum" :value="item.type" />
 				</FaField>
 			</FaCard>

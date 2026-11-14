@@ -19,8 +19,6 @@
 				</template>
 
 				<FaField label="手机" :value="item.mobile" />
-				<FaField label="OpenId" :value="item.openId" />
-				<FaField label="UnionId" :value="item.unionId" />
 				<FaField label="收款商户号" :value="item.merchantNo" />
 				<FaField label="订单金额" :value="`￥${(item.orderAmount ?? 0).toFixed(2)}`" color="var(--wot-text-auxiliary)" />
 				<FaField label="支付金额" :value="`￥${(item.paymentAmount ?? 0).toFixed(2)}`" color="var(--wot-warning-main)" />
@@ -28,6 +26,7 @@
 					<FaTag name="BooleanEnum" :value="item.isPaid" />
 				</FaField>
 				<FaField label="支付时间" :value="item.paymentTime" />
+				<FaField label="创建时间" :value="item.createdTime" />
 			</FaCard>
 		</template>
 	</FaPaging>

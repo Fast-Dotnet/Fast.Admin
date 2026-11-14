@@ -60,13 +60,7 @@
 				<FaField label="状态">
 					<FaTag name="CommonStatusEnum" :value="item.status" />
 				</FaField>
-				<FaField label="管理员" :value="item.adminName" />
-				<FaField label="管理员手机" :value="item.adminMobile" />
-				<FaField label="管理员邮箱" :value="item.adminEmail" />
-				<FaField label="创建人" :value="item.createdUserName" />
-				<FaField label="创建时间" :value="item.createdTime" />
-				<FaField label="更新人" :value="item.updatedUserName" />
-				<FaField label="更新时间" :value="item.updatedTime" />
+				<FaField label="管理员" :value="[item.adminName, item.adminMobile].filter(Boolean).join(' · ')" />
 
 				<template #footer>
 					<FaAuth code="Tenant:Edit">

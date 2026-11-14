@@ -10,7 +10,8 @@
 			</FaField>
 			<FaField label="执行秒数" :value="state.formData.executeSeconds == null ? '--' : `${state.formData.executeSeconds.toFixed(4)}秒`" />
 			<FaField label="部门" :value="state.formData.departmentName" />
-			<FaField label="地区" :value="`${state.formData.province} - ${state.formData.city}`" />
+			<FaField label="省份" :value="state.formData.province" />
+			<FaField label="城市" :value="state.formData.city" />
 			<FaField label="Ip" :value="state.formData.ip" />
 			<FaField label="时间" :value="state.formData.createdTime" />
 			<FaField label="设备" :value="state.formData.device" />
@@ -114,7 +115,7 @@ const handleCopy = async (content: string) => {
 };
 
 const detail = (data: SqlDiffLogModel) => {
-	popupRef.value?.open(() => {
+	popupRef.value.open(() => {
 		state.formData = data;
 		state.beforeColumnText = data.beforeColumnList == null ? "" : JSON.stringify(data.beforeColumnList, null, 2);
 		state.afterColumnText = data.afterColumnList == null ? "" : JSON.stringify(data.afterColumnList, null, 2);

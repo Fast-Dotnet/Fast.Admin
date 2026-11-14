@@ -24,12 +24,11 @@
 					</view>
 				</template>
 
-				<FaField label="昵称" :value="`${item.nickName} · ${item.mobile}`" />
+				<FaField label="账号" :value="[item.nickName, item.mobile].filter(Boolean).join(' · ')" />
 				<FaField label="部门" :value="item.departmentName" />
-				<FaField label="地区" :value="`${item.province} - ${item.city}`" />
+				<FaField label="地区" :value="[item.province, item.city].filter(Boolean).join(' - ')" />
 				<FaField label="Ip" :value="item.ip" />
-				<FaField label="设备" :value="item.device" />
-				<FaField label="操作系统" :value="item.os" />
+				<FaField label="设备" :value="[item.device, item.os].filter(Boolean).join(' · ')" />
 				<FaField label="浏览器" :value="item.browser" />
 				<FaField label="租户" :value="item.tenantName" />
 			</FaCard>

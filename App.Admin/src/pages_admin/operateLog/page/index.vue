@@ -16,23 +16,16 @@
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.createdTime" @click="detailFormRef?.detail(item)">
+			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.title" @click="detailFormRef?.detail(item)">
 				<template #titleExtra>
 					<view class="fa-card__title-view">
 						<FaTag name="OperateLogTypeEnum" :value="item.operateType" />
 					</view>
 				</template>
 
-				<FaField label="姓名" :value="`${item.createdUserName} · ${item.employeeNo}`" />
-				<FaField label="手机" :value="item.mobile" />
-				<FaField label="标题" :value="item.title" />
+				<FaField label="操作人" :value="[item.createdUserName, item.employeeNo].filter(Boolean).join(' · ')" />
+				<FaField label="操作时间" :value="item.createdTime" />
 				<FaField label="业务编码" :value="item.bizNo" />
-				<FaField label="部门" :value="item.departmentName" />
-				<FaField label="地区" :value="`${item.province} - ${item.city}`" />
-				<FaField label="Ip" :value="item.ip" />
-				<FaField label="设备" :value="item.device" />
-				<FaField label="操作系统" :value="item.os" />
-				<FaField label="浏览器" :value="item.browser" />
 			</FaCard>
 		</template>
 	</FaPaging>

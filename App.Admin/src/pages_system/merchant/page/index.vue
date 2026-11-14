@@ -30,10 +30,6 @@
 
 				<FaField label="商户号" :value="item.merchantNo" />
 				<FaField label="备注" :value="item.remark" />
-				<FaField label="创建人" :value="item.createdUserName" />
-				<FaField label="创建时间" :value="item.createdTime" />
-				<FaField label="更新人" :value="item.updatedUserName" />
-				<FaField label="更新时间" :value="item.updatedTime" />
 
 				<template #footer>
 					<FaAuth code="Merchant:Edit">

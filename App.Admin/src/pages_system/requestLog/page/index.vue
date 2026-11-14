@@ -13,25 +13,23 @@
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.createdTime" @click="detailFormRef?.detail(item)">
+			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.operationName" @click="detailFormRef?.detail(item)">
 				<template #titleExtra>
 					<view class="fa-card__title-view">
 						<FaTag name="HttpRequestMethodEnum" :value="item.requestMethod" />
-						<FaTag name="HttpRequestActionEnum" :value="item.operationAction" />
+						<wd-tag v-if="item.isSuccess != null" :type="item.isSuccess ? 'success' : 'danger'">
+							{{ item.isSuccess ? "成功" : "失败" }}
+						</wd-tag>
 					</view>
 				</template>
-				<FaField label="昵称" :value="`${item.nickName} · ${item.mobile}`" />
-				<FaField label="成功">
-					<FaTag name="BooleanEnum" :value="item.isSuccess" />
-				</FaField>
-				<FaField label="操作名称" :value="item.operationName" />
+				<FaField label="账号" :value="[item.nickName, item.mobile].filter(Boolean).join(' · ')" />
 				<FaField label="请求地址" :value="item.location" />
+				<FaField label="请求时间" :value="item.createdTime" />
 				<FaField label="耗时" :value="`${(Number(item.elapsedTime ?? 0) / 1000).toFixed(4)}秒`" color="var(--wot-text-auxiliary)" />
 				<FaField label="部门" :value="item.departmentName" />
-				<FaField label="地区" :value="`${item.province} - ${item.city}`" />
+				<FaField label="地区" :value="[item.province, item.city].filter(Boolean).join(' - ')" />
 				<FaField label="Ip" :value="item.ip" />
-				<FaField label="设备" :value="item.device" />
-				<FaField label="操作系统" :value="item.os" />
+				<FaField label="设备" :value="[item.device, item.os].filter(Boolean).join(' · ')" />
 				<FaField label="浏览器" :value="item.browser" />
 				<FaField label="租户" :value="item.tenantName" />
 			</FaCard>

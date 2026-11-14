@@ -19,8 +19,6 @@
 				</template>
 
 				<FaField label="手机" :value="item.mobile" />
-				<FaField label="OpenId" :value="item.openId" />
-				<FaField label="UnionId" :value="item.unionId" />
 				<FaField label="退款商户号" :value="item.merchantNo" />
 				<FaField label="订单金额" :value="`￥${(item.orderAmount ?? 0).toFixed(2)}`" color="var(--wot-text-auxiliary)" />
 				<FaField label="退款金额" :value="`￥${(item.refundAmount ?? 0).toFixed(2)}`" color="var(--wot-danger-main)" />
@@ -29,6 +27,7 @@
 				</FaField>
 				<FaField label="退款状态" :value="item.refundStatus" />
 				<FaField label="退款时间" :value="item.refundTime" />
+				<FaField label="创建时间" :value="item.createdTime" />
 			</FaCard>
 		</template>
 	</FaPaging>

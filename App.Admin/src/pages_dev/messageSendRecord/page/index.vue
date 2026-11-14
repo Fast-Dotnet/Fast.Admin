@@ -19,7 +19,7 @@
 			<FaCard
 				v-for="item in pagedList"
 				:key="item.recordId"
-				:title="item.receiver"
+				:title="item.title"
 				code="MessageSendRecord:Detail"
 				@click="detailFormRef?.detail(item.recordId)"
 			>
@@ -29,17 +29,12 @@
 					</view>
 				</template>
 
-				<FaField label="标题" :value="item.title" />
-				<FaField label="成功">
+				<FaField label="收件人" :value="item.receiver" />
+				<FaField label="发送结果">
 					<FaTag name="BooleanEnum" :value="item.isSuccess" />
 				</FaField>
 				<FaField label="发送人" :value="item.createdUserName" />
 				<FaField label="发送时间" :value="item.createdTime" />
-				<FaField label="地区" :value="`${item.province ?? ''} - ${item.city ?? ''}`" />
-				<FaField label="Ip" :value="item.ip" />
-				<FaField label="设备" :value="item.device" />
-				<FaField label="操作系统" :value="item.os" />
-				<FaField label="浏览器" :value="item.browser" />
 			</FaCard>
 		</template>
 	</FaPaging>

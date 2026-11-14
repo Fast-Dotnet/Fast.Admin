@@ -1,5 +1,5 @@
 <template>
-	<FaCellPicker :title="props.title" :value="departmentName" :is-link="!props.disabled" placeholder="请选择部门">
+	<FaCellPicker v-bind="$attrs" :title="props.title" :value="departmentName" :is-link="!props.disabled" placeholder="请选择部门">
 		<template #default="{ visible }">
 			<FaTreePicker
 				title="部门选择"

@@ -15,17 +15,8 @@
 						<wd-tag>{{ item.fileMimeType }}</wd-tag>
 					</view>
 				</template>
-
-				<FaField label="后缀">
-					<wd-tag>{{ item.fileSuffix }}</wd-tag>
-				</FaField>
+				<FaField label="原文件名" :value="item.fileOriginName" />
 				<FaField label="大小" :value="formatFileSize(item.fileSizeKb)" />
-				<FaField label="名称" :value="item.fileOriginName" />
-				<FaField label="地区" :value="`${item.uploadProvince} - ${item.uploadCity}`" />
-				<FaField label="Ip" :value="item.uploadIp" />
-				<FaField label="设备" :value="item.uploadDevice" />
-				<FaField label="操作系统" :value="item.uploadOS" />
-				<FaField label="浏览器" :value="item.uploadBrowser" />
 				<FaField label="创建人" :value="item.createdUserName" />
 				<FaField label="创建时间" :value="item.createdTime" />
 				<FaField label="租户" :value="item.tenantName" />

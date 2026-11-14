@@ -1,5 +1,5 @@
 <template>
-	<FaCellPicker :title="props.title" :value="provinceName" :is-link="!props.disabled" placeholder="请选择省份">
+	<FaCellPicker v-bind="$attrs" :title="props.title" :value="provinceName" :is-link="!props.disabled" placeholder="请选择省份">
 		<template #default="{ visible }">
 			<FaSelectPage
 				title="省份选择"

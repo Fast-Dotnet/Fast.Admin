@@ -1,5 +1,11 @@
 <template>
-	<FaCellPicker :title="props.title" :value="modelValue ? `${provinceName} / ${cityName}` : ''" :is-link="!props.disabled" placeholder="请选择城市">
+	<FaCellPicker
+		v-bind="$attrs"
+		:title="props.title"
+		:value="modelValue ? [provinceName, cityName].filter(Boolean).join(' / ') : ''"
+		:is-link="!props.disabled"
+		placeholder="请选择城市"
+	>
 		<template #default="{ visible }">
 			<FaSelectPage
 				title="城市选择"

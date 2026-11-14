@@ -1,8 +1,8 @@
 <template>
 	<view class="page">
 		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>
-			<FaTenantSelect v-model="state.formData.tenantId" v-model:tenant-name="state.formData.tenantName" />
-			<FaApplicationClientSelect v-model="state.formData.appKey" />
+			<FaTenantSelect v-model="state.formData.tenantId" v-model:tenant-name="state.formData.tenantName" prop="tenantId" />
+			<FaApplicationClientSelect v-model="state.formData.appKey" prop="appKey" />
 			<wd-form-item title="模板类型" prop="templateType">
 				<FaRadioGroup name="MessageTemplateTypeEnum" v-model="state.formData.templateType" type="button" />
 			</wd-form-item>

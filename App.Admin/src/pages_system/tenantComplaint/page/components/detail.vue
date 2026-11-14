@@ -1,30 +1,29 @@
 <template>
 	<FaPopup ref="popupRef" title="用户投诉详情" height="70%" position="bottom" closable>
 		<view style="display: flex; flex-direction: column; gap: 10px">
-			<FaField label="应用名称" :value="state.formData.appName" />
-			<FaField label="应用标识" :value="state.formData.appKey" />
+			<FaField label="应用名称" :value="formData.appName" />
+			<FaField label="应用标识" :value="formData.appKey" />
 			<FaField label="投诉类型">
-				<FaTag name="ComplaintTypeEnum" :value="state.formData.complaintType" />
+				<FaTag name="ComplaintTypeEnum" :value="formData.complaintType" />
 			</FaField>
-			<FaField label="昵称" :value="state.formData.nickName" />
-			<FaField label="手机" :value="state.formData.mobile" />
-			<FaField label="联系电话" :value="state.formData.contactPhone" />
-			<FaField label="联系邮箱" :value="state.formData.contactEmail" />
-			<FaField label="投诉描述" :value="state.formData.description" selectable />
+			<FaField label="昵称" :value="formData.nickName" />
+			<FaField label="手机" :value="formData.mobile" />
+			<FaField label="联系电话" :value="formData.contactPhone" />
+			<FaField label="联系邮箱" :value="formData.contactEmail" />
+			<FaField label="投诉描述" :value="formData.description" selectable />
 			<FaField label="附件图片">
-				<FaImage v-for="(item, index) in state.formData.attachmentImages" :key="index" width="96rpx" height="96rpx" :src="item" />
+				<FaImage v-for="(item, index) in formData.attachmentImages" :key="index" width="96rpx" height="96rpx" :src="item" />
 			</FaField>
-			<FaField label="处理时间" :value="state.formData.handleTime" />
-			<FaField label="处理描述" :value="state.formData.handleDescription" selectable />
-			<FaField label="备注" :value="state.formData.remark" />
-			<FaField label="创建时间" :value="state.formData.createdTime" />
+			<FaField label="处理时间" :value="formData.handleTime" />
+			<FaField label="处理描述" :value="formData.handleDescription" selectable />
+			<FaField label="备注" :value="formData.remark" />
+			<FaField label="创建时间" :value="formData.createdTime" />
 		</view>
 	</FaPopup>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "vue";
-import { withDefineType } from "@fast-china/utils";
+import { ref, shallowRef } from "vue";
 import type { QueryComplaintPagedOutput } from "@/api/services/Center/complaint/models/QueryComplaintPagedOutput";
 import type { FaPopupInstance } from "@/components";
 
@@ -39,13 +38,11 @@ defineOptions({
 
 const popupRef = ref<FaPopupInstance>();
 
-const state = reactive({
-	formData: withDefineType<QueryComplaintPagedOutput>({}),
-});
+const formData = shallowRef<QueryComplaintPagedOutput>();
 
 const detail = (data: QueryComplaintPagedOutput) => {
-	popupRef.value?.open(() => {
-		state.formData = data;
+	popupRef.value.open(() => {
+		formData.value = data;
 	});
 };
 

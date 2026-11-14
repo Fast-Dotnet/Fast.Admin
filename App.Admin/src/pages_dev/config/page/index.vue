@@ -14,16 +14,18 @@
 		</template>
 
 		<template #default="{ pagedList, refresh }">
-			<FaCard v-for="item in pagedList" :key="item.configId" :title="item.configCode" code="Config:Detail" @click="handleDetail(item.configId)">
-				<FaField label="配置名称" :value="item.configName" />
+			<FaCard
+				v-for="item in pagedList"
+				:key="item.configId"
+				:title="item.configName"
+				code="Config:Detail"
+				@click="detailFormRef?.detail(item.configId)"
+			>
+				<FaField label="配置编码" :value="item.configCode" />
 				<FaField label="配置值">
-					<text v-if="item.configValue" class="config-value">{{ item.configValue }}</text>
+					<text class="config-value">{{ item.configValue }}</text>
 				</FaField>
 				<FaField label="备注" :value="item.remark" />
-				<FaField label="创建人" :value="item.createdUserName" />
-				<FaField label="创建时间" :value="item.createdTime" />
-				<FaField label="更新人" :value="item.updatedUserName" />
-				<FaField label="更新时间" :value="item.updatedTime" />
 
 				<template #footer>
 					<FaAuth code="Config:Edit">
@@ -36,13 +38,17 @@
 			</FaCard>
 		</template>
 	</FaPaging>
+
+	<ConfigDetail ref="detailFormRef" />
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import { throttle } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { configApi } from "@/api/services/Center/config";
 import { useMessageBox, useToast } from "@/hooks";
+import ConfigDetail from "./components/detail.vue";
 import type { QueryConfigPagedOutput } from "@/api/services/Center/config/models/QueryConfigPagedOutput";
 
 definePage({
@@ -55,7 +61,7 @@ definePage({
 
 const router = useRouter();
 
-const handleDetail = throttle((configId: string) => router.push(`/pages_dev/config/detail/index?configId=${configId}`));
+const detailFormRef = ref<InstanceType<typeof ConfigDetail>>();
 
 const handleEdit = throttle((mode: IPageStateType, configId?: string) =>
 	router.push({
@@ -92,16 +98,12 @@ const handleDeleteAll = (refresh: () => Promise<void>) => {
 <style lang="scss" scoped>
 .config-value {
 	flex: 1;
-	margin: var(--fa-spacing-section) 0;
-	padding: 20rpx;
+	margin: 12rpx 0;
+	padding: 20rpx 10rpx;
 	border-radius: var(--wot-radius-main);
 	background: var(--wot-filled-bottom);
 	font-size: var(--wot-typography-body-size-main);
 	white-space: pre-wrap;
 	overflow-wrap: anywhere;
-	display: -webkit-box;
-	-webkit-line-clamp: 3;
-	-webkit-box-orient: vertical;
-	overflow: hidden;
 }
 </style>

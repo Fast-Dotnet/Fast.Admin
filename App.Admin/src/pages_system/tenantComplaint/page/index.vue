@@ -9,8 +9,13 @@
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.complaintId" code="Complaint:TenantDetail" @click="detailFormRef?.detail(item)">
-				<FaField label="应用名称" :value="item.appName" />
+			<FaCard
+				v-for="item in pagedList"
+				:key="item.complaintId"
+				:title="item.appName"
+				code="Complaint:TenantDetail"
+				@click="detailFormRef?.detail(item)"
+			>
 				<FaField label="投诉类型">
 					<FaTag name="ComplaintTypeEnum" :value="item.complaintType" />
 				</FaField>
@@ -18,6 +23,10 @@
 				<FaField label="手机" :value="item.mobile" />
 				<FaField label="投诉描述" :value="item.description" />
 				<FaField label="创建时间" :value="item.createdTime" />
+				<FaField label="处理状态">
+					<wd-tag v-if="item.handleTime" type="success">已处理</wd-tag>
+					<wd-tag v-else type="warning">待处理</wd-tag>
+				</FaField>
 				<FaField label="处理时间" :value="item.handleTime" />
 
 				<template v-if="!item.handleTime" #footer>

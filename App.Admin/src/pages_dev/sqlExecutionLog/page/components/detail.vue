@@ -1,31 +1,32 @@
 <template>
 	<FaPopup ref="popupRef" title="Sql执行详情" height="70%" position="bottom" closable>
 		<view style="display: flex; flex-direction: column; gap: 10px">
-			<FaField label="昵称" :value="state.formData.nickName" />
-			<FaField label="手机" :value="state.formData.mobile" />
-			<FaField label="执行秒数" :value="state.formData.executeSeconds == null ? '--' : `${state.formData.executeSeconds.toFixed(4)}秒`" />
-			<FaField label="部门" :value="state.formData.departmentName" />
-			<FaField label="地区" :value="[state.formData.province, state.formData.city].filter(Boolean).join(' - ')" />
-			<FaField label="Ip" :value="state.formData.ip" />
-			<FaField label="时间" :value="state.formData.createdTime" />
-			<FaField label="设备" :value="state.formData.device" />
-			<FaField label="操作系统" :value="state.formData.os" />
-			<FaField label="浏览器" :value="state.formData.browser" />
-			<FaField label="租户" :value="state.formData.tenantName" />
+			<FaField label="昵称" :value="formData.nickName" />
+			<FaField label="手机" :value="formData.mobile" />
+			<FaField label="执行秒数" :value="formData.executeSeconds == null ? '--' : `${formData.executeSeconds.toFixed(4)}秒`" />
+			<FaField label="部门" :value="formData.departmentName" />
+			<FaField label="省份" :value="formData.province" />
+			<FaField label="城市" :value="formData.city" />
+			<FaField label="Ip" :value="formData.ip" />
+			<FaField label="时间" :value="formData.createdTime" />
+			<FaField label="设备" :value="formData.device" />
+			<FaField label="操作系统" :value="formData.os" />
+			<FaField label="浏览器" :value="formData.browser" />
+			<FaField label="租户" :value="formData.tenantName" />
 
 			<view class="log-content__header">
 				<text class="log-content__title">纯Sql</text>
-				<wd-button v-if="state.formData.pureSql" size="small" variant="text" @click="copy(state.formData.pureSql)">复制</wd-button>
+				<wd-button v-if="formData.pureSql" size="small" variant="text" @click="copy(formData.pureSql)">复制</wd-button>
 			</view>
-			<text v-if="state.formData.pureSql" class="log-content__text" selectable>{{ state.formData.pureSql }}</text>
+			<text v-if="formData.pureSql" class="log-content__text" selectable user-select>{{ formData.pureSql }}</text>
 			<text v-else class="log-content__empty">暂无内容</text>
 		</view>
 	</FaPopup>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "vue";
-import { copy, withDefineType } from "@fast-china/utils";
+import { ref, shallowRef } from "vue";
+import { copy } from "@fast-china/utils";
 import type { SqlExecutionLogModel } from "@/api/services/Center/sqlExecutionLog/models/SqlExecutionLogModel";
 import type { FaPopupInstance } from "@/components";
 
@@ -40,13 +41,11 @@ defineOptions({
 
 const popupRef = ref<FaPopupInstance>();
 
-const state = reactive({
-	formData: withDefineType<SqlExecutionLogModel>({}),
-});
+const formData = shallowRef<SqlExecutionLogModel>();
 
 const detail = (data: SqlExecutionLogModel) => {
-	popupRef.value?.open(() => {
-		state.formData = data;
+	popupRef.value.open(() => {
+		formData.value = data;
 	});
 };
 
