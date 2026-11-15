@@ -24,27 +24,23 @@
 
 <script setup lang="ts">
 import { ref, shallowRef } from "vue";
+import { throttle } from "@fast-china/utils";
 import type { QueryComplaintPagedOutput } from "@/api/services/Center/complaint/models/QueryComplaintPagedOutput";
 import type { FaPopupInstance } from "@/components";
 
 defineOptions({
 	name: "SystemTenantComplaintDetail",
-	options: {
-		virtualHost: true,
-		addGlobalClass: true,
-		styleIsolation: "shared",
-	},
 });
 
 const popupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<QueryComplaintPagedOutput>();
 
-const detail = (data: QueryComplaintPagedOutput) => {
+const detail = throttle((data: QueryComplaintPagedOutput) =>
 	popupRef.value.open(() => {
 		formData.value = data;
-	});
-};
+	})
+);
 
 defineExpose({
 	detail,

@@ -37,27 +37,23 @@
 
 <script setup lang="ts">
 import { ref, shallowRef } from "vue";
+import { throttle } from "@fast-china/utils";
 import type { PayRecordModel } from "@/api/services/Center/payRecord/models/PayRecordModel";
 import type { FaPopupInstance } from "@/components";
 
 defineOptions({
 	name: "SystemPayRecordDetail",
-	options: {
-		virtualHost: true,
-		addGlobalClass: true,
-		styleIsolation: "shared",
-	},
 });
 
 const popupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<PayRecordModel>();
 
-const detail = (data: PayRecordModel) => {
+const detail = throttle((data: PayRecordModel) =>
 	popupRef.value.open(() => {
 		formData.value = data;
-	});
-};
+	})
+);
 
 defineExpose({
 	detail,

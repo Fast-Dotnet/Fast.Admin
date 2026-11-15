@@ -25,27 +25,23 @@
 
 <script setup lang="ts">
 import { ref, shallowRef } from "vue";
+import { throttle } from "@fast-china/utils";
 import type { QuerySysSerialRulePagedOutput } from "@/api/services/Center/sysSerial/models/QuerySysSerialRulePagedOutput";
 import type { FaPopupInstance } from "@/components";
 
 defineOptions({
 	name: "DevSysSerialDetail",
-	options: {
-		virtualHost: true,
-		addGlobalClass: true,
-		styleIsolation: "shared",
-	},
 });
 
 const popupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<QuerySysSerialRulePagedOutput>();
 
-const detail = (item: QuerySysSerialRulePagedOutput) => {
+const detail = throttle((item: QuerySysSerialRulePagedOutput) =>
 	popupRef.value.open(() => {
 		formData.value = item;
-	});
-};
+	})
+);
 
 defineExpose({
 	detail,

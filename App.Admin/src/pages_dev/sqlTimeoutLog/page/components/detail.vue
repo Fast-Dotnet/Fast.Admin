@@ -29,28 +29,23 @@
 
 <script setup lang="ts">
 import { ref, shallowRef } from "vue";
-import { copy } from "@fast-china/utils";
+import { copy, throttle } from "@fast-china/utils";
 import type { SqlTimeoutLogModel } from "@/api/services/Center/sqlTimeoutLog/models/SqlTimeoutLogModel";
 import type { FaPopupInstance } from "@/components";
 
 defineOptions({
 	name: "DevSqlTimeoutLogDetail",
-	options: {
-		virtualHost: true,
-		addGlobalClass: true,
-		styleIsolation: "shared",
-	},
 });
 
 const popupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<SqlTimeoutLogModel>();
 
-const detail = (data: SqlTimeoutLogModel) => {
+const detail = throttle((data: SqlTimeoutLogModel) =>
 	popupRef.value.open(() => {
 		formData.value = data;
-	});
-};
+	})
+);
 
 defineExpose({
 	detail,

@@ -24,27 +24,23 @@
 
 <script setup lang="ts">
 import { ref, shallowRef } from "vue";
+import { throttle } from "@fast-china/utils";
 import type { QueryClientUserPagedOutput } from "@/api/services/Center/clientUser/models/QueryClientUserPagedOutput";
 import type { FaPopupInstance } from "@/components";
 
 defineOptions({
 	name: "SystemClientUserDetail",
-	options: {
-		virtualHost: true,
-		addGlobalClass: true,
-		styleIsolation: "shared",
-	},
 });
 
 const popupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<QueryClientUserPagedOutput>();
 
-const detail = (item: QueryClientUserPagedOutput) => {
+const detail = throttle((item: QueryClientUserPagedOutput) =>
 	popupRef.value.open(() => {
 		formData.value = item;
-	});
-};
+	})
+);
 
 defineExpose({
 	detail,

@@ -26,27 +26,23 @@
 
 <script setup lang="ts">
 import { ref, shallowRef } from "vue";
+import { throttle } from "@fast-china/utils";
 import type { OperateLogModel } from "@/api/services/Admin/operateLog/models/OperateLogModel";
 import type { FaPopupInstance } from "@/components";
 
 defineOptions({
 	name: "AdminOperateLogDetail",
-	options: {
-		virtualHost: true,
-		addGlobalClass: true,
-		styleIsolation: "shared",
-	},
 });
 
 const popupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<OperateLogModel>();
 
-const detail = (data: OperateLogModel) => {
+const detail = throttle((data: OperateLogModel) =>
 	popupRef.value.open(() => {
 		formData.value = data;
-	});
-};
+	})
+);
 
 defineExpose({
 	detail,

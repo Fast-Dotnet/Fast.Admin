@@ -37,18 +37,13 @@
 
 <script setup lang="ts">
 import { reactive, ref } from "vue";
-import { withDefineType } from "@fast-china/utils";
+import { throttle, withDefineType } from "@fast-china/utils";
 import Decimal from "decimal.js";
 import type { QueryFilePagedOutput } from "@/api/services/File/models/QueryFilePagedOutput";
 import type { FaPopupInstance } from "@/components";
 
 defineOptions({
 	name: "SystemFileDetail",
-	options: {
-		virtualHost: true,
-		addGlobalClass: true,
-		styleIsolation: "shared",
-	},
 });
 
 const popupRef = ref<FaPopupInstance>();
@@ -73,11 +68,11 @@ const formatFileSize = (value?: string) => {
 	return `${size.toDecimalPlaces(2).toFixed()} ${units[unit]}`;
 };
 
-const detail = (data: QueryFilePagedOutput) => {
+const detail = throttle((data: QueryFilePagedOutput) =>
 	popupRef.value?.open(() => {
 		state.formData = data;
-	});
-};
+	})
+);
 
 defineExpose({
 	detail,

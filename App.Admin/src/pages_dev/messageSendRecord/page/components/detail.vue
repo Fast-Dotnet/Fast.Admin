@@ -36,11 +36,6 @@ import type { FaPopupInstance } from "@/components";
 
 defineOptions({
 	name: "DevMessageSendRecordDetail",
-	options: {
-		virtualHost: true,
-		addGlobalClass: true,
-		styleIsolation: "shared",
-	},
 });
 
 const popupRef = ref<FaPopupInstance>();

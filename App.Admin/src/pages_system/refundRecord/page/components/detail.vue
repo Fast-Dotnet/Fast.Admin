@@ -32,27 +32,23 @@
 
 <script setup lang="ts">
 import { ref, shallowRef } from "vue";
+import { throttle } from "@fast-china/utils";
 import type { RefundRecordModel } from "@/api/services/Center/refundRecord/models/RefundRecordModel";
 import type { FaPopupInstance } from "@/components";
 
 defineOptions({
 	name: "SystemRefundRecordDetail",
-	options: {
-		virtualHost: true,
-		addGlobalClass: true,
-		styleIsolation: "shared",
-	},
 });
 
 const popupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<RefundRecordModel>();
 
-const detail = (data: RefundRecordModel) => {
+const detail = throttle((data: RefundRecordModel) =>
 	popupRef.value.open(() => {
 		formData.value = data;
-	});
-};
+	})
+);
 
 defineExpose({
 	detail,

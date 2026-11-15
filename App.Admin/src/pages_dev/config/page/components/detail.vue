@@ -15,28 +15,24 @@
 
 <script setup lang="ts">
 import { ref, shallowRef } from "vue";
+import { throttle } from "@fast-china/utils";
 import { configApi } from "@/api/services/Center/config";
 import type { QueryConfigDetailOutput } from "@/api/services/Center/config/models/QueryConfigDetailOutput";
 import type { FaPopupInstance } from "@/components";
 
 defineOptions({
 	name: "DevConfigDetail",
-	options: {
-		virtualHost: true,
-		addGlobalClass: true,
-		styleIsolation: "shared",
-	},
 });
 
 const popupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<QueryConfigDetailOutput>();
 
-const detail = (configId: string) => {
+const detail = throttle((configId: string) =>
 	popupRef.value.open(async () => {
 		formData.value = await configApi.queryConfigDetail(configId);
-	});
-};
+	})
+);
 
 defineExpose({
 	detail,

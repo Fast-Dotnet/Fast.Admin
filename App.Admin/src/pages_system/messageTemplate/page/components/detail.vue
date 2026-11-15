@@ -31,11 +31,6 @@ import type { FaPopupInstance } from "@/components";
 
 defineOptions({
 	name: "SystemMessageTemplateDetail",
-	options: {
-		virtualHost: true,
-		addGlobalClass: true,
-		styleIsolation: "shared",
-	},
 });
 
 const popupRef = ref<FaPopupInstance>();

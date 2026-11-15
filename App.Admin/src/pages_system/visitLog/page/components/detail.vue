@@ -21,27 +21,23 @@
 
 <script setup lang="ts">
 import { ref, shallowRef } from "vue";
+import { throttle } from "@fast-china/utils";
 import type { VisitLogModel } from "@/api/services/Center/visitLog/models/VisitLogModel";
 import type { FaPopupInstance } from "@/components";
 
 defineOptions({
 	name: "SystemVisitLogDetail",
-	options: {
-		virtualHost: true,
-		addGlobalClass: true,
-		styleIsolation: "shared",
-	},
 });
 
 const popupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<VisitLogModel>();
 
-const detail = (data: VisitLogModel) => {
+const detail = throttle((data: VisitLogModel) =>
 	popupRef.value.open(() => {
 		formData.value = data;
-	});
-};
+	})
+);
 
 defineExpose({
 	detail,

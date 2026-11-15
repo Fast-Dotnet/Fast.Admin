@@ -61,17 +61,12 @@
 
 <script setup lang="ts">
 import { reactive, ref } from "vue";
-import { copy, withDefineType } from "@fast-china/utils";
+import { copy, throttle, withDefineType } from "@fast-china/utils";
 import type { SqlExceptionLogModel } from "@/api/services/Center/sqlExceptionLog/models/SqlExceptionLogModel";
 import type { FaPopupInstance } from "@/components";
 
 defineOptions({
 	name: "DevSqlExceptionLogDetail",
-	options: {
-		virtualHost: true,
-		addGlobalClass: true,
-		styleIsolation: "shared",
-	},
 });
 
 const popupRef = ref<FaPopupInstance>();
@@ -90,13 +85,13 @@ const handleCopy = async (content: string) => {
 	}
 };
 
-const detail = (data: SqlExceptionLogModel) => {
+const detail = throttle((data: SqlExceptionLogModel) =>
 	popupRef.value.open(() => {
 		state.formData = data;
 		state.isStackTraceExpanded = false;
 		state.isPureSqlExpanded = false;
-	});
-};
+	})
+);
 
 defineExpose({
 	detail,

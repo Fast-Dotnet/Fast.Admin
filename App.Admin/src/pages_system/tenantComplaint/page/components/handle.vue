@@ -43,11 +43,6 @@ import type { FaPopupInstance } from "@/components";
 
 defineOptions({
 	name: "SystemTenantComplaintHandle",
-	options: {
-		virtualHost: true,
-		addGlobalClass: true,
-		styleIsolation: "shared",
-	},
 });
 
 const emit = defineEmits(["ok"]);

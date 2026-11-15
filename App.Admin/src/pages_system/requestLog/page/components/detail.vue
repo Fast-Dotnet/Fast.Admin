@@ -65,18 +65,13 @@
 
 <script setup lang="ts">
 import { reactive, ref } from "vue";
-import { AESDecrypt, copy, withDefineType } from "@fast-china/utils";
+import { AESDecrypt, copy, throttle, withDefineType } from "@fast-china/utils";
 import { useUserInfo } from "@/stores";
 import type { RequestLogModel } from "@/api/services/Center/requestLog/models/RequestLogModel";
 import type { FaPopupInstance } from "@/components";
 
 defineOptions({
 	name: "SystemRequestLogDetail",
-	options: {
-		virtualHost: true,
-		addGlobalClass: true,
-		styleIsolation: "shared",
-	},
 });
 
 const userInfoStore = useUserInfo();
@@ -129,7 +124,7 @@ const handleCopy = async (content: string) => {
 	}
 };
 
-const detail = (data: RequestLogModel) => {
+const detail = throttle((data: RequestLogModel) =>
 	popupRef.value.open(() => {
 		state.formData = data;
 		const canViewContent = userInfoStore.isSuperAdmin || userInfoStore.isAdmin;
@@ -137,8 +132,8 @@ const detail = (data: RequestLogModel) => {
 		state.resultText = canViewContent ? formatLogContent(data.result, true) : "";
 		state.isParamExpanded = false;
 		state.isResultExpanded = false;
-	});
-};
+	})
+);
 
 defineExpose({
 	detail,

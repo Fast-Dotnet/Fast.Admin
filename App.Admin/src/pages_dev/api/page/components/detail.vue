@@ -35,6 +35,7 @@
 
 <script setup lang="ts">
 import { ref, shallowRef } from "vue";
+import { throttle } from "@fast-china/utils";
 import type { ApiInfoModel } from "@/api/services/Center/api/models/ApiInfoModel";
 import type { FaPopupInstance } from "@/components";
 
@@ -46,11 +47,11 @@ const popupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<ApiInfoModel>();
 
-const detail = (data: ApiInfoModel) => {
+const detail = throttle((data: ApiInfoModel) =>
 	popupRef.value.open(() => {
 		formData.value = data;
-	});
-};
+	})
+);
 
 defineExpose({
 	detail,

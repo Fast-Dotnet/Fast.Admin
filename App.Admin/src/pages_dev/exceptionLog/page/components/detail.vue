@@ -60,17 +60,12 @@
 
 <script setup lang="ts">
 import { reactive, ref } from "vue";
-import { copy, withDefineType } from "@fast-china/utils";
+import { copy, throttle, withDefineType } from "@fast-china/utils";
 import type { ExceptionLogModel } from "@/api/services/Center/exceptionLog/models/ExceptionLogModel";
 import type { FaPopupInstance } from "@/components";
 
 defineOptions({
 	name: "DevExceptionLogDetail",
-	options: {
-		virtualHost: true,
-		addGlobalClass: true,
-		styleIsolation: "shared",
-	},
 });
 
 const popupRef = ref<FaPopupInstance>();
@@ -90,7 +85,7 @@ const handleCopy = async (content: string) => {
 	}
 };
 
-const detail = (data: ExceptionLogModel) => {
+const detail = throttle((data: ExceptionLogModel) =>
 	popupRef.value.open(() => {
 		state.formData = data;
 		state.paramsText = data.paramsObj ?? "";
@@ -103,8 +98,8 @@ const detail = (data: ExceptionLogModel) => {
 		}
 		state.isStackTraceExpanded = false;
 		state.isParamsExpanded = false;
-	});
-};
+	})
+);
 
 defineExpose({
 	detail,

@@ -32,27 +32,23 @@
 
 <script setup lang="ts">
 import { ref, shallowRef } from "vue";
+import { throttle } from "@fast-china/utils";
 import type { TenantOnlineUserModel } from "@/api/services/Center/tenantOnlineUser/models/TenantOnlineUserModel";
 import type { FaPopupInstance } from "@/components";
 
 defineOptions({
 	name: "SystemTenantOnlineUserDetail",
-	options: {
-		virtualHost: true,
-		addGlobalClass: true,
-		styleIsolation: "shared",
-	},
 });
 
 const popupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<TenantOnlineUserModel>();
 
-const detail = (item: TenantOnlineUserModel) => {
+const detail = throttle((item: TenantOnlineUserModel) =>
 	popupRef.value.open(() => {
 		formData.value = item;
-	});
-};
+	})
+);
 
 defineExpose({
 	detail,

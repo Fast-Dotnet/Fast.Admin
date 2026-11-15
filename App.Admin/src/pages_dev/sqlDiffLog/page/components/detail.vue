@@ -82,17 +82,12 @@
 
 <script setup lang="ts">
 import { reactive, ref } from "vue";
-import { copy, withDefineType } from "@fast-china/utils";
+import { copy, throttle, withDefineType } from "@fast-china/utils";
 import type { SqlDiffLogModel } from "@/api/services/Center/sqlDiffLog/models/SqlDiffLogModel";
 import type { FaPopupInstance } from "@/components";
 
 defineOptions({
 	name: "DevSqlDiffLogDetail",
-	options: {
-		virtualHost: true,
-		addGlobalClass: true,
-		styleIsolation: "shared",
-	},
 });
 
 const popupRef = ref<FaPopupInstance>();
@@ -114,7 +109,7 @@ const handleCopy = async (content: string) => {
 	}
 };
 
-const detail = (data: SqlDiffLogModel) => {
+const detail = throttle((data: SqlDiffLogModel) =>
 	popupRef.value.open(() => {
 		state.formData = data;
 		state.beforeColumnText = data.beforeColumnList == null ? "" : JSON.stringify(data.beforeColumnList, null, 2);
@@ -122,8 +117,8 @@ const detail = (data: SqlDiffLogModel) => {
 		state.isPureSqlExpanded = false;
 		state.isBeforeColumnExpanded = false;
 		state.isAfterColumnExpanded = false;
-	});
-};
+	})
+);
 
 defineExpose({
 	detail,

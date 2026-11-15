@@ -35,27 +35,23 @@
 
 <script setup lang="ts">
 import { ref, shallowRef } from "vue";
+import { throttle } from "@fast-china/utils";
 import type { QueryDatabasePagedOutput } from "@/api/services/Center/database/models/QueryDatabasePagedOutput";
 import type { FaPopupInstance } from "@/components";
 
 defineOptions({
 	name: "SystemDatabaseDetail",
-	options: {
-		virtualHost: true,
-		addGlobalClass: true,
-		styleIsolation: "shared",
-	},
 });
 
 const popupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<QueryDatabasePagedOutput>();
 
-const detail = (item: QueryDatabasePagedOutput) => {
+const detail = throttle((item: QueryDatabasePagedOutput) =>
 	popupRef.value.open(() => {
 		formData.value = item;
-	});
-};
+	})
+);
 
 defineExpose({
 	detail,
