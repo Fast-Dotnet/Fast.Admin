@@ -109,7 +109,7 @@ const complaintPickerLabel = computed(() => complaintTypeEnum.find((item) => ite
 /** 处理上传 */
 const handleUpload: UploadMethod = (file, formData, options) => {
 	fileApi
-		.uploadFile(file.url, (progress) =>
+		.uploadFile(file.url, null, (progress) =>
 			options.onProgress(
 				{
 					progress: Math.round((progress.progress ?? 0) * 100),

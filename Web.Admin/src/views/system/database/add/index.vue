@@ -66,10 +66,10 @@
 				</el-input-number>
 			</FaFormItem>
 			<FaFormItem prop="diffLog" label="差异日志">
-				<RadioGroup button name="BooleanEnum" v-model="state.formData.diffLog" />
+				<RadioGroup name="BooleanEnum" v-model="state.formData.diffLog" button />
 			</FaFormItem>
 			<FaFormItem prop="disableAop" label="禁用Aop">
-				<RadioGroup button name="BooleanEnum" v-model="state.formData.disableAop" />
+				<RadioGroup name="BooleanEnum" v-model="state.formData.disableAop" button />
 			</FaFormItem>
 		</FaForm>
 	</FaDialog>

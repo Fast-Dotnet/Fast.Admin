@@ -1,6 +1,6 @@
 <template>
 	<FaPopup ref="popupRef" title="单号配置详情" height="70%" position="bottom" closable>
-		<FaCard>
+		<view style="display: flex; flex-direction: column; gap: 10px">
 			<FaField label="规则类型">
 				<FaTag name="SerialRuleTypeEnum" :value="formData.ruleType" />
 			</FaField>
@@ -19,7 +19,7 @@
 			<FaField label="创建时间" :value="formData.createdTime" />
 			<FaField label="更新人" :value="formData.updatedUserName" />
 			<FaField label="更新时间" :value="formData.updatedTime" />
-		</FaCard>
+		</view>
 	</FaPopup>
 </template>
 

@@ -40,11 +40,6 @@ import type { FaPopupInstance } from "@/components";
 
 defineOptions({
 	name: "DevApiDetail",
-	options: {
-		virtualHost: true,
-		addGlobalClass: true,
-		styleIsolation: "shared",
-	},
 });
 
 const popupRef = ref<FaPopupInstance>();

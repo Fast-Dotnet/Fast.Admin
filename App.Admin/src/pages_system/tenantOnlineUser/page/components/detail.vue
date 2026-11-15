@@ -1,6 +1,6 @@
 <template>
 	<FaPopup ref="popupRef" title="在线用户详情" height="70%" position="bottom" closable>
-		<FaCard>
+		<view style="display: flex; flex-direction: column; gap: 10px">
 			<FaField label="昵称" :value="formData.nickName" />
 			<FaField label="手机" :value="formData.mobile" />
 			<FaField label="状态" :value="formData.isOnline ? '在线' : '离线'" />
@@ -26,7 +26,7 @@
 			<FaField label="浏览器" :value="formData.lastLoginBrowser" />
 			<FaField label="登录时间" :value="formData.lastLoginTime" />
 			<FaField label="下线时间" :value="formData.offlineTime" />
-		</FaCard>
+		</view>
 	</FaPopup>
 </template>
 

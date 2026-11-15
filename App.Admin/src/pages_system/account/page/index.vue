@@ -31,7 +31,7 @@
 				<FaField label="最后登录浏览器" :value="item.lastLoginBrowser" />
 				<FaField label="最后登录时间" :value="item.lastLoginTime" />
 				<FaField label="锁定信息">
-					<wd-tag v-if="item.isLock" type="warning">已锁定</wd-tag>
+					<wd-tag v-if="item.isLock" type="danger">已锁定</wd-tag>
 					<wd-tag v-else>未锁定</wd-tag>
 				</FaField>
 				<template v-if="item.isLock">

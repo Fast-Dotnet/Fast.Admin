@@ -36,7 +36,7 @@
 
 		<wd-cell-group title="锁定信息" border>
 			<wd-cell title="锁定">
-				<wd-tag v-if="state.formData.lockStartTime" type="warning">已锁定</wd-tag>
+				<wd-tag v-if="state.formData.lockStartTime" type="danger">已锁定</wd-tag>
 				<wd-tag v-else>未锁定</wd-tag>
 			</wd-cell>
 			<template v-if="state.formData.lockStartTime">

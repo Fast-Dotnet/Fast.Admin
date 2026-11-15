@@ -7,7 +7,7 @@
 
 			<el-col :span="20">
 				<FaForm :model="state.formData" detail-form cols="2">
-					<FaFormItem label="职员名称" :value="state.formData.employeeName" />
+					<FaFormItem label="姓名" :value="state.formData.employeeName" />
 					<FaFormItem label="工号">
 						<el-text type="primary">{{ state.formData.employeeNo }}</el-text>
 					</FaFormItem>
@@ -21,13 +21,15 @@
 					</FaFormItem>
 					<FaFormItem label="入职日期" :value="state.formData.entryDate?.slice(0, 10)" />
 					<FaFormItem label="备注" :value="state.formData.remark" />
-					<FaFormItem label="角色" :value="roleNames" />
 				</FaForm>
 			</el-col>
 		</el-row>
 
 		<el-divider content-position="left">其他信息</el-divider>
 		<FaForm :model="state.formData" detail-form cols="2">
+			<FaFormItem label="角色" :value="roleNames" row />
+			<FaFormItem label="离职日期" :value="state.formData.resignDate?.slice(0, 10)" />
+			<FaFormItem label="离职原因" :value="state.formData.resignReason" />
 			<FaFormItem label="创建人" :value="state.formData.createdUserName" />
 			<FaFormItem label="创建时间" :value="state.formData.createdTime" />
 			<FaFormItem label="更新人" :value="state.formData.updatedUserName" />

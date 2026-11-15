@@ -175,36 +175,6 @@ const state = reactive({
 	roleList: withDefineType<ElSelectorOutput<string>[]>([]),
 });
 
-/** 从 API 详情响应中提取主部门信息，展平到 formData */
-const flattenPrimaryOrg = (apiRes: QueryEmployeeDetailOutput) => {
-	const primaryOrg = apiRes.orgList?.find((item) => item.isPrimary) ?? apiRes.orgList?.[0];
-	if (!primaryOrg) return;
-
-	state.formData.orgId = primaryOrg.orgId;
-	state.formData.orgName = primaryOrg.orgName;
-	state.formData.departmentId = primaryOrg.departmentId;
-	state.formData.departmentName = primaryOrg.departmentName;
-	state.formData.positionId = primaryOrg.positionId;
-	state.formData.positionName = primaryOrg.positionName;
-	state.formData.jobLevelId = primaryOrg.jobLevelId;
-	state.formData.jobLevelName = primaryOrg.jobLevelName;
-	state.formData.isPrincipal = primaryOrg.isPrincipal;
-};
-
-/** 将 UI 展平的单部门字段组装回 orgList 数组，用于提交 API */
-const buildOrgList = () => {
-	return [
-		{
-			orgId: state.formData.orgId,
-			departmentId: state.formData.departmentId,
-			isPrimary: true,
-			positionId: state.formData.positionId,
-			jobLevelId: state.formData.jobLevelId,
-			isPrincipal: state.formData.isPrincipal ?? false,
-		},
-	];
-};
-
 const handleRoleChange = (val: CheckboxValueType[]) => {
 	state.formData.roleList = val
 		.map((m) => {
@@ -223,17 +193,27 @@ const handleRoleChange = (val: CheckboxValueType[]) => {
 const handleConfirm = () => {
 	faDialogRef.value.close(async () => {
 		await faFormRef.value.validateScrollToField();
+		const { formData } = state;
 		switch (state.dialogState) {
 			case "add":
-				await employeeApi.addEmployee(state.formData);
+				await employeeApi.addEmployee(formData);
 				ElMessage.success("新增成功！");
 				break;
 			case "edit":
 				await employeeApi.editEmployee({
-					...state.formData,
-					orgList: buildOrgList(),
+					...formData,
+					orgList: [
+						{
+							orgId: formData.orgId,
+							departmentId: formData.departmentId,
+							isPrimary: true,
+							positionId: formData.positionId,
+							jobLevelId: formData.jobLevelId,
+							isPrincipal: formData.isPrincipal ?? false,
+						},
+					],
 				});
-				if (state.formData.employeeId === userInfoStore.employeeId) {
+				if (formData.employeeId === userInfoStore.employeeId) {
 					await userInfoStore.refreshUserInfo();
 				}
 				ElMessage.success("保存成功！");
@@ -263,7 +243,18 @@ const edit = (employeeId: string) => {
 		const apiRes = await employeeApi.queryEmployeeDetail(employeeId);
 		state.formData = apiRes;
 		state.formData.roleIds = apiRes.roleList.map((m) => m.roleId);
-		flattenPrimaryOrg(apiRes);
+		const primaryOrg = apiRes.orgList?.find((item) => item.isPrimary) ?? apiRes.orgList?.[0];
+		if (primaryOrg) {
+			state.formData.orgId = primaryOrg.orgId;
+			state.formData.orgName = primaryOrg.orgName;
+			state.formData.departmentId = primaryOrg.departmentId;
+			state.formData.departmentName = primaryOrg.departmentName;
+			state.formData.positionId = primaryOrg.positionId;
+			state.formData.positionName = primaryOrg.positionName;
+			state.formData.jobLevelId = primaryOrg.jobLevelId;
+			state.formData.jobLevelName = primaryOrg.jobLevelName;
+			state.formData.isPrincipal = primaryOrg.isPrincipal;
+		}
 		state.dialogTitle = `编辑职员 - ${apiRes.employeeName}`;
 		state.roleList = await roleApi.roleSelector();
 	});

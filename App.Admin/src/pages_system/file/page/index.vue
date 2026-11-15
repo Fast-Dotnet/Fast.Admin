@@ -15,6 +15,7 @@
 						<wd-tag>{{ item.fileMimeType }}</wd-tag>
 					</view>
 				</template>
+
 				<FaField label="原文件名" :value="item.fileOriginName" />
 				<FaField label="大小" :value="formatFileSize(item.fileSizeKb)" />
 				<FaField label="创建人" :value="item.createdUserName" />
@@ -38,6 +39,7 @@
 
 	<FileDetail ref="editFormRef" />
 </template>
+
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 import { Decimal } from "decimal.js";
@@ -54,6 +56,7 @@ definePage({
 });
 
 const userInfoStore = useUserInfo();
+
 const editFormRef = ref<InstanceType<typeof FileDetail>>();
 
 const state = reactive({

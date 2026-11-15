@@ -1,6 +1,6 @@
 <template>
 	<FaPopup ref="popupRef" title="客户端用户详情" height="70%" position="bottom" closable>
-		<FaCard>
+		<view style="display: flex; flex-direction: column; gap: 10px">
 			<FaField label="昵称" :value="formData.nickName" />
 			<FaField label="手机" :value="formData.mobile" />
 			<FaField label="性别">
@@ -18,7 +18,7 @@
 			<FaField label="登录时间" :value="formData.lastLoginTime" />
 			<FaField label="创建时间" :value="formData.createdTime" />
 			<FaField label="更新时间" :value="formData.updatedTime" />
-		</FaCard>
+		</view>
 	</FaPopup>
 </template>
 
