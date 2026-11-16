@@ -9,6 +9,8 @@
 		:z-index="props.zIndex"
 		position="bottom"
 		closable
+		:show-confirm-button="props.multiple"
+		@confirm="handleConfirm"
 		@open="visible = true"
 		@close="visible = false"
 		@after-enter="faPagingRef.reload()"
@@ -50,7 +52,7 @@
 							:key="cItem.value"
 							center
 							:clickable="!cItem.disabled"
-							:custom-class="cItem.rawValue === modelValue ? 'fa-select-page__cell--selected' : ''"
+							:custom-class="isSelected(cItem.rawValue) ? 'fa-select-page__cell--selected' : ''"
 							:custom-style="cItem.disabled ? 'opacity: 0.5;' : ''"
 							@click="handleChange(cItem as TResult, item)"
 						>
@@ -68,7 +70,7 @@
 								</slot>
 							</template>
 							<template #suffix>
-								<wd-icon v-if="cItem.rawValue === modelValue" name="check" size="32rpx" color="var(--wot-primary-6)" />
+								<wd-icon v-if="isSelected(cItem.rawValue)" name="check" size="32rpx" color="var(--wot-primary-6)" />
 							</template>
 						</wd-cell>
 					</wd-cell-group>
@@ -79,7 +81,7 @@
 						:key="item.value"
 						center
 						:clickable="!item.disabled"
-						:custom-class="item.rawValue === modelValue ? 'fa-select-page__cell--selected' : ''"
+						:custom-class="isSelected(item.rawValue) ? 'fa-select-page__cell--selected' : ''"
 						:custom-style="item.disabled ? 'opacity: 0.5;' : ''"
 						@click="handleChange(item)"
 					>
@@ -97,12 +99,16 @@
 							</slot>
 						</template>
 						<template #suffix>
-							<wd-icon v-if="item.rawValue === modelValue" name="check" size="32rpx" color="var(--wot-primary-6)" />
+							<wd-icon v-if="isSelected(item.rawValue)" name="check" size="32rpx" color="var(--wot-primary-6)" />
 						</template>
 					</wd-cell>
 				</wd-cell-group>
 			</template>
 		</FaPaging>
+
+		<template v-if="props.multiple" #footer>
+			<text class="fa-select-page__selected-count">已选 {{ selectedList.size }} 项</text>
+		</template>
 	</FaPopup>
 </template>
 
@@ -115,7 +121,7 @@
 		TInput extends string | number | boolean | PagedInput = PagedInput
 	"
 >
-import { computed, ref, watch } from "vue";
+import { computed, ref, shallowRef, watch } from "vue";
 import FaPaging from "../paging/index.vue";
 import FaPopup from "../popup/index.vue";
 import type { PropType, Ref } from "vue";
@@ -146,6 +152,8 @@ const props = defineProps({
 		type: Number,
 		default: 210,
 	},
+	/** 是否多选。多选时在确认后提交全部选中的原始值 */
+	multiple: Boolean,
 	/** 是否允许清空当前选中值 */
 	clearable: {
 		type: Boolean,
@@ -205,23 +213,34 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-	/** 选择时返回映射后的选项，value 为原始值，清空选择时返回 null */
-	change: [value: TResult | null, parentValue?: TResult | null];
+	/** 单选返回选项及其父节点，清空时返回 null。多选确认时返回原始值数组 */
+	change: [value: TResult | TResult[] | null, parentValue?: TResult | null];
+	/** 单选立即触发。多选在确认将已有选中值清空时触发 */
 	clear: [];
 }>();
 
 /** 弹窗显隐状态 */
 const visible = defineModel<boolean>("visible", { default: false });
-/** 当前选中的值 */
-const modelValue = defineModel<TValue>();
-/** 当前选中项的标签 */
-const selectedLabel = defineModel<string>("label");
+/** 当前选中的原始值。多选模式下为原始值数组 */
+const modelValue = defineModel<TValue | TValue[]>();
+/** 单选模式下当前选中项的标签 */
+const selectedLabel = defineModel<string | string[]>("label");
+/** 选中数据 */
+const selectedList = shallowRef(new Map<TValue, string>());
 
 /** 分页搜索参数 */
 const searchParam: Ref<Partial<TInput extends PagedInput ? TInput : PagedInput>> = ref({});
 
 const faPopupRef = ref<InstanceType<typeof FaPopup>>();
 const faPagingRef = ref<ComponentExposed<typeof FaPaging<TResult, TInput>>>();
+
+const isSelected = (value?: TValue) => {
+	if (props.multiple) {
+		return selectedList.value.has(value);
+	} else {
+		return value === modelValue.value;
+	}
+};
 
 const getLabel = (item: TResult) => {
 	const { label } = props.props;
@@ -275,7 +294,14 @@ const localData = computed(() => {
 
 const open = () => {
 	if (faPopupRef.value && !faPopupRef.value.visible) {
-		faPopupRef.value.open(props.openCallback);
+		faPopupRef.value.open(() => {
+			if (props.multiple) {
+				const currentValues = Array.isArray(modelValue.value) ? modelValue.value : [];
+				const currentLabels = Array.isArray(selectedLabel.value) ? selectedLabel.value : [];
+				selectedList.value = new Map(currentValues.map((value, index) => [value, currentLabels[index] ?? ""]));
+			}
+			return props.openCallback?.();
+		});
 	}
 };
 
@@ -286,16 +312,50 @@ const close = () => {
 };
 
 const handleChange = (item?: TResult, parentItem?: TResult) => {
-	modelValue.value = item?.rawValue;
-	selectedLabel.value = item?.label;
-	emit("change", item ? { ...item, value: item.rawValue } : null, parentItem ? { ...parentItem, value: parentItem.rawValue } : null);
+	const value = item?.rawValue;
+	const label = item?.label ?? "";
+	if (props.multiple) {
+		const items = new Map(selectedList.value);
+		if (!items.delete(value)) {
+			items.set(value, label);
+		}
+		selectedList.value = items;
+	} else {
+		modelValue.value = value;
+		selectedLabel.value = label;
+		emit("change", item ? { ...item, value: item.rawValue } : null, parentItem ? { ...parentItem, value: parentItem.rawValue } : null);
+		close();
+	}
+};
+
+const handleConfirm = () => {
+	if (!props.multiple) return;
+	modelValue.value = [...selectedList.value.keys()];
+	selectedLabel.value = [...selectedList.value.values()];
+	const pagedListMap = new Map(faPagingRef.value.pagedList.map((item) => [item[props.valueKey], item]));
+	const result = [...selectedList.value].map(
+		([value, label]) =>
+			pagedListMap.get(value) ?? {
+				[props.valueKey]: value,
+				label,
+			}
+	);
+	emit("change", result as TResult[], null);
 	close();
 };
 
 const handleClear = () => {
 	faPagingRef.value?.clearSearchParam();
+	if (props.multiple) {
+		modelValue.value = [];
+		selectedLabel.value = [];
+		selectedList.value = new Map();
+	} else {
+		modelValue.value = null;
+		selectedLabel.value = null;
+	}
 	emit("clear");
-	handleChange();
+	emit("change", null, null);
 };
 
 watch([visible, faPopupRef], ([isVisible]) => (isVisible ? open() : close()), { immediate: true, flush: "post" });

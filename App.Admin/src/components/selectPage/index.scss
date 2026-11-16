@@ -6,6 +6,11 @@
 	--wot-cell-bg: var(--wot-primary-3);
 }
 
+.fa-select-page__selected-count {
+	color: var(--wot-text-secondary);
+	white-space: nowrap;
+}
+
 .fa-select-page {
 	.fa-search-input {
 		border-bottom: var(--wot-stroke-main) solid var(--wot-border-main);
