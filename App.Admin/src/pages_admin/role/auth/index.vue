@@ -95,7 +95,6 @@ const state = reactive({
 	roleId: withDefineType<string>(),
 	menuList: withDefineType<ElSelectorOutput<string>[]>([]),
 	searchKeyword: "",
-	selectedMenuId: withDefineType<string>(),
 });
 
 /** 过滤的菜单 */
@@ -147,7 +146,6 @@ const handleConfirm = throttle(async () => {
 		.find((menu) => !isMenuChecked(menu.value) && getButtonCheckedCount(menu) > 0);
 	if (unGrantedMenu) {
 		state.searchKeyword = "";
-		state.selectedMenuId = unGrantedMenu.value;
 		useToast.warning(`请先授权「${unGrantedMenu.label}」页面，或取消该页面的操作权限。`);
 		return;
 	}
