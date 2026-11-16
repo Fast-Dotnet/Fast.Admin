@@ -11,8 +11,8 @@
 
 		<template #default="{ pagedList }">
 			<FaCard v-for="item in pagedList" :key="item.userId" @click="detailFormRef?.detail(item)">
-				<view style="display: flex; align-items: center; gap: 20rpx; margin-bottom: 24rpx">
-					<FaImage :src="item.avatar" width="88rpx" height="88rpx" original round />
+				<view style="display: flex; align-items: center; gap: 20rpx; margin-bottom: 10rpx">
+					<FaAvatar :src="item.avatar" size="88rpx" />
 					<view style="flex: 1; display: flex; flex-direction: column">
 						<text
 							style="
@@ -29,7 +29,7 @@
 					<FaTag name="GenderEnum" :value="item.sex" />
 				</view>
 
-				<FaField label="登录地区" :value="[item.lastLoginProvince, item.lastLoginCity].filter(Boolean).join(' - ')" />
+				<FaField label="地区" :value="[item.lastLoginProvince, item.lastLoginCity].filter(Boolean).join(' - ')" />
 				<FaField label="Ip" :value="item.lastLoginIp" />
 				<FaField label="设备" :value="[item.lastLoginDevice, item.lastLoginOS].filter(Boolean).join(' · ')" />
 				<FaField label="浏览器" :value="item.lastLoginBrowser" />

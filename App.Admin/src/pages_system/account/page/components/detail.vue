@@ -15,22 +15,22 @@
 
 			<wd-divider content-position="left">初次登录信息</wd-divider>
 			<FaField label="租户" :value="formData.firstLoginTenantName" />
+			<FaField label="省份" :value="formData.firstLoginProvince" />
+			<FaField label="城市" :value="formData.firstLoginCity" />
 			<FaField label="Ip" :value="formData.firstLoginIp" />
 			<FaField label="设备" :value="formData.firstLoginDevice" />
 			<FaField label="操作系统" :value="formData.firstLoginOS" />
 			<FaField label="浏览器" :value="formData.firstLoginBrowser" />
-			<FaField label="省份" :value="formData.firstLoginProvince" />
-			<FaField label="城市" :value="formData.firstLoginCity" />
 			<FaField label="时间" :value="formData.firstLoginTime" />
 
 			<wd-divider content-position="left">最后登录信息</wd-divider>
 			<FaField label="租户" :value="formData.lastLoginTenantName" />
+			<FaField label="省份" :value="formData.lastLoginProvince" />
+			<FaField label="城市" :value="formData.lastLoginCity" />
 			<FaField label="Ip" :value="formData.lastLoginIp" />
 			<FaField label="设备" :value="formData.lastLoginDevice" />
 			<FaField label="操作系统" :value="formData.lastLoginOS" />
 			<FaField label="浏览器" :value="formData.lastLoginBrowser" />
-			<FaField label="省份" :value="formData.lastLoginProvince" />
-			<FaField label="城市" :value="formData.lastLoginCity" />
 			<FaField label="时间" :value="formData.lastLoginTime" />
 
 			<wd-divider content-position="left">锁定信息</wd-divider>
