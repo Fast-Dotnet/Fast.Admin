@@ -77,9 +77,9 @@ const router = useRouter();
 const faPagingRef = ref<FaPagingInstance>();
 const detailFormRef = ref<InstanceType<typeof DatabaseDetail>>();
 
-const handleAdd = throttle(() => router.push("/pages_system/database/add/index"));
+const handleAdd = throttle(async () => await router.push("/pages_system/database/add/index"));
 
-const handleEdit = throttle((mainId?: string) => router.push(`/pages_system/database/edit/index?mainId=${mainId}`));
+const handleEdit = throttle(async (mainId?: string) => await router.push(`/pages_system/database/edit/index?mainId=${mainId}`));
 
 const handleDelete = throttle(async (item: QueryDatabasePagedOutput) => {
 	const { mainId, rowVersion } = item;

@@ -3,16 +3,16 @@
 		<FaLoading mask :loading="state.loading" />
 		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>
 			<wd-form-item v-if="state.pageMode === 'add'" title="规则类型" prop="ruleType">
-				<FaRadioGroup name="SerialRuleTypeEnum" v-model="state.formData.ruleType" type="button" />
+				<FaRadioGroup name="SerialRuleTypeEnum" v-model="state.formData.ruleType" />
 			</wd-form-item>
 			<wd-form-item title="前缀" prop="prefix">
 				<wd-input v-model="state.formData.prefix" clearable :maxlength="5" placeholder="请输入前缀" />
 			</wd-form-item>
 			<wd-form-item title="时间类型" prop="dateType">
-				<FaRadioGroup name="SerialDateTypeEnum" v-model="state.formData.dateType" type="button" />
+				<FaRadioGroup name="SerialDateTypeEnum" v-model="state.formData.dateType" />
 			</wd-form-item>
 			<wd-form-item title="分隔符" prop="spacer">
-				<FaRadioGroup name="SerialSpacerEnum" v-model="state.formData.spacer" type="button" />
+				<FaRadioGroup name="SerialSpacerEnum" v-model="state.formData.spacer" />
 			</wd-form-item>
 			<wd-form-item title="长度" prop="length">
 				<wd-input-number v-model="state.formData.length" :min="1" :max="6" />

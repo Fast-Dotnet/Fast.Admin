@@ -21,19 +21,19 @@
 				<wd-input v-model="state.formData.spellName" clearable :maxlength="100" placeholder="请输入租户英文名称" />
 			</wd-form-item>
 			<wd-form-item title="版本" prop="edition">
-				<FaRadioGroup name="EditionEnum" v-model="state.formData.edition" type="button" direction="horizontal" />
+				<FaRadioGroup name="EditionEnum" v-model="state.formData.edition" type="button" />
 			</wd-form-item>
 			<wd-form-item title="机器人名称" prop="robotName">
 				<wd-input v-model="state.formData.robotName" clearable :maxlength="20" placeholder="请输入机器人名称" />
 			</wd-form-item>
 			<wd-form-item v-if="state.pageMode === 'edit'" title="状态" prop="status">
-				<FaRadioGroup name="CommonStatusEnum" v-model="state.formData.status" type="button" direction="horizontal" />
+				<FaRadioGroup name="CommonStatusEnum" v-model="state.formData.status" direction="horizontal" />
 			</wd-form-item>
 			<wd-form-item title="Logo" prop="logoUrl">
 				<FaUploadImage v-model="state.formData.logoUrl" :upload-api="fileApi.uploadLogo" />
 			</wd-form-item>
 
-			<wd-cell-group title="管理员信息" border>
+			<wd-cell-group title="管理员信息">
 				<wd-form-item title="管理员名称" prop="adminName">
 					<wd-input v-model="state.formData.adminName" clearable :maxlength="20" placeholder="请输入管理员名称" />
 				</wd-form-item>
@@ -48,7 +48,7 @@
 				</wd-form-item>
 			</wd-cell-group>
 
-			<wd-cell-group title="阿里云" border>
+			<wd-cell-group title="阿里云">
 				<wd-form-item title="签名名称" prop="aliyunSignName">
 					<wd-input v-model="state.formData.aliyunSignName" clearable :maxlength="30" placeholder="请输入阿里云签名名称" />
 				</wd-form-item>
