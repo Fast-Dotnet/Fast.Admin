@@ -43,6 +43,12 @@ export function loadWotUi(): void {
 	pickerProps.zIndex.default = 210;
 	// 日期时间选择器层级高于筛选弹窗
 	datetimePickerProps.zIndex.default = 210;
+	// 日期时间选择器层级高于筛选弹窗
+	datetimePickerProps.zIndex.default = 210;
+	// 日历选择器层级高于筛选弹窗
+	calendarProps.zIndex.default = 210;
+	// 级联选择器层级高于筛选弹窗
+	cascaderProps.zIndex.default = 210;
 
 	// #ifdef H5
 	/** 弹层默认传送到 body，避开页面内的层叠上下文和裁剪 */

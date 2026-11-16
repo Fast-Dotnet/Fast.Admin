@@ -1,7 +1,7 @@
 <template>
 	<FaPaging ref="faPagingRef" :request-api="employeeApi.queryEmployeePaged">
 		<template #top="{ searchParam, refresh }">
-			<FaSearchInput v-model:search-param="searchParam.value" @confirm="refresh()" @clear="refresh()" @search="refresh()">
+			<FaSearchInput hide-search-time v-model:search-param="searchParam.value" @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #filter>
 					<FaDepartmentTreeSelect v-model="searchParam.value.departmentId" />
 					<FaCellPicker title="状态" name="EmployeeStatusEnum" v-model="searchParam.value.status" radio clearable />
@@ -17,8 +17,8 @@
 
 		<template #default="{ pagedList }">
 			<FaCard v-for="item in pagedList" :key="item.employeeId" code="Employee:Detail" @click="detailFormRef?.detail(item.employeeId)">
-				<view style="display: flex; align-items: center; gap: 20rpx; margin-bottom: 24rpx">
-					<FaImage :src="item.idPhoto" width="88rpx" height="88rpx" original round />
+				<view style="display: flex; align-items: center; gap: 20rpx; margin-bottom: 10rpx">
+					<FaAvatar :src="item.idPhoto" size="88rpx" original />
 					<view style="flex: 1; display: flex; flex-direction: column">
 						<text
 							style="
@@ -42,9 +42,6 @@
 				<FaField v-if="item.status === EmployeeStatusEnum.Resigned" label="离职日期" :value="item.resignDate?.slice(0, 10)" />
 
 				<template #footer>
-					<FaAuth code="Employee:Detail">
-						<wd-button size="mini" type="primary" variant="plain" @click="detailFormRef?.detail(item.employeeId)">详情</wd-button>
-					</FaAuth>
 					<FaAuth v-if="item.status !== EmployeeStatusEnum.Resigned" code="Employee:Edit">
 						<wd-button size="mini" type="primary" variant="plain" @click="handleEdit('edit', item.employeeId)">编辑</wd-button>
 					</FaAuth>
@@ -98,9 +95,9 @@ import { useUserInfo } from "@/stores";
 import BindAccount from "./components/bindAccount.vue";
 import EmployeeDetail from "./components/detail.vue";
 import EmployeeResigned from "./components/resigned.vue";
-import type { PickerOption } from "@wot-ui/ui/components/wd-picker-view/types.ts";
+import type { PickerOption } from "@wot-ui/ui/components/wd-picker-view/types";
 import type { QueryEmployeePagedOutput } from "@/api/services/Admin/employee/models/QueryEmployeePagedOutput";
-import type { FaPagingInstance } from "@/components/index.ts";
+import type { FaPagingInstance } from "@/components";
 
 definePage({
 	name: "AdminEmployee",
@@ -124,11 +121,15 @@ const state = reactive({
 	statusPickerColumns: withDefineType<PickerOption[]>([]),
 });
 
-const handleEdit = throttle((mode: IPageStateType, employeeId?: string) =>
-	router.push({
-		path: "/pages_admin/employee/edit/index",
-		query: { mode, employeeId },
-	})
+const handleEdit = throttle(
+	async (mode: IPageStateType, employeeId?: string) =>
+		await router.push({
+			path: "/pages_admin/employee/edit/index",
+			query: {
+				mode,
+				employeeId,
+			},
+		})
 );
 
 const handleChangeStatusClick = (item: QueryEmployeePagedOutput) => {
@@ -148,38 +149,38 @@ const handleChangeStatusClick = (item: QueryEmployeePagedOutput) => {
 };
 
 /** 修改职员在职状态；恢复在职不会同时启用登录账号。 */
-const handleChangeStatus = ({ value }: { value: EmployeeStatusEnum }) => {
+const handleChangeStatus = throttle(async ({ value }: { value: EmployeeStatusEnum[] }) => {
 	const { employeeId, employeeName, status, rowVersion } = state.clickItem;
-	if (value === EmployeeStatusEnum.Resigned) {
-		resignedFormRef.value.open(employeeId);
+	if (value[0] === EmployeeStatusEnum.Resigned) {
+		await resignedFormRef.value.open(employeeId);
 		return;
 	}
 	const message =
 		status === EmployeeStatusEnum.Resigned
 			? `确定恢复职员【${employeeName}】的在职状态？恢复后仍需单独启用登录账号。`
 			: `确定修改职员【${employeeName}】的状态？`;
-	useMessageBox.confirm(message, {
+	await useMessageBox.confirm(message, {
 		async beforeConfirm() {
 			await employeeApi.changeStatus({
 				employeeId,
-				status: value,
+				status: value[0],
 				rowVersion,
 			});
 			useToast.success("操作成功！");
 			faPagingRef.value.refresh();
 		},
 	});
-};
+});
 
 /** 单独切换职员登录账号的启用状态。 */
-const handleChangeAccountStatus = (item: QueryEmployeePagedOutput) => {
+const handleChangeAccountStatus = throttle(async (item: QueryEmployeePagedOutput) => {
 	const { employeeId, accountStatus, rowVersion } = item;
-	useMessageBox.confirm(`确定${accountStatus === CommonStatusEnum.Enable ? "禁用" : "启用"}职员【${item.employeeName}】的登录账号？`, {
+	await useMessageBox.confirm(`确定${accountStatus === CommonStatusEnum.Enable ? "禁用" : "启用"}职员【${item.employeeName}】的登录账号？`, {
 		async beforeConfirm() {
 			await employeeApi.changeLoginStatus({ employeeId, accountStatus, rowVersion });
 			useToast.success("操作成功！");
 			faPagingRef.value.refresh();
 		},
 	});
-};
+});
 </script>

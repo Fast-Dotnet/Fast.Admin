@@ -207,6 +207,7 @@ const props = defineProps({
 const emit = defineEmits<{
 	/** 选择时返回映射后的选项，value 为原始值，清空选择时返回 null */
 	change: [value: TResult | null, parentValue?: TResult | null];
+	clear: [];
 }>();
 
 /** 弹窗显隐状态 */
@@ -293,6 +294,7 @@ const handleChange = (item?: TResult, parentItem?: TResult) => {
 
 const handleClear = () => {
 	faPagingRef.value?.clearSearchParam();
+	emit("clear");
 	handleChange();
 };
 

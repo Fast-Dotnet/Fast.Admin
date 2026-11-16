@@ -1,25 +1,37 @@
 <template>
-	<FaPopup ref="popupRef" :title="state.popupTitle" height="60%" position="bottom" closable @confirm="handleConfirm">
+	<FaPopup
+		ref="popupRef"
+		:title="state.popupTitle"
+		height="60%"
+		position="bottom"
+		closable
+		:close-on-click-modal="false"
+		show-confirm-button
+		show-close-button
+		confirm-button-text="保存"
+		@confirm="handleConfirm"
+	>
 		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>
-			<wd-notice-bar text="离职后将禁用该职员的登录资格，并强制下线其全部在线会话。" />
+			<wd-text
+				custom-style="display: block; margin-bottom: 10rpx"
+				type="warning"
+				text="离职后将禁用该职员的登录资格，并强制下线其全部在线会话。"
+			/>
 			<wd-form-item
 				title="离职日期"
-				prop="resignDateValue"
+				prop="resignDate"
 				is-link
 				:value="state.formData.resignDate"
 				placeholder="请选择离职日期"
-				@click="state.resignDateCalendarVisible = true"
+				@click="state.resignDatePickerVisible = true"
 			/>
-			<wd-calendar
-				v-model="state.formData.resignDateTimestamp"
-				v-model:visible="state.resignDateCalendarVisible"
-				@confirm="
-					({ value }) => {
-						state.formData.resignDate = value ? dayjs(value).format('YYYY-MM-DD') : null;
-					}
-				"
+			<wd-datetime-picker
+				v-model="state.resignDateTimestamp"
+				v-model:visible="state.resignDatePickerVisible"
+				type="date"
+				:max-date="Date.now()"
+				@confirm="({ value }) => (state.formData.resignDate = dayjs(value).format('YYYY-MM-DD'))"
 			/>
-			<wd-datetime-picker v-model="state.formData.resignDateTimestamp" type="date" :max-date="Date.now()" placeholder="请选择离职日期" />
 			<wd-form-item title="离职原因" prop="resignReason">
 				<wd-textarea
 					v-model="state.formData.resignReason"
@@ -53,37 +65,38 @@ const popupRef = ref<FaPopupInstance>();
 const formRef = ref<FormInstance>();
 
 const state = reactive({
-	formData: withDefineType<EmployeeResignedInput & { resignDateTimestamp?: number }>({}),
-	formSchema: useFormSchema<EmployeeResignedInput & { resignDateTimestamp?: number }>({
-		resignDateTimestamp: { required: true, message: "请选择离职日期" },
+	formData: withDefineType<EmployeeResignedInput>({}),
+	formSchema: useFormSchema<EmployeeResignedInput>({
+		resignDate: { required: true, message: "请选择离职日期" },
 		resignReason: { required: true, message: "请输入离职原因" },
 	}),
 	popupTitle: "职员离职",
-	resignDateCalendarVisible: false,
+	resignDateTimestamp: dayjs().startOf("day").valueOf(),
+	resignDatePickerVisible: false,
 });
 
 const handleConfirm = throttle(async () => {
 	const { valid } = await formRef.value.validate();
 	if (!valid) return;
-	await popupRef.value.doLoading(async () => {
+	await popupRef.value.close(async () => {
 		await employeeApi.employeeResigned(state.formData);
 		useToast.success("离职成功！");
 		emit("ok");
 	});
 });
 
-const open = (employeeId: string) => {
-	popupRef.value.open(async () => {
+const open = throttle(async (employeeId: string) => {
+	await popupRef.value.open(async () => {
 		const apiRes = await employeeApi.queryEmployeeDetail(employeeId);
+		state.resignDateTimestamp = dayjs().startOf("day").valueOf();
 		state.formData = {
 			employeeId: apiRes.employeeId,
-			resignDateTimestamp: dayjs().startOf("day").valueOf(),
 			resignDate: dayjs().format("YYYY-MM-DD"),
 			rowVersion: apiRes.rowVersion,
 		};
 		state.popupTitle = `职员离职 - ${apiRes.employeeName}`;
 	});
-};
+});
 
 defineExpose({
 	open,

@@ -21,6 +21,12 @@
 					check-strictly
 					filterable
 					clearable
+					@clear="
+						() => {
+							state.formData.departmentId = null;
+							state.formData.departmentName = null;
+						}
+					"
 				/>
 			</FaFormItem>
 			<FaFormItem prop="departmentId" label="部门">
@@ -130,7 +136,6 @@ import { useUserInfo } from "@/stores";
 import type { CheckboxValueType, FormRules } from "element-plus";
 import type { AddEmployeeInput } from "@/api/services/Admin/employee/models/AddEmployeeInput";
 import type { EditEmployeeInput } from "@/api/services/Admin/employee/models/EditEmployeeInput";
-import type { QueryEmployeeDetailOutput } from "@/api/services/Admin/employee/models/QueryEmployeeDetailOutput";
 
 defineOptions({
 	name: "AdminEmployeeEdit",
@@ -231,6 +236,7 @@ const add = () => {
 			isPrincipal: false,
 			sex: GenderEnum.Unknown,
 			entryDate: dayjs().format("YYYY-MM-DD"),
+			roleIds: [],
 			roleList: [],
 		};
 		state.roleList = await roleApi.roleSelector();

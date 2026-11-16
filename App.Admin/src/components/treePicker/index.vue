@@ -171,6 +171,7 @@ const props = defineProps({
 const emit = defineEmits<{
 	/** 返回提交的节点和完整路径，value 为原始值，确认空路径或清空时两个参数均为 null */
 	change: [value: TResult | null, values: TResult[] | null];
+	clear: [];
 }>();
 
 /** 弹窗显隐状态 */
@@ -342,6 +343,7 @@ const handleClear = () => {
 	modelValue.value = undefined;
 	selectedLabel.value = undefined;
 	searchParam.value = {};
+	emit("clear");
 	emit("change", null, null);
 	setPath([]);
 	close();

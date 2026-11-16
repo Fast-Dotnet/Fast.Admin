@@ -1,5 +1,16 @@
 <template>
-	<FaPopup ref="popupRef" :title="state.popupTitle" height="60%" position="bottom" closable @confirm="handleConfirm">
+	<FaPopup
+		ref="popupRef"
+		:title="state.popupTitle"
+		height="60%"
+		position="bottom"
+		closable
+		:close-on-click-modal="false"
+		show-confirm-button
+		show-close-button
+		confirm-button-text="保存"
+		@confirm="handleConfirm"
+	>
 		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>
 			<wd-form-item title="手机" prop="mobile">
 				<wd-input v-model="state.formData.mobile" clearable :maxlength="11" inputmode="tel" placeholder="请输入手机" />
@@ -48,15 +59,15 @@ const state = reactive({
 const handleConfirm = throttle(async () => {
 	const { valid } = await formRef.value.validate();
 	if (!valid) return;
-	await popupRef.value.doLoading(async () => {
+	await popupRef.value.close(async () => {
 		await employeeApi.bindLoginAccount(state.formData);
 		useToast.success("绑定成功！");
 		emit("ok");
 	});
 });
 
-const open = (employeeId: string) => {
-	popupRef.value.open(async () => {
+const open = throttle(async (employeeId: string) => {
+	await popupRef.value.open(async () => {
 		const apiRes = await employeeApi.queryEmployeeDetail(employeeId);
 		state.formData = {
 			employeeId: apiRes.employeeId,
@@ -66,7 +77,7 @@ const open = (employeeId: string) => {
 		};
 		state.popupTitle = `绑定登录账号 - ${apiRes.employeeName}`;
 	});
-};
+});
 
 defineExpose({
 	open,
