@@ -1,6 +1,6 @@
 <template>
 	<FaPopup ref="popupRef" title="用户投诉详情" height="70%" position="bottom" closable>
-		<view style="display: flex; flex-direction: column; gap: 10px">
+		<view class="page-detail__popup">
 			<FaField label="应用名称" :value="formData.appName" />
 			<FaField label="应用标识" :value="formData.appKey" />
 			<FaField label="投诉类型">
@@ -14,10 +14,16 @@
 			<FaField label="附件图片">
 				<FaImage v-for="(item, index) in formData.attachmentImages" :key="index" width="96rpx" height="96rpx" :src="item" />
 			</FaField>
+			<FaField label="创建时间" :value="formData.createdTime" />
+
+			<wd-divider content-position="left">处理信息</wd-divider>
+			<FaField label="处理状态">
+				<wd-tag v-if="formData.handleTime" type="success">已处理</wd-tag>
+				<wd-tag v-else type="warning">待处理</wd-tag>
+			</FaField>
 			<FaField label="处理时间" :value="formData.handleTime" />
 			<FaField label="处理描述" :value="formData.handleDescription" selectable />
 			<FaField label="备注" :value="formData.remark" />
-			<FaField label="创建时间" :value="formData.createdTime" />
 		</view>
 	</FaPopup>
 </template>
@@ -36,10 +42,11 @@ const popupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<QueryComplaintPagedOutput>();
 
-const detail = throttle((data: QueryComplaintPagedOutput) =>
-	popupRef.value.open(() => {
-		formData.value = data;
-	})
+const detail = throttle(
+	async (data: QueryComplaintPagedOutput) =>
+		await popupRef.value.open(() => {
+			formData.value = data;
+		})
 );
 
 defineExpose({

@@ -1,5 +1,5 @@
 <template>
-	<FaPaging ref="pagingRef" :request-api="complaintApi.queryTenantComplaintPaged">
+	<FaPaging ref="faPagingRef" :request-api="complaintApi.queryTenantComplaintPaged">
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput v-model:search-param="searchParam.value" hide-search-time @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #filter>
@@ -39,7 +39,7 @@
 	</FaPaging>
 
 	<TenantComplaintDetail ref="detailFormRef" />
-	<TenantComplaintHandle ref="handleFormRef" @ok="pagingRef.refresh()" />
+	<TenantComplaintHandle ref="handleFormRef" @ok="faPagingRef.refresh()" />
 </template>
 
 <script setup lang="ts">
@@ -57,7 +57,7 @@ definePage({
 	},
 });
 
-const pagingRef = ref<FaPagingInstance>();
+const faPagingRef = ref<FaPagingInstance>();
 const detailFormRef = ref<InstanceType<typeof TenantComplaintDetail>>();
 const handleFormRef = ref<InstanceType<typeof TenantComplaintHandle>>();
 </script>
