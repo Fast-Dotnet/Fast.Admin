@@ -109,15 +109,16 @@ const handleCopy = async (content: string) => {
 	}
 };
 
-const detail = throttle((data: SqlDiffLogModel) =>
-	popupRef.value.open(() => {
-		state.formData = data;
-		state.beforeColumnText = data.beforeColumnList == null ? "" : JSON.stringify(data.beforeColumnList, null, 2);
-		state.afterColumnText = data.afterColumnList == null ? "" : JSON.stringify(data.afterColumnList, null, 2);
-		state.isPureSqlExpanded = false;
-		state.isBeforeColumnExpanded = false;
-		state.isAfterColumnExpanded = false;
-	})
+const detail = throttle(
+	async (data: SqlDiffLogModel) =>
+		await popupRef.value.open(() => {
+			state.formData = data;
+			state.beforeColumnText = data.beforeColumnList == null ? "" : JSON.stringify(data.beforeColumnList, null, 2);
+			state.afterColumnText = data.afterColumnList == null ? "" : JSON.stringify(data.afterColumnList, null, 2);
+			state.isPureSqlExpanded = false;
+			state.isBeforeColumnExpanded = false;
+			state.isAfterColumnExpanded = false;
+		})
 );
 
 defineExpose({

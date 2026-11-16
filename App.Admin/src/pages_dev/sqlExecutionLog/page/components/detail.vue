@@ -38,10 +38,11 @@ const popupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<SqlExecutionLogModel>();
 
-const detail = throttle((data: SqlExecutionLogModel) =>
-	popupRef.value.open(() => {
-		formData.value = data;
-	})
+const detail = throttle(
+	async (data: SqlExecutionLogModel) =>
+		await popupRef.value.open(() => {
+			formData.value = data;
+		})
 );
 
 defineExpose({

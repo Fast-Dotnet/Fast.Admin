@@ -111,14 +111,15 @@ const router = useRouter();
 const faPagingRef = ref<FaPagingInstance>();
 const detailFormRef = ref<InstanceType<typeof TenantDetail>>();
 
-const handleEdit = throttle((mode: IPageStateType, tenantId?: string) =>
-	router.push({
-		path: "/pages_system/tenant/edit/index",
-		query: {
-			mode,
-			tenantId,
-		},
-	})
+const handleEdit = throttle(
+	async (mode: IPageStateType, tenantId?: string) =>
+		await router.push({
+			path: "/pages_system/tenant/edit/index",
+			query: {
+				mode,
+				tenantId,
+			},
+		})
 );
 
 const handleChangeStatus = throttle(async (item: QueryTenantPagedOutput) => {

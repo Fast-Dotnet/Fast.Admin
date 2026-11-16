@@ -85,12 +85,13 @@ const handleCopy = async (content: string) => {
 	}
 };
 
-const detail = throttle((data: SqlExceptionLogModel) =>
-	popupRef.value.open(() => {
-		state.formData = data;
-		state.isStackTraceExpanded = false;
-		state.isPureSqlExpanded = false;
-	})
+const detail = throttle(
+	async (data: SqlExceptionLogModel) =>
+		await popupRef.value.open(() => {
+			state.formData = data;
+			state.isStackTraceExpanded = false;
+			state.isPureSqlExpanded = false;
+		})
 );
 
 defineExpose({

@@ -28,10 +28,11 @@ const popupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<QueryConfigDetailOutput>();
 
-const detail = throttle((configId: string) =>
-	popupRef.value.open(async () => {
-		formData.value = await configApi.queryConfigDetail(configId);
-	})
+const detail = throttle(
+	async (configId: string) =>
+		await popupRef.value.open(async () => {
+			formData.value = await configApi.queryConfigDetail(configId);
+		})
 );
 
 defineExpose({

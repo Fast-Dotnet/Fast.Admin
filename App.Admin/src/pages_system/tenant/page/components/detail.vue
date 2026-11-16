@@ -53,10 +53,11 @@ const popupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<QueryTenantDetailOutput>();
 
-const detail = throttle((tenantId: string) =>
-	popupRef.value.open(async () => {
-		formData.value = await tenantApi.queryTenantDetail(tenantId);
-	})
+const detail = throttle(
+	async (tenantId: string) =>
+		await popupRef.value.open(async () => {
+			formData.value = await tenantApi.queryTenantDetail(tenantId);
+		})
 );
 
 defineExpose({

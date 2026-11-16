@@ -51,10 +51,11 @@ const popupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<ApiInfoModel>();
 
-const detail = throttle((data: ApiInfoModel) =>
-	popupRef.value.open(() => {
-		formData.value = data;
-	})
+const detail = throttle(
+	async (data: ApiInfoModel) =>
+		await popupRef.value.open(() => {
+			formData.value = data;
+		})
 );
 
 defineExpose({

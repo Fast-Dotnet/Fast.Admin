@@ -63,14 +63,15 @@ const router = useRouter();
 const faPagingRef = ref<FaPagingInstance>();
 const detailFormRef = ref<InstanceType<typeof ConfigDetail>>();
 
-const handleEdit = throttle((mode: IPageStateType, configId?: string) =>
-	router.push({
-		path: "/pages_dev/config/edit/index",
-		query: {
-			mode,
-			configId,
-		},
-	})
+const handleEdit = throttle(
+	async (mode: IPageStateType, configId?: string) =>
+		await router.push({
+			path: "/pages_dev/config/edit/index",
+			query: {
+				mode,
+				configId,
+			},
+		})
 );
 
 const handleDelete = throttle(async (item: QueryConfigPagedOutput) => {

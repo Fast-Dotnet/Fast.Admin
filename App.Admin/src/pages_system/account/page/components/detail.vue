@@ -61,10 +61,11 @@ const popupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<QueryAccountDetailOutput>();
 
-const detail = throttle((accountId: string) =>
-	popupRef.value.open(async () => {
-		formData.value = await accountApi.queryAccountDetail(accountId);
-	})
+const detail = throttle(
+	async (accountId: string) =>
+		await popupRef.value.open(async () => {
+			formData.value = await accountApi.queryAccountDetail(accountId);
+		})
 );
 
 defineExpose({

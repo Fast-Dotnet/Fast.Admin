@@ -85,20 +85,21 @@ const handleCopy = async (content: string) => {
 	}
 };
 
-const detail = throttle((data: ExceptionLogModel) =>
-	popupRef.value.open(() => {
-		state.formData = data;
-		state.paramsText = data.paramsObj ?? "";
-		if (state.paramsText) {
-			try {
-				state.paramsText = JSON.stringify(JSON.parse(state.paramsText), null, 2);
-			} catch {
-				// 参数不是合法 JSON 时保留原文。
+const detail = throttle(
+	async (data: ExceptionLogModel) =>
+		await popupRef.value.open(() => {
+			state.formData = data;
+			state.paramsText = data.paramsObj ?? "";
+			if (state.paramsText) {
+				try {
+					state.paramsText = JSON.stringify(JSON.parse(state.paramsText), null, 2);
+				} catch {
+					// 参数不是合法 JSON 时保留原文。
+				}
 			}
-		}
-		state.isStackTraceExpanded = false;
-		state.isParamsExpanded = false;
-	})
+			state.isStackTraceExpanded = false;
+			state.isParamsExpanded = false;
+		})
 );
 
 defineExpose({

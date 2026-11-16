@@ -70,10 +70,11 @@ const formatFileSize = (value?: string) => {
 	return `${size.toDecimalPlaces(2).toFixed()} ${units[unit]}`;
 };
 
-const detail = throttle((data: QueryFilePagedOutput) =>
-	popupRef.value.open(() => {
-		state.formData = data;
-	})
+const detail = throttle(
+	async (data: QueryFilePagedOutput) =>
+		await popupRef.value.open(() => {
+			state.formData = data;
+		})
 );
 
 defineExpose({
