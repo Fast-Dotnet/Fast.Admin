@@ -1,6 +1,7 @@
 // 保留各组件的适配入口，按需调整布局和圆角；通用配色优先沿用 Wot 主题变量。
 @use "./components/wd-action-sheet.scss";
 @use "./components/wd-button.scss";
+@use "./components/wd-calendar.scss";
 @use "./components/wd-card.scss";
 @use "./components/wd-cell.scss";
 @use "./components/wd-checkbox.scss";

@@ -57,6 +57,10 @@ export function loadWotUi(): void {
 	pickerProps.zIndex.default = 210;
 	selectPickerProps.zIndex.default = 210;
 
+	// 默认按月、年切换，带时间的变体从面板高度中扣除 120px 给滚轮。
+	calendarProps.switchMode.default = "year-month";
+	calendarProps.panelHeight.default = 394;
+
 	// 自定义键盘可以从选择器中打开
 	keyboardProps.zIndex.default = 220;
 

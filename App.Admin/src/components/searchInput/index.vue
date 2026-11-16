@@ -64,6 +64,7 @@
 								:show-confirm="false"
 								switch-mode="year-month"
 								:formatter="handleFormatCalendar"
+								:inner-display-format="formatCalendarRange"
 								@confirm="handleDateTimeConfirm"
 							/>
 							<wd-radio-group v-model="state.dataSearchRange" direction="horizontal" type="button" @change="handleDateRangeChange">
@@ -91,7 +92,8 @@ import { computed, onMounted, reactive, ref, watch } from "vue";
 import { definePropType, throttle, withDefineType } from "@fast-china/utils";
 import dayjs from "dayjs";
 import FaPopup from "../popup/index.vue";
-import type { CalendarFormatter } from "@wot-ui/ui/components/wd-calendar-view/types.ts";
+import type { CalendarInnerDisplayFormat } from "@wot-ui/ui/components/wd-calendar/types";
+import type { CalendarFormatter } from "@wot-ui/ui/components/wd-calendar-view/types";
 
 defineOptions({
 	name: "SearchInput",
@@ -257,13 +259,20 @@ const getDateTime = (dataRange: FaTableDataRange | "custom") => {
 	};
 };
 const handleFormatCalendar: CalendarFormatter = (day) => {
-	if (day.type === "start") {
+	if (dayjs(day.date).isSame(dayjs(), "day")) {
 		day.topInfo = "今天";
 	}
-	if (day.type === "end") {
-		day.topInfo = "结束";
+	if (day.type === "start") {
+		day.bottomInfo = "开始";
+	} else if (day.type === "end") {
+		day.bottomInfo = "结束";
 	}
 	return day;
+};
+
+const formatCalendarRange: CalendarInnerDisplayFormat = (value, rangeType) => {
+	if (value) return dayjs(value).format("YYYY-MM-DD");
+	return rangeType === "start" ? "开始" : "结束";
 };
 
 /** 接口接收按天扩展的本地时间字符串，日期选择器使用毫秒时间戳。 */

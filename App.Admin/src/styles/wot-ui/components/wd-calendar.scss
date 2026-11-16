@@ -1,0 +1,139 @@
+.wd-calendar__popup {
+	--wot-action-sheet-title-height: 46px;
+	--wot-action-sheet-title-font-size: 16px;
+	--wot-calendar-range-padding: 4px 14px 6px;
+	--wot-calendar-range-item-padding: 5px 6px;
+	--wot-calendar-range-item-font-size: 13px;
+	--wot-calendar-range-item-line-height: 20px;
+	--wot-calendar-range-item-color: var(--wot-text-main);
+	--wot-calendar-range-item-font-weight: 500;
+	--wot-calendar-range-item-line-color: var(--wot-primary-6);
+	--wot-calendar-range-separator-margin: 0 8px;
+	--wot-calendar-tag-spacing-right: 0;
+	--wot-calendar-shortcuts-padding: 4px 10px 7px;
+	--wot-calendar-confirm-padding: 8px 14px 10px;
+	--wot-calendar-view-controls-padding: 2px 12px;
+	--wot-calendar-view-control-icon-size: 16px;
+	--wot-calendar-view-control-icon-spacing: 2px;
+	--wot-calendar-view-panel-title-font-size: 14px;
+	--wot-calendar-view-weeks-padding: 2px 14px 5px;
+	--wot-calendar-view-week-font-size: 12px;
+	--wot-calendar-view-week-line-height: 20px;
+	--wot-calendar-view-day-font-size: 14px;
+	--wot-calendar-view-day-font-weight: 500;
+	--wot-calendar-view-item-padding: 0 14px;
+	--wot-calendar-view-info-position: 3px;
+	--wot-calendar-view-info-font-size: 10px;
+	--wot-calendar-view-info-line-height: 11px;
+	--wot-calendar-view-range-bg: var(--wot-primary-1);
+	--wot-calendar-view-time-picker-font-size: 13px;
+	--wot-calendar-view-time-box-shadow: 0 -1px 0 var(--wot-border-light);
+	padding-bottom: 6px;
+
+	.wd-action-sheet__title .wd-action-sheet__close {
+		--wot-action-sheet-close-font-size: 17px;
+		--wot-icon-font-size: 17px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 30px;
+		height: 30px;
+		border-radius: 50%;
+		background: var(--wot-filled-content);
+	}
+
+	.wd-calendar__range-item {
+		min-width: 0;
+	}
+
+	.wd-month-panel__control .wd-month-panel__control-icon,
+	.wd-year-panel__control .wd-year-panel__control-icon {
+		--wot-icon-font-size: var(--wot-calendar-view-control-icon-size);
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 30px;
+		height: 30px;
+	}
+
+	.wd-calendar__shortcuts {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 6px;
+	}
+
+	.wd-calendar__confirm {
+		--wot-button-height-large: 42px;
+	}
+
+	.wd-month-panel__container {
+		max-height: 316px;
+	}
+
+	.wd-year-panel__container {
+		max-height: 188px;
+	}
+
+	// Wot 的滚动模式按默认单元格高度计算偏移，只缩小有切换栏的面板网格。
+	.wd-month-panel__controls ~ .wd-month-panel__container {
+		--wot-calendar-view-day-height: 44px;
+		--wot-calendar-view-item-margin-bottom: 2px;
+		// 按六周预留高度，避免切月时底部弹窗抬升、导航按钮移位。
+		max-height: clamp(132px, calc(100vh - 214px), 274px);
+		max-height: clamp(132px, calc(100dvh - 214px), 274px);
+	}
+
+	.wd-year-panel__controls ~ .wd-year-panel__container {
+		--wot-calendar-view-month-height: 46px;
+		--wot-calendar-view-item-margin-bottom: 2px;
+		max-height: 150px;
+	}
+
+	@media (max-height: 640px) {
+		.wd-month-panel__container.wd-month-panel__container--time {
+			max-height: clamp(132px, calc(100vh - 364px), 274px);
+			max-height: clamp(132px, calc(100dvh - 364px), 274px);
+		}
+	}
+}
+
+/* #ifdef H5 */
+.wd-action-sheet-wrapper__popup:has(.wd-calendar__popup) {
+	max-width: var(--fa-layout-max-width, 440px);
+	margin-inline: auto;
+}
+
+.wd-calendar__popup .wd-month__day-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 2px;
+	height: 100%;
+
+	.wd-month__day-text {
+		line-height: 16px;
+	}
+
+	.wd-month__day-top,
+	.wd-month__day-bottom {
+		position: static;
+
+		&:empty {
+			display: none;
+		}
+	}
+}
+
+@supports (color: color-mix(in srgb, black, white)) {
+	.wd-calendar__popup {
+		--wot-calendar-view-range-bg: color-mix(in srgb, var(--wot-primary-6) 8%, var(--wot-filled-oppo));
+	}
+
+	.wot-theme-dark .wd-calendar__popup {
+		--wot-calendar-view-range-bg: color-mix(in srgb, var(--wot-primary-6) 24%, var(--wot-filled-oppo));
+	}
+}
+
+/* #endif */
