@@ -32,14 +32,24 @@
 				<el-input v-model="state.formData.versionName" maxlength="30" placeholder="请输入版本名称" />
 			</FaFormItem>
 			<FaFormItem prop="versionCode" label="版本号" tips="使用递增正整数；同一目标版本的整包与 WGT 使用相同版本号和名称">
-				<el-input-number v-model="state.formData.versionCode" :min="1" placeholder="请输入版本号" />
+				<el-input-number v-model="state.formData.versionCode" :min="1" :max="2147483647" placeholder="请输入版本号" />
 			</FaFormItem>
 			<template v-if="state.formData.packageType === ApplicationPackageTypeEnum.Wgt">
 				<FaFormItem prop="minNativeVersionCode" label="最低版本" tips="与客户端安装包版本号比较，包含边界值">
-					<el-input-number v-model="state.formData.minNativeVersionCode" :min="1" placeholder="请输入最低兼容原生版本号" />
+					<el-input-number
+						v-model="state.formData.minNativeVersionCode"
+						:min="1"
+						:max="2147483647"
+						placeholder="请输入最低兼容原生版本号"
+					/>
 				</FaFormItem>
 				<FaFormItem prop="maxNativeVersionCode" label="最高版本" tips="不得低于最低兼容原生版本号，包含边界值">
-					<el-input-number v-model="state.formData.maxNativeVersionCode" :min="1" placeholder="请输入最高兼容原生版本号" />
+					<el-input-number
+						v-model="state.formData.maxNativeVersionCode"
+						:min="1"
+						:max="2147483647"
+						placeholder="请输入最高兼容原生版本号"
+					/>
 				</FaFormItem>
 			</template>
 			<FaFormItem prop="isForceUpdate" label="强制更新">
@@ -112,13 +122,10 @@ const state = reactive({
 		appType: [{ required: true, message: "请选择应用类型", trigger: "change" }],
 		packageType: [{ required: true, message: "请选择包类型", trigger: "blur" }],
 		versionName: [{ required: true, message: "请输入版本名称", trigger: "blur" }],
-		versionCode: [{ required: true, type: "integer", min: 1, max: 2147483647, message: "版本号必须是有效的正整数", trigger: "change" }],
-		fileUrl: [{ required: true, message: "请上传应用包", trigger: "change" }],
-		minNativeVersionCode: [
-			{ required: true, type: "integer", min: 1, max: 2147483647, message: "请输入有效的最低兼容原生版本号", trigger: "change" },
-		],
+		versionCode: [{ required: true, message: "版本号必须是有效的正整数", trigger: "change" }],
+		minNativeVersionCode: [{ required: true, message: "请输入最低兼容原生版本号", trigger: "change" }],
 		maxNativeVersionCode: [
-			{ required: true, type: "integer", min: 1, max: 2147483647, message: "请输入有效的最高兼容原生版本号", trigger: "change" },
+			{ required: true, message: "请输入最高兼容原生版本号", trigger: "change" },
 			{
 				validator: (_rule, value: number, callback) => {
 					if (state.formData.minNativeVersionCode != null && value < state.formData.minNativeVersionCode) {
@@ -130,6 +137,7 @@ const state = reactive({
 				trigger: "change",
 			},
 		],
+		fileUrl: [{ required: true, message: "请上传应用包", trigger: "change" }],
 	}),
 	dialogState: withDefineType<IPageStateType>("add"),
 	dialogTitle: "应用版本",

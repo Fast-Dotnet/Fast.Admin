@@ -32,6 +32,8 @@
 			"vite/client",
 			/* 提供 DCloud 官方 uni-app API、uni 全局对象和 HTML5 Plus 类型。 */
 			"@dcloudio/types",
+			/** 提供微信小程序官方 API、wx 全局对象和 WechatMiniprogram 命名空间类型。 */
+			"miniprogram-api-typings",
 			/* 汇总 uni-app、uni-cloud 和 uni-ui 的组件类型。 */
 			"@uni-helper/uni-types",
 			/** 提供 uni-app 页面路由与 pages.json 生成相关类型。 */

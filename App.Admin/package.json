@@ -62,6 +62,7 @@
 		"@vue/compiler-core": "3.5.45",
 		"@vue/runtime-core": "3.5.45",
 		"eslint": "^10.14.0",
+		"miniprogram-api-typings": "^5.3.1",
 		"miniprogram-automator": "^0.13.0",
 		"prettier": "^3.10.1",
 		"sass": "1.97.3",

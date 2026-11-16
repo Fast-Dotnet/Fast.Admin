@@ -99,6 +99,9 @@ importers:
       eslint:
         specifier: ^10.14.0
         version: 10.14.0(jiti@2.7.0)(supports-color@7.1.0)
+      miniprogram-api-typings:
+        specifier: ^5.3.1
+        version: 5.3.1
       miniprogram-automator:
         specifier: ^0.13.0
         version: 0.13.0(supports-color@7.1.0)
@@ -3989,6 +3992,9 @@ packages:
 
   minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
+
+  miniprogram-api-typings@5.3.1:
+    resolution: {integrity: sha512-2CirO+C1z5RmKXDqTUSNbuyouHf5d0/KJTt+Qqi1EsiQYs8jlYhq7yWjp6EdTcJpvZzjuefZQCcDixYbrgIqow==}
 
   miniprogram-automator@0.13.0:
     resolution: {integrity: sha512-mPEwfG6ARWxUinPB3LVys05Oq8x4fBC8SbXWx3xiqc4Ec4w3tdqthFFVVndZ2tWQ25wmriPXQP/4n4PC20+7Pg==}
@@ -9963,6 +9969,8 @@ snapshots:
   minimist@0.0.8: {}
 
   minimist@1.2.8: {}
+
+  miniprogram-api-typings@5.3.1: {}
 
   miniprogram-automator@0.13.0(supports-color@7.1.0):
     dependencies:

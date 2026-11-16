@@ -37,7 +37,9 @@
 					<template v-if="row.packageType === ApplicationPackageTypeEnum.Wgt">
 						{{ row.minNativeVersionCode }} ~ {{ row.maxNativeVersionCode }}
 					</template>
-					<template v-else>—</template>
+					<template v-else>
+						<el-tag type="info">无</el-tag>
+					</template>
 				</template>
 			</FaTableColumn>
 			<FaTableColumn
@@ -77,6 +79,7 @@
 <script setup lang="ts">
 import { computed, useTemplateRef } from "vue";
 import { Plus } from "@element-plus/icons-vue";
+import { ElMessageBox } from "element-plus";
 import { ApplicationPackageTypeEnum } from "@/api/enums/ApplicationPackageTypeEnum";
 import { applicationVersionApi } from "@/api/services/Center/applicationVersion";
 import { fileApi } from "@/api/services/File";
@@ -100,9 +103,12 @@ const editFormRef = useTemplateRef<InstanceType<typeof ApplicationVersionEdit>>(
 
 /** 下载 */
 const handleDownload = (row: QueryApplicationVersionPagedOutput) => {
-	faTableRef.value.doLoading(async () => {
-		const apiRes = await applicationVersionApi.queryApplicationVersionDetail(row.recordId);
-		await fileApi.download({ fileUrl: apiRes.fileUrl });
+	ElMessageBox.confirm("确定要下载文件？", {
+		type: "warning",
+		async beforeClose() {
+			const apiRes = await applicationVersionApi.queryApplicationVersionDetail(row.recordId);
+			await fileApi.download({ fileUrl: apiRes.fileUrl });
+		},
 	});
 };
 
