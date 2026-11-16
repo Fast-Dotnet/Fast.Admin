@@ -1,0 +1,89 @@
+:deep(.wd-input) {
+	position: sticky;
+	top: var(--window-top, 0px);
+	z-index: 10;
+	padding: 12rpx var(--fa-spacing-page);
+	margin-bottom: var(--fa-spacing-section);
+	background-color: var(--wot-filled-oppo);
+	border-bottom: var(--wot-stroke-main) solid var(--wot-border-main);
+}
+
+:deep(.wd-collapse) {
+	--wot-collapse-item-body-padding: 20rpx;
+
+	.wd-collapse-item__header {
+		display: flex;
+	}
+}
+
+.role-auth__title-left,
+.role-auth__title-right {
+	display: flex;
+	align-items: center;
+	gap: 10rpx;
+}
+
+.role-auth__count {
+	color: var(--wot-text-placeholder);
+}
+
+.role-auth__toggle {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	color: var(--wot-text-auxiliary);
+}
+
+:deep(.wd-switch) {
+	--wot-switch-size: 18px;
+}
+
+:deep(.wd-divider) {
+	--wot-divider-padding: 0;
+	--wot-divider-margin: 16rpx 0 8rpx;
+}
+
+.role-auth__operations {
+	--wot-checkbox-icon-size: 20px;
+	--wot-checkbox-label-margin: 4px;
+
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 16rpx;
+	margin: 16rpx 0 24rpx;
+	color: var(--wot-text-auxiliary);
+}
+
+:deep(.wd-checkbox-group) {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 16rpx 32rpx;
+	padding: 0 16rpx;
+
+	.wd-checkbox {
+		padding: 12rpx 14rpx;
+		border: var(--wot-stroke-main) solid var(--wot-border-main);
+		border-radius: 8rpx;
+	}
+
+	.wd-checkbox.is-checked {
+		--wot-checkbox-label-color: var(--wot-primary-6);
+
+		border-color: var(--wot-primary-6);
+		background-color: var(--wot-primary-1);
+	}
+
+	.wd-checkbox__label {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+}
+
+.role-auth__platforms {
+	display: flex;
+	gap: 6rpx;
+	color: var(--wot-icon-secondary);
+}

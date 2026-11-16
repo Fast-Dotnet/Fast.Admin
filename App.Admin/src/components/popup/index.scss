@@ -109,11 +109,6 @@
 	min-height: 0;
 	overflow: auto;
 	overscroll-behavior-y: contain;
-
-	// 保留正文子项的自然高度，使用 flex-basis: 0 的内部列表仍可填满剩余空间。
-	> * {
-		flex-shrink: 0;
-	}
 }
 
 .fa-popup__body--no-scroll {

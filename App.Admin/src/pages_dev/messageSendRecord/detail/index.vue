@@ -1,7 +1,7 @@
 <template>
 	<view class="page page-detail">
 		<FaLoading mask :loading="state.loading" />
-		<wd-empty v-if="state.loading || state.loadFailed" tip="暂无内容" />
+		<wd-empty v-if="state.loading || state.loadFailed" icon="no-content" tip="暂无内容" />
 		<template v-else>
 			<wd-cell-group border>
 				<wd-cell title="收件人" :value="state.formData.receiver" />

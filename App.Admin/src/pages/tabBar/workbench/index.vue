@@ -65,7 +65,7 @@
 					</view>
 				</view>
 			</view>
-			<wd-empty v-if="!filteredMenuList.length" :tip="searchKeyword ? '没有找到相关应用' : '暂无可访问的应用'" />
+			<wd-empty v-if="!filteredMenuList.length" icon="no-content" :tip="searchKeyword ? '没有找到相关应用' : '暂无可访问的应用'" />
 		</view>
 
 		<FaSwitchTenantPopup ref="switchTenantPopupRef" @change="loadPage" />
