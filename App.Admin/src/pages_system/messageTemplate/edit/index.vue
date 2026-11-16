@@ -1,10 +1,11 @@
 <template>
 	<view class="page">
+		<FaLoading mask :loading="state.loading" />
 		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>
 			<FaTenantSelect v-model="state.formData.tenantId" v-model:tenant-name="state.formData.tenantName" prop="tenantId" />
 			<FaApplicationClientSelect v-model="state.formData.appKey" prop="appKey" />
 			<wd-form-item title="模板类型" prop="templateType">
-				<FaRadioGroup name="MessageTemplateTypeEnum" v-model="state.formData.templateType" type="button" />
+				<FaRadioGroup name="MessageTemplateTypeEnum" v-model="state.formData.templateType" />
 			</wd-form-item>
 			<wd-form-item title="模板Code" prop="templateCode">
 				<wd-textarea
@@ -28,7 +29,7 @@ import { throttle, withDefineType } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { MessageTemplateTypeEnum } from "@/api/enums/MessageTemplateTypeEnum";
 import { messageTemplateApi } from "@/api/services/Center/messageTemplate";
-import { useFormSchema, useLoading, useMessageBox, useToast } from "@/hooks";
+import { useFormSchema, useMessageBox, useToast } from "@/hooks";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { AddMessageTemplateInput } from "@/api/services/Center/messageTemplate/models/AddMessageTemplateInput";
 import type { EditMessageTemplateInput } from "@/api/services/Center/messageTemplate/models/EditMessageTemplateInput";
@@ -47,6 +48,7 @@ const router = useRouter();
 const formRef = ref<FormInstance>();
 
 const state = reactive({
+	loading: false,
 	formData: withDefineType<AddMessageTemplateInput & EditMessageTemplateInput>({ templateType: MessageTemplateTypeEnum.RegisterVerifyCode }),
 	formSchema: useFormSchema<AddMessageTemplateInput & EditMessageTemplateInput>({
 		templateType: { required: true, message: "请选择模板类型" },
@@ -59,7 +61,7 @@ const state = reactive({
 const handleConfirm = throttle(async () => {
 	const { valid } = await formRef.value.validate();
 	if (!valid) return;
-	useLoading.show();
+	state.loading = true;
 	try {
 		switch (state.pageMode) {
 			case "add":
@@ -72,24 +74,29 @@ const handleConfirm = throttle(async () => {
 				break;
 		}
 	} finally {
-		useLoading.hide();
+		state.loading = false;
 	}
 	if (getCurrentPages().length > 1) router.back();
 	else router.replace("/pages_system/messageTemplate/page/index");
 });
 
 const handleLoad = async () => {
-	switch (state.pageMode) {
-		case "add":
-			uni.setNavigationBarTitle({ title: "添加消息模板" });
-			break;
-		case "edit":
-			{
-				const apiRes = await messageTemplateApi.queryMessageTemplateDetail(state.recordId);
-				state.formData = apiRes;
-				uni.setNavigationBarTitle({ title: `编辑消息模板 - ${apiRes.templateCode}` });
-			}
-			break;
+	state.loading = true;
+	try {
+		switch (state.pageMode) {
+			case "add":
+				uni.setNavigationBarTitle({ title: "添加消息模板" });
+				break;
+			case "edit":
+				{
+					const apiRes = await messageTemplateApi.queryMessageTemplateDetail(state.recordId);
+					state.formData = apiRes;
+					uni.setNavigationBarTitle({ title: `编辑消息模板 - ${apiRes.templateCode}` });
+				}
+				break;
+		}
+	} finally {
+		state.loading = false;
 	}
 };
 

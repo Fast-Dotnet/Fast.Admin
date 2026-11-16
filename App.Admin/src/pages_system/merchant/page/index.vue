@@ -65,26 +65,27 @@ const router = useRouter();
 
 const faPagingRef = ref<FaPagingInstance>();
 
-const handleDetail = throttle((merchantId: string) => router.push(`/pages_system/merchant/detail/index?merchantId=${merchantId}`));
+const handleDetail = throttle(async (merchantId: string) => await router.push(`/pages_system/merchant/detail/index?merchantId=${merchantId}`));
 
-const handleEdit = throttle((mode: IPageStateType, merchantId?: string) =>
-	router.push({
-		path: "/pages_system/merchant/edit/index",
-		query: {
-			mode,
-			merchantId,
-		},
-	})
+const handleEdit = throttle(
+	async (mode: IPageStateType, merchantId?: string) =>
+		await router.push({
+			path: "/pages_system/merchant/edit/index",
+			query: {
+				mode,
+				merchantId,
+			},
+		})
 );
 
-const handleDelete = (item: QueryMerchantPagedOutput) => {
+const handleDelete = throttle(async (item: QueryMerchantPagedOutput) => {
 	const { merchantId, rowVersion } = item;
-	useMessageBox.confirm("确定删除此记录？", {
+	await useMessageBox.confirm("确定删除此记录？", {
 		async beforeConfirm() {
 			await merchantApi.deleteMerchant({ merchantId, rowVersion });
 			useToast.success("删除成功！");
 			faPagingRef.value.refresh();
 		},
 	});
-};
+});
 </script>

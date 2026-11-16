@@ -1,5 +1,6 @@
 <template>
 	<view class="page">
+		<FaLoading mask :loading="state.loading" />
 		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>
 			<wd-form-item title="商户类型" prop="merchantType">
 				<FaRadioGroup name="PaymentChannelEnum" v-model="state.formData.merchantType" type="button" />
@@ -29,7 +30,7 @@
 				/>
 			</wd-form-item>
 
-			<wd-cell-group title="公钥信息" border>
+			<wd-cell-group title="公钥信息">
 				<wd-form-item title="公钥序号" prop="publicSerialNum">
 					<wd-textarea
 						custom-style="--fa-textarea-height: 75px"
@@ -50,7 +51,7 @@
 				</wd-form-item>
 			</wd-cell-group>
 
-			<wd-cell-group title="证书信息" border>
+			<wd-cell-group title="证书信息">
 				<wd-form-item title="序号" prop="certSerialNum">
 					<wd-textarea
 						custom-style="--fa-textarea-height: 75px"
@@ -92,7 +93,7 @@ import { throttle, withDefineType } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { PaymentChannelEnum } from "@/api/enums/PaymentChannelEnum";
 import { merchantApi } from "@/api/services/Center/merchant";
-import { useFormSchema, useLoading, useMessageBox, useToast } from "@/hooks";
+import { useFormSchema, useMessageBox, useToast } from "@/hooks";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { AddMerchantInput } from "@/api/services/Center/merchant/models/AddMerchantInput";
 import type { EditMerchantInput } from "@/api/services/Center/merchant/models/EditMerchantInput";
@@ -111,6 +112,7 @@ const router = useRouter();
 const formRef = ref<FormInstance>();
 
 const state = reactive({
+	loading: false,
 	formData: withDefineType<AddMerchantInput & EditMerchantInput>({ merchantType: PaymentChannelEnum.WeChat }),
 	formSchema: useFormSchema<AddMerchantInput & EditMerchantInput>({
 		merchantName: { required: true, message: "请输入商户名称" },
@@ -123,7 +125,7 @@ const state = reactive({
 const handleConfirm = throttle(async () => {
 	const { valid } = await formRef.value.validate();
 	if (!valid) return;
-	useLoading.show();
+	state.loading = true;
 	try {
 		switch (state.pageMode) {
 			case "add":
@@ -136,24 +138,29 @@ const handleConfirm = throttle(async () => {
 				break;
 		}
 	} finally {
-		useLoading.hide();
+		state.loading = false;
 	}
 	if (getCurrentPages().length > 1) router.back();
 	else router.replace("/pages_system/merchant/page/index");
 });
 
 const handleLoad = async () => {
-	switch (state.pageMode) {
-		case "add":
-			uni.setNavigationBarTitle({ title: "添加商户号" });
-			break;
-		case "edit":
-			{
-				const apiRes = await merchantApi.queryMerchantDetail(state.merchantId);
-				state.formData = apiRes;
-				uni.setNavigationBarTitle({ title: `编辑商户号 - ${apiRes.merchantNo}` });
-			}
-			break;
+	state.loading = true;
+	try {
+		switch (state.pageMode) {
+			case "add":
+				uni.setNavigationBarTitle({ title: "添加商户号" });
+				break;
+			case "edit":
+				{
+					const apiRes = await merchantApi.queryMerchantDetail(state.merchantId);
+					state.formData = apiRes;
+					uni.setNavigationBarTitle({ title: `编辑商户号 - ${apiRes.merchantNo}` });
+				}
+				break;
+		}
+	} finally {
+		state.loading = false;
 	}
 };
 

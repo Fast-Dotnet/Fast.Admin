@@ -79,24 +79,25 @@ const router = useRouter();
 const faPagingRef = ref<FaPagingInstance>();
 const detailFormRef = ref<InstanceType<typeof MessageTemplateDetail>>();
 
-const handleEdit = throttle((mode: IPageStateType, recordId?: string) =>
-	router.push({
-		path: "/pages_system/messageTemplate/edit/index",
-		query: {
-			mode,
-			recordId,
-		},
-	})
+const handleEdit = throttle(
+	async (mode: IPageStateType, recordId?: string) =>
+		await router.push({
+			path: "/pages_system/messageTemplate/edit/index",
+			query: {
+				mode,
+				recordId,
+			},
+		})
 );
 
-const handleDelete = (item: QueryMessageTemplatePagedOutput) => {
+const handleDelete = throttle(async (item: QueryMessageTemplatePagedOutput) => {
 	const { recordId, rowVersion } = item;
-	useMessageBox.confirm("确定要删除消息模板？", {
+	await useMessageBox.confirm("确定要删除消息模板？", {
 		async beforeConfirm() {
 			await messageTemplateApi.deleteMessageTemplate({ recordId, rowVersion });
 			useToast.success("删除成功！");
 			faPagingRef.value.refresh();
 		},
 	});
-};
+});
 </script>

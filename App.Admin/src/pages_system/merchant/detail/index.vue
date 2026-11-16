@@ -1,37 +1,43 @@
 <template>
-	<view class="page page__detail">
-		<wd-cell title="商户名称" :value="state.formData.merchantName" />
-		<wd-cell title="商户号" :value="state.formData.merchantNo" />
-		<wd-cell title="商户密钥" :value="state.formData.merchantSecret ? '已配置' : '未配置'" />
-		<wd-cell title="商户类型">
-			<FaTag name="PaymentChannelEnum" :value="state.formData.merchantType" />
-		</wd-cell>
-		<wd-cell title="备注" :value="state.formData.remark" />
-		<wd-cell title="创建人" :value="state.formData.createdUserName" />
-		<wd-cell title="创建时间" :value="state.formData.createdTime" />
-		<wd-cell title="更新人" :value="state.formData.updatedUserName" />
-		<wd-cell title="更新时间" :value="state.formData.updatedTime" />
+	<view class="page page-detail">
+		<FaLoading mask :loading="state.loading" />
+		<wd-empty v-if="state.loading || state.loadFailed" tip="暂无内容" />
+		<template v-else>
+			<wd-cell-group border>
+				<wd-cell title="商户名称" :value="state.formData.merchantName" />
+				<wd-cell title="商户号" :value="state.formData.merchantNo" />
+				<wd-cell title="商户密钥" :value="state.formData.merchantSecret ? '已配置' : '未配置'" />
+				<wd-cell title="商户类型">
+					<FaTag name="PaymentChannelEnum" :value="state.formData.merchantType" />
+				</wd-cell>
+				<wd-cell title="备注" :value="state.formData.remark" />
+				<wd-cell title="创建人" :value="state.formData.createdUserName" />
+				<wd-cell title="创建时间" :value="state.formData.createdTime" />
+				<wd-cell title="更新人" :value="state.formData.updatedUserName" />
+				<wd-cell title="更新时间" :value="state.formData.updatedTime" />
+			</wd-cell-group>
 
-		<wd-cell-group title="公钥信息" border>
-			<wd-cell title="公钥序号" :value="state.formData.publicSerialNum" :border="false" />
-			<template v-if="state.formData.publicKey">
-				<wd-cell title="公钥" is-link @click="state.isPublicKeyExpanded = !state.isPublicKeyExpanded" />
-				<view v-if="state.isPublicKeyExpanded" class="merchant-pem__body">
-					<text class="merchant-pem__text" selectable user-select>{{ state.formData.publicKey }}</text>
-				</view>
-			</template>
-		</wd-cell-group>
+			<wd-cell-group title="公钥信息" border>
+				<wd-cell title="公钥序号" :value="state.formData.publicSerialNum" />
+				<template v-if="state.formData.publicKey">
+					<wd-cell title="公钥" is-link @click="state.isPublicKeyExpanded = !state.isPublicKeyExpanded" />
+					<view v-if="state.isPublicKeyExpanded" class="merchant-pem__body">
+						<text class="merchant-pem__text" selectable user-select>{{ state.formData.publicKey }}</text>
+					</view>
+				</template>
+			</wd-cell-group>
 
-		<wd-cell-group title="证书信息" border>
-			<wd-cell title="证书序号" :value="state.formData.certSerialNum" :border="false" />
-			<template v-if="state.formData.cert">
-				<wd-cell title="证书" is-link @click="state.isCertExpanded = !state.isCertExpanded" />
-				<view v-if="state.isCertExpanded" class="merchant-pem__body">
-					<text class="merchant-pem__text" selectable user-select>{{ state.formData.cert }}</text>
-				</view>
-			</template>
-			<wd-cell title="证书私钥" :value="state.formData.certPrivateKey ? '已配置' : '未配置'" />
-		</wd-cell-group>
+			<wd-cell-group title="证书信息" border>
+				<wd-cell title="证书序号" :value="state.formData.certSerialNum" />
+				<template v-if="state.formData.cert">
+					<wd-cell title="证书" is-link @click="state.isCertExpanded = !state.isCertExpanded" />
+					<view v-if="state.isCertExpanded" class="merchant-pem__body">
+						<text class="merchant-pem__text" selectable user-select>{{ state.formData.cert }}</text>
+					</view>
+				</template>
+				<wd-cell title="证书私钥" :value="state.formData.certPrivateKey ? '已配置' : '未配置'" />
+			</wd-cell-group>
+		</template>
 	</view>
 </template>
 
@@ -53,6 +59,8 @@ definePage({
 });
 
 const state = reactive({
+	loading: false,
+	loadFailed: false,
 	formData: withDefineType<QueryMerchantDetailOutput>({}),
 	merchantId: withDefineType<string>(),
 	isPublicKeyExpanded: false,
@@ -60,11 +68,19 @@ const state = reactive({
 });
 
 const handleLoad = async () => {
-	const apiRes = await merchantApi.queryMerchantDetail(state.merchantId);
-	state.formData = apiRes;
-	state.isPublicKeyExpanded = false;
-	state.isCertExpanded = false;
-	uni.setNavigationBarTitle({ title: `商户号详情 - ${apiRes.merchantNo}` });
+	state.loading = true;
+	state.loadFailed = false;
+	try {
+		const apiRes = await merchantApi.queryMerchantDetail(state.merchantId);
+		state.formData = apiRes;
+		state.isPublicKeyExpanded = false;
+		state.isCertExpanded = false;
+		uni.setNavigationBarTitle({ title: `商户号详情 - ${apiRes.merchantNo}` });
+	} catch {
+		state.loadFailed = true;
+	} finally {
+		state.loading = false;
+	}
 };
 
 onLoad((options: { merchantId?: string }) => {
@@ -76,9 +92,12 @@ onLoad((options: { merchantId?: string }) => {
 	handleLoad();
 });
 
-onPullDownRefresh(() => {
-	handleLoad().finally(() => uni.stopPullDownRefresh());
-});
+onPullDownRefresh(() =>
+	useMessageBox
+		.confirm("确认刷新页面？")
+		.then(handleLoad)
+		.finally(() => uni.stopPullDownRefresh())
+);
 </script>
 
 <style lang="scss" scoped>

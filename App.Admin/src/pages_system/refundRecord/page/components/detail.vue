@@ -1,6 +1,6 @@
 <template>
 	<FaPopup ref="popupRef" title="退款详情" height="70%" position="bottom" closable>
-		<view style="display: flex; flex-direction: column; gap: 10px">
+		<view class="page-detail__popup">
 			<FaField label="业务编号" :value="formData.bizOrderNo" />
 			<FaField label="手机" :value="formData.mobile" />
 			<FaField label="OpenId" :value="formData.openId" />
@@ -44,10 +44,11 @@ const popupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<RefundRecordModel>();
 
-const detail = throttle((data: RefundRecordModel) =>
-	popupRef.value.open(() => {
-		formData.value = data;
-	})
+const detail = throttle(
+	async (data: RefundRecordModel) =>
+		await popupRef.value.open(() => {
+			formData.value = data;
+		})
 );
 
 defineExpose({

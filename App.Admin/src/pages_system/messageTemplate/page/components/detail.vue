@@ -1,12 +1,18 @@
 <template>
 	<FaPopup ref="popupRef" title="消息模板详情" height="70%" position="bottom" closable>
-		<view style="display: flex; flex-direction: column; gap: 10px">
+		<view class="page-detail__popup">
 			<FaField label="模板类型">
 				<FaTag name="MessageTemplateTypeEnum" :value="formData.templateType" />
 			</FaField>
 			<FaField label="模板Code" :value="formData.templateCode" copyable />
-			<FaField label="租户" :value="formData.tenantName || '未指定租户'" />
-			<FaField label="应用标识" :value="formData.appKey || (formData.tenantName ? '不区分应用' : '全局模板')" :selectable="!!formData.appKey" />
+			<FaField label="租户">
+				<text v-if="formData.tenantName">{{ formData.tenantName }}</text>
+				<text v-else style="color: var(--wot-text-placeholder)">未指定租户</text>
+			</FaField>
+			<FaField label="应用标识">
+				<text v-if="formData.appKey">{{ formData.appKey }}</text>
+				<text v-else style="color: var(--wot-text-placeholder)">{{ formData.tenantName ? "不区分应用" : "全局模板" }}</text>
+			</FaField>
 			<FaField label="应用名称" :value="formData.appName" />
 			<FaField label="应用类型">
 				<FaTagFlag name="AppEnvironmentEnum" :value="formData.appType" />
@@ -37,10 +43,11 @@ const popupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<QueryMessageTemplateDetailOutput>();
 
-const detail = throttle((recordId: string) =>
-	popupRef.value.open(async () => {
-		formData.value = await messageTemplateApi.queryMessageTemplateDetail(recordId);
-	})
+const detail = throttle(
+	async (recordId: string) =>
+		await popupRef.value.open(async () => {
+			formData.value = await messageTemplateApi.queryMessageTemplateDetail(recordId);
+		})
 );
 
 defineExpose({
