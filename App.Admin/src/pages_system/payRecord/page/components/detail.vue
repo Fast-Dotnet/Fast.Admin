@@ -13,12 +13,12 @@
 			<FaField label="订单金额" :value="`￥${(formData.orderAmount ?? 0).toFixed(2)}`" color="var(--wot-text-auxiliary)" />
 			<FaField label="交易流水号" :value="formData.transactionId" copyable />
 			<FaField label="支付金额" :value="`￥${(formData.paymentAmount ?? 0).toFixed(2)}`" color="var(--wot-warning-main)" />
-			<FaField label="已支付">
+			<FaField label="已支付" center>
 				<FaTag name="BooleanEnum" :value="formData.isPaid" />
 			</FaField>
 			<FaField label="支付时间" :value="formData.paymentTime" />
 			<template v-if="!formData.isPaid">
-				<FaField label="关闭状态">
+				<FaField label="关闭状态" center>
 					<FaTag name="BooleanEnum" :value="formData.isClosed" />
 				</FaField>
 				<FaField label="关闭时间" :value="formData.closeTime" />

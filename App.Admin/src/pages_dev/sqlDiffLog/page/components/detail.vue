@@ -5,7 +5,7 @@
 			<FaField label="手机" :value="state.formData.mobile" />
 			<FaField label="表名称" :value="state.formData.tableName" />
 			<FaField label="表描述" :value="state.formData.tableDescription" />
-			<FaField label="差异类型">
+			<FaField label="差异类型" center>
 				<FaTag name="DiffLogTypeEnum" :value="state.formData.diffType" />
 			</FaField>
 			<FaField label="执行秒数" :value="state.formData.executeSeconds == null ? '--' : `${state.formData.executeSeconds.toFixed(4)}秒`" />

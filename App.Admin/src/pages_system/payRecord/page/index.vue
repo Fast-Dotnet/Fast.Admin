@@ -22,7 +22,7 @@
 				<FaField label="收款商户号" :value="item.merchantNo" />
 				<FaField label="订单金额" :value="`￥${(item.orderAmount ?? 0).toFixed(2)}`" color="var(--wot-text-auxiliary)" />
 				<FaField label="支付金额" :value="`￥${(item.paymentAmount ?? 0).toFixed(2)}`" color="var(--wot-warning-main)" />
-				<FaField label="已支付">
+				<FaField label="已支付" center>
 					<FaTag name="BooleanEnum" :value="item.isPaid" />
 				</FaField>
 				<FaField label="支付时间" :value="item.paymentTime" />

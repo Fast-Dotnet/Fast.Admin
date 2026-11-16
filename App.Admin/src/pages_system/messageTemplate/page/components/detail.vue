@@ -1,7 +1,7 @@
 <template>
 	<FaPopup ref="popupRef" title="消息模板详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
-			<FaField label="模板类型">
+			<FaField label="模板类型" center>
 				<FaTag name="MessageTemplateTypeEnum" :value="formData.templateType" />
 			</FaField>
 			<FaField label="模板Code" :value="formData.templateCode" copyable />
@@ -17,7 +17,7 @@
 			<FaField label="应用类型">
 				<FaTagFlag name="AppEnvironmentEnum" :value="formData.appType" />
 			</FaField>
-			<FaField label="环境类型">
+			<FaField label="环境类型" center>
 				<FaTag name="EnvironmentTypeEnum" :value="formData.environmentType" />
 			</FaField>
 			<FaField label="创建人" :value="formData.createdUserName" />

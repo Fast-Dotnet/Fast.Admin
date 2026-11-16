@@ -12,7 +12,7 @@
 
 		<template #default="{ pagedList }">
 			<FaCard v-for="item in pagedList" :key="item.serialRuleId" @click="detailFormRef?.detail(item)">
-				<FaField label="规则类型">
+				<FaField label="规则类型" center>
 					<FaTag name="SerialRuleTypeEnum" :value="item.ruleType" />
 				</FaField>
 				<FaField label="前缀" :value="item.prefix" />

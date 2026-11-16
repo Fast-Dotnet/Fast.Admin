@@ -57,7 +57,7 @@
 					<FaText name="TenantTypeEnum" :value="item.tenantType" />
 				</FaField>
 				<FaField label="租户编码" :value="item.tenantCode" />
-				<FaField label="状态">
+				<FaField label="状态" center>
 					<FaTag name="CommonStatusEnum" :value="item.status" />
 				</FaField>
 				<FaField label="管理员" :value="[item.adminName, item.adminMobile].filter(Boolean).join(' · ')" />

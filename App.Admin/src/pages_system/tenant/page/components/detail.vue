@@ -6,14 +6,14 @@
 			<FaField label="租户编码" :value="formData.tenantCode" />
 			<FaField label="租户简称" :value="formData.shortName" />
 			<FaField label="租户英文名称" :value="formData.spellName" />
-			<FaField label="版本">
+			<FaField label="版本" center>
 				<FaTag name="EditionEnum" :value="formData.edition" />
 			</FaField>
-			<FaField label="租户类型">
+			<FaField label="租户类型" center>
 				<FaTag name="TenantTypeEnum" :value="formData.tenantType" />
 			</FaField>
 			<FaField label="机器人名称" :value="formData.robotName" />
-			<FaField label="状态">
+			<FaField label="状态" center>
 				<FaTag name="CommonStatusEnum" :value="formData.status" />
 			</FaField>
 			<FaField label="Logo">

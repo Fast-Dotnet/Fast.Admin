@@ -5,7 +5,7 @@
 			<FaField label="工号" :value="formData.employeeNo" />
 			<FaField label="手机" :value="formData.mobile" />
 			<FaField label="标题" :value="formData.title" />
-			<FaField label="操作类型">
+			<FaField label="操作类型" center>
 				<FaTag name="OperateLogTypeEnum" :value="formData.operateType" />
 			</FaField>
 			<FaField label="业务编码" :value="formData.bizNo" />

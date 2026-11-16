@@ -3,7 +3,7 @@
 		<view class="page-detail__popup">
 			<FaField label="昵称" :value="formData.nickName" />
 			<FaField label="手机" :value="formData.mobile" />
-			<FaField label="性别">
+			<FaField label="性别" center>
 				<FaTag name="GenderEnum" :value="formData.sex" />
 			</FaField>
 			<FaField label="OpenId" :value="formData.openId" selectable />

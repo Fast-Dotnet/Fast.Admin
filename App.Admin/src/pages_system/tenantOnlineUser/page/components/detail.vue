@@ -13,7 +13,7 @@
 			</FaField>
 			<FaField label="设备Id" :value="formData.deviceId" selectable />
 			<FaField label="会话Id" :value="formData.sessionId" copyable />
-			<FaField label="管理员">
+			<FaField label="管理员" center>
 				<wd-tag v-if="formData.isSuperAdmin" type="success">超级管理员</wd-tag>
 				<wd-tag v-else-if="formData.isAdmin" type="danger">管理员</wd-tag>
 				<wd-tag v-else variant="plain">普通用户</wd-tag>

@@ -4,7 +4,7 @@
 			<FaField label="昵称" :value="formData.nickName" />
 			<FaField label="手机" :value="formData.mobile" />
 			<FaField label="邮箱" :value="formData.email" />
-			<FaField label="状态">
+			<FaField label="状态" center>
 				<FaTag name="CommonStatusEnum" :value="formData.status" />
 			</FaField>
 			<FaField label="头像">
@@ -34,7 +34,7 @@
 			<FaField label="时间" :value="formData.lastLoginTime" />
 
 			<wd-divider content-position="left">锁定信息</wd-divider>
-			<FaField label="锁定">
+			<FaField label="锁定" center>
 				<wd-tag v-if="formData.lockStartTime" type="danger">已锁定</wd-tag>
 				<wd-tag v-else>未锁定</wd-tag>
 			</FaField>

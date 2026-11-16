@@ -30,7 +30,7 @@
 				</template>
 
 				<FaField label="收件人" :value="item.receiver" />
-				<FaField label="发送结果">
+				<FaField label="发送结果" center>
 					<FaTag name="BooleanEnum" :value="item.isSuccess" />
 				</FaField>
 				<FaField label="发送人" :value="item.createdUserName" />

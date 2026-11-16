@@ -1,7 +1,7 @@
 <template>
 	<FaPopup ref="popupRef" title="序号配置详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
-			<FaField label="规则类型">
+			<FaField label="规则类型" center>
 				<FaTag name="SysSerialRuleTypeEnum" :value="formData.ruleType" />
 			</FaField>
 			<FaField label="前缀" :value="formData.prefix" />

@@ -30,7 +30,7 @@
 				<FaField label="登录设备" :value="[item.lastLoginDevice, item.lastLoginOS].filter(Boolean).join(' · ')" />
 				<FaField label="登录浏览器" :value="item.lastLoginBrowser" />
 				<FaField label="登录时间" :value="item.lastLoginTime" />
-				<FaField label="锁定信息">
+				<FaField label="锁定信息" center>
 					<wd-tag v-if="item.isLock" type="danger">已锁定</wd-tag>
 					<wd-tag v-else>未锁定</wd-tag>
 				</FaField>

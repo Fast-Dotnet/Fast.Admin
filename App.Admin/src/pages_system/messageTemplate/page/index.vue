@@ -37,7 +37,7 @@
 				<FaField label="应用类型">
 					<FaTagFlag name="AppEnvironmentEnum" :value="item.appType" />
 				</FaField>
-				<FaField label="环境类型">
+				<FaField label="环境类型" center>
 					<FaTag name="EnvironmentTypeEnum" :value="item.environmentType" />
 				</FaField>
 

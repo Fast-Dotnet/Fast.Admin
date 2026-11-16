@@ -16,7 +16,7 @@
 				code="Complaint:Detail"
 				@click="detailFormRef?.detail(item)"
 			>
-				<FaField label="投诉类型">
+				<FaField label="投诉类型" center>
 					<FaTag name="ComplaintTypeEnum" :value="item.complaintType" />
 				</FaField>
 				<FaField label="昵称" :value="item.nickName" />
@@ -24,7 +24,7 @@
 				<FaField label="租户名称" :value="item.tenantName" />
 				<FaField label="投诉描述" :value="item.description" />
 				<FaField label="创建时间" :value="item.createdTime" />
-				<FaField label="处理状态">
+				<FaField label="处理状态" center>
 					<wd-tag v-if="item.handleTime" type="success">已处理</wd-tag>
 					<wd-tag v-else type="warning">待处理</wd-tag>
 				</FaField>

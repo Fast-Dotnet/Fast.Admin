@@ -35,7 +35,7 @@
 				</FaField>
 				<FaField label="职员" :value="[item.employeeName, item.employeeNo].filter(Boolean).join(' · ')" />
 				<FaField label="部门" :value="item.departmentName" />
-				<FaField label="管理员">
+				<FaField label="管理员" center>
 					<wd-tag v-if="item.isSuperAdmin" type="success">超级管理员</wd-tag>
 					<wd-tag v-else-if="item.isAdmin" type="danger">管理员</wd-tag>
 					<wd-tag v-else variant="plain">普通用户</wd-tag>

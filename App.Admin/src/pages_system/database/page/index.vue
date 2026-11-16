@@ -25,13 +25,13 @@
 				</template>
 
 				<FaField label="租户" :value="item.tenantName" />
-				<FaField label="Db类型">
+				<FaField label="Db类型" center>
 					<FaTag name="SugarDbType" :value="item.dbType" />
 				</FaField>
 				<FaField label="公网IP" :value="item.publicIp" selectable />
 				<FaField label="内网IP" :value="item.intranetIp" />
 				<FaField label="端口号" :value="item.port" />
-				<FaField label="初始化">
+				<FaField label="初始化" center>
 					<wd-tag v-if="item.isInitialized" type="success">已初始化</wd-tag>
 					<wd-tag v-else type="danger">未初始化</wd-tag>
 				</FaField>

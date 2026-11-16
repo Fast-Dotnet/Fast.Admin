@@ -3,20 +3,20 @@
 		<view class="page-detail__popup">
 			<FaField label="接口名称" :value="formData.apiName" />
 			<FaField label="接口地址" :value="formData.apiUrl" copyable />
-			<FaField label="请求方式">
+			<FaField label="请求方式" center>
 				<FaTag name="HttpRequestMethodEnum" :value="formData.method" />
 			</FaField>
-			<FaField label="操作方式">
+			<FaField label="操作方式" center>
 				<FaTag name="HttpRequestActionEnum" :value="formData.action" />
 			</FaField>
 			<FaField label="模块名称" :value="formData.moduleName" />
 			<FaField label="服务名称" :value="formData.serviceName" />
 			<FaField label="分组名称" :value="formData.groupName" />
 			<FaField label="分组标题" :value="formData.groupTitle" />
-			<FaField label="授权检测">
+			<FaField label="授权检测" center>
 				<FaTag name="BooleanEnum" :value="formData.hasAuth" />
 			</FaField>
-			<FaField label="权限检测">
+			<FaField label="权限检测" center>
 				<FaTag name="BooleanEnum" :value="formData.hasPermission" />
 			</FaField>
 			<FaField label="版本" :value="formData.version" />

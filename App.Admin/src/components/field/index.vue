@@ -1,5 +1,5 @@
 <template>
-	<view class="fa-field">
+	<view class="fa-field" :class="{ 'is-center': props.center }">
 		<text class="fa-field__title">{{ props.label }}</text>
 		<slot>
 			<text
@@ -50,6 +50,8 @@ const props = defineProps({
 		type: String,
 		default: "var(--wot-text-main)",
 	},
+	/** 垂直居中对齐 */
+	center: Boolean,
 	/** 是否允许选中内容文本 */
 	selectable: Boolean,
 	/** 显示复制按钮并允许选中默认文本，复制内容取自 value */

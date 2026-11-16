@@ -3,7 +3,7 @@
 		<view style="display: flex; flex-direction: column; gap: 10px">
 			<FaField label="昵称" :value="formData.nickName" />
 			<FaField label="手机" :value="formData.mobile" />
-			<FaField label="访问类型">
+			<FaField label="访问类型" center>
 				<FaTag name="VisitTypeEnum" :value="formData.visitType" />
 			</FaField>
 			<FaField label="部门" :value="formData.departmentName" />

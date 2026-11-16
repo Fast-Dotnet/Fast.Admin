@@ -13,7 +13,7 @@
 			<FaField label="订单金额" :value="`￥${(formData.orderAmount ?? 0).toFixed(2)}`" color="var(--wot-text-auxiliary)" />
 			<FaField label="退款流水号" :value="formData.refundId" copyable />
 			<FaField label="退款金额" :value="`￥${(formData.refundAmount ?? 0).toFixed(2)}`" color="var(--wot-danger-main)" />
-			<FaField label="已退款">
+			<FaField label="已退款" center>
 				<FaTag name="BooleanEnum" :value="formData.isRefunded" />
 			</FaField>
 			<FaField label="退款时间" :value="formData.refundTime" />

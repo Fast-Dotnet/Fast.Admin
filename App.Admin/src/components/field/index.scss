@@ -3,6 +3,10 @@
 	align-items: flex-start;
 	gap: 10rpx;
 	font-size: var(--wot-typography-body-size-main);
+
+	&.is-center {
+		align-items: center;
+	}
 }
 
 .fa-field__title {
