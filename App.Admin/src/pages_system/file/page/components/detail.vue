@@ -11,27 +11,26 @@
 				预览
 			</wd-button>
 		</template>
-		<scroll-view scroll-y>
-			<view style="display: flex; flex-direction: column; gap: 10px">
-				<FaField label="标识" :value="state.formData.fileObjectName" selectable />
-				<FaField label="后缀" :value="state.formData.fileSuffix" />
-				<FaField label="类型" :value="state.formData.fileMimeType" />
-				<FaField label="大小" :value="formatFileSize(state.formData.fileSizeKb)" />
-				<FaField label="存储路径" :value="state.formData.filePath" selectable />
-				<FaField label="访问地址" :value="state.formData.fileLocation" copyable />
-				<FaField label="哈希" :value="state.formData.fileHash" selectable />
-				<FaField label="名称" :value="state.formData.fileOriginName" />
-				<FaField label="省份" :value="state.formData.uploadProvince" />
-				<FaField label="城市" :value="state.formData.uploadCity" />
-				<FaField label="Ip" :value="state.formData.uploadIp" />
-				<FaField label="设备" :value="state.formData.uploadDevice" />
-				<FaField label="操作系统" :value="state.formData.uploadOS" />
-				<FaField label="浏览器" :value="state.formData.uploadBrowser" />
-				<FaField label="创建人" :value="state.formData.createdUserName" />
-				<FaField label="创建时间" :value="state.formData.createdTime" />
-				<FaField label="租户" :value="state.formData.tenantName" />
-			</view>
-		</scroll-view>
+
+		<view class="page-detail__popup">
+			<FaField label="标识" :value="state.formData.fileObjectName" selectable />
+			<FaField label="后缀" :value="state.formData.fileSuffix" />
+			<FaField label="类型" :value="state.formData.fileMimeType" />
+			<FaField label="大小" :value="formatFileSize(state.formData.fileSizeKb)" />
+			<FaField label="存储路径" :value="state.formData.filePath" selectable />
+			<FaField label="访问地址" :value="state.formData.fileLocation" copyable />
+			<FaField label="哈希" :value="state.formData.fileHash" selectable />
+			<FaField label="名称" :value="state.formData.fileOriginName" />
+			<FaField label="省份" :value="state.formData.uploadProvince" />
+			<FaField label="城市" :value="state.formData.uploadCity" />
+			<FaField label="Ip" :value="state.formData.uploadIp" />
+			<FaField label="设备" :value="state.formData.uploadDevice" />
+			<FaField label="操作系统" :value="state.formData.uploadOS" />
+			<FaField label="浏览器" :value="state.formData.uploadBrowser" />
+			<FaField label="创建人" :value="state.formData.createdUserName" />
+			<FaField label="创建时间" :value="state.formData.createdTime" />
+			<FaField v-if="userInfoStore.isSystemTenant" label="租户" :value="state.formData.tenantName" />
+		</view>
 	</FaPopup>
 </template>
 
@@ -39,12 +38,15 @@
 import { reactive, ref } from "vue";
 import { throttle, withDefineType } from "@fast-china/utils";
 import Decimal from "decimal.js";
+import { useUserInfo } from "@/stores";
 import type { QueryFilePagedOutput } from "@/api/services/File/models/QueryFilePagedOutput";
 import type { FaPopupInstance } from "@/components";
 
 defineOptions({
 	name: "SystemFileDetail",
 });
+
+const userInfoStore = useUserInfo();
 
 const popupRef = ref<FaPopupInstance>();
 
@@ -69,7 +71,7 @@ const formatFileSize = (value?: string) => {
 };
 
 const detail = throttle((data: QueryFilePagedOutput) =>
-	popupRef.value?.open(() => {
+	popupRef.value.open(() => {
 		state.formData = data;
 	})
 );

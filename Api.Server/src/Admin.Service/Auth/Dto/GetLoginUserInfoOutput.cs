@@ -73,6 +73,11 @@ public class GetLoginUserInfoOutput
     public string TenantCode { get; set; }
 
     /// <summary>
+    /// 是否系统租户
+    /// </summary>
+    public bool IsSystemTenant { get; set; }
+
+    /// <summary>
     /// 租户Logo URL
     /// </summary>
     public string LogoUrl { get; set; }

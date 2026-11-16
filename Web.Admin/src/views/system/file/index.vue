@@ -19,7 +19,7 @@
 			<FaTableColumn prop="uploadProvince" label="省份" width="120" small-width="100" sortable />
 			<FaTableColumn prop="uploadCity" label="城市" width="120" small-width="100" sortable />
 			<FaTableColumn prop="uploadIp" label="Ip" width="150" small-width="130" sortable />
-			<FaTableColumn prop="tenantName" label="租户" width="200" small-width="180" sortable />
+			<FaTableColumn v-if="userInfoStore.isSystemTenant" prop="tenantName" label="租户" width="200" small-width="180" sortable />
 			<FaTableColumn prop="createdTime" label="创建时间" width="240" small-width="220" sortable type="timeInfo" />
 
 			<!-- 表格操作 -->
@@ -60,7 +60,7 @@ const state = reactive({
 });
 
 const searchColumns = computed<FaTableColumnCtx[]>(() =>
-	userInfoStore.isSuperAdmin
+	userInfoStore.isSystemTenant
 		? [
 				{
 					pureSearch: true,

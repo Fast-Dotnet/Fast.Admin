@@ -75,6 +75,7 @@ public class AuthService : IDynamicApplication
             TenantName = _user.TenantName,
             ShortName = tenantModel.ShortName,
             TenantCode = _user.TenantCode,
+            IsSystemTenant = _user.IsSystemTenant,
             LogoUrl = tenantModel.LogoUrl,
             UserKey = _user.UserKey,
             EmployeeId = _user.EmployeeId,

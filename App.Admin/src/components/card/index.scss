@@ -36,10 +36,12 @@
 }
 
 .fa-card__content {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
 	color: var(--wot-text-secondary);
 	font-size: 14px;
-	line-height: 1.6;
-	padding: 24rpx;
+	padding: 20rpx 24rpx 16rpx;
 	box-sizing: border-box;
 }
 
@@ -48,7 +50,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: flex-end;
-	gap: 20rpx;
+	gap: 16rpx;
 	padding: 20rpx 20rpx 16rpx;
 
 	&::after {

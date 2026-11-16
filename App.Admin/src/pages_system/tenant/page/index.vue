@@ -35,8 +35,8 @@
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.tenantId" code="Tenant:Detail" @click="handleDetail(item.tenantId)">
-				<view style="display: flex; align-items: center; gap: 20rpx; margin-bottom: 24rpx">
+			<FaCard v-for="item in pagedList" :key="item.tenantId" code="Tenant:Detail" @click="detailFormRef?.detail(item.tenantId)">
+				<view style="display: flex; align-items: center; gap: 20rpx; margin-bottom: 10rpx">
 					<FaImage :src="item.logoUrl" width="88rpx" height="88rpx" original round />
 					<view style="flex: 1; display: flex; flex-direction: column">
 						<text
@@ -82,6 +82,8 @@
 			</FaCard>
 		</template>
 	</FaPaging>
+
+	<TenantDetail ref="detailFormRef" />
 </template>
 
 <script setup lang="ts">
@@ -92,6 +94,7 @@ import { CommonStatusEnum } from "@/api/enums/CommonStatusEnum";
 import { TenantTypeEnum } from "@/api/enums/TenantTypeEnum";
 import { tenantApi } from "@/api/services/Center/tenant";
 import { useMessageBox, useToast } from "@/hooks";
+import TenantDetail from "./components/detail.vue";
 import type { QueryTenantPagedOutput } from "@/api/services/Center/tenant/models/QueryTenantPagedOutput";
 import type { FaPagingInstance } from "@/components";
 
@@ -106,8 +109,7 @@ definePage({
 const router = useRouter();
 
 const faPagingRef = ref<FaPagingInstance>();
-
-const handleDetail = throttle((tenantId: string) => router.push(`/pages_system/tenant/detail/index?tenantId=${tenantId}`));
+const detailFormRef = ref<InstanceType<typeof TenantDetail>>();
 
 const handleEdit = throttle((mode: IPageStateType, tenantId?: string) =>
 	router.push({
@@ -119,14 +121,14 @@ const handleEdit = throttle((mode: IPageStateType, tenantId?: string) =>
 	})
 );
 
-const handleChangeStatus = (item: QueryTenantPagedOutput) => {
+const handleChangeStatus = throttle(async (item: QueryTenantPagedOutput) => {
 	const { tenantId, status, rowVersion } = item;
-	useMessageBox.confirm(`确定${status === CommonStatusEnum.Enable ? "禁用" : "启用"}租户？`, {
+	await useMessageBox.confirm(`确定${status === CommonStatusEnum.Enable ? "禁用" : "启用"}租户？`, {
 		async beforeConfirm() {
 			await tenantApi.changeStatus({ tenantId, rowVersion });
 			useToast.success("操作成功！");
 			faPagingRef.value.refresh();
 		},
 	});
-};
+});
 </script>

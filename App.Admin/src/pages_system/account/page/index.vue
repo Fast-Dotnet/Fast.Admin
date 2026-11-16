@@ -5,7 +5,7 @@
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.accountId" code="Account:Detail" @click="handleDetail(item.accountId)">
+			<FaCard v-for="item in pagedList" :key="item.accountId" code="Account:Detail" @click="detailFormRef?.detail(item.accountId)">
 				<view style="display: flex; align-items: center; gap: 20rpx; margin-bottom: 24rpx">
 					<FaImage :src="item.avatar" width="88rpx" height="88rpx" original round />
 					<view style="flex: 1; display: flex; flex-direction: column">
@@ -24,12 +24,12 @@
 				</view>
 
 				<FaField label="邮箱" :value="item.email" />
-				<FaField label="最后登录租户" :value="item.lastLoginTenantName" />
-				<FaField label="最后登录地区" :value="[item.lastLoginProvince, item.lastLoginCity].filter(Boolean).join(' - ')" />
-				<FaField label="最后登录 Ip" :value="item.lastLoginIp" />
-				<FaField label="最后登录设备" :value="[item.lastLoginDevice, item.lastLoginOS].filter(Boolean).join(' · ')" />
-				<FaField label="最后登录浏览器" :value="item.lastLoginBrowser" />
-				<FaField label="最后登录时间" :value="item.lastLoginTime" />
+				<FaField label="登录租户" :value="item.lastLoginTenantName" />
+				<FaField label="登录地区" :value="[item.lastLoginProvince, item.lastLoginCity].filter(Boolean).join(' - ')" />
+				<FaField label="登录Ip" :value="item.lastLoginIp" />
+				<FaField label="登录设备" :value="[item.lastLoginDevice, item.lastLoginOS].filter(Boolean).join(' · ')" />
+				<FaField label="登录浏览器" :value="item.lastLoginBrowser" />
+				<FaField label="登录时间" :value="item.lastLoginTime" />
 				<FaField label="锁定信息">
 					<wd-tag v-if="item.isLock" type="danger">已锁定</wd-tag>
 					<wd-tag v-else>未锁定</wd-tag>
@@ -40,9 +40,6 @@
 				</template>
 
 				<template #footer>
-					<FaAuth code="Account:Detail">
-						<wd-button size="mini" variant="plain" @click="handleDetail(item.accountId)">详情</wd-button>
-					</FaAuth>
 					<FaAuth code="Account:ResetPassword">
 						<wd-button size="mini" type="warning" variant="plain" @click="handleResetPassword(item)">重置密码</wd-button>
 					</FaAuth>
@@ -65,15 +62,17 @@
 			</FaCard>
 		</template>
 	</FaPaging>
+
+	<AccountDetail ref="detailFormRef" />
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
 import { throttle } from "@fast-china/utils";
-import { useRouter } from "@wot-ui/router";
 import { CommonStatusEnum } from "@/api/enums/CommonStatusEnum";
 import { accountApi } from "@/api/services/Center/account";
 import { useMessageBox, useToast } from "@/hooks";
+import AccountDetail from "./components/detail.vue";
 import type { QueryAccountPagedOutput } from "@/api/services/Center/account/models/QueryAccountPagedOutput";
 import type { FaPagingInstance } from "@/components";
 
@@ -85,42 +84,39 @@ definePage({
 	},
 });
 
-const router = useRouter();
-
 const faPagingRef = ref<FaPagingInstance>();
+const detailFormRef = ref<InstanceType<typeof AccountDetail>>();
 
-const handleDetail = throttle((accountId: string) => router.push(`/pages_system/account/detail/index?accountId=${accountId}`));
-
-const handleResetPassword = (item: QueryAccountPagedOutput) => {
+const handleResetPassword = throttle(async (item: QueryAccountPagedOutput) => {
 	const { accountId, rowVersion } = item;
-	useMessageBox.confirm("确定重置密码？", {
+	await useMessageBox.confirm("确定重置密码？", {
 		async beforeConfirm() {
 			await accountApi.resetPassword({ accountId, rowVersion });
 			useToast.success("操作成功！");
 			faPagingRef.value.refresh();
 		},
 	});
-};
+});
 
-const handleUnlock = (item: QueryAccountPagedOutput) => {
+const handleUnlock = throttle(async (item: QueryAccountPagedOutput) => {
 	const { accountId, rowVersion } = item;
-	useMessageBox.confirm("确定解锁账号？", {
+	await useMessageBox.confirm("确定解锁账号？", {
 		async beforeConfirm() {
 			await accountApi.unlock({ accountId, rowVersion });
 			useToast.success("操作成功！");
 			faPagingRef.value.refresh();
 		},
 	});
-};
+});
 
-const handleChangeStatus = (item: QueryAccountPagedOutput) => {
+const handleChangeStatus = throttle(async (item: QueryAccountPagedOutput) => {
 	const { accountId, status, rowVersion } = item;
-	useMessageBox.confirm(`确定${status === CommonStatusEnum.Enable ? "禁用" : "启用"}账号？`, {
+	await useMessageBox.confirm(`确定${status === CommonStatusEnum.Enable ? "禁用" : "启用"}账号？`, {
 		async beforeConfirm() {
 			await accountApi.changeStatus({ accountId, rowVersion });
 			useToast.success("操作成功！");
 			faPagingRef.value.refresh();
 		},
 	});
-};
+});
 </script>

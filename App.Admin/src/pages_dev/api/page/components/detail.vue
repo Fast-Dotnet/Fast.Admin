@@ -1,6 +1,6 @@
 <template>
 	<FaPopup ref="popupRef" title="接口详情" height="70%" position="bottom" closable>
-		<view style="display: flex; flex-direction: column; gap: 10px">
+		<view class="page-detail__popup">
 			<FaField label="接口名称" :value="formData.apiName" />
 			<FaField label="接口地址" :value="formData.apiUrl" copyable />
 			<FaField label="请求方式">
@@ -23,12 +23,16 @@
 			<FaField label="排序" :value="formData.sort" />
 			<FaField label="创建时间" :value="formData.createdTime" />
 			<FaField label="更新时间" :value="formData.updatedTime" />
-			<view v-if="formData.tags?.length" style="display: flex; gap: 16rpx; margin-top: 8rpx">
-				<wd-tag v-for="(tag, index) in formData.tags" :key="index">{{ tag }}</wd-tag>
-			</view>
 
-			<view class="log__title">分组描述</view>
-			<rich-text :nodes="formData.description" />
+			<template v-if="formData.tags?.length">
+				<wd-divider content-position="left">按钮权限</wd-divider>
+				<view style="display: flex; gap: 16rpx; margin-top: 8rpx">
+					<wd-tag v-for="(tag, index) in formData.tags" :key="index">{{ tag }}</wd-tag>
+				</view>
+			</template>
+
+			<wd-divider content-position="left">分组描述</wd-divider>
+			<wd-rich-text :content="formData.description" />
 		</view>
 	</FaPopup>
 </template>

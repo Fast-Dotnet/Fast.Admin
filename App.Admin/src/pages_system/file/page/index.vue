@@ -1,9 +1,9 @@
 <template>
 	<FaPaging :request-api="fileApi.queryFilePaged">
-		<template #top="{ searchParam, refresh }">
+		<template v-if="userInfoStore.isSystemTenant" #top="{ searchParam, refresh }">
 			<FaSearchInput v-model:search-param="searchParam.value" @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #filter>
-					<FaTenantSelect v-if="userInfoStore.isSuperAdmin" v-model="searchParam.value.tenantId" />
+					<FaTenantSelect v-model="searchParam.value.tenantId" />
 				</template>
 			</FaSearchInput>
 		</template>
@@ -20,7 +20,7 @@
 				<FaField label="大小" :value="formatFileSize(item.fileSizeKb)" />
 				<FaField label="创建人" :value="item.createdUserName" />
 				<FaField label="创建时间" :value="item.createdTime" />
-				<FaField label="租户" :value="item.tenantName" />
+				<FaField v-if="userInfoStore.isSystemTenant" label="租户" :value="item.tenantName" />
 
 				<template #footer>
 					<wd-button
@@ -45,7 +45,7 @@ import { reactive, ref } from "vue";
 import { Decimal } from "decimal.js";
 import { fileApi } from "@/api/services/File";
 import { useUserInfo } from "@/stores";
-import FileDetail from "./detail/index.vue";
+import FileDetail from "./components/detail.vue";
 
 definePage({
 	name: "SystemFile",

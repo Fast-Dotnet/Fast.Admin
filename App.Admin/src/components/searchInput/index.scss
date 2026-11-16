@@ -57,7 +57,7 @@
 	min-height: 0;
 	height: 0;
 
-	--fa-cell-left-flex: 0 0 28%;
+	--fa-cell-left-flex: 0 0 clamp(84px, 28%, 104px);
 	--wot-cell-arrow-margin-left: 0;
 	--wot-cell-bg: transparent;
 

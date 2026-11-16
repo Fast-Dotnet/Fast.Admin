@@ -6,7 +6,7 @@
 	}
 
 	.wd-cell__left {
-		flex: var(--fa-cell-left-flex, 0 0 28%) !important;
+		flex: var(--fa-cell-left-flex, 0 0 clamp(84px, 28%, 104px)) !important;
 	}
 }
 

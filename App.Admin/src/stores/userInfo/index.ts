@@ -44,6 +44,7 @@ export const useUserInfo = defineStore(
 			tenantName: "",
 			shortName: "",
 			tenantCode: "",
+			isSystemTenant: false,
 			logoUrl: "",
 			userKey: "",
 			employeeId: undefined,

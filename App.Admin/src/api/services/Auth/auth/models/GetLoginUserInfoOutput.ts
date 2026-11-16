@@ -55,6 +55,10 @@ export interface GetLoginUserInfoOutput {
 	 */
 	tenantCode?: string;
 	/**
+	 * 是否系统租户
+	 */
+	isSystemTenant?: boolean;
+	/**
 	 * 租户Logo URL
 	 */
 	logoUrl?: string;

@@ -3,10 +3,11 @@
 	align-items: flex-start;
 	gap: 10rpx;
 	font-size: var(--wot-typography-body-size-main);
+	line-height: 1.6;
 }
 
 .fa-field__title {
-	flex: var(--fa-cell-left-flex, 0 0 28%);
+	flex: var(--fa-cell-left-flex, 0 0 clamp(84px, 28%, 104px));
 	color: var(--wot-text-auxiliary);
 }
 
@@ -23,7 +24,7 @@
 	align-items: center;
 	justify-content: center;
 	gap: 2px;
-	min-height: 20px;
+	height: 22px;
 	margin: 0;
 	padding: 0 6px;
 	border: 0;
