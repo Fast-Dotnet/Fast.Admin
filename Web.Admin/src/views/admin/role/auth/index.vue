@@ -12,21 +12,22 @@
 		<template #default="{ loading }">
 			<div class="role-auth">
 				<nav class="menu-pane">
-					<el-input v-model="state.menuKeyword" :prefix-icon="Search" placeholder="搜索页面" clearable />
+					<el-input v-model="state.searchKeyword" :prefix-icon="Search" placeholder="搜索页面" clearable />
 					<el-scrollbar class="menu-scrollbar">
-						<div v-for="node in filteredMenus" :key="node.value" class="menu-node">
+						<div v-for="node in filteredMenuList" :key="node.value" class="menu-node">
 							<button
 								v-if="node.data?.isModule"
 								class="module-item"
-								:class="{ 'is-expanded': !visibleCollapsedModules.has(node.value) }"
+								:class="{ 'is-expanded': isModuleExpanded(node.value) }"
 								type="button"
+								:disabled="Boolean(state.searchKeyword)"
 								@click="toggleModule(node.value)"
 							>
 								<el-icon class="module-arrow"><ArrowRight /></el-icon>
 								<span class="menu-label">{{ node.label }}</span>
-								<span class="operation-count">{{ moduleCounts.get(node.value) }}</span>
+								<span class="operation-count">{{ getModuleCount(node.value) }}</span>
 							</button>
-							<div v-show="!visibleCollapsedModules.has(node.value)" :class="{ 'module-menus': node.data?.isModule }">
+							<div v-show="isModuleExpanded(node.value)" :class="{ 'module-menus': node.data?.isModule }">
 								<button
 									v-for="menu in node.data?.isModule ? node.children : [node]"
 									:key="menu.value"
@@ -48,39 +49,43 @@
 						<div class="page-title">
 							<p v-if="selectedModule" class="page-module">{{ selectedModule.label }}</p>
 							<h2>{{ selectedMenu.label }}</h2>
-							<div v-if="selectedPlatforms.length" class="page-platforms">
-								<el-tag v-for="platform in selectedPlatforms" :key="platform.key" type="info" effect="plain">
-									<FaIcon :name="platform.icon" />
-									{{ platform.label }}
+							<div class="page-platforms">
+								<el-tag v-if="selectedMenu.data?.hasWeb" type="info" effect="plain">
+									<FaIcon name="el-icon-ChromeFilled" />
+									Web
+								</el-tag>
+								<el-tag v-if="selectedMenu.data?.hasMobile" type="info" effect="plain">
+									<FaIcon name="el-icon-Iphone" />
+									移动端
+								</el-tag>
+								<el-tag v-if="selectedMenu.data?.hasDesktop" type="info" effect="plain">
+									<FaIcon name="el-icon-Monitor" />
+									Windows
 								</el-tag>
 							</div>
 						</div>
 						<div class="page-toggle">
-							<label :for="pageGrantId">页面授权</label>
-							<el-switch
-								:id="pageGrantId"
-								:model-value="isMenuChecked(selectedMenu.value)"
-								@change="handleMenuChange(selectedMenu.value, $event)"
-							/>
+							<label>页面授权</label>
+							<el-switch :model-value="isMenuChecked(selectedMenu.value)" @change="handleMenuChange(selectedMenu.value, $event)" />
 						</div>
 					</header>
 					<div class="operation-header">
 						<h3>操作权限</h3>
-						<span v-if="selectedButtons.length" class="operation-count">
-							已选操作 {{ selectedButtonCount }} / {{ selectedButtons.length }}
+						<span v-if="selectedButtonList.length" class="operation-count">
+							已选操作 {{ selectedButtonCount }} / {{ selectedButtonList.length }}
 						</span>
 						<el-checkbox
-							v-if="selectedButtons.length"
+							v-if="selectedButtonList.length"
 							class="check-all"
-							:model-value="selectedButtonCount === selectedButtons.length"
-							:indeterminate="selectedButtonCount > 0 && selectedButtonCount < selectedButtons.length"
+							:model-value="selectedButtonCount === selectedButtonList.length"
+							:indeterminate="selectedButtonCount > 0 && selectedButtonCount < selectedButtonList.length"
 							@change="handleButtonAllChange"
 						>
 							全选
 						</el-checkbox>
 					</div>
-					<el-checkbox-group v-if="selectedButtons.length" v-model="state.formData.buttonIds" class="operation-list">
-						<el-checkbox v-for="button in selectedButtons" :key="button.value" :value="button.value" border>
+					<el-checkbox-group v-if="selectedButtonList.length" v-model="state.formData.buttonIds" class="operation-list">
+						<el-checkbox v-for="button in selectedButtonList" :key="button.value" :value="button.value" border>
 							<span class="operation-label">{{ button.label }}</span>
 							<span v-if="button.data?.hasDesktop || button.data?.hasWeb || button.data?.hasMobile" class="platform-icons">
 								<FaIcon v-if="button.data?.hasDesktop" name="el-icon-Monitor" />
@@ -92,7 +97,7 @@
 					<p v-else class="empty-message">此页面没有可配置的操作</p>
 				</section>
 				<p v-else-if="!loading" class="empty-message menu-empty" role="status">
-					{{ searchKeyword ? "未找到匹配的页面" : "暂无可授权页面" }}
+					{{ state.searchKeyword ? "未找到匹配的页面" : "暂无可授权页面" }}
 				</p>
 			</div>
 		</template>
@@ -100,7 +105,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, useId, useTemplateRef, watch } from "vue";
+import { computed, reactive, useTemplateRef } from "vue";
 import { ArrowRight, Search } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
 import { withDefineType } from "@fast-china/utils";
@@ -116,7 +121,6 @@ defineOptions({
 const emit = defineEmits(["ok"]);
 
 const faDialogRef = useTemplateRef<FaDialogInstance>("faDialogRef");
-const pageGrantId = useId();
 
 const state = reactive({
 	formData: withDefineType<RoleAuthInput>({
@@ -125,18 +129,15 @@ const state = reactive({
 	}),
 	dialogTitle: "角色授权",
 	menuList: withDefineType<ElSelectorOutput<string>[]>([]),
-	menuKeyword: "",
+	searchKeyword: "",
 	selectedMenuId: withDefineType<string | undefined>(undefined),
+	/** 折叠模块 */
 	collapsedModules: new Set<string>(),
-	searchCollapsedModules: new Set<string>(),
 });
 
-const searchKeyword = computed(() => state.menuKeyword.trim().toLowerCase());
-const visibleCollapsedModules = computed(() => (searchKeyword.value ? state.searchCollapsedModules : state.collapsedModules));
-watch(searchKeyword, () => state.searchCollapsedModules.clear());
-
-const filteredMenus = computed(() => {
-	const keyword = searchKeyword.value;
+/** 过滤的菜单 */
+const filteredMenuList = computed(() => {
+	const keyword = state.searchKeyword.toLowerCase();
 	if (!keyword) return state.menuList;
 
 	return state.menuList.flatMap((node) => {
@@ -146,57 +147,49 @@ const filteredMenus = computed(() => {
 		return children?.length ? [{ ...node, children }] : [];
 	});
 });
-const menus = computed(() => state.menuList.flatMap((node) => (node.data?.isModule ? (node.children ?? []) : [node])));
-const visibleMenus = computed(() => filteredMenus.value.flatMap((node) => (node.data?.isModule ? (node.children ?? []) : [node])));
-const selectedMenu = computed(() => visibleMenus.value.find((menu) => menu.value === state.selectedMenuId) ?? visibleMenus.value[0]);
+/** 选中菜单 */
+const selectedMenu = computed(() => {
+	const flatMenuList = filteredMenuList.value.flatMap((node) => (node.data?.isModule ? (node.children ?? []) : [node]));
+	return flatMenuList.find((menu) => menu.value === state.selectedMenuId) ?? flatMenuList[0];
+});
+/** 选中模块 */
 const selectedModule = computed(() =>
 	state.menuList.find((node) => node.data?.isModule && node.children?.some((menu) => menu.value === selectedMenu.value?.value))
 );
-const selectedButtons = computed(() => selectedMenu.value?.children ?? []);
-const platforms = [
-	{ key: "hasWeb", label: "Web", icon: "el-icon-ChromeFilled" },
-	{ key: "hasMobile", label: "移动端", icon: "el-icon-Iphone" },
-	{ key: "hasDesktop", label: "Windows", icon: "el-icon-Monitor" },
-] as const;
-const selectedPlatforms = computed(() => platforms.filter((platform) => selectedMenu.value?.data?.[platform.key]));
+/** 选中按钮集合 */
+const selectedButtonList = computed(() => selectedMenu.value?.children ?? []);
+/** 选中的菜单Id */
 const checkedMenuIds = computed(() => new Set(state.formData.menuIds));
+/** 选中的按钮Id */
 const checkedButtonIds = computed(() => new Set(state.formData.buttonIds));
-
+/** 判断模块是否展开 */
+const isModuleExpanded = (moduleId: string) => Boolean(state.searchKeyword) || !state.collapsedModules.has(moduleId);
+/** 判断菜单是否选中 */
 const isMenuChecked = (menuId: string) => checkedMenuIds.value.has(menuId);
+/** 获取按钮选中数量 */
 const getButtonCheckedCount = (menu: ElSelectorOutput<string>) =>
 	menu.children?.filter((button) => checkedButtonIds.value.has(button.value)).length ?? 0;
-const selectedButtonCount = computed(() => (selectedMenu.value ? getButtonCheckedCount(selectedMenu.value) : 0));
-const moduleCounts = computed(() => {
-	const counts = new Map<string, string>();
-	for (const node of state.menuList) {
-		if (!node.data?.isModule) continue;
-		const children = node.children ?? [];
-		counts.set(node.value, `${children.filter((menu) => isMenuChecked(menu.value)).length} / ${children.length}`);
-	}
-	return counts;
-});
-
-const toggleModule = (moduleId: string) => {
-	const collapsed = visibleCollapsedModules.value;
-	if (collapsed.has(moduleId)) collapsed.delete(moduleId);
-	else collapsed.add(moduleId);
+const selectedButtonCount = computed(() => getButtonCheckedCount(selectedMenu.value));
+const getModuleCount = (moduleId: string) => {
+	const menus = state.menuList.find((node) => node.value === moduleId)?.children ?? [];
+	return `${menus.filter((menu) => isMenuChecked(menu.value)).length} / ${menus.length}`;
 };
 
-const handleMenuChange = (menuId: string, val: CheckboxValueType) => {
-	if (val) {
-		// 选中菜单
-		if (!state.formData.menuIds?.includes(menuId)) {
-			state.formData.menuIds = [...(state.formData.menuIds || []), menuId];
-		}
-	} else {
-		// 取消选中菜单
-		state.formData.menuIds = state.formData.menuIds?.filter((id) => id !== menuId) || [];
-	}
+const toggleModule = (moduleId: string) => {
+	const { collapsedModules } = state;
+	if (!collapsedModules.delete(moduleId)) collapsedModules.add(moduleId);
+};
+
+const handleMenuChange = (menuId: string, checked: CheckboxValueType) => {
+	if (checked && isMenuChecked(menuId)) return;
+
+	const menuIds = state.formData.menuIds ?? [];
+	state.formData.menuIds = checked ? [...menuIds, menuId] : menuIds.filter((id) => id !== menuId);
 };
 
 const handleButtonAllChange = (checked: CheckboxValueType) => {
 	const buttonIds = new Set(state.formData.buttonIds);
-	for (const button of selectedButtons.value) {
+	for (const button of selectedButtonList.value) {
 		if (checked) buttonIds.add(button.value);
 		else buttonIds.delete(button.value);
 	}
@@ -204,12 +197,14 @@ const handleButtonAllChange = (checked: CheckboxValueType) => {
 };
 
 const handleConfirm = () => {
-	const ungrantedMenu = menus.value.find((menu) => !isMenuChecked(menu.value) && getButtonCheckedCount(menu) > 0);
-	if (ungrantedMenu) {
-		state.menuKeyword = "";
-		state.selectedMenuId = ungrantedMenu.value;
+	const unGrantedMenu = state.menuList
+		.flatMap((node) => (node.data?.isModule ? (node.children ?? []) : [node]))
+		.find((menu) => !isMenuChecked(menu.value) && getButtonCheckedCount(menu) > 0);
+	if (unGrantedMenu) {
+		state.searchKeyword = "";
+		state.selectedMenuId = unGrantedMenu.value;
 		if (selectedModule.value) state.collapsedModules.delete(selectedModule.value.value);
-		ElMessage.warning(`请先授权「${ungrantedMenu.label}」页面，或取消该页面的操作权限。`);
+		ElMessage.warning(`请先授权「${unGrantedMenu.label}」页面，或取消该页面的操作权限。`);
 		return;
 	}
 
@@ -223,10 +218,9 @@ const handleConfirm = () => {
 const handleClose = () => {
 	state.formData = { menuIds: [], buttonIds: [] };
 	state.menuList = [];
-	state.menuKeyword = "";
+	state.searchKeyword = "";
 	state.selectedMenuId = undefined;
 	state.collapsedModules.clear();
-	state.searchCollapsedModules.clear();
 };
 
 const open = (roleId: string) => {
@@ -287,7 +281,7 @@ defineExpose({
 	background: transparent;
 	cursor: pointer;
 
-	&:hover {
+	&:not(:disabled):hover {
 		background: var(--el-fill-color-light);
 	}
 
@@ -300,6 +294,10 @@ defineExpose({
 .module-item {
 	color: var(--el-text-color-regular);
 	font-weight: 600;
+
+	&:disabled {
+		cursor: default;
+	}
 
 	&.is-expanded .module-arrow {
 		transform: rotate(90deg);
@@ -386,9 +384,10 @@ defineExpose({
 	gap: 6px;
 	margin-top: 8px;
 
-	.fa-icon {
-		margin-inline-end: 4px;
-		vertical-align: middle;
+	:deep(.el-tag__content) {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
 	}
 }
 
