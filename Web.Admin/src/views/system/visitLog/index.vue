@@ -55,8 +55,8 @@
 				:enum="visitTypeEnum"
 				:show-overflow-tooltip="false"
 			/>
-			<FaTableColumn prop="tenantName" label="租户" width="200" small-width="180" sortable />
 			<FaTableColumn prop="departmentName" label="部门" width="150" small-width="130" sortable />
+			<FaTableColumn v-if="userInfoStore.isSystemTenant" prop="tenantName" label="租户" width="200" small-width="180" sortable />
 		</FaTable>
 	</div>
 </template>
@@ -64,7 +64,7 @@
 <script setup lang="ts">
 import { formatChineseRelativeTime } from "@fast-china/utils";
 import { visitLogApi } from "@/api/services/Center/visitLog";
-import { useApp } from "@/stores";
+import { useApp, useUserInfo } from "@/stores";
 import type { FaTableColumnCtx } from "fast-element-plus";
 import type { VisitLogModel } from "@/api/services/Center/visitLog/models/VisitLogModel";
 
@@ -73,6 +73,8 @@ defineOptions({
 });
 
 const appStore = useApp();
+const userInfoStore = useUserInfo();
+
 const visitTypeEnum = appStore.getDictionary("VisitTypeEnum");
 const searchColumns: FaTableColumnCtx[] = [
 	{
@@ -81,12 +83,16 @@ const searchColumns: FaTableColumnCtx[] = [
 		label: "账号",
 		search: { el: "AccountSelectPage" },
 	},
-	{
-		pureSearch: true,
-		prop: "tenantId",
-		label: "租户",
-		search: { el: "TenantSelectPage" },
-	},
+	...(userInfoStore.isSystemTenant
+		? [
+				{
+					pureSearch: true,
+					prop: "tenantId",
+					label: "租户",
+					search: { el: "TenantSelectPage" },
+				},
+			]
+		: []),
 	{
 		pureSearch: true,
 		prop: "visitType",

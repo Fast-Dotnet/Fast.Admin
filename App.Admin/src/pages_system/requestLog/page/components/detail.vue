@@ -1,17 +1,18 @@
 <template>
 	<FaPopup ref="popupRef" title="请求日志详情" height="70%" position="bottom" closable>
-		<view style="display: flex; flex-direction: column; gap: 10px">
+		<view class="page-detail__popup">
 			<FaField label="昵称" :value="state.formData.nickName" />
 			<FaField label="手机" :value="state.formData.mobile" />
-			<FaField label="成功">
-				<FaTag name="BooleanEnum" :value="state.formData.isSuccess" />
+			<FaField label="状态" center>
+				<wd-tag v-if="state.formData.isSuccess" type="success">成功</wd-tag>
+				<wd-tag v-else type="danger">失败</wd-tag>
 			</FaField>
 			<FaField label="操作名称" :value="state.formData.operationName" />
-			<FaField label="操作方式">
+			<FaField label="操作方式" center>
 				<FaTag name="HttpRequestActionEnum" :value="state.formData.operationAction" />
 			</FaField>
 			<FaField label="请求地址" :value="state.formData.location" />
-			<FaField label="请求方式">
+			<FaField label="请求方式" center>
 				<FaTag name="HttpRequestMethodEnum" :value="state.formData.requestMethod" />
 			</FaField>
 			<FaField label="耗时" :value="`${(Number(state.formData.elapsedTime ?? 0) / 1000).toFixed(4)}秒`" />
@@ -21,11 +22,11 @@
 			<FaField label="省份" :value="state.formData.province" />
 			<FaField label="城市" :value="state.formData.city" />
 			<FaField label="Ip" :value="state.formData.ip" />
-			<FaField label="请求时间" :value="state.formData.createdTime" />
 			<FaField label="设备" :value="state.formData.device" />
 			<FaField label="操作系统" :value="state.formData.os" />
 			<FaField label="浏览器" :value="state.formData.browser" />
-			<FaField label="租户" :value="state.formData.tenantName" />
+			<FaField label="时间" :value="state.formData.createdTime" />
+			<FaField v-if="userInfoStore.isSystemTenant" label="租户" :value="state.formData.tenantName" />
 
 			<view v-if="userInfoStore.isSuperAdmin || userInfoStore.isAdmin" class="log-content">
 				<view class="log-content__section">
@@ -124,15 +125,16 @@ const handleCopy = async (content: string) => {
 	}
 };
 
-const detail = throttle((data: RequestLogModel) =>
-	popupRef.value.open(() => {
-		state.formData = data;
-		const canViewContent = userInfoStore.isSuperAdmin || userInfoStore.isAdmin;
-		state.paramText = canViewContent ? formatLogContent(data.param) : "";
-		state.resultText = canViewContent ? formatLogContent(data.result, true) : "";
-		state.isParamExpanded = false;
-		state.isResultExpanded = false;
-	})
+const detail = throttle(
+	async (data: RequestLogModel) =>
+		await popupRef.value.open(() => {
+			state.formData = data;
+			const canViewContent = userInfoStore.isSuperAdmin || userInfoStore.isAdmin;
+			state.paramText = canViewContent ? formatLogContent(data.param) : "";
+			state.resultText = canViewContent ? formatLogContent(data.result, true) : "";
+			state.isParamExpanded = false;
+			state.isResultExpanded = false;
+		})
 );
 
 defineExpose({

@@ -12,8 +12,8 @@
 
 		<template #default="{ pagedList }">
 			<FaCard v-for="item in pagedList" :key="item.connectionId" @click="detailFormRef?.detail(item)">
-				<view style="display: flex; align-items: center; gap: 20rpx; margin-bottom: 24rpx">
-					<FaImage :src="item.avatar" width="88rpx" height="88rpx" original round />
+				<view style="display: flex; align-items: center; gap: 20rpx; margin-bottom: 10rpx">
+					<FaAvatar :src="item.avatar" size="88rpx" />
 					<view style="flex: 1; display: flex; flex-direction: column">
 						<text
 							style="
@@ -61,6 +61,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { throttle } from "@fast-china/utils";
 import { tenantOnlineUserApi } from "@/api/services/Center/tenantOnlineUser";
 import { useMessageBox, useToast } from "@/hooks";
 import TenantOnlineUserDetail from "./components/detail.vue";
@@ -78,14 +79,14 @@ definePage({
 const faPagingRef = ref<FaPagingInstance>();
 const detailFormRef = ref<InstanceType<typeof TenantOnlineUserDetail>>();
 
-const handleForceOffline = (item: TenantOnlineUserModel) => {
+const handleForceOffline = throttle(async (item: TenantOnlineUserModel) => {
 	const { connectionId, mobile } = item;
-	useMessageBox.confirm(`确定踢掉账号：【${mobile}】`, {
+	await useMessageBox.confirm(`确定踢掉账号：【${mobile}】`, {
 		async beforeConfirm() {
 			await tenantOnlineUserApi.forceOffline({ connectionId });
 			useToast.success("强制下线成功！");
 			faPagingRef.value.refresh();
 		},
 	});
-};
+});
 </script>

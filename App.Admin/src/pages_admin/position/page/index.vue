@@ -53,24 +53,25 @@ const router = useRouter();
 
 const faPagingRef = ref<FaPagingInstance>();
 
-const handleEdit = throttle((mode: IPageStateType, positionId?: string) =>
-	router.push({
-		path: "/pages_admin/position/edit/index",
-		query: {
-			mode,
-			positionId,
-		},
-	})
+const handleEdit = throttle(
+	async (mode: IPageStateType, positionId?: string) =>
+		await router.push({
+			path: "/pages_admin/position/edit/index",
+			query: {
+				mode,
+				positionId,
+			},
+		})
 );
 
-const handleDelete = (item: QueryPositionPagedOutput) => {
+const handleDelete = throttle(async (item: QueryPositionPagedOutput) => {
 	const { positionId, rowVersion } = item;
-	useMessageBox.confirm("确定删除此记录？", {
+	await useMessageBox.confirm("确定删除此记录？", {
 		async beforeConfirm() {
 			await positionApi.deletePosition({ positionId, rowVersion });
 			useToast.success("删除成功！");
 			faPagingRef.value.refresh();
 		},
 	});
-};
+});
 </script>

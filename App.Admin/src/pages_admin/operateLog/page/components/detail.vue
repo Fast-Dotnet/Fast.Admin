@@ -1,6 +1,6 @@
 <template>
 	<FaPopup ref="popupRef" title="操作日志详情" height="70%" position="bottom" closable>
-		<view style="display: flex; flex-direction: column; gap: 10px">
+		<view class="page-detail__popup">
 			<FaField label="操作人" :value="formData.createdUserName" />
 			<FaField label="工号" :value="formData.employeeNo" />
 			<FaField label="手机" :value="formData.mobile" />
@@ -18,8 +18,8 @@
 			<FaField label="操作系统" :value="formData.os" />
 			<FaField label="浏览器" :value="formData.browser" />
 
-			<view class="log__title">描述</view>
-			<rich-text :nodes="formData.description" />
+			<wd-divider content-position="left">描述</wd-divider>
+			<wd-rich-text :content="formData.description" />
 		</view>
 	</FaPopup>
 </template>
@@ -38,21 +38,14 @@ const popupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<OperateLogModel>();
 
-const detail = throttle((data: OperateLogModel) =>
-	popupRef.value.open(() => {
-		formData.value = data;
-	})
+const detail = throttle(
+	async (data: OperateLogModel) =>
+		await popupRef.value.open(() => {
+			formData.value = data;
+		})
 );
 
 defineExpose({
 	detail,
 });
 </script>
-
-<style lang="scss" scoped>
-.log__title {
-	font-size: var(--wot-typography-body-size-large);
-	font-weight: var(--wot-font-weight-semibold);
-	overflow-wrap: anywhere;
-}
-</style>

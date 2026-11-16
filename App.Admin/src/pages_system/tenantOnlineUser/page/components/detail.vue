@@ -1,15 +1,19 @@
 <template>
 	<FaPopup ref="popupRef" title="在线用户详情" height="70%" position="bottom" closable>
-		<view style="display: flex; flex-direction: column; gap: 10px">
+		<view class="page-detail__popup">
 			<FaField label="昵称" :value="formData.nickName" />
 			<FaField label="手机" :value="formData.mobile" />
-			<FaField label="状态" :value="formData.isOnline ? '在线' : '离线'" />
+			<FaField label="状态" center>
+				<wd-tag v-if="formData.isOnline" type="success">在线</wd-tag>
+				<wd-tag v-else>离线</wd-tag>
+			</FaField>
 			<FaField label="姓名" :value="formData.employeeName" />
 			<FaField label="工号" :value="formData.employeeNo" />
 			<FaField label="部门" :value="formData.departmentName" />
-			<FaField label="应用">
+			<FaField label="应用名称" :value="formData.appName" />
+			<FaField label="应用编号" :value="formData.appNo" selectable />
+			<FaField label="设备类型" center>
 				<FaTag name="AppEnvironmentEnum" :value="formData.deviceType" />
-				{{ formData.appName }}
 			</FaField>
 			<FaField label="设备Id" :value="formData.deviceId" selectable />
 			<FaField label="会话Id" :value="formData.sessionId" copyable />
@@ -44,10 +48,11 @@ const popupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<TenantOnlineUserModel>();
 
-const detail = throttle((item: TenantOnlineUserModel) =>
-	popupRef.value.open(() => {
-		formData.value = item;
-	})
+const detail = throttle(
+	async (item: TenantOnlineUserModel) =>
+		await popupRef.value.open(() => {
+			formData.value = item;
+		})
 );
 
 defineExpose({

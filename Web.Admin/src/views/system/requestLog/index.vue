@@ -104,9 +104,10 @@
 			</FaTableColumn>
 			<FaTableColumn prop="className" label="类名" width="300" small-width="280" sortable :show-overflow-tooltip="false" />
 			<FaTableColumn prop="methodName" label="方法名" width="200" small-width="180" sortable :show-overflow-tooltip="false" />
-			<FaTableColumn prop="tenantName" label="租户" width="200" small-width="180" sortable />
 			<FaTableColumn prop="departmentName" label="部门" width="150" small-width="130" sortable />
+			<FaTableColumn v-if="userInfoStore.isSystemTenant" prop="tenantName" label="租户" width="200" small-width="180" sortable />
 		</FaTable>
+
 		<el-dialog v-model="state.visible" :title="state.title" width="1000px" align-center draggable destroy-on-close>
 			<el-scrollbar>
 				<div style="max-height: 500px; padding-bottom: 20px; padding-right: 10px">
@@ -189,12 +190,16 @@ const searchColumns: FaTableColumnCtx[] = [
 		label: "账号",
 		search: { el: "AccountSelectPage" },
 	},
-	{
-		pureSearch: true,
-		prop: "tenantId",
-		label: "租户",
-		search: { el: "TenantSelectPage" },
-	},
+	...(userInfoStore.isSystemTenant
+		? [
+				{
+					pureSearch: true,
+					prop: "tenantId",
+					label: "租户",
+					search: { el: "TenantSelectPage" },
+				},
+			]
+		: []),
 	{
 		pureSearch: true,
 		prop: "isSuccess",

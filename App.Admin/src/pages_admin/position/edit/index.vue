@@ -1,5 +1,6 @@
 <template>
 	<view class="page">
+		<FaLoading mask :loading="state.loading" />
 		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>
 			<wd-form-item title="职位名称" prop="positionName">
 				<wd-input v-model="state.formData.positionName" clearable :maxlength="20" placeholder="请输入职位名称" />
@@ -28,7 +29,7 @@ import { reactive, ref } from "vue";
 import { throttle, withDefineType } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { positionApi } from "@/api/services/Admin/position";
-import { useFormSchema, useLoading, useMessageBox, useToast } from "@/hooks";
+import { useFormSchema, useMessageBox, useToast } from "@/hooks";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { AddPositionInput } from "@/api/services/Admin/position/models/AddPositionInput";
 import type { EditPositionInput } from "@/api/services/Admin/position/models/EditPositionInput";
@@ -47,6 +48,7 @@ const router = useRouter();
 const formRef = ref<FormInstance>();
 
 const state = reactive({
+	loading: false,
 	formData: withDefineType<EditPositionInput & AddPositionInput>({ sort: 1 }),
 	formSchema: useFormSchema<EditPositionInput & AddPositionInput>({
 		positionName: { required: true, message: "请输入职位名称" },
@@ -59,7 +61,7 @@ const state = reactive({
 const handleConfirm = throttle(async () => {
 	const { valid } = await formRef.value.validate();
 	if (!valid) return;
-	useLoading.show();
+	state.loading = true;
 	try {
 		switch (state.pageMode) {
 			case "add":
@@ -72,24 +74,29 @@ const handleConfirm = throttle(async () => {
 				break;
 		}
 	} finally {
-		useLoading.hide();
+		state.loading = false;
 	}
 	if (getCurrentPages().length > 1) router.back();
 	else router.replace("/pages_admin/position/page/index");
 });
 
 const handleLoad = async () => {
-	switch (state.pageMode) {
-		case "add":
-			uni.setNavigationBarTitle({ title: "添加职位" });
-			break;
-		case "edit":
-			{
-				const apiRes = await positionApi.queryPositionDetail(state.positionId);
-				state.formData = apiRes;
-				uni.setNavigationBarTitle({ title: `编辑职位 - ${apiRes.positionName}` });
-			}
-			break;
+	state.loading = true;
+	try {
+		switch (state.pageMode) {
+			case "add":
+				uni.setNavigationBarTitle({ title: "添加职位" });
+				break;
+			case "edit":
+				{
+					const apiRes = await positionApi.queryPositionDetail(state.positionId);
+					state.formData = apiRes;
+					uni.setNavigationBarTitle({ title: `编辑职位 - ${apiRes.positionName}` });
+				}
+				break;
+		}
+	} finally {
+		state.loading = false;
 	}
 };
 

@@ -53,24 +53,25 @@ const router = useRouter();
 
 const faPagingRef = ref<FaPagingInstance>();
 
-const handleEdit = throttle((mode: IPageStateType, jobLevelId?: string) =>
-	router.push({
-		path: "/pages_admin/jobLevel/edit/index",
-		query: {
-			mode,
-			jobLevelId,
-		},
-	})
+const handleEdit = throttle(
+	async (mode: IPageStateType, jobLevelId?: string) =>
+		await router.push({
+			path: "/pages_admin/jobLevel/edit/index",
+			query: {
+				mode,
+				jobLevelId,
+			},
+		})
 );
 
-const handleDelete = (item: QueryJobLevelPagedOutput) => {
+const handleDelete = throttle(async (item: QueryJobLevelPagedOutput) => {
 	const { jobLevelId, rowVersion } = item;
-	useMessageBox.confirm("确定删除此记录？", {
+	await useMessageBox.confirm("确定删除此记录？", {
 		async beforeConfirm() {
 			await jobLevelApi.deleteJobLevel({ jobLevelId, rowVersion });
 			useToast.success("删除成功！");
 			faPagingRef.value.refresh();
 		},
 	});
-};
+});
 </script>

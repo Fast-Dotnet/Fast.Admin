@@ -30,7 +30,7 @@
 				<FaField label="Ip" :value="item.ip" />
 				<FaField label="设备" :value="[item.device, item.os].filter(Boolean).join(' · ')" />
 				<FaField label="浏览器" :value="item.browser" />
-				<FaField label="租户" :value="item.tenantName" />
+				<FaField v-if="userInfoStore.isSuperAdmin" label="租户" :value="item.tenantName" />
 			</FaCard>
 		</template>
 	</FaPaging>
