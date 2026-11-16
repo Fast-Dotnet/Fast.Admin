@@ -60,25 +60,25 @@ const router = useRouter();
 
 const faPagingRef = ref<FaPagingInstance>();
 
-const handleAdd = throttle(() => router.push("/pages_system/applicationToken/add/index"));
+const handleAdd = throttle(async () => await router.push("/pages_system/applicationToken/add/index"));
 
-const handleRefresh = (item: QueryApplicationTokenPagedOutput) => {
-	useMessageBox.confirm("确定要刷新应用凭据？", {
+const handleRefresh = throttle(async (item: QueryApplicationTokenPagedOutput) => {
+	await useMessageBox.confirm("确定要刷新应用凭据？", {
 		async beforeConfirm() {
 			await applicationTokenApi.refreshApplicationToken({ recordId: item.recordId });
 			useToast.success("刷新成功！");
 			faPagingRef.value.refresh();
 		},
 	});
-};
+});
 
-const handleDelete = (item: QueryApplicationTokenPagedOutput) => {
-	useMessageBox.confirm("确定要删除应用凭据？", {
+const handleDelete = throttle(async (item: QueryApplicationTokenPagedOutput) => {
+	await useMessageBox.confirm("确定要删除应用凭据？", {
 		async beforeConfirm() {
 			await applicationTokenApi.deleteApplicationToken({ recordId: item.recordId });
 			useToast.success("删除成功！");
 			faPagingRef.value.refresh();
 		},
 	});
-};
+});
 </script>

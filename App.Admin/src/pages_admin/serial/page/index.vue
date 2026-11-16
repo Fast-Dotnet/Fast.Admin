@@ -56,13 +56,14 @@ const router = useRouter();
 
 const detailFormRef = ref<InstanceType<typeof SerialDetail>>();
 
-const handleEdit = throttle((mode: IPageStateType, serialRuleId?: string) =>
-	router.push({
-		path: "/pages_admin/serial/edit/index",
-		query: {
-			mode,
-			serialRuleId,
-		},
-	})
+const handleEdit = throttle(
+	async (mode: IPageStateType, serialRuleId?: string) =>
+		await router.push({
+			path: "/pages_admin/serial/edit/index",
+			query: {
+				mode,
+				serialRuleId,
+			},
+		})
 );
 </script>

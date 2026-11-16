@@ -1,5 +1,6 @@
 <template>
 	<view class="page">
+		<FaLoading mask :loading="state.loading" />
 		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>
 			<wd-cell title="租户" :value="state.formData.tenantName" />
 			<wd-form-item title="数据库名称" prop="dbName">
@@ -68,7 +69,7 @@ import { reactive, ref } from "vue";
 import { throttle, withDefineType } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { databaseApi } from "@/api/services/Center/database";
-import { useFormSchema, useLoading, useMessageBox, useToast } from "@/hooks";
+import { useFormSchema, useMessageBox, useToast } from "@/hooks";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { EditDatabaseInput } from "@/api/services/Center/database/models/EditDatabaseInput";
 import type { QueryDatabaseDetailOutput } from "@/api/services/Center/database/models/QueryDatabaseDetailOutput";
@@ -87,6 +88,7 @@ const router = useRouter();
 const formRef = ref<FormInstance>();
 
 const state = reactive({
+	loading: false,
 	formData: withDefineType<EditDatabaseInput & QueryDatabaseDetailOutput>({}),
 	formSchema: useFormSchema<EditDatabaseInput>({
 		publicIp: { required: true, message: "请输入公网IP地址" },
@@ -116,21 +118,26 @@ const state = reactive({
 const handleConfirm = throttle(async () => {
 	const { valid } = await formRef.value.validate();
 	if (!valid) return;
-	useLoading.show();
+	state.loading = true;
 	try {
 		await databaseApi.editDatabase(state.formData);
 		useToast.success("保存成功！");
 	} finally {
-		useLoading.hide();
+		state.loading = false;
 	}
 	if (getCurrentPages().length > 1) router.back();
 	else router.replace("/pages_system/database/page/index");
 });
 
 const handleLoad = async () => {
-	const apiRes = await databaseApi.queryDatabaseDetail(state.mainId);
-	state.formData = { ...apiRes, isCreateDatabase: false };
-	uni.setNavigationBarTitle({ title: `编辑数据库 - ${apiRes.dbName}` });
+	state.loading = true;
+	try {
+		const apiRes = await databaseApi.queryDatabaseDetail(state.mainId);
+		state.formData = { ...apiRes, isCreateDatabase: false };
+		uni.setNavigationBarTitle({ title: `编辑数据库 - ${apiRes.dbName}` });
+	} finally {
+		state.loading = false;
+	}
 };
 
 onLoad((options: { mainId?: string }) => {

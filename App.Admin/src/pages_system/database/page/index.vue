@@ -81,25 +81,25 @@ const handleAdd = throttle(() => router.push("/pages_system/database/add/index")
 
 const handleEdit = throttle((mainId?: string) => router.push(`/pages_system/database/edit/index?mainId=${mainId}`));
 
-const handleDelete = (item: QueryDatabasePagedOutput) => {
+const handleDelete = throttle(async (item: QueryDatabasePagedOutput) => {
 	const { mainId, rowVersion } = item;
-	useMessageBox.confirm("确定删除数据库？", {
+	await useMessageBox.confirm("确定删除数据库？", {
 		async beforeConfirm() {
 			await databaseApi.deleteDatabase({ mainId, rowVersion });
 			useToast.success("删除成功！");
 			faPagingRef.value.refresh();
 		},
 	});
-};
+});
 
-const handleInitDatabase = (item: QueryDatabasePagedOutput) => {
+const handleInitDatabase = throttle(async (item: QueryDatabasePagedOutput) => {
 	const { tenantId, databaseType } = item;
-	useMessageBox.confirm("确定要初始化数据库？", {
+	await useMessageBox.confirm("确定要初始化数据库？", {
 		async beforeConfirm() {
 			await databaseApi.initDatabase({ tenantId, databaseType });
 			useToast.success("初始化成功！");
 			faPagingRef.value.refresh();
 		},
 	});
-};
+});
 </script>

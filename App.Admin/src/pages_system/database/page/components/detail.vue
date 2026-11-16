@@ -1,6 +1,6 @@
 <template>
 	<FaPopup ref="popupRef" title="数据库配置详情" height="70%" position="bottom" closable>
-		<view style="display: flex; flex-direction: column; gap: 10px">
+		<view class="page-detail__popup">
 			<FaField label="数据库名称" :value="formData.dbName" />
 			<FaField label="租户" :value="formData.tenantName" />
 			<FaField label="数据库类型">
@@ -47,10 +47,11 @@ const popupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<QueryDatabasePagedOutput>();
 
-const detail = throttle((item: QueryDatabasePagedOutput) =>
-	popupRef.value.open(() => {
-		formData.value = item;
-	})
+const detail = throttle(
+	async (item: QueryDatabasePagedOutput) =>
+		await popupRef.value.open(() => {
+			formData.value = item;
+		})
 );
 
 defineExpose({

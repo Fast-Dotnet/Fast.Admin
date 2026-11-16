@@ -37,10 +37,11 @@ const popupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<QuerySerialRulePagedOutput>();
 
-const detail = throttle((item: QuerySerialRulePagedOutput) =>
-	popupRef.value.open(() => {
-		formData.value = item;
-	})
+const detail = throttle(
+	async (item: QuerySerialRulePagedOutput) =>
+		await popupRef.value.open(() => {
+			formData.value = item;
+		})
 );
 
 defineExpose({

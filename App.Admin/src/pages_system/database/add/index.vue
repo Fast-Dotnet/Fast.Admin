@@ -1,5 +1,6 @@
 <template>
 	<view class="page">
+		<FaLoading mask :loading="state.loading" />
 		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>
 			<FaTenantSelect v-model="state.formData.tenantId" prop="tenantId" />
 			<wd-form-item title="数据库名称" prop="dbName">
@@ -68,7 +69,7 @@ import { useRouter } from "@wot-ui/router";
 import { DatabaseTypeEnum } from "@/api/enums/DatabaseTypeEnum";
 import { SugarDbType } from "@/api/enums/SugarDbType";
 import { databaseApi } from "@/api/services/Center/database";
-import { useFormSchema, useLoading, useMessageBox, useToast } from "@/hooks";
+import { useFormSchema, useMessageBox, useToast } from "@/hooks";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { AddDatabaseInput } from "@/api/services/Center/database/models/AddDatabaseInput";
 
@@ -86,6 +87,7 @@ const router = useRouter();
 const formRef = ref<FormInstance>();
 
 const state = reactive({
+	loading: false,
 	formData: withDefineType<AddDatabaseInput>({}),
 	formSchema: useFormSchema<AddDatabaseInput>({
 		tenantId: { required: true, message: "请选择租户" },
@@ -115,12 +117,12 @@ const state = reactive({
 const handleConfirm = throttle(async () => {
 	const { valid } = await formRef.value.validate();
 	if (!valid) return;
-	useLoading.show();
+	state.loading = true;
 	try {
 		await databaseApi.addDatabase(state.formData);
 		useToast.success("新增成功！");
 	} finally {
-		useLoading.hide();
+		state.loading = false;
 	}
 	if (getCurrentPages().length > 1) router.back();
 	else router.replace("/pages_system/database/page/index");

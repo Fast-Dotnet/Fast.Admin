@@ -1,5 +1,6 @@
 <template>
 	<view class="page">
+		<FaLoading mask :loading="state.loading" />
 		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>
 			<wd-form-item v-if="state.pageMode === 'add'" title="规则类型" prop="ruleType">
 				<FaRadioGroup name="SysSerialRuleTypeEnum" v-model="state.formData.ruleType" type="button" />
@@ -31,7 +32,7 @@ import { SerialDateTypeEnum } from "@/api/enums/SerialDateTypeEnum";
 import { SerialSpacerEnum } from "@/api/enums/SerialSpacerEnum";
 import { SysSerialRuleTypeEnum } from "@/api/enums/SysSerialRuleTypeEnum";
 import { sysSerialApi } from "@/api/services/Center/sysSerial";
-import { useFormSchema, useLoading, useMessageBox, useToast } from "@/hooks";
+import { useFormSchema, useMessageBox, useToast } from "@/hooks";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { AddSysSerialRuleInput } from "@/api/services/Center/sysSerial/models/AddSysSerialRuleInput";
 import type { EditSysSerialRuleInput } from "@/api/services/Center/sysSerial/models/EditSysSerialRuleInput";
@@ -50,6 +51,7 @@ const router = useRouter();
 const formRef = ref<FormInstance>();
 
 const state = reactive({
+	loading: false,
 	formData: withDefineType<EditSysSerialRuleInput & AddSysSerialRuleInput>({
 		ruleType: SysSerialRuleTypeEnum.AppNo,
 		dateType: SerialDateTypeEnum.Year,
@@ -68,7 +70,7 @@ const state = reactive({
 const handleConfirm = throttle(async () => {
 	const { valid } = await formRef.value.validate();
 	if (!valid) return;
-	useLoading.show();
+	state.loading = true;
 	try {
 		switch (state.pageMode) {
 			case "add":
@@ -81,24 +83,29 @@ const handleConfirm = throttle(async () => {
 				break;
 		}
 	} finally {
-		useLoading.hide();
+		state.loading = false;
 	}
 	if (getCurrentPages().length > 1) router.back();
 	else router.replace("/pages_dev/sysSerial/page/index");
 });
 
 const handleLoad = async () => {
-	switch (state.pageMode) {
-		case "add":
-			uni.setNavigationBarTitle({ title: "添加序号" });
-			break;
-		case "edit":
-			{
-				const apiRes = await sysSerialApi.querySysSerialRuleDetail(state.serialRuleId);
-				state.formData = apiRes;
-				uni.setNavigationBarTitle({ title: `编辑序号` });
-			}
-			break;
+	state.loading = true;
+	try {
+		switch (state.pageMode) {
+			case "add":
+				uni.setNavigationBarTitle({ title: "添加序号" });
+				break;
+			case "edit":
+				{
+					const apiRes = await sysSerialApi.querySysSerialRuleDetail(state.serialRuleId);
+					state.formData = apiRes;
+					uni.setNavigationBarTitle({ title: `编辑序号` });
+				}
+				break;
+		}
+	} finally {
+		state.loading = false;
 	}
 };
 

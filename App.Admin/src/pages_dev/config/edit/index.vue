@@ -1,5 +1,6 @@
 <template>
 	<view class="page">
+		<FaLoading mask :loading="state.loading" />
 		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>
 			<wd-form-item title="配置编码" prop="configCode">
 				<wd-input
@@ -44,7 +45,7 @@ import { reactive, ref } from "vue";
 import { throttle, withDefineType } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { configApi } from "@/api/services/Center/config";
-import { useFormSchema, useLoading, useMessageBox, useToast } from "@/hooks";
+import { useFormSchema, useMessageBox, useToast } from "@/hooks";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { AddConfigInput } from "@/api/services/Center/config/models/AddConfigInput";
 import type { EditConfigInput } from "@/api/services/Center/config/models/EditConfigInput";
@@ -63,6 +64,7 @@ const router = useRouter();
 const formRef = ref<FormInstance>();
 
 const state = reactive({
+	loading: false,
 	formData: withDefineType<EditConfigInput & AddConfigInput>({}),
 	formSchema: useFormSchema<EditConfigInput & AddConfigInput>({
 		configCode: { required: true, message: "请输入配置编码" },
@@ -76,7 +78,7 @@ const state = reactive({
 const handleConfirm = throttle(async () => {
 	const { valid } = await formRef.value.validate();
 	if (!valid) return;
-	useLoading.show();
+	state.loading = true;
 	try {
 		switch (state.pageMode) {
 			case "add":
@@ -89,24 +91,29 @@ const handleConfirm = throttle(async () => {
 				break;
 		}
 	} finally {
-		useLoading.hide();
+		state.loading = false;
 	}
 	if (getCurrentPages().length > 1) router.back();
 	else router.replace("/pages_dev/config/page/index");
 });
 
 const handleLoad = async () => {
-	switch (state.pageMode) {
-		case "add":
-			uni.setNavigationBarTitle({ title: "添加配置" });
-			break;
-		case "edit":
-			{
-				const apiRes = await configApi.queryConfigDetail(state.configId);
-				state.formData = apiRes;
-				uni.setNavigationBarTitle({ title: `编辑配置 - ${apiRes.configName}` });
-			}
-			break;
+	state.loading = true;
+	try {
+		switch (state.pageMode) {
+			case "add":
+				uni.setNavigationBarTitle({ title: "添加配置" });
+				break;
+			case "edit":
+				{
+					const apiRes = await configApi.queryConfigDetail(state.configId);
+					state.formData = apiRes;
+					uni.setNavigationBarTitle({ title: `编辑配置 - ${apiRes.configName}` });
+				}
+				break;
+		}
+	} finally {
+		state.loading = false;
 	}
 };
 
