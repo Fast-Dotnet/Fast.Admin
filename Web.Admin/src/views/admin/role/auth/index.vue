@@ -46,7 +46,7 @@
 				</nav>
 				<section v-if="selectedMenu" :key="selectedMenu.value" class="permission-pane">
 					<header class="page-header">
-						<div class="page-title">
+						<div>
 							<p v-if="selectedModule" class="page-module">{{ selectedModule.label }}</p>
 							<h2>{{ selectedMenu.label }}</h2>
 							<div class="page-platforms">
@@ -86,11 +86,11 @@
 					</div>
 					<el-checkbox-group v-if="selectedButtonList.length" v-model="state.formData.buttonIds" class="operation-list">
 						<el-checkbox v-for="button in selectedButtonList" :key="button.value" :value="button.value" border>
-							<span class="operation-label">{{ button.label }}</span>
+							<span>{{ button.label }}</span>
 							<span v-if="button.data?.hasDesktop || button.data?.hasWeb || button.data?.hasMobile" class="platform-icons">
-								<FaIcon v-if="button.data?.hasDesktop" name="el-icon-Monitor" />
 								<FaIcon v-if="button.data?.hasWeb" name="el-icon-ChromeFilled" />
 								<FaIcon v-if="button.data?.hasMobile" name="el-icon-Iphone" />
+								<FaIcon v-if="button.data?.hasDesktop" name="el-icon-Monitor" />
 							</span>
 						</el-checkbox>
 					</el-checkbox-group>
@@ -132,7 +132,7 @@ const state = reactive({
 	searchKeyword: "",
 	selectedMenuId: withDefineType<string | undefined>(undefined),
 	/** 折叠模块 */
-	collapsedModules: new Set<string>(),
+	collapsedModuleList: new Set<string>(),
 });
 
 /** 过滤的菜单 */
@@ -163,21 +163,22 @@ const checkedMenuIds = computed(() => new Set(state.formData.menuIds));
 /** 选中的按钮Id */
 const checkedButtonIds = computed(() => new Set(state.formData.buttonIds));
 /** 判断模块是否展开 */
-const isModuleExpanded = (moduleId: string) => Boolean(state.searchKeyword) || !state.collapsedModules.has(moduleId);
+const isModuleExpanded = (moduleId: string) => Boolean(state.searchKeyword) || !state.collapsedModuleList.has(moduleId);
 /** 判断菜单是否选中 */
 const isMenuChecked = (menuId: string) => checkedMenuIds.value.has(menuId);
 /** 获取按钮选中数量 */
 const getButtonCheckedCount = (menu: ElSelectorOutput<string>) =>
 	menu.children?.filter((button) => checkedButtonIds.value.has(button.value)).length ?? 0;
 const selectedButtonCount = computed(() => getButtonCheckedCount(selectedMenu.value));
+
 const getModuleCount = (moduleId: string) => {
 	const menus = state.menuList.find((node) => node.value === moduleId)?.children ?? [];
 	return `${menus.filter((menu) => isMenuChecked(menu.value)).length} / ${menus.length}`;
 };
 
 const toggleModule = (moduleId: string) => {
-	const { collapsedModules } = state;
-	if (!collapsedModules.delete(moduleId)) collapsedModules.add(moduleId);
+	const { collapsedModuleList } = state;
+	if (!collapsedModuleList.delete(moduleId)) collapsedModuleList.add(moduleId);
 };
 
 const handleMenuChange = (menuId: string, checked: CheckboxValueType) => {
@@ -203,7 +204,7 @@ const handleConfirm = () => {
 	if (unGrantedMenu) {
 		state.searchKeyword = "";
 		state.selectedMenuId = unGrantedMenu.value;
-		if (selectedModule.value) state.collapsedModules.delete(selectedModule.value.value);
+		if (selectedModule.value) state.collapsedModuleList.delete(selectedModule.value.value);
 		ElMessage.warning(`请先授权「${unGrantedMenu.label}」页面，或取消该页面的操作权限。`);
 		return;
 	}
@@ -220,7 +221,7 @@ const handleClose = () => {
 	state.menuList = [];
 	state.searchKeyword = "";
 	state.selectedMenuId = undefined;
-	state.collapsedModules.clear();
+	state.collapsedModuleList.clear();
 };
 
 const open = (roleId: string) => {
@@ -368,10 +369,6 @@ defineExpose({
 	}
 }
 
-.page-title {
-	min-width: 0;
-}
-
 .page-module {
 	margin: 0 0 4px;
 	color: var(--el-text-color-secondary);
@@ -417,8 +414,6 @@ defineExpose({
 	margin-top: 8px;
 
 	.el-checkbox {
-		width: 100%;
-		min-width: 0;
 		height: auto;
 		min-height: 50px;
 		margin: 0;
@@ -446,17 +441,11 @@ defineExpose({
 	}
 }
 
-.operation-label {
-	min-width: 0;
-	overflow-wrap: anywhere;
-}
-
 .platform-icons {
 	display: inline-flex;
 	align-items: center;
 	gap: 4px;
 	margin-inline-start: auto;
-	vertical-align: middle;
 	color: var(--el-text-color-secondary);
 }
 
