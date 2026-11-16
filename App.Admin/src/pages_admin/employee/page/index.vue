@@ -1,7 +1,7 @@
 <template>
 	<FaPaging ref="faPagingRef" :request-api="employeeApi.queryEmployeePaged">
 		<template #top="{ searchParam, refresh }">
-			<FaSearchInput hide-search-time v-model:search-param="searchParam.value" @confirm="refresh()" @clear="refresh()" @search="refresh()">
+			<FaSearchInput v-model:search-param="searchParam.value" hide-search-time @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #filter>
 					<FaDepartmentTreeSelect v-model="searchParam.value.departmentId" />
 					<FaCellPicker title="状态" name="EmployeeStatusEnum" v-model="searchParam.value.status" radio clearable />

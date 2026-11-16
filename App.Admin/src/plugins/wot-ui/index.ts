@@ -5,17 +5,22 @@ import { curtainProps } from "@wot-ui/ui/components/wd-curtain/types";
 import { datetimePickerProps } from "@wot-ui/ui/components/wd-datetime-picker/types";
 import { defaultOptions as dialogDefaultOptions } from "@wot-ui/ui/components/wd-dialog";
 import { dialogProps } from "@wot-ui/ui/components/wd-dialog/types";
-import { dorpMenuItemProps } from "@wot-ui/ui/components/wd-drop-menu-item/types";
+import { defaultOptions as imagePreviewDefaultOptions } from "@wot-ui/ui/components/wd-image-preview";
+import { imagePreviewProps } from "@wot-ui/ui/components/wd-image-preview/types";
 import { inputProps } from "@wot-ui/ui/components/wd-input/types";
 import { keyboardProps } from "@wot-ui/ui/components/wd-keyboard/types";
+import { navbarProps } from "@wot-ui/ui/components/wd-navbar/types";
 import { setNotifyDefaultOptions } from "@wot-ui/ui/components/wd-notify";
 import { notifyProps } from "@wot-ui/ui/components/wd-notify/types";
+import { overlayProps } from "@wot-ui/ui/components/wd-overlay/types";
 import { pickerProps } from "@wot-ui/ui/components/wd-picker/types";
 import { popupProps } from "@wot-ui/ui/components/wd-popup/types";
 import { selectPickerProps } from "@wot-ui/ui/components/wd-select-picker/types";
 import { tabbarProps } from "@wot-ui/ui/components/wd-tabbar/types";
 import { textareaProps } from "@wot-ui/ui/components/wd-textarea/types";
 import { toastProps } from "@wot-ui/ui/components/wd-toast/types";
+import { defaultOptions as videoPreviewDefaultOptions } from "@wot-ui/ui/components/wd-video-preview";
+import { videoPreviewProps } from "@wot-ui/ui/components/wd-video-preview/types";
 
 /** 设置 Wot UI 的应用默认值。 */
 export function loadWotUi(): void {
@@ -35,20 +40,31 @@ export function loadWotUi(): void {
 	notifyProps.zIndex.default = 1100;
 	// 通过 showNotify 调用时的默认层级
 	setNotifyDefaultOptions({ zIndex: 1100 });
-	// 底部导航层级低于业务弹窗
+	// 导航栏低于业务弹窗
 	tabbarProps.zIndex.default = 90;
-	// 普通弹窗面板和遮罩的默认层级
+	navbarProps.zIndex.default = 101;
+
+	// 业务弹窗、幕帘和独立遮罩
+	overlayProps.zIndex.default = 200;
 	popupProps.zIndex.default = 200;
-	// 选择器层级高于普通弹窗
-	pickerProps.zIndex.default = 210;
-	// 日期时间选择器层级高于筛选弹窗
-	datetimePickerProps.zIndex.default = 210;
-	// 日期时间选择器层级高于筛选弹窗
-	datetimePickerProps.zIndex.default = 210;
-	// 日历选择器层级高于筛选弹窗
+	curtainProps.zIndex.default = 200;
+
+	// 操作面板和选择器可以从业务弹窗中打开
+	actionSheetProps.zIndex.default = 210;
 	calendarProps.zIndex.default = 210;
-	// 级联选择器层级高于筛选弹窗
 	cascaderProps.zIndex.default = 210;
+	datetimePickerProps.zIndex.default = 210;
+	pickerProps.zIndex.default = 210;
+	selectPickerProps.zIndex.default = 210;
+
+	// 自定义键盘可以从选择器中打开
+	keyboardProps.zIndex.default = 220;
+
+	// 预览同时支持组件和组合式 API，层级低于确认对话框
+	imagePreviewProps.zIndex.default = 1000;
+	imagePreviewDefaultOptions.zIndex = 1000;
+	videoPreviewProps.zIndex.default = 1000;
+	videoPreviewDefaultOptions.zIndex = 1000;
 
 	// #ifdef H5
 	/** 弹层默认传送到 body，避开页面内的层叠上下文和裁剪 */
@@ -58,7 +74,6 @@ export function loadWotUi(): void {
 	curtainProps.rootPortal.default = true;
 	datetimePickerProps.rootPortal.default = true;
 	dialogProps.rootPortal.default = true;
-	dorpMenuItemProps.rootPortal.default = true;
 	keyboardProps.rootPortal.default = true;
 	notifyProps.rootPortal.default = true;
 	pickerProps.rootPortal.default = true;

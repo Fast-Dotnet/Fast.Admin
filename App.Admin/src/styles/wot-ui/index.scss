@@ -26,6 +26,14 @@
 page,
 .fa-layout,
 .wd-root-portal {
+	/* Wot 通过主题变量设置的浮层层级 */
+	--wot-floating-panel-z-index: 200;
+	--wot-popover-z-index: 500;
+	--wot-tooltip-z-index: 500;
+	--wot-tour-z-index: 999;
+	--wot-tour-popover-z-index: 1000;
+	--wot-img-cropper-z-index: 1000;
+
 	/* 浮层表面与短提示 */
 	--wot-curtain-content-radius: var(--wot-radius-extra-large);
 	--wot-floating-panel-radius: var(--wot-radius-extra-large);

@@ -1,7 +1,7 @@
 <template>
 	<FaPaging :request-api="fileApi.queryFilePaged">
 		<template v-if="userInfoStore.isSystemTenant" #top="{ searchParam, refresh }">
-			<FaSearchInput v-model:search-param="searchParam.value" @confirm="refresh()" @clear="refresh()" @search="refresh()">
+			<FaSearchInput v-model:search-param="searchParam.value" hide-search-time @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #filter>
 					<FaTenantSelect v-model="searchParam.value.tenantId" />
 				</template>

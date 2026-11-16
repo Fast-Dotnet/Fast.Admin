@@ -1,5 +1,14 @@
 /* Fast 风格：取消菜单项等宽拉伸，让多个筛选项按内容宽度紧凑排列 */
 .wd-drop-menu {
+	/* Wot UI 2.4.0 将遮罩和下拉项的层级写在内联样式中。下拉面板依赖原容器定位。 */
+	> .wd-overlay {
+		z-index: 200 !important;
+	}
+
+	.wd-drop-item {
+		z-index: 201 !important;
+	}
+
 	.wd-drop-menu__list {
 		gap: 10rpx;
 		.wd-drop-menu__option {
