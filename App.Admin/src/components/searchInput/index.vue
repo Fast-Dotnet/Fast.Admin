@@ -57,15 +57,15 @@
 						placeholder="请选择日期"
 					>
 						<template #default="{ visible }">
-							<wd-datetime-picker
-								:disable="state.dataSearchRange !== 'custom'"
-								type="date"
+							<wd-calendar
+								type="daterange"
 								v-model="state.searchTimeList"
 								v-model:visible="visible.value"
-								align-right
+								:show-confirm="false"
+								switch-mode="year-month"
+								:formatter="handleFormatCalendar"
 								@confirm="handleDateTimeConfirm"
 							/>
-
 							<wd-radio-group v-model="state.dataSearchRange" direction="horizontal" type="button" @change="handleDateRangeChange">
 								<wd-radio v-for="(item, index) in dataSearchRangeList" :key="index" :value="item.value">
 									{{ item.label }}
@@ -91,6 +91,7 @@ import { computed, onMounted, reactive, ref, watch } from "vue";
 import { definePropType, throttle, withDefineType } from "@fast-china/utils";
 import dayjs from "dayjs";
 import FaPopup from "../popup/index.vue";
+import type { CalendarFormatter } from "@wot-ui/ui/components/wd-calendar-view/types.ts";
 
 defineOptions({
 	name: "SearchInput",
@@ -254,6 +255,15 @@ const getDateTime = (dataRange: FaTableDataRange | "custom") => {
 		start,
 		end,
 	};
+};
+const handleFormatCalendar: CalendarFormatter = (day) => {
+	if (day.type === "start") {
+		day.topInfo = "今天";
+	}
+	if (day.type === "end") {
+		day.topInfo = "结束";
+	}
+	return day;
 };
 
 /** 接口接收按天扩展的本地时间字符串，日期选择器使用毫秒时间戳。 */
