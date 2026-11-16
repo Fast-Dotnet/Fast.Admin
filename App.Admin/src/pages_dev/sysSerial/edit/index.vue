@@ -15,7 +15,7 @@
 				<FaRadioGroup name="SerialSpacerEnum" v-model="state.formData.spacer" />
 			</wd-form-item>
 			<wd-form-item title="长度" prop="length">
-				<wd-input-number v-model="state.formData.length" :min="1" :max="6" />
+				<wd-input v-model="state.formData.length" type="number" placeholder="请输入长度" />
 			</wd-form-item>
 		</wd-form>
 
@@ -62,6 +62,11 @@ const state = reactive({
 		ruleType: { required: true, message: "请选择规则类型" },
 		dateType: { required: true, message: "请选择时间类型" },
 		spacer: { required: true, message: "请选择分隔符" },
+		length: {
+			required: true,
+			message: "请输入长度",
+			validator: (value) => (Number.isInteger(value) && value >= 1 && value <= 6 ? undefined : "长度必须是 1 到 6 之间的整数"),
+		},
 	}),
 	pageMode: withDefineType<IPageStateType>("add"),
 	serialRuleId: withDefineType<string>(),

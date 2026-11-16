@@ -6,7 +6,7 @@
 				<wd-input v-model="state.formData.positionName" clearable :maxlength="20" placeholder="请输入职位名称" />
 			</wd-form-item>
 			<wd-form-item title="排序" prop="sort">
-				<wd-input-number v-model="state.formData.sort" :min="1" :max="9999" />
+				<wd-input v-model="state.formData.sort" type="number" placeholder="请输入排序" />
 			</wd-form-item>
 			<wd-form-item title="备注" prop="remark">
 				<wd-textarea
@@ -52,7 +52,11 @@ const state = reactive({
 	formData: withDefineType<EditPositionInput & AddPositionInput>({ sort: 1 }),
 	formSchema: useFormSchema<EditPositionInput & AddPositionInput>({
 		positionName: { required: true, message: "请输入职位名称" },
-		sort: { required: true, message: "请输入排序" },
+		sort: {
+			required: true,
+			message: "请输入排序",
+			validator: (value) => (Number.isInteger(value) && value >= 1 && value <= 9999 ? undefined : "排序必须是 1 到 9999 之间的整数"),
+		},
 	}),
 	pageMode: withDefineType<IPageStateType>("add"),
 	positionId: withDefineType<string>(),
