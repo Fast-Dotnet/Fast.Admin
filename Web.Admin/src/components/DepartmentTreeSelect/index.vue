@@ -35,5 +35,5 @@ const emit = defineEmits<{
 /** 选中的部门 ID，支持单值或多值 */
 const modelValue = defineModel<string | string[]>();
 /** 选中部门的名称 */
-const departmentName = defineModel<string>("departmentName");
+const departmentName = defineModel<string | string[]>("departmentName");
 </script>

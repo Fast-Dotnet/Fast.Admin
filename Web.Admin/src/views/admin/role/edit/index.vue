@@ -28,7 +28,13 @@
 				<RadioGroup name="DataScopeTypeEnum" v-model="state.formData.dataScopeType" />
 			</FaFormItem>
 			<FaFormItem v-if="state.formData.dataScopeType === DataScopeTypeEnum.CustomDept" prop="dataScopeDepartmentIds" label="自定义部门">
-				<DepartmentTreeSelect v-model="state.formData.dataScopeDepartmentIds" multiple collapse-tags collapse-tags-tooltip />
+				<DepartmentTreeSelect
+					v-model="state.formData.dataScopeDepartmentIds"
+					v-model:department-name="state.formData.dataScopeDepartmentNames"
+					multiple
+					collapse-tags
+					collapse-tags-tooltip
+				/>
 			</FaFormItem>
 			<FaFormItem prop="assignableRoleIds" label="可分配角色" tips="为空则代表此角色不提供角色分配权限；普通账号仅可分配勾选且自己未持有的角色">
 				<el-checkbox-group v-model="state.formData.assignableRoleIds">
@@ -55,6 +61,7 @@ import type { FormRules } from "element-plus";
 import type { ElSelectorOutput, FaDialogInstance, FaFormInstance } from "fast-element-plus";
 import type { AddRoleInput } from "@/api/services/Admin/role/models/AddRoleInput";
 import type { EditRoleInput } from "@/api/services/Admin/role/models/EditRoleInput";
+import type { QueryRoleDetailOutput } from "@/api/services/Admin/role/models/QueryRoleDetailOutput";
 
 defineOptions({
 	name: "AdminRoleEdit",
@@ -66,7 +73,7 @@ const faDialogRef = useTemplateRef<FaDialogInstance>("faDialogRef");
 const faFormRef = useTemplateRef<FaFormInstance>("faFormRef");
 
 const state = reactive({
-	formData: withDefineType<EditRoleInput & AddRoleInput>({}),
+	formData: withDefineType<EditRoleInput & AddRoleInput & QueryRoleDetailOutput>({}),
 	formRules: withDefineType<FormRules<EditRoleInput & AddRoleInput>>({
 		roleName: [{ required: true, message: "请输入角色名称", trigger: "blur" }],
 		roleCode: [{ required: true, message: "请输入角色编码", trigger: "blur" }],
