@@ -22,8 +22,8 @@
 					<FaTag name="PasswordOperationTypeEnum" :value="item.operationType" />
 				</template>
 
-				<view style="display: flex; align-items: center; gap: 20rpx; margin-bottom: 24rpx">
-					<FaAvatar :src="item.avatar" size="88rpx" original />
+				<view style="display: flex; align-items: center; gap: 20rpx; margin-bottom: 10rpx">
+					<FaAvatar :src="item.avatar" size="88rpx" />
 					<view style="display: flex; flex-direction: column">
 						<text
 							style="

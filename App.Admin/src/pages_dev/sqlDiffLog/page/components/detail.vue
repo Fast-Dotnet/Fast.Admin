@@ -1,6 +1,6 @@
 <template>
 	<FaPopup ref="popupRef" title="Sql差异详情" height="70%" position="bottom" closable>
-		<view style="display: flex; flex-direction: column; gap: 10px">
+		<view class="page-detail__popup">
 			<FaField label="昵称" :value="state.formData.nickName" />
 			<FaField label="手机" :value="state.formData.mobile" />
 			<FaField label="表名称" :value="state.formData.tableName" />

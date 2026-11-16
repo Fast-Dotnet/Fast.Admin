@@ -1,6 +1,6 @@
 <template>
 	<FaPopup ref="popupRef" title="配置详情" height="70%" position="bottom" closable>
-		<view style="display: flex; flex-direction: column; gap: 10px">
+		<view class="page-detail__popup">
 			<FaField label="配置名称" :value="formData.configName" />
 			<FaField label="配置编码" :value="formData.configCode" />
 			<FaField label="配置值" :value="formData.configValue" color="var(--wot-primary-6)" />

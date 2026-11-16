@@ -1,6 +1,6 @@
 <template>
 	<FaPopup ref="popupRef" title="异常日志详情" height="70%" position="bottom" closable>
-		<view style="display: flex; flex-direction: column; gap: 10px">
+		<view class="page-detail__popup">
 			<FaField label="昵称" :value="state.formData.nickName" />
 			<FaField label="手机" :value="state.formData.mobile" />
 			<FaField label="异常信息" :value="state.formData.message" color="var(--wot-danger-main)" />

@@ -94,6 +94,12 @@ textarea {
 			text-align: left;
 		}
 	}
+
+	.wd-divider--left {
+		--wot-divider-padding: 0;
+		--wot-divider-margin: var(--wot-spacing-tight) 0;
+		--wot-divider-size-content-left-width: 40rpx;
+	}
 }
 
 .page-detail__popup {

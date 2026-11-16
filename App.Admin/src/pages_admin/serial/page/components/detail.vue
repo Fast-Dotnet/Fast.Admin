@@ -1,6 +1,6 @@
 <template>
 	<FaPopup ref="popupRef" title="单号配置详情" height="70%" position="bottom" closable>
-		<view style="display: flex; flex-direction: column; gap: 10px">
+		<view class="page-detail__popup">
 			<FaField label="规则类型">
 				<FaTag name="SerialRuleTypeEnum" :value="formData.ruleType" />
 			</FaField>

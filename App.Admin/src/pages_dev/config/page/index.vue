@@ -73,26 +73,26 @@ const handleEdit = throttle((mode: IPageStateType, configId?: string) =>
 	})
 );
 
-const handleDelete = (item: QueryConfigPagedOutput) => {
+const handleDelete = throttle(async (item: QueryConfigPagedOutput) => {
 	const { configCode } = item;
-	useMessageBox.confirm("确定要删除缓存？", {
+	await useMessageBox.confirm("确定要删除缓存？", {
 		async beforeConfirm() {
 			await configApi.deleteConfigCache({ configCode });
 			useToast.success("删除成功！");
 			faPagingRef.value.refresh();
 		},
 	});
-};
+});
 
-const handleDeleteAll = () => {
-	useMessageBox.confirm("确定要删除全部缓存？", {
+const handleDeleteAll = throttle(async () => {
+	await useMessageBox.confirm("确定要删除全部缓存？", {
 		async beforeConfirm() {
 			await configApi.deleteAllConfigCache();
 			useToast.success("删除成功！");
 			faPagingRef.value.refresh();
 		},
 	});
-};
+});
 </script>
 
 <style lang="scss" scoped>

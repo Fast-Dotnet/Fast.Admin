@@ -6,8 +6,8 @@
 
 		<template #default="{ pagedList }">
 			<FaCard v-for="item in pagedList" :key="item.accountId" code="Account:Detail" @click="detailFormRef?.detail(item.accountId)">
-				<view style="display: flex; align-items: center; gap: 20rpx; margin-bottom: 24rpx">
-					<FaImage :src="item.avatar" width="88rpx" height="88rpx" original round />
+				<view style="display: flex; align-items: center; gap: 20rpx; margin-bottom: 10rpx">
+					<FaAvatar :src="item.avatar" size="88rpx" />
 					<view style="flex: 1; display: flex; flex-direction: column">
 						<text
 							style="

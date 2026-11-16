@@ -1,6 +1,6 @@
 <template>
 	<FaPopup ref="popupRef" title="Sql执行详情" height="70%" position="bottom" closable>
-		<view style="display: flex; flex-direction: column; gap: 10px">
+		<view class="page-detail__popup">
 			<FaField label="昵称" :value="formData.nickName" />
 			<FaField label="手机" :value="formData.mobile" />
 			<FaField label="执行秒数" :value="formData.executeSeconds == null ? '--' : `${formData.executeSeconds.toFixed(4)}秒`" />
@@ -54,7 +54,6 @@ defineExpose({
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	margin-bottom: 8px;
 }
 
 .log-content__title {

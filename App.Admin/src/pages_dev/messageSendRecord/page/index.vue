@@ -21,7 +21,7 @@
 				:key="item.recordId"
 				:title="item.title"
 				code="MessageSendRecord:Detail"
-				@click="detailFormRef?.detail(item.recordId)"
+				@click="handleDetail(item.recordId)"
 			>
 				<template #titleExtra>
 					<view class="fa-card__title-view">
@@ -38,14 +38,12 @@
 			</FaCard>
 		</template>
 	</FaPaging>
-
-	<MessageSendRecordDetail ref="detailFormRef" />
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { throttle } from "@fast-china/utils";
+import { useRouter } from "@wot-ui/router";
 import { messageSendRecordApi } from "@/api/services/Center/messageSendRecord";
-import MessageSendRecordDetail from "./components/detail.vue";
 
 definePage({
 	name: "DevMessageSendRecord",
@@ -55,5 +53,7 @@ definePage({
 	},
 });
 
-const detailFormRef = ref<InstanceType<typeof MessageSendRecordDetail>>();
+const router = useRouter();
+
+const handleDetail = throttle((recordId: string) => router.push(`/pages_dev/messageSendRecord/detail/index?recordId=${recordId}`));
 </script>
