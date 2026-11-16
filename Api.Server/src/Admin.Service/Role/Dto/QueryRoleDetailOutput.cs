@@ -50,6 +50,7 @@ public class QueryRoleDetailOutput : PagedOutput
     /// <summary>
     /// 自定义数据范围部门Id集合
     /// </summary>
+    [SugarColumn(IsJson = true)]
     public List<long> DataScopeDepartmentIds { get; set; }
 
     /// <summary>
