@@ -108,9 +108,9 @@
 				>
 					<template #default="{ percentage }">
 						<span class="percentage_value">{{ percentage }}%</span>
-						<span>总计: {{ item.totalSize }}GB</span>
-						<span>已用: {{ item.used }}GB</span>
-						<span>剩余: {{ item.availableFreeSpace }}GB</span>
+						<span>总计: {{ item.totalSize }} GB</span>
+						<span>已用: {{ item.used }} GB</span>
+						<span>剩余: {{ item.availableFreeSpace }} GB</span>
 						<span>{{ item.diskName }}</span>
 					</template>
 				</el-progress>
@@ -145,7 +145,7 @@ const state = reactive({
 	interval: withDefineType<NodeJS.Timeout>(),
 	machineDetail: withDefineType<{
 		/** 当前时间 */
-		currentTime?: Date;
+		currentTime?: string;
 		/** 运行时间 */
 		runTimes?: string;
 		/** 主机名称 */
@@ -194,9 +194,9 @@ const state = reactive({
 	}>({}),
 	programDetail: withDefineType<{
 		/** 当前时间 */
-		currentTime?: Date;
+		currentTime?: string;
 		/** 启动时间 */
-		startTime?: Date;
+		startTime?: string;
 		/** 运行时间 */
 		runTimes?: string;
 		/** 程序名称 */
@@ -328,7 +328,6 @@ const deactivate = () => {
 onMounted(() => activate(true));
 onActivated(() => activate());
 onDeactivated(deactivate);
-
 onUnmounted(deactivate);
 </script>
 
