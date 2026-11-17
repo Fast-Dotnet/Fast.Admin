@@ -1,6 +1,7 @@
 <template>
 	<FaTreeSelect
 		v-bind="$attrs"
+		ref="faTreeSelectRef"
 		:request-api="() => departmentApi.departmentSelector(props.orgId)"
 		v-model="modelValue"
 		v-model:label="departmentName"
@@ -13,8 +14,9 @@
 </template>
 
 <script setup lang="ts">
+import { useTemplateRef, watch } from "vue";
 import { departmentApi } from "@/api/services/Admin/department";
-import type { ElSelectorOutput } from "fast-element-plus";
+import type { ElSelectorOutput, FaTreeSelectInstance } from "fast-element-plus";
 
 defineOptions({
 	name: "DepartmentTreeSelect",
@@ -32,8 +34,17 @@ const emit = defineEmits<{
 	change: [value: ElSelectorOutput];
 }>();
 
+const faTreeSelectRef = useTemplateRef<FaTreeSelectInstance>("faTreeSelectRef");
+
 /** 选中的部门 ID，支持单值或多值 */
 const modelValue = defineModel<string | string[]>();
 /** 选中部门的名称 */
 const departmentName = defineModel<string | string[]>("departmentName");
+
+watch(
+	() => props.orgId,
+	() => {
+		faTreeSelectRef.value.refresh();
+	}
+);
 </script>

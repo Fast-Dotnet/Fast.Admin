@@ -1,6 +1,7 @@
 <template>
 	<FaSelect
 		v-bind="$attrs"
+		ref="faSelectRef"
 		:request-api="() => merchantApi.merchantSelector(props.merchantType)"
 		v-model="modelValue"
 		v-model:label="merchantNo"
@@ -20,8 +21,9 @@
 </template>
 
 <script setup lang="ts">
+import { useTemplateRef, watch } from "vue";
 import { merchantApi } from "@/api/services/Center/merchant";
-import type { ElSelectorOutput } from "fast-element-plus";
+import type { ElSelectorOutput, FaSelectInstance } from "fast-element-plus";
 import type { PaymentChannelEnum } from "@/api/enums/PaymentChannelEnum";
 
 defineOptions({
@@ -38,8 +40,17 @@ const emit = defineEmits<{
 	change: [value: ElSelectorOutput];
 }>();
 
+const faSelectRef = useTemplateRef<FaSelectInstance>("faSelectRef");
+
 /** 选中的商户 ID */
 const modelValue = defineModel<string>();
 /** 选中商户的商户号 */
 const merchantNo = defineModel<string>("merchantNo");
+
+watch(
+	() => props.merchantType,
+	() => {
+		faSelectRef.value.refresh();
+	}
+);
 </script>

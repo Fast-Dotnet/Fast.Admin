@@ -10,16 +10,10 @@
 			:disabled="formDisabled"
 			@click="handleClick"
 		>
-			<template v-if="props.radio && props.clearable && modelValue != null && !formDisabled">
+			<template v-if="props.radio && props.clearable && modelValue != null && !formDisabled" #default>
 				<button class="fa-cell-picker__clear" style="margin-left: auto" hover-class="none" @click.stop="handleClear">
 					<wd-icon name="close-circle" size="16px" />
 				</button>
-			</template>
-			<template v-else-if="!props.radio">
-				<text v-if="dictionaryLabel == null || dictionaryLabel === ''" class="wd-form-item__placeholder">
-					{{ props.placeholder }}
-				</text>
-				<text v-else>{{ dictionaryLabel }}</text>
 			</template>
 		</wd-form-item>
 		<wd-cell

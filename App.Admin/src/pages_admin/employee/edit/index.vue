@@ -11,9 +11,15 @@
 							v-model:label="state.formData.orgName"
 							v-model:visible="visible.value"
 							:request-api="organizationApi.organizationSelector"
+							disabled-search
 							clearable
 							check-strictly
-							disabled-search
+							@change="
+								() => {
+									state.formData.departmentId = null;
+									state.formData.departmentName = null;
+								}
+							"
 							@clear="
 								() => {
 									state.formData.departmentId = null;

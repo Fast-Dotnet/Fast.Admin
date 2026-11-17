@@ -22,6 +22,12 @@
 					check-strictly
 					filterable
 					clearable
+					@change="
+						() => {
+							state.formData.departmentId = null;
+							state.formData.departmentName = null;
+						}
+					"
 					@clear="
 						() => {
 							state.formData.departmentId = null;

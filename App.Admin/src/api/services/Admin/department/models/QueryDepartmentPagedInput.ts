@@ -6,5 +6,9 @@ export interface QueryDepartmentPagedInput extends PagedInput  {
 	 * 机构Id
 	 */
 	orgId?: string;
+	/**
+	 * 树形数据
+	 */
+	treeData?: boolean;
 }
 

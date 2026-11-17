@@ -562,6 +562,7 @@ defineExpose({
 	clearSearchParam: () => {
 		searchParam.value = {};
 	},
+	pagingVersion: computed(() => pagingVersion.value),
 	// 数据刷新与处理
 
 	/**

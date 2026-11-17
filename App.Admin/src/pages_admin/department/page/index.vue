@@ -1,9 +1,11 @@
 <template>
 	<FaPaging
 		ref="faPagingRef"
+		page-key="Department"
 		:auto="false"
 		:request-api="departmentApi.queryDepartmentPaged"
-		:init-param="{ orgId: state.selectedOrganization?.value }"
+		:pagination="false"
+		:init-param="{ orgId: state.selectedOrganization?.value, treeData: false }"
 	>
 		<template #top="{ searchParam }">
 			<view class="department-header">
@@ -29,60 +31,30 @@
 						</template>
 					</wd-input>
 					<FaAuth code="Department:Add">
-						<wd-button size="small" icon="plus" @click="handleAdd">新增</wd-button>
+						<wd-button size="small" icon="plus" @click="handleEdit('add')">新增</wd-button>
 					</FaAuth>
 				</view>
 			</view>
 		</template>
 
-		<template #default="{ searchParam, pagedList, totalRows }">
-			<scroll-view v-if="!searchParam.value.searchValue" class="department-breadcrumb" scroll-x :show-scrollbar="false">
-				<view class="department-breadcrumb__content">
-					<text
-						class="department-breadcrumb__item department-breadcrumb__item--root"
-						:class="{ 'is-active': !state.selectedDepartmentList.length }"
-					>
-						全部部门
-					</text>
+		<template #default="{ pagedList }">
+			<FaCard v-for="item in pagedList" :key="item.departmentId" code="Department:Detail" @click="detailFormRef?.detail(item.departmentId)">
+				<FaField label="部门名称" :value="item.departmentName" />
+				<FaField label="部门编码" :value="item.departmentCode" />
+				<FaField label="父级" :value="item.parentName" />
+				<FaField label="排序" :value="item.sort" />
+				<FaField label="数据公开" center>
+					<FaTag name="BooleanEnum" :value="item.dataPublic" />
+				</FaField>
 
-					<template v-for="(item, index) in state.selectedDepartmentList" :key="item.departmentId">
-						<wd-icon name="arrow-right" size="24rpx" color="var(--wot-icon-auxiliary)" />
-						<text class="department-breadcrumb__item" :class="{ 'is-active': index === state.selectedDepartmentList.length - 1 }">
-							{{ item.departmentName }}
-						</text>
-					</template>
-				</view>
-			</scroll-view>
-
-			<view class="department-summary">
-				<text>{{ searchParam.value.searchValue ? "搜索结果" : state.selectedDepartmentList.length ? "下级部门" : "部门列表" }}</text>
-				<text class="department-summary__count">{{ totalRows }} 个部门</text>
-			</view>
-
-			<FaCard v-for="item in pagedList" :key="item.departmentId" code="Department:Detail">
-				<view class="department-card">
-					<view class="department-card__info">
-						<text class="department-card__name">{{ item.departmentName }}</text>
-						<text class="department-card__code">{{ item.departmentCode }}</text>
-					</view>
-
-					<view class="department-card__actions">
-						<wd-tag v-if="item.dataPublic" type="danger" variant="plain">公开数据</wd-tag>
-						<wd-tag v-if="item.children?.length" type="primary" variant="plain">
-							<view class="department-card__children">
-								<text>下级 {{ item.children.length }}</text>
-								<wd-icon name="arrow-right" size="24rpx" />
-							</view>
-						</wd-tag>
-						<view
-							v-if="userInfoStore.hasButtonPermission('Department:Edit', 'Department:Delete')"
-							class="department-card__more"
-							@click.stop="handleMoreClick(item)"
-						>
-							<wd-icon name="more" size="36rpx" color="var(--wot-icon-secondary)" />
-						</view>
-					</view>
-				</view>
+				<template #footer>
+					<FaAuth code="Department:Edit">
+						<wd-button size="mini" type="primary" variant="plain" @click="handleEdit('edit', item.departmentId)">编辑</wd-button>
+					</FaAuth>
+					<FaAuth code="Department:Delete">
+						<wd-button size="mini" type="danger" variant="plain" @click="handleDelete(item)">删除</wd-button>
+					</FaAuth>
+				</template>
 			</FaCard>
 		</template>
 	</FaPaging>
@@ -134,6 +106,8 @@
 	</FaPopup>
 
 	<wd-action-sheet v-model="state.actionVisible" :actions="state.actionList" cancel-text="取消" @select="handleActionSelect" />
+
+	<DepartmentDetail ref="detailFormRef" />
 </template>
 
 <script setup lang="ts">
@@ -144,7 +118,8 @@ import { useRouter } from "@wot-ui/router";
 import { departmentApi } from "@/api/services/Admin/department";
 import { organizationApi } from "@/api/services/Admin/organization";
 import { useLoading, useMessageBox, useToast } from "@/hooks";
-import { useUserInfo } from "@/stores";
+import { usePaging, useUserInfo } from "@/stores";
+import DepartmentDetail from "./components/detail.vue";
 import type { Action } from "@wot-ui/ui/components/wd-action-sheet/types";
 import type { QueryDepartmentPagedOutput } from "@/api/services/Admin/department/models/QueryDepartmentPagedOutput";
 import type { FaPagingInstance, FaPopupInstance } from "@/components";
@@ -158,10 +133,12 @@ definePage({
 });
 
 const router = useRouter();
+const pagingStore = usePaging();
 const userInfoStore = useUserInfo();
 
 const faPagingRef = ref<FaPagingInstance>();
 const faPopupRef = ref<FaPopupInstance>();
+const detailFormRef = ref<InstanceType<typeof DepartmentDetail>>();
 
 const state = reactive({
 	/** 机构集合 */
@@ -172,12 +149,30 @@ const state = reactive({
 	actionList: withDefineType<{ name: string }[]>([]),
 	/** 点击的机构 */
 	clickedOrganization: withDefineType<ElSelectorOutput<string>>(),
-	/** 点击的部门 */
-	clickedDepartment: withDefineType<QueryDepartmentPagedOutput>(),
 	/** 选中的机构 */
 	selectedOrganization: withDefineType<ElSelectorOutput<string>>(),
-	/** 选中的部门集合 */
-	selectedDepartmentList: withDefineType<QueryDepartmentPagedOutput[]>([]),
+});
+
+const handleEdit = throttle(
+	async (mode: IPageStateType, departmentId?: string) =>
+		await router.push({
+			path: "/pages_admin/department/edit/index",
+			query: {
+				mode,
+				departmentId,
+			},
+		})
+);
+
+const handleDelete = throttle(async (item: QueryDepartmentPagedOutput) => {
+	const { departmentId, rowVersion } = item;
+	await useMessageBox.confirm("确定要删除部门？", {
+		async beforeConfirm() {
+			await departmentApi.deleteDepartment({ departmentId, rowVersion });
+			useToast.success("删除成功！");
+			faPagingRef.value.refresh();
+		},
+	});
 });
 
 /** 扁平化机构 */
@@ -188,7 +183,8 @@ const flattenOrganizations = (items: ElSelectorOutput<string>[], parentLabel = "
 	});
 
 /** 加载机构 */
-const loadOrg = async (isFirst = false) => {
+const loadOrg = async () => {
+	if (faPagingRef.value?.pagingVersion === pagingStore.getPageVersion("Department")) return;
 	useLoading.show();
 	try {
 		const apiRes = await organizationApi.organizationSelector();
@@ -199,30 +195,24 @@ const loadOrg = async (isFirst = false) => {
 	} finally {
 		useLoading.hide();
 	}
-	const hasOrgId = (orgList: ElSelectorOutput<string>[]): boolean =>
-		orgList.some((item) => item.value === state.selectedOrganization.value || hasOrgId(item.children ?? []));
-	if (!state.selectedOrganization || !hasOrgId(state.orgList)) {
-		state.selectedOrganization = state.orgList[0]?.children?.[0] ?? null;
-	}
-	if (isFirst) {
-		faPagingRef.value.reload();
-	} else {
-		faPagingRef.value.refresh();
-	}
+	const orgId = state.selectedOrganization?.value;
+	const orgList = state.orgList.flatMap((item) => item.children ?? []);
+	state.selectedOrganization = orgList.find((item) => item.value === orgId) ?? orgList[0] ?? null;
+	faPagingRef.value.reload();
 };
 
-const handleRefresh = ({ value }: { value?: string }) => {
-	faPagingRef.value.searchParam.searchValue = value;
-	state.selectedDepartmentList = [];
-	faPagingRef.value.refresh();
+const handleRefresh = (event?: { value?: string }) => {
+	faPagingRef.value.searchParam.searchValue = event?.value ?? null;
+	faPagingRef.value.reload();
 };
 
-const handleOrgChange = (item: ElSelectorOutput<string>) => {
+const handleOrgChange = throttle(async (item: ElSelectorOutput<string>) => {
 	if (item.value === state.selectedOrganization?.value) return;
 	state.selectedOrganization = item;
-	faPopupRef.value.close();
-	faPagingRef.value.refresh();
-};
+	faPagingRef.value.clearSearchParam();
+	await faPopupRef.value.close();
+	faPagingRef.value.reload();
+});
 
 const handleOrgAdd = throttle(
 	async () =>
@@ -239,27 +229,6 @@ const handleOrgMoreClick = throttle((item: ElSelectorOutput<string>) => {
 	state.actionList = [
 		{ name: "编辑机构", permission: "Department:Edit" },
 		{ name: "删除机构", permission: "Department:Delete" },
-	]
-		.filter(({ permission }) => userInfoStore.hasButtonPermission(permission))
-		.map(({ name }) => ({ name }));
-	state.actionVisible = true;
-});
-
-const handleAdd = throttle(
-	async () =>
-		await router.push({
-			path: "/pages_admin/department/edit/index",
-			query: {
-				mode: "add",
-			},
-		})
-);
-
-const handleMoreClick = throttle((item: QueryDepartmentPagedOutput) => {
-	state.clickedDepartment = item;
-	state.actionList = [
-		{ name: "编辑部门", permission: "Department:Edit" },
-		{ name: "删除部门", permission: "Department:Delete" },
 	]
 		.filter(({ permission }) => userInfoStore.hasButtonPermission(permission))
 		.map(({ name }) => ({ name }));
@@ -285,28 +254,8 @@ const handleActionSelect = throttle(async ({ item }: { item: Action }) => {
 						rowVersion: state.clickedOrganization.rowVersion,
 					});
 					useToast.success("删除成功！");
+					pagingStore.incrementPageVersion("Department");
 					loadOrg();
-				},
-			});
-			break;
-		case "编辑部门":
-			await router.push({
-				path: "/pages_admin/department/edit/index",
-				query: {
-					mode: "edit",
-					departmentId: state.clickedDepartment.departmentId,
-				},
-			});
-			break;
-		case "删除部门":
-			await useMessageBox.confirm("确定要删除部门？", {
-				async beforeConfirm() {
-					await departmentApi.deleteDepartment({
-						departmentId: state.clickedDepartment.departmentId,
-						rowVersion: state.clickedDepartment.rowVersion,
-					});
-					useToast.success("删除成功！");
-					faPagingRef.value.refresh();
 				},
 			});
 			break;
@@ -314,7 +263,7 @@ const handleActionSelect = throttle(async ({ item }: { item: Action }) => {
 });
 
 onShow(() => {
-	loadOrg(true);
+	loadOrg();
 });
 </script>
 

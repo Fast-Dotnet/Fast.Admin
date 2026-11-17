@@ -19,10 +19,23 @@
 					check-strictly
 					filterable
 					clearable
+					@change="
+						() => {
+							state.formData.parentId = null;
+							state.formData.parentName = null;
+						}
+					"
+					@clear="
+						() => {
+							state.formData.parentId = null;
+							state.formData.parentName = null;
+						}
+					"
 				/>
 			</FaFormItem>
 			<FaFormItem prop="parentId" label="父级">
 				<DepartmentTreeSelect
+					:disabled="!state.formData?.orgId"
 					:org-id="state.formData.orgId"
 					v-model="state.formData.parentId"
 					v-model:department-name="state.formData.parentName"
@@ -124,6 +137,7 @@ const add = () => {
 		state.formData = {
 			parentId: undefined,
 			parentName: undefined,
+			sort: 1,
 			dataPublic: false,
 		};
 	});

@@ -190,7 +190,7 @@ public class DepartmentService : IDynamicApplication
             .SugarPaged(input)
             .ToListAsync();
 
-        return new TreeBuildUtil<QueryDepartmentPagedOutput, long>().Build(data);
+        return input.TreeData ? new TreeBuildUtil<QueryDepartmentPagedOutput, long>().Build(data) : data;
     }
 
     /// <summary>

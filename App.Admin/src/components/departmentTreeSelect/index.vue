@@ -16,6 +16,7 @@
 				:data="departmentList"
 				:open-callback="handleOpenCallback"
 				:pagination="false"
+				disabled-search
 				multiple
 				tree-select
 				clearable
@@ -32,9 +33,9 @@
 				:label="Array.isArray(departmentName) ? undefined : departmentName"
 				v-model:visible="visible.value"
 				:request-api="() => departmentApi.departmentSelector(props.orgId)"
+				disabled-search
 				clearable
 				check-strictly
-				disabled-search
 				@update:model-value="(value) => (modelValue = value)"
 				@update:label="(value) => (departmentName = value)"
 				@change="(value, values) => emit('change', value, values)"

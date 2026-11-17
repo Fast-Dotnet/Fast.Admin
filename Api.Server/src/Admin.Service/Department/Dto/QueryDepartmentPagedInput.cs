@@ -16,4 +16,9 @@ public class QueryDepartmentPagedInput : PagedInput
     /// 机构Id
     /// </summary>
     public long? OrgId { get; set; }
+
+    /// <summary>
+    /// 树形数据
+    /// </summary>
+    public bool TreeData { get; set; } = true;
 }
