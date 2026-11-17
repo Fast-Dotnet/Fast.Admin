@@ -3,6 +3,7 @@
 		ref="faDialogRef"
 		width="500"
 		:title="state.dialogTitle"
+		show-before-close
 		confirm-button-text="保存"
 		@confirm-click="handleConfirm"
 		@close="faFormRef.resetFields()"

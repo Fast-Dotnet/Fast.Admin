@@ -4,6 +4,7 @@
 		width="1200"
 		full-height
 		:title="state.dialogTitle"
+		show-before-close
 		confirm-button-text="保存"
 		@confirm-click="handleConfirm"
 		@close="faFormRef.resetFields()"
