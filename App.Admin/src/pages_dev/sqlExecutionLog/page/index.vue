@@ -1,5 +1,5 @@
 <template>
-	<FaPaging :request-api="sqlExecutionLogApi.querySqlExecutionLogPaged">
+	<FaPaging page-key="SqlExecutionLog" :request-api="sqlExecutionLogApi.querySqlExecutionLogPaged">
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput v-model:search-param="searchParam.value" @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #filter>

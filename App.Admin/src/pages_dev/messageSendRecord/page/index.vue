@@ -1,5 +1,5 @@
 <template>
-	<FaPaging :request-api="messageSendRecordApi.queryMessageSendRecordPaged">
+	<FaPaging page-key="MessageSendRecord" :request-api="messageSendRecordApi.queryMessageSendRecordPaged">
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput
 				data-search-range="Past3M"

@@ -30,6 +30,7 @@ import { useRouter } from "@wot-ui/router";
 import { MessageTemplateTypeEnum } from "@/api/enums/MessageTemplateTypeEnum";
 import { messageTemplateApi } from "@/api/services/Center/messageTemplate";
 import { useFormSchema, useMessageBox, useToast } from "@/hooks";
+import { usePaging } from "@/stores";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { AddMessageTemplateInput } from "@/api/services/Center/messageTemplate/models/AddMessageTemplateInput";
 import type { EditMessageTemplateInput } from "@/api/services/Center/messageTemplate/models/EditMessageTemplateInput";
@@ -44,6 +45,7 @@ definePage({
 });
 
 const router = useRouter();
+const pagingStore = usePaging();
 
 const formRef = ref<FormInstance>();
 
@@ -76,6 +78,7 @@ const handleConfirm = throttle(async () => {
 	} finally {
 		state.loading = false;
 	}
+	pagingStore.incrementPageVersion("MessageTemplate");
 	if (getCurrentPages().length > 1) router.back();
 	else router.replace("/pages_system/messageTemplate/page/index");
 });

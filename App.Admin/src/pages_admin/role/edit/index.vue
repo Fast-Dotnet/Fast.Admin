@@ -58,6 +58,7 @@ import { DataScopeTypeEnum } from "@/api/enums/DataScopeTypeEnum";
 import { RoleTypeEnum } from "@/api/enums/RoleTypeEnum";
 import { roleApi } from "@/api/services/Admin/role";
 import { useFormSchema, useMessageBox, useToast } from "@/hooks";
+import { usePaging } from "@/stores";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { AddRoleInput } from "@/api/services/Admin/role/models/AddRoleInput";
 import type { EditRoleInput } from "@/api/services/Admin/role/models/EditRoleInput";
@@ -72,6 +73,7 @@ definePage({
 });
 
 const router = useRouter();
+const pagingStore = usePaging();
 
 const formRef = ref<FormInstance>();
 
@@ -111,6 +113,7 @@ const handleConfirm = throttle(async () => {
 	} finally {
 		state.loading = false;
 	}
+	pagingStore.incrementPageVersion("Role");
 	if (getCurrentPages().length > 1) router.back();
 	else router.replace("/pages_admin/role/page/index");
 });

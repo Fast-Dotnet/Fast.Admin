@@ -26,5 +26,5 @@ const props = defineProps({
 
 const userInfoStore = useUserInfo();
 
-const isAuth = computed(() => userInfoStore.hasButtonPermission(props.code));
+const isAuth = computed(() => userInfoStore.hasButtonPermission(Array.isArray(props.code) ? props.code : [props.code]));
 </script>

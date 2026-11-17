@@ -230,7 +230,8 @@ export default defineComponent({
 		};
 
 		const responsiveColumns = computed(() => {
-			const hideLinks = !!props.permission && !userInfoStore.hasButtonPermission(props.permission);
+			const hideLinks =
+				!!props.permission && !userInfoStore.hasButtonPermission(Array.isArray(props.permission) ? props.permission : [props.permission]);
 			if (!isSmallScreen.value && !hideLinks) return state.columns;
 
 			const componentColumnTypes = new Set(["expand", "selection", "index"]);

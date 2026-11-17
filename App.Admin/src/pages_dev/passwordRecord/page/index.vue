@@ -1,5 +1,5 @@
 <template>
-	<FaPaging :request-api="passwordRecordApi.queryPasswordRecordPaged">
+	<FaPaging page-key="PasswordRecord" :request-api="passwordRecordApi.queryPasswordRecordPaged">
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput
 				data-search-range="Past3M"

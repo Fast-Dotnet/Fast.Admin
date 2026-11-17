@@ -1,5 +1,5 @@
 <template>
-	<FaPaging :request-api="sqlDiffLogApi.querySqlDiffLogPaged">
+	<FaPaging page-key="SqlDiffLog" :request-api="sqlDiffLogApi.querySqlDiffLogPaged">
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput v-model:search-param="searchParam.value" @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #filter>

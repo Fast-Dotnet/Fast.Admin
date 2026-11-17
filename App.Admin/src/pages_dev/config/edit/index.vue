@@ -46,6 +46,7 @@ import { throttle, withDefineType } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { configApi } from "@/api/services/Center/config";
 import { useFormSchema, useMessageBox, useToast } from "@/hooks";
+import { usePaging } from "@/stores";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { AddConfigInput } from "@/api/services/Center/config/models/AddConfigInput";
 import type { EditConfigInput } from "@/api/services/Center/config/models/EditConfigInput";
@@ -60,6 +61,7 @@ definePage({
 });
 
 const router = useRouter();
+const pagingStore = usePaging();
 
 const formRef = ref<FormInstance>();
 
@@ -93,6 +95,7 @@ const handleConfirm = throttle(async () => {
 	} finally {
 		state.loading = false;
 	}
+	pagingStore.incrementPageVersion("Config");
 	if (getCurrentPages().length > 1) router.back();
 	else router.replace("/pages_dev/config/page/index");
 });

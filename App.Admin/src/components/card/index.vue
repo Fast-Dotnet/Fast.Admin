@@ -48,7 +48,7 @@ const emit = defineEmits<{
 const userInfoStore = useUserInfo();
 
 const handleClick = (event: BaseEvent) => {
-	if (props.code === undefined || userInfoStore.hasButtonPermission(props.code)) {
+	if (props.code === undefined || userInfoStore.hasButtonPermission(Array.isArray(props.code) ? props.code : [props.code])) {
 		emit("click", event);
 	}
 };

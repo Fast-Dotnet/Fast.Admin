@@ -94,6 +94,7 @@ import { useRouter } from "@wot-ui/router";
 import { PaymentChannelEnum } from "@/api/enums/PaymentChannelEnum";
 import { merchantApi } from "@/api/services/Center/merchant";
 import { useFormSchema, useMessageBox, useToast } from "@/hooks";
+import { usePaging } from "@/stores";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { AddMerchantInput } from "@/api/services/Center/merchant/models/AddMerchantInput";
 import type { EditMerchantInput } from "@/api/services/Center/merchant/models/EditMerchantInput";
@@ -108,6 +109,7 @@ definePage({
 });
 
 const router = useRouter();
+const pagingStore = usePaging();
 
 const formRef = ref<FormInstance>();
 
@@ -140,6 +142,7 @@ const handleConfirm = throttle(async () => {
 	} finally {
 		state.loading = false;
 	}
+	pagingStore.incrementPageVersion("Merchant");
 	if (getCurrentPages().length > 1) router.back();
 	else router.replace("/pages_system/merchant/page/index");
 });

@@ -1,5 +1,5 @@
 <template>
-	<FaPaging :request-api="sqlTimeoutLogApi.querySqlTimeoutLogPaged">
+	<FaPaging page-key="SqlTimeoutLog" :request-api="sqlTimeoutLogApi.querySqlTimeoutLogPaged">
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput
 				data-search-range="Past3M"

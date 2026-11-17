@@ -1,5 +1,5 @@
 <template>
-	<FaPaging :request-api="operateLogApi.queryOperateLogPaged">
+	<FaPaging page-key="OperateLog" :request-api="operateLogApi.queryOperateLogPaged">
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput
 				data-search-range="Past1M"

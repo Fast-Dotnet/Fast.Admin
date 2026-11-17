@@ -1,5 +1,5 @@
 <template>
-	<FaPaging ref="faPagingRef" :request-api="complaintApi.queryTenantComplaintPaged">
+	<FaPaging ref="faPagingRef" page-key="TenantComplaint" :request-api="complaintApi.queryTenantComplaintPaged">
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput v-model:search-param="searchParam.value" hide-search-time @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #filter>

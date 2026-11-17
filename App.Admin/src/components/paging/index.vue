@@ -42,18 +42,18 @@
 		@inner-cell-click="(item, index?: number) => emit('innerCellClick', item, index)"
 		@virtual-top-height-change="emit('virtualTopHeightChange', $event)"
 	>
-		<slot :paged-list="pagedList" :total-rows="totalRows" :search-param="slotState.searchParam" :refresh="handleRefresh" />
+		<slot :paged-list="pagedList" :total-rows="totalRows" :search-param="slotState.searchParam" :refresh="handleReload" />
 		<template v-if="slots.top" #top>
-			<slot name="top" :paged-list="pagedList" :total-rows="totalRows" :search-param="slotState.searchParam" :refresh="handleRefresh" />
+			<slot name="top" :paged-list="pagedList" :total-rows="totalRows" :search-param="slotState.searchParam" :refresh="handleReload" />
 		</template>
 		<template v-if="slots.bottom" #bottom>
-			<slot name="bottom" :paged-list="pagedList" :total-rows="totalRows" :search-param="slotState.searchParam" :refresh="handleRefresh" />
+			<slot name="bottom" :paged-list="pagedList" :total-rows="totalRows" :search-param="slotState.searchParam" :refresh="handleReload" />
 		</template>
 		<template v-if="slots.left" #left>
-			<slot name="left" :paged-list="pagedList" :total-rows="totalRows" :search-param="slotState.searchParam" :refresh="handleRefresh" />
+			<slot name="left" :paged-list="pagedList" :total-rows="totalRows" :search-param="slotState.searchParam" :refresh="handleReload" />
 		</template>
 		<template v-if="slots.right" #right>
-			<slot name="right" :paged-list="pagedList" :total-rows="totalRows" :search-param="slotState.searchParam" :refresh="handleRefresh" />
+			<slot name="right" :paged-list="pagedList" :total-rows="totalRows" :search-param="slotState.searchParam" :refresh="handleReload" />
 		</template>
 
 		<template v-if="slots.refresher" #refresher="{ refresherStatus }">
@@ -116,6 +116,7 @@ import { onShow } from "@dcloudio/uni-app";
 import { computed, nextTick, normalizeClass, shallowReactive, shallowRef, watch } from "vue";
 import { randomString, useProps } from "@fast-china/utils";
 import useZPaging from "z-paging/components/z-paging/js/hooks/useZPaging.js";
+import { usePaging } from "@/stores";
 import {
 	type I18nText,
 	zPagingBackToTopProps,
@@ -165,6 +166,8 @@ const props = defineProps({
 	...zPagingScrollProps,
 	...zPagingBackToTopProps,
 	...zPagingVirtualListProps,
+	/** 页面Key */
+	pageKey: String,
 	/** 初始页码 */
 	defaultPageNo: {
 		type: Number,
@@ -338,35 +341,35 @@ const slots = defineSlots<{
 		pagedList: TResult[];
 		totalRows: number;
 		searchParam: Ref<Partial<TInput extends PagedInput ? TInput : PagedInput>>;
-		refresh: (pageIndex?: number) => Promise<void>;
+		refresh: () => Promise<ZPagingParams.ReturnData<TResult>>;
 	}) => VNode[];
 	/** 顶部区域，用于导航栏、搜索栏等 */
 	top?: (props: {
 		pagedList: TResult[];
 		totalRows: number;
 		searchParam: Ref<Partial<TInput extends PagedInput ? TInput : PagedInput>>;
-		refresh: (pageIndex?: number) => Promise<void>;
+		refresh: () => Promise<ZPagingParams.ReturnData<TResult>>;
 	}) => VNode[];
 	/** 底部区域，用于底部操作栏等 */
 	bottom?: (props: {
 		pagedList: TResult[];
 		totalRows: number;
 		searchParam: Ref<Partial<TInput extends PagedInput ? TInput : PagedInput>>;
-		refresh: (pageIndex?: number) => Promise<void>;
+		refresh: () => Promise<ZPagingParams.ReturnData<TResult>>;
 	}) => VNode[];
 	/** 列表左侧区域 */
 	left?: (props: {
 		pagedList: TResult[];
 		totalRows: number;
 		searchParam: Ref<Partial<TInput extends PagedInput ? TInput : PagedInput>>;
-		refresh: (pageIndex?: number) => Promise<void>;
+		refresh: () => Promise<ZPagingParams.ReturnData<TResult>>;
 	}) => VNode[];
 	/** 列表右侧区域 */
 	right?: (props: {
 		pagedList: TResult[];
 		totalRows: number;
 		searchParam: Ref<Partial<TInput extends PagedInput ? TInput : PagedInput>>;
-		refresh: (pageIndex?: number) => Promise<void>;
+		refresh: () => Promise<ZPagingParams.ReturnData<TResult>>;
 	}) => VNode[];
 
 	// 下拉刷新
@@ -417,6 +420,9 @@ const slots = defineSlots<{
 	chatNoMore?: () => VNode[];
 }>();
 
+/** 分页版本 */
+const pagingVersion = shallowRef<number>(undefined);
+
 /** `v-model` 绑定的已加载列表 */
 const modelValue = defineModel<TResult[]>({ default: () => [] });
 /** 分页搜索参数 */
@@ -438,6 +444,7 @@ const totalRows = shallowRef(0);
 
 /** 查询接口并回填列表、总条数与加载状态。 */
 const handleQuery = async (pageNo: number, pageSize: number, from: ZPagingEnums.QueryFrom) => {
+	const _pagingVersion = props.pageKey ? usePaging().getPageVersion(props.pageKey) : undefined;
 	try {
 		if (props.requestApi) {
 			const requestParam = {};
@@ -484,6 +491,10 @@ const handleQuery = async (pageNo: number, pageSize: number, from: ZPagingEnums.
 			totalRows.value = _totalRows;
 			emit("query", _pageData, pageNo, pageSize, _totalRows, from);
 		}
+
+		if (props.pageKey && pageNo === props.defaultPageNo) {
+			pagingVersion.value = _pagingVersion;
+		}
 	} catch (error) {
 		await paging.value.complete(false);
 		throw error;
@@ -501,6 +512,7 @@ const handleVirtualListChange = (list: TResult[]) => {
  * @param animate - 是否播放下拉刷新动画，省略时使用 `showRefresherWhenReload`
  */
 const handleReload = async (animate?: boolean) => {
+	await nextTick();
 	// 先触发视图更新，避免小程序中带动画的重载卡在 z-paging 内部的 $nextTick。
 	paging.value.$forceUpdate();
 	return await paging.value.reload(animate);
@@ -508,10 +520,11 @@ const handleReload = async (animate?: boolean) => {
 
 /** 重新加载列表；传入页码时刷新至该页，省略时从首页加载。 */
 const handleRefresh = async (pageIndex?: number): Promise<void> => {
+	await nextTick();
 	if (pageIndex) {
 		await paging.value.refreshToPage(pageIndex);
 	} else {
-		handleReload();
+		await paging.value.refresh();
 	}
 };
 
@@ -531,11 +544,10 @@ if (props.usePageScroll) {
 }
 
 onShow(() => {
-	// 未传入自动刷新时，页面显示自动调用刷新
-	if (props.auto === undefined) {
-		nextTick(() => {
-			paging.value.reload();
-		});
+	// 保留显式传入 auto 的行为；默认首次加载，之后仅在版本变化时重新加载。
+	if (props.auto !== undefined) return;
+	if (!props.pageKey || pagingVersion.value !== usePaging().getPageVersion(props.pageKey)) {
+		handleReload();
 	}
 });
 
@@ -564,7 +576,7 @@ defineExpose({
 	 *
 	 * @returns 刷新后的总列表与是否已无更多数据
 	 */
-	refresh: computed(() => paging.value?.refresh),
+	refresh: handleRefresh,
 	/**
 	 * 重新加载从首页到指定页的数据。
 	 *

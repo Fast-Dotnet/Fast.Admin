@@ -1,5 +1,5 @@
 <template>
-	<FaPaging :request-api="apiApi.queryApiPaged">
+	<FaPaging page-key="Api" :request-api="apiApi.queryApiPaged">
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput :filter="false" v-model:search-param="searchParam.value" @confirm="refresh()" @clear="refresh()" @search="refresh()" />
 		</template>

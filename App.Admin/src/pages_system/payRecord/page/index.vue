@@ -1,5 +1,5 @@
 <template>
-	<FaPaging :request-api="payRecordApi.queryPayRecordPaged">
+	<FaPaging page-key="PayRecord" :request-api="payRecordApi.queryPayRecordPaged">
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput
 				data-search-range="Past1M"

@@ -88,7 +88,7 @@ import { ApplicationPackageTypeEnum } from "@/api/enums/ApplicationPackageTypeEn
 import { applicationVersionApi } from "@/api/services/Center/applicationVersion";
 import { fileApi } from "@/api/services/File";
 import { useFormSchema, useMessageBox, useToast } from "@/hooks";
-import { useApp } from "@/stores";
+import { useApp, usePaging } from "@/stores";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { EditApplicationVersionInput } from "@/api/services/Center/applicationVersion/models/EditApplicationVersionInput";
 
@@ -102,6 +102,7 @@ definePage({
 });
 
 const router = useRouter();
+const pagingStore = usePaging();
 const appStore = useApp();
 
 const formRef = ref<FormInstance>();
@@ -310,6 +311,7 @@ const handleConfirm = throttle(async () => {
 	} finally {
 		state.loading = false;
 	}
+	pagingStore.incrementPageVersion("ApplicationVersion");
 	if (getCurrentPages().length > 1) router.back();
 	else router.replace("/pages_system/applicationVersion/page/index");
 });

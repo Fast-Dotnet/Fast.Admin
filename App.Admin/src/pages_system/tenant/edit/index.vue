@@ -71,6 +71,7 @@ import { tenantApi } from "@/api/services/Center/tenant";
 import { fileApi } from "@/api/services/File";
 import { RegExps } from "@/constants";
 import { useFormSchema, useMessageBox, useToast } from "@/hooks";
+import { usePaging } from "@/stores";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { AddTenantInput } from "@/api/services/Center/tenant/models/AddTenantInput";
 import type { EditTenantInput } from "@/api/services/Center/tenant/models/EditTenantInput";
@@ -85,6 +86,7 @@ definePage({
 });
 
 const router = useRouter();
+const pagingStore = usePaging();
 
 const formRef = ref<FormInstance>();
 
@@ -139,6 +141,7 @@ const handleConfirm = throttle(async () => {
 	} finally {
 		state.loading = false;
 	}
+	pagingStore.incrementPageVersion("Tenant");
 	if (getCurrentPages().length > 1) router.back();
 	else router.replace("/pages_system/tenant/page/index");
 });

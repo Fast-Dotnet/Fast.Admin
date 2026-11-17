@@ -1,5 +1,5 @@
 <template>
-	<FaPaging ref="faPagingRef" :request-api="jobLevelApi.queryJobLevelPaged">
+	<FaPaging ref="faPagingRef" page-key="JobLevel" :request-api="jobLevelApi.queryJobLevelPaged">
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput :filter="false" v-model:search-param="searchParam.value" @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #footer>

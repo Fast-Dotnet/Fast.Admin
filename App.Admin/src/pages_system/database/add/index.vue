@@ -70,6 +70,7 @@ import { DatabaseTypeEnum } from "@/api/enums/DatabaseTypeEnum";
 import { SugarDbType } from "@/api/enums/SugarDbType";
 import { databaseApi } from "@/api/services/Center/database";
 import { useFormSchema, useMessageBox, useToast } from "@/hooks";
+import { usePaging } from "@/stores";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { AddDatabaseInput } from "@/api/services/Center/database/models/AddDatabaseInput";
 
@@ -83,6 +84,7 @@ definePage({
 });
 
 const router = useRouter();
+const pagingStore = usePaging();
 
 const formRef = ref<FormInstance>();
 
@@ -124,6 +126,7 @@ const handleConfirm = throttle(async () => {
 	} finally {
 		state.loading = false;
 	}
+	pagingStore.incrementPageVersion("Database");
 	if (getCurrentPages().length > 1) router.back();
 	else router.replace("/pages_system/database/page/index");
 });

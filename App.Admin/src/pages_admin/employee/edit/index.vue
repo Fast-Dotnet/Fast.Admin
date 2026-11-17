@@ -135,7 +135,7 @@ import { roleApi } from "@/api/services/Admin/role";
 import { fileApi } from "@/api/services/File";
 import { RegExps } from "@/constants";
 import { useFormSchema, useMessageBox, useToast } from "@/hooks";
-import { useUserInfo } from "@/stores";
+import { usePaging, useUserInfo } from "@/stores";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { AddEmployeeInput } from "@/api/services/Admin/employee/models/AddEmployeeInput";
 import type { EditEmployeeInput } from "@/api/services/Admin/employee/models/EditEmployeeInput";
@@ -150,6 +150,7 @@ definePage({
 });
 
 const router = useRouter();
+const pagingStore = usePaging();
 const userInfoStore = useUserInfo();
 
 const formRef = ref<FormInstance>();
@@ -235,6 +236,7 @@ const handleConfirm = throttle(async () => {
 	} finally {
 		state.loading = false;
 	}
+	pagingStore.incrementPageVersion("Employee");
 	if (getCurrentPages().length > 1) router.back();
 	else router.replace("/pages_admin/employee/page/index");
 });

@@ -1,0 +1,184 @@
+.department-header {
+	padding-bottom: var(--wot-padding-main);
+	background-color: var(--wot-filled-oppo);
+}
+
+:deep(.department-header__organization) {
+	--wot-cell-padding: var(--wot-padding-main) var(--fa-spacing-page);
+	--wot-cell-arrow-margin-left: 0;
+	--fa-cell-left-flex: 0 0 clamp(84px, 28%, 104px);
+}
+
+.department-header__search-row {
+	display: flex;
+	align-items: center;
+	gap: var(--wot-spacing-main);
+	padding: var(--wot-padding-super-tight) var(--fa-spacing-page) 0;
+}
+
+:deep(.department-header__search) {
+	--wot-input-bg: var(--wot-filled-bottom);
+	--wot-input-inner-height: var(--fa-size-search-height);
+	--wot-input-padding: 0 var(--wot-padding-main);
+	--wot-input-icon-font-size: var(--wot-typography-title-size-main);
+
+	flex: 1;
+	min-width: 0;
+	border-radius: var(--wot-radius-large);
+}
+
+.department-breadcrumb {
+	width: 100%;
+	margin-bottom: var(--wot-spacing-super-tight);
+}
+
+.department-breadcrumb__content {
+	display: flex;
+	align-items: center;
+	gap: var(--wot-spacing-extra-tight);
+	width: max-content;
+	min-height: 40rpx;
+	white-space: nowrap;
+}
+
+.department-breadcrumb__item {
+	color: var(--wot-text-secondary);
+	font-size: var(--wot-typography-label-size-main);
+
+	&.is-active {
+		color: var(--wot-text-main);
+		font-weight: var(--wot-font-weight-semibold);
+	}
+}
+
+.department-breadcrumb__item--root {
+	color: var(--wot-primary-6);
+}
+
+.department-summary {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--wot-spacing-tight);
+	margin-left: 5rpx;
+	margin-right: 5rpx;
+	margin-bottom: var(--wot-spacing-tight);
+	color: var(--wot-text-secondary);
+	font-size: var(--wot-typography-label-size-main);
+}
+
+.department-summary__count {
+	flex-shrink: 0;
+	font-variant-numeric: tabular-nums;
+}
+
+:deep(.fa-card__content) {
+	padding-right: 10rpx;
+}
+
+.department-card {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--wot-spacing-tight);
+}
+
+.department-card__info {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: var(--wot-spacing-ultra-tight);
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+
+.department-card__name {
+	color: var(--wot-text-main);
+	font-size: var(--wot-typography-body-size-main);
+	font-weight: var(--wot-font-weight-semibold);
+}
+
+.department-card__code {
+	color: var(--wot-text-secondary);
+	font-size: var(--wot-typography-label-size-main);
+}
+
+.department-card__actions {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	gap: var(--wot-spacing-super-tight);
+}
+
+.department-card__children {
+	display: flex;
+	align-items: center;
+	gap: var(--wot-spacing-ultra-tight);
+}
+
+.department-card__more {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 72rpx;
+	min-height: 72rpx;
+}
+
+:deep(.department-organization__cell) {
+	--wot-cell-padding: 0 var(--wot-padding-main);
+	--fa-cell-left-flex: 1;
+
+	.wd-cell__right {
+		flex: 0 0 auto;
+	}
+
+	&.fa-select-page__cell--selected {
+		--wot-cell-title-color: var(--wot-primary-6);
+
+		font-weight: var(--wot-font-weight-semibold);
+	}
+
+	&.is-disabled {
+		opacity: 0.5;
+	}
+}
+
+.department-organization__check {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	width: 32rpx;
+	min-height: 88rpx;
+	margin-right: var(--wot-spacing-tight);
+}
+
+.department-organization__info {
+	display: flex;
+	flex-direction: column;
+	gap: var(--wot-spacing-ultra-tight);
+	min-width: 0;
+	padding: var(--wot-padding-super-tight) 0;
+}
+
+.department-organization__name {
+	font-size: var(--wot-typography-body-size-main);
+	overflow-wrap: anywhere;
+}
+
+.department-organization__code {
+	color: var(--wot-text-secondary);
+	font-size: var(--wot-typography-label-size-main);
+	font-weight: var(--wot-font-weight-regular);
+	overflow-wrap: anywhere;
+}
+
+.department-organization__more {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	width: 72rpx;
+	min-height: 88rpx;
+	margin-left: var(--wot-spacing-super-tight);
+}

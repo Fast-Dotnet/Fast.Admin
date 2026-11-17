@@ -1,5 +1,5 @@
 <template>
-	<FaPaging :request-api="applicationVersionApi.queryApplicationVersionPaged">
+	<FaPaging page-key="ApplicationVersion" :request-api="applicationVersionApi.queryApplicationVersionPaged">
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput v-model:search-param="searchParam.value" hide-search-time @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #filter>

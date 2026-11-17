@@ -20,3 +20,15 @@
 		z-index: 100 !important;
 	}
 }
+
+.z-paging-content-page {
+	display: flex;
+
+	.zp-view-super {
+		flex: 1;
+	}
+
+	.zp-scroll-view-container {
+		height: auto !important;
+	}
+}

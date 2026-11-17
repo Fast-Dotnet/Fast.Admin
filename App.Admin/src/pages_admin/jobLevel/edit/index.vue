@@ -30,6 +30,7 @@ import { throttle, withDefineType } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { jobLevelApi } from "@/api/services/Admin/jobLevel";
 import { useFormSchema, useMessageBox, useToast } from "@/hooks";
+import { usePaging } from "@/stores";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { AddJobLevelInput } from "@/api/services/Admin/jobLevel/models/AddJobLevelInput";
 import type { EditJobLevelInput } from "@/api/services/Admin/jobLevel/models/EditJobLevelInput";
@@ -44,6 +45,7 @@ definePage({
 });
 
 const router = useRouter();
+const pagingStore = usePaging();
 
 const formRef = ref<FormInstance>();
 
@@ -76,6 +78,7 @@ const handleConfirm = throttle(async () => {
 	} finally {
 		state.loading = false;
 	}
+	pagingStore.incrementPageVersion("JobLevel");
 	if (getCurrentPages().length > 1) router.back();
 	else router.replace("/pages_admin/jobLevel/page/index");
 });

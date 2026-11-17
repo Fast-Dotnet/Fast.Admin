@@ -1,5 +1,5 @@
 <template>
-	<FaPaging :request-api="refundRecordApi.queryRefundRecordPaged">
+	<FaPaging page-key="RefundRecord" :request-api="refundRecordApi.queryRefundRecordPaged">
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput
 				data-search-range="Past1M"

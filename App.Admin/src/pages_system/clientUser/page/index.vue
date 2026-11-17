@@ -1,5 +1,5 @@
 <template>
-	<FaPaging :request-api="clientUserApi.queryClientUserPaged">
+	<FaPaging page-key="ClientUser" :request-api="clientUserApi.queryClientUserPaged">
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput v-model:search-param="searchParam.value" hide-search-time @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #filter>

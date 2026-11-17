@@ -76,6 +76,7 @@ import { throttle, withDefineType } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { roleApi } from "@/api/services/Admin/role";
 import { useMessageBox, useToast } from "@/hooks";
+import { usePaging } from "@/stores";
 import type { RoleAuthInput } from "@/api/services/Admin/role/models/RoleAuthInput";
 
 definePage({
@@ -88,6 +89,7 @@ definePage({
 });
 
 const router = useRouter();
+const pagingStore = usePaging();
 
 const state = reactive({
 	loading: false,
@@ -156,6 +158,7 @@ const handleConfirm = throttle(async () => {
 	} finally {
 		state.loading = false;
 	}
+	pagingStore.incrementPageVersion("Role");
 	if (getCurrentPages().length > 1) router.back();
 	else router.replace("/pages_admin/role/page/index");
 });

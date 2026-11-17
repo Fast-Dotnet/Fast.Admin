@@ -33,6 +33,7 @@ import { SerialRuleTypeEnum } from "@/api/enums/SerialRuleTypeEnum";
 import { SerialSpacerEnum } from "@/api/enums/SerialSpacerEnum";
 import { serialApi } from "@/api/services/Admin/serial";
 import { useFormSchema, useMessageBox, useToast } from "@/hooks";
+import { usePaging } from "@/stores";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { AddSerialRuleInput } from "@/api/services/Admin/serial/models/AddSerialRuleInput";
 import type { EditSerialRuleInput } from "@/api/services/Admin/serial/models/EditSerialRuleInput";
@@ -47,6 +48,7 @@ definePage({
 });
 
 const router = useRouter();
+const pagingStore = usePaging();
 
 const formRef = ref<FormInstance>();
 
@@ -90,6 +92,7 @@ const handleConfirm = throttle(async () => {
 	} finally {
 		state.loading = false;
 	}
+	pagingStore.incrementPageVersion("Serial");
 	if (getCurrentPages().length > 1) router.back();
 	else router.replace("/pages_admin/serial/page/index");
 });

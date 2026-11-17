@@ -1,5 +1,5 @@
 <template>
-	<FaPaging :request-api="serialApi.querySerialRulePaged">
+	<FaPaging page-key="Serial" :request-api="serialApi.querySerialRulePaged">
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput :filter="false" v-model:search-param="searchParam.value" @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #footer>

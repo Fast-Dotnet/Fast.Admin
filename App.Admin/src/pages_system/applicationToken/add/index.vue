@@ -20,6 +20,7 @@ import { useRouter } from "@wot-ui/router";
 import { ApplicationTokenTypeEnum } from "@/api/enums/ApplicationTokenTypeEnum";
 import { applicationTokenApi } from "@/api/services/Center/applicationToken";
 import { useFormSchema, useMessageBox, useToast } from "@/hooks";
+import { usePaging } from "@/stores";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { AddApplicationTokenInput } from "@/api/services/Center/applicationToken/models/AddApplicationTokenInput";
 
@@ -33,6 +34,7 @@ definePage({
 });
 
 const router = useRouter();
+const pagingStore = usePaging();
 
 const formRef = ref<FormInstance>();
 
@@ -55,6 +57,7 @@ const handleConfirm = throttle(async () => {
 	} finally {
 		state.loading = false;
 	}
+	pagingStore.incrementPageVersion("ApplicationToken");
 	if (getCurrentPages().length > 1) router.back();
 	else router.replace("/pages_system/applicationToken/page/index");
 });

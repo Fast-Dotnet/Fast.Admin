@@ -1,5 +1,5 @@
 <template>
-	<FaPaging :request-api="exceptionLogApi.queryExceptionLogPaged">
+	<FaPaging page-key="ExceptionLog" :request-api="exceptionLogApi.queryExceptionLogPaged">
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput
 				data-search-range="Past3M"
