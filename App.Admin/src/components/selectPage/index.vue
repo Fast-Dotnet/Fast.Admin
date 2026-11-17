@@ -326,26 +326,42 @@ const handleChange = (item?: TResult, parentItem?: TResult) => {
 		}
 		selectedList.value = items;
 	} else {
+		const hasChanged = (modelValue.value ?? undefined) !== value;
+
 		modelValue.value = value;
 		selectedLabel.value = label;
-		emit("change", item ? { ...item, value: item.rawValue } : null, parentItem ? { ...parentItem, value: parentItem.rawValue } : null);
+
+		if (hasChanged) {
+			emit("change", item ? { ...item, value: item.rawValue } : null, parentItem ? { ...parentItem, value: parentItem.rawValue } : null);
+		}
+
 		handleClose();
 	}
 };
 
 const handleConfirm = () => {
 	if (!props.multiple) return;
-	modelValue.value = [...selectedList.value.keys()];
+
+	const values = [...selectedList.value.keys()];
+	const currentValues = Array.isArray(modelValue.value) ? modelValue.value : [];
+	const hasChanged = currentValues.length !== values.length || currentValues.some((value) => !selectedList.value.has(value));
+
+	modelValue.value = values;
 	selectedLabel.value = [...selectedList.value.values()];
-	const pagedListMap = new Map(faPagingRef.value.pagedList.map((item) => [item[props.valueKey], item]));
-	const result = [...selectedList.value].map(
-		([value, label]) =>
-			pagedListMap.get(value) ?? {
-				[props.valueKey]: value,
-				label,
-			}
-	);
-	emit("change", result as TResult[], null);
+
+	if (hasChanged) {
+		const pagedListMap = new Map(faPagingRef.value.pagedList.map((item) => [item[props.valueKey], item]));
+		const result = [...selectedList.value].map(
+			([value, label]) =>
+				pagedListMap.get(value) ?? {
+					[props.valueKey]: value,
+					label,
+				}
+		);
+
+		emit("change", result as TResult[], null);
+	}
+
 	handleClose();
 };
 

@@ -105,7 +105,7 @@ public class MenuService : IDynamicApplication
             .SugarPaged(input)
             .ToListAsync();
 
-        return new TreeBuildUtil<QueryMenuPagedOutput, long>().Build(data);
+        return input.TreeData ? new TreeBuildUtil<QueryMenuPagedOutput, long>().Build(data) : data;
     }
 
     /// <summary>

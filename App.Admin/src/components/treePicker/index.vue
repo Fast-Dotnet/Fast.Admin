@@ -323,14 +323,20 @@ const handleSearch = () => {
 
 const handleConfirm = () => {
 	const item = selectedList.value.at(-1);
+	const hasChanged = (modelValue.value ?? undefined) !== item?.rawValue;
 	const path =
 		item?.rawValue === undefined
 			? []
 			: selectedList.value.flatMap((node) => (node.rawValue === undefined ? [] : [{ ...node, value: node.rawValue }]));
 	const selected = path.at(-1);
+
 	modelValue.value = item?.rawValue;
 	selectedLabel.value = selected?.label;
-	emit("change", selected ?? null, selected ? path : null);
+
+	if (hasChanged) {
+		emit("change", selected ?? null, selected ? path : null);
+	}
+
 	handleClose();
 };
 

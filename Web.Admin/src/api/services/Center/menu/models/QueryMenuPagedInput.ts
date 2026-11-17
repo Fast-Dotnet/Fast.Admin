@@ -39,5 +39,9 @@ export interface QueryMenuPagedInput extends PagedInput  {
 	 * 
 	 */
 	status?: CommonStatusEnum;
+	/**
+	 * 树形数据
+	 */
+	treeData?: boolean;
 }
 

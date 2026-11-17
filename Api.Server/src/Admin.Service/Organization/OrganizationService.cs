@@ -257,6 +257,11 @@ public class OrganizationService : IDynamicApplication
                 throw new UserFriendlyException("数据不存在！");
             }
 
+            if (parentOrganization.ParentIds.Contains(input.OrgId))
+            {
+                throw new UserFriendlyException("不能将下级机构设为父机构！");
+            }
+
             if (organizationModel.ParentId != input.ParentId)
             {
                 description += $"父级机构 -> {parentOrganization.OrgName}";

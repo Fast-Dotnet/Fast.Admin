@@ -53,4 +53,9 @@ public class QueryMenuPagedInput : PagedInput
     /// 状态
     /// </summary>
     public CommonStatusEnum? Status { get; set; }
+
+    /// <summary>
+    /// 树形数据
+    /// </summary>
+    public bool TreeData { get; set; } = true;
 }

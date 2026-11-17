@@ -285,6 +285,11 @@ public class DepartmentService : IDynamicApplication
                 throw new UserFriendlyException("数据不存在！");
             }
 
+            if (parentDepartment.OrgId != input.OrgId)
+            {
+                throw new UserFriendlyException("父部门必须属于所选机构！");
+            }
+
             departmentModel.ParentId = parentDepartment.DepartmentId;
             departmentModel.ParentName = parentDepartment.DepartmentName;
             departmentModel.ParentIds = [.. parentDepartment.ParentIds, parentDepartment.DepartmentId];
@@ -349,6 +354,19 @@ public class DepartmentService : IDynamicApplication
             throw new UserFriendlyException("数据不存在！");
         }
 
+        if (departmentModel.OrgId != input.OrgId)
+        {
+            if (await _repository.AnyAsync(a => a.ParentId == input.DepartmentId))
+            {
+                throw new UserFriendlyException("部门存在子部门，无法更换机构！");
+            }
+
+            if (await _repository.Queryable<EmployeeOrgModel>().AnyAsync(a => a.DepartmentId == input.DepartmentId))
+            {
+                throw new UserFriendlyException("部门存在员工关联，无法更换机构！");
+            }
+        }
+
         string description = $"编辑部门：{input.DepartmentName}";
 
         departmentModel.OrgId = organizationModel.OrgId;
@@ -369,6 +387,16 @@ public class DepartmentService : IDynamicApplication
             if (parentDepartment == null)
             {
                 throw new UserFriendlyException("数据不存在！");
+            }
+
+            if (parentDepartment.OrgId != input.OrgId)
+            {
+                throw new UserFriendlyException("父部门必须属于所选机构！");
+            }
+
+            if (parentDepartment.ParentIds.Contains(input.DepartmentId))
+            {
+                throw new UserFriendlyException("不能将下级部门设为父部门！");
             }
 
             if (departmentModel.ParentId != input.ParentId)
