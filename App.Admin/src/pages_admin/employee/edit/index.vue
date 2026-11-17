@@ -2,7 +2,7 @@
 	<view class="page">
 		<FaLoading mask :loading="state.loading" />
 		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>
-			<wd-cell-group title="组织架构" border>
+			<wd-cell-group title="组织架构">
 				<FaCellPicker title="机构" prop="orgId" :value="state.formData.orgName" placeholder="请选择机构">
 					<template #default="{ visible }">
 						<FaTreePicker
@@ -69,7 +69,7 @@
 				</FaCellPicker>
 			</wd-cell-group>
 
-			<wd-cell-group title="基础档案" border>
+			<wd-cell-group title="基础档案">
 				<wd-form-item title="职员名称" prop="employeeName">
 					<wd-input v-model="state.formData.employeeName" clearable :maxlength="20" placeholder="请输入职员名称" />
 				</wd-form-item>
@@ -111,7 +111,7 @@
 				</wd-form-item>
 			</wd-cell-group>
 
-			<wd-cell-group title="角色信息" border>
+			<wd-cell-group title="角色信息">
 				<wd-form-item title="角色" prop="roleList">
 					<wd-checkbox-group v-model="state.formData.roleIds" type="square" direction="horizontal" @change="handleRoleChange">
 						<wd-checkbox v-for="role in state.roleList" :key="role.value" :name="role.value" :disabled="role.disabled">

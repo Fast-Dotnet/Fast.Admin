@@ -1,0 +1,64 @@
+.application-header {
+	position: sticky;
+	top: var(--window-top, 0px);
+	z-index: 10;
+	background-color: var(--wot-filled-oppo);
+	border-bottom: var(--wot-stroke-main) solid var(--wot-border-main);
+}
+
+:deep(.application-header__application) {
+	--wot-cell-padding: var(--wot-padding-main) var(--fa-spacing-page);
+	--wot-cell-arrow-margin-left: 0;
+	--fa-cell-left-flex: 0 0 clamp(84px, 28%, 104px);
+}
+
+.application-header__actions {
+	padding: 0 var(--fa-spacing-page) var(--wot-padding-main);
+}
+
+.application-list {
+	padding: var(--wot-padding-main) var(--fa-spacing-page);
+}
+
+:deep(.application-option) {
+	--wot-cell-padding: var(--wot-padding-main);
+	--fa-cell-left-flex: 1;
+
+	.wd-cell__title {
+		min-width: 0;
+		overflow-wrap: anywhere;
+	}
+
+	.wd-cell__right {
+		flex: 0 0 auto;
+	}
+
+	&.fa-select-page__cell--selected {
+		--wot-cell-title-color: var(--wot-primary-6);
+
+		font-weight: var(--wot-font-weight-semibold);
+	}
+}
+
+.application-option__logo {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	margin-right: var(--wot-spacing-main);
+}
+
+.application-option__actions {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	gap: var(--wot-spacing-tight);
+}
+
+.application-option__more {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	width: 56rpx;
+	min-height: 72rpx;
+}
