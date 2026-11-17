@@ -9,9 +9,18 @@
 	box-shadow: var(--fa-shadow-low);
 }
 
-.workbench-header :deep(.fa-search-input) {
-	padding: 0;
+:deep(.workbench-search) {
+	--wot-input-bg: var(--wot-filled-bottom);
+	--wot-input-inner-height: var(--fa-size-search-height);
+	--wot-input-padding: 0 20rpx;
+
+	flex: 1;
+	border-radius: 8px;
 	margin-right: var(--workbench-capsule-space, 0px);
+
+	.wd-input__icon {
+		--wot-input-icon-font-size: var(--wot-typography-title-size-main);
+	}
 }
 
 .workspace {
@@ -42,18 +51,6 @@
 	min-width: 0;
 	font-size: var(--wot-typography-body-size-main);
 	font-weight: var(--wot-font-weight-semibold);
-}
-
-.workspace__logo {
-	display: flex;
-	flex-shrink: 0;
-	align-items: center;
-	justify-content: center;
-	width: 48rpx;
-	height: 48rpx;
-	border-radius: 12rpx;
-	color: var(--wot-primary-6);
-	overflow: hidden;
 }
 
 .workspace__title {

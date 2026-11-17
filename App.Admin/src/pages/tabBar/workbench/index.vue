@@ -1,20 +1,14 @@
 <template>
 	<view class="page">
 		<view class="workbench-header" :style="headerStyle">
-			<FaSearchInput v-model="state.searchValue" :filter="false" placeholder="搜索应用名称" />
+			<wd-input custom-class="workbench-search" v-model="state.searchValue" clearable placeholder="搜索应用名称">
+				<template #prefix>
+					<wd-icon custom-class="wd-input__icon" name="search-line" />
+				</template>
+			</wd-input>
 			<button class="workspace" @click="switchTenantPopupRef?.open()">
 				<view class="workspace__name">
-					<view class="workspace__logo">
-						<FaImage
-							width="48rpx"
-							height="48rpx"
-							:src="userInfoStore.logoUrl || defaultLogo"
-							original
-							:hide-image="false"
-							:enable-preview="false"
-							@click="switchTenantPopupRef?.open()"
-						/>
-					</view>
+					<FaImage width="48rpx" height="48rpx" :src="userInfoStore.logoUrl || defaultLogo" :hide-image="false" :enable-preview="false" />
 					<text class="workspace__title">{{ userInfoStore.tenantName }}</text>
 				</view>
 				<text class="workspace__department">{{ userInfoStore.departmentName || "当前工作空间" }}</text>
@@ -33,9 +27,7 @@
 					</view>
 					<wd-button type="primary" variant="text" size="small" @click="commonMenuPopupRef?.open(commonMenuList)">编辑</wd-button>
 				</view>
-
 				<MenuGrid v-if="commonMenuList.length" :menus="commonMenuList" @select="handleMenuClick" />
-
 				<view v-else class="menu-empty" @click="commonMenuPopupRef?.open(commonMenuList)">点击编辑，添加你的常用应用</view>
 			</view>
 
