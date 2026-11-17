@@ -1,5 +1,5 @@
 <template>
-	<FaPopup ref="popupRef" title="消息模板详情" height="70%" position="bottom" closable>
+	<FaPopup ref="faPopupRef" title="消息模板详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
 			<FaField label="模板类型" center>
 				<FaTag name="MessageTemplateTypeEnum" :value="formData.templateType" />
@@ -39,13 +39,13 @@ defineOptions({
 	name: "SystemMessageTemplateDetail",
 });
 
-const popupRef = ref<FaPopupInstance>();
+const faPopupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<QueryMessageTemplateDetailOutput>();
 
 const detail = throttle(
 	async (recordId: string) =>
-		await popupRef.value.open(async () => {
+		await faPopupRef.value.open(async () => {
 			formData.value = await messageTemplateApi.queryMessageTemplateDetail(recordId);
 		})
 );

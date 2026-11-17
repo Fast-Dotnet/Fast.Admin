@@ -1,5 +1,5 @@
 <template>
-	<FaPopup ref="popupRef" title="在线用户详情" height="70%" position="bottom" closable>
+	<FaPopup ref="faPopupRef" title="在线用户详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
 			<FaField label="昵称" :value="formData.nickName" />
 			<FaField label="手机" :value="formData.mobile" />
@@ -44,13 +44,13 @@ defineOptions({
 	name: "SystemTenantOnlineUserDetail",
 });
 
-const popupRef = ref<FaPopupInstance>();
+const faPopupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<TenantOnlineUserModel>();
 
 const detail = throttle(
 	async (item: TenantOnlineUserModel) =>
-		await popupRef.value.open(() => {
+		await faPopupRef.value.open(() => {
 			formData.value = item;
 		})
 );

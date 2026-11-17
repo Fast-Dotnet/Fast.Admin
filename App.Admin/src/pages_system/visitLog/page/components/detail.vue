@@ -1,5 +1,5 @@
 <template>
-	<FaPopup ref="popupRef" title="访问日志详情" height="70%" position="bottom" closable>
+	<FaPopup ref="faPopupRef" title="访问日志详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
 			<FaField label="昵称" :value="formData.nickName" />
 			<FaField label="手机" :value="formData.mobile" />
@@ -32,13 +32,13 @@ defineOptions({
 
 const userInfoStore = useUserInfo();
 
-const popupRef = ref<FaPopupInstance>();
+const faPopupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<VisitLogModel>();
 
 const detail = throttle(
 	async (data: VisitLogModel) =>
-		await popupRef.value.open(() => {
+		await faPopupRef.value.open(() => {
 			formData.value = data;
 		})
 );

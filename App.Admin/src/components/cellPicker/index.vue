@@ -51,7 +51,7 @@
 			</wd-radio-group>
 			<FaPopup
 				v-else
-				ref="popupRef"
+				ref="faPopupRef"
 				custom-class="fa-cell-picker__popup"
 				custom-style="--fa-popup-body-padding: 0;"
 				:title="props.title"
@@ -158,7 +158,7 @@ const emit = defineEmits<{
 	clear: [];
 }>();
 
-const popupRef = ref<InstanceType<typeof FaPopup>>();
+const faPopupRef = ref<InstanceType<typeof FaPopup>>();
 
 const visible = ref(false);
 const slotState = { visible };
@@ -168,7 +168,7 @@ const formDisabled = useFormDisabled(props);
 const handleClick = () => {
 	if (!props.radio) {
 		visible.value = true;
-		popupRef.value?.open();
+		faPopupRef.value?.open();
 	}
 	emit("click");
 };
@@ -210,12 +210,12 @@ const handleClear = () => {
 
 const handleSelect = (value: string | number) => {
 	handleChange(value);
-	popupRef.value?.close();
+	faPopupRef.value?.close();
 };
 
 const handlePopupClear = () => {
 	handleClear();
-	popupRef.value?.close();
+	faPopupRef.value?.close();
 };
 
 // #ifdef H5

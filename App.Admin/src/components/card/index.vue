@@ -48,12 +48,7 @@ const emit = defineEmits<{
 const userInfoStore = useUserInfo();
 
 const handleClick = (event: BaseEvent) => {
-	if (props.code === undefined || userInfoStore.isSuperAdmin) {
-		emit("click", event);
-		return;
-	}
-	const codes = Array.isArray(props.code) ? props.code : [props.code];
-	if (codes.some((code) => userInfoStore.buttonCodeList.includes(code))) {
+	if (props.code === undefined || userInfoStore.hasButtonPermission(props.code)) {
 		emit("click", event);
 	}
 };

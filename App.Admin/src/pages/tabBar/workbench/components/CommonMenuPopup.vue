@@ -1,6 +1,6 @@
 <template>
 	<FaPopup
-		ref="popupRef"
+		ref="faPopupRef"
 		body-scroll="none"
 		height="76%"
 		position="bottom"
@@ -149,7 +149,7 @@ interface MenuDragState {
 
 const { proxy } = getCurrentInstance();
 
-const popupRef = ref<FaPopupInstance>();
+const faPopupRef = ref<FaPopupInstance>();
 
 const state = reactive({
 	/** 选中的菜单集合 */
@@ -188,7 +188,7 @@ const draggableMenus = computed(() =>
 // 使用 uni-app 节点查询测量网格与滚动区域，保持 H5 和小程序的坐标来源一致。
 const measureLayout = () =>
 	new Promise<void>((resolve) => {
-		if (!proxy || !popupRef.value?.visible) {
+		if (!proxy || !faPopupRef.value?.visible) {
 			resolve();
 			return;
 		}
@@ -397,7 +397,7 @@ const handleToggleMenu = (menu: AuthMenuInfoDto) => {
 };
 
 const handleConfirm = () => {
-	popupRef.value.close(async () => {
+	faPopupRef.value.close(async () => {
 		await employeeApi.editCommonMenus({ commonMenuCodes: selectedMenuCodes.value });
 		useToast.success("常用应用已保存");
 		emit("ok");
@@ -405,7 +405,7 @@ const handleConfirm = () => {
 };
 
 const open = (menus: AuthMenuInfoDto[]) => {
-	popupRef.value?.open(async () => {
+	faPopupRef.value?.open(async () => {
 		handleDragCancel();
 		state.selectedMenus = [...menus];
 		// 先同步实际位置再归零，确保上次绑定值已为 0、但用户手动滚动过时，仍能触发回顶。

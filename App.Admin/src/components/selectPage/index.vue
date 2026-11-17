@@ -15,6 +15,10 @@
 		@close="visible = false"
 		@after-enter="faPagingRef.reload()"
 	>
+		<template v-if="$slots.titlePrefix" #titlePrefix="{ loading }">
+			<slot name="titlePrefix" :loading="loading" />
+		</template>
+
 		<FaPaging
 			ref="faPagingRef"
 			v-model:search-param="searchParam"
@@ -106,8 +110,9 @@
 			</template>
 		</FaPaging>
 
-		<template v-if="props.multiple" #footer>
-			<text class="fa-select-page__selected-count">已选 {{ selectedList.size }} 项</text>
+		<template v-if="$slots.footer || props.multiple" #footer="{ loading, close: _close }">
+			<text v-if="props.multiple" class="fa-select-page__selected-count">已选 {{ selectedList.size }} 项</text>
+			<slot v-if="$slots.footer" name="footer" :loading="loading" :close="_close" />
 		</template>
 	</FaPopup>
 </template>
@@ -292,7 +297,7 @@ const localData = computed(() => {
 	return filterItems(props.data);
 });
 
-const open = () => {
+const handleOpen = () => {
 	if (faPopupRef.value && !faPopupRef.value.visible) {
 		faPopupRef.value.open(() => {
 			if (props.multiple) {
@@ -305,7 +310,7 @@ const open = () => {
 	}
 };
 
-const close = () => {
+const handleClose = () => {
 	if (faPopupRef.value?.visible) {
 		faPopupRef.value.close();
 	}
@@ -324,7 +329,7 @@ const handleChange = (item?: TResult, parentItem?: TResult) => {
 		modelValue.value = value;
 		selectedLabel.value = label;
 		emit("change", item ? { ...item, value: item.rawValue } : null, parentItem ? { ...parentItem, value: parentItem.rawValue } : null);
-		close();
+		handleClose();
 	}
 };
 
@@ -341,7 +346,7 @@ const handleConfirm = () => {
 			}
 	);
 	emit("change", result as TResult[], null);
-	close();
+	handleClose();
 };
 
 const handleClear = () => {
@@ -358,15 +363,15 @@ const handleClear = () => {
 	emit("change", null, null);
 };
 
-watch([visible, faPopupRef], ([isVisible]) => (isVisible ? open() : close()), { immediate: true, flush: "post" });
+watch([visible, faPopupRef], ([isVisible]) => (isVisible ? handleOpen() : handleClose()), { immediate: true, flush: "post" });
 
 defineExpose({
 	/** 已加载的数据 */
 	pagedList: computed(() => faPagingRef.value?.pagedList),
 	/** 当前搜索参数 */
 	searchParam: computed(() => searchParam.value),
-	open,
-	close,
+	open: handleOpen,
+	close: handleClose,
 	/** 执行异步操作并在结束时恢复加载状态；异常继续向调用方传播。 */
 	doLoading: computed(() => faPopupRef.value?.doLoading),
 });

@@ -1,5 +1,5 @@
 <template>
-	<FaPopup ref="popupRef" title="Sql异常详情" height="70%" position="bottom" closable>
+	<FaPopup ref="faPopupRef" title="Sql异常详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
 			<FaField label="昵称" :value="state.formData.nickName" />
 			<FaField label="手机" :value="state.formData.mobile" />
@@ -69,7 +69,7 @@ defineOptions({
 	name: "DevSqlExceptionLogDetail",
 });
 
-const popupRef = ref<FaPopupInstance>();
+const faPopupRef = ref<FaPopupInstance>();
 
 const state = reactive({
 	formData: withDefineType<SqlExceptionLogModel>({}),
@@ -87,7 +87,7 @@ const handleCopy = async (content: string) => {
 
 const detail = throttle(
 	async (data: SqlExceptionLogModel) =>
-		await popupRef.value.open(() => {
+		await faPopupRef.value.open(() => {
 			state.formData = data;
 			state.isStackTraceExpanded = false;
 			state.isPureSqlExpanded = false;

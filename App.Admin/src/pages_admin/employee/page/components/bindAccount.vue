@@ -1,6 +1,6 @@
 <template>
 	<FaPopup
-		ref="popupRef"
+		ref="faPopupRef"
 		:title="state.popupTitle"
 		height="60%"
 		position="bottom"
@@ -38,7 +38,7 @@ defineOptions({
 
 const emit = defineEmits(["ok"]);
 
-const popupRef = ref<FaPopupInstance>();
+const faPopupRef = ref<FaPopupInstance>();
 const formRef = ref<FormInstance>();
 
 const state = reactive({
@@ -59,7 +59,7 @@ const state = reactive({
 const handleConfirm = throttle(async () => {
 	const { valid } = await formRef.value.validate();
 	if (!valid) return;
-	await popupRef.value.close(async () => {
+	await faPopupRef.value.close(async () => {
 		await employeeApi.bindLoginAccount(state.formData);
 		useToast.success("绑定成功！");
 		emit("ok");
@@ -67,7 +67,7 @@ const handleConfirm = throttle(async () => {
 });
 
 const open = throttle(async (employeeId: string) => {
-	await popupRef.value.open(async () => {
+	await faPopupRef.value.open(async () => {
 		const apiRes = await employeeApi.queryEmployeeDetail(employeeId);
 		state.formData = {
 			employeeId: apiRes.employeeId,

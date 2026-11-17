@@ -1,5 +1,5 @@
 <template>
-	<FaPopup ref="popupRef" title="异常日志详情" height="70%" position="bottom" closable>
+	<FaPopup ref="faPopupRef" title="异常日志详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
 			<FaField label="昵称" :value="state.formData.nickName" />
 			<FaField label="手机" :value="state.formData.mobile" />
@@ -68,7 +68,7 @@ defineOptions({
 	name: "DevExceptionLogDetail",
 });
 
-const popupRef = ref<FaPopupInstance>();
+const faPopupRef = ref<FaPopupInstance>();
 
 const state = reactive({
 	formData: withDefineType<ExceptionLogModel>({}),
@@ -87,7 +87,7 @@ const handleCopy = async (content: string) => {
 
 const detail = throttle(
 	async (data: ExceptionLogModel) =>
-		await popupRef.value.open(() => {
+		await faPopupRef.value.open(() => {
 			state.formData = data;
 			state.paramsText = data.paramsObj ?? "";
 			if (state.paramsText) {

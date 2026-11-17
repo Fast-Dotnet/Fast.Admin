@@ -72,6 +72,11 @@ export const useUserInfo = defineStore(
 			Object.assign(state, uInfo);
 		};
 
+		/** 超级管理员直接通过，其余用户至少需要匹配一个按钮权限码。 */
+		const hasButtonPermission = (codes: string | string[]): boolean => {
+			return state.isSuperAdmin || (Array.isArray(codes) ? codes : [codes]).some((code) => state.buttonCodeList.includes(code));
+		};
+
 		/** 删除 Token。 */
 		const removeToken = () => {
 			state.token = "";
@@ -252,6 +257,7 @@ export const useUserInfo = defineStore(
 			hasUserInfo,
 			hasWebSocket,
 			setUserInfo,
+			hasButtonPermission,
 			removeToken,
 			setToken,
 			getToken,

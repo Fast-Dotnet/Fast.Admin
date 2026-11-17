@@ -1,5 +1,5 @@
 <template>
-	<FaPopup ref="popupRef" title="操作日志详情" height="70%" position="bottom" closable>
+	<FaPopup ref="faPopupRef" title="操作日志详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
 			<FaField label="操作人" :value="formData.createdUserName" />
 			<FaField label="工号" :value="formData.employeeNo" />
@@ -34,13 +34,13 @@ defineOptions({
 	name: "AdminOperateLogDetail",
 });
 
-const popupRef = ref<FaPopupInstance>();
+const faPopupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<OperateLogModel>();
 
 const detail = throttle(
 	async (data: OperateLogModel) =>
-		await popupRef.value.open(() => {
+		await faPopupRef.value.open(() => {
 			formData.value = data;
 		})
 );

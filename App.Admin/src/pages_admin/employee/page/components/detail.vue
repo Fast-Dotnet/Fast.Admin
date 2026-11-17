@@ -1,5 +1,5 @@
 <template>
-	<FaPopup ref="popupRef" title="职员详情" height="70%" position="bottom" closable>
+	<FaPopup ref="faPopupRef" title="职员详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup" style="margin-bottom: var(--wot-spacing-extra-loose)">
 			<FaField label="姓名" :value="formData.employeeName" />
 			<FaField label="工号" :value="formData.employeeNo" />
@@ -53,14 +53,14 @@ defineOptions({
 	name: "AdminEmployeeDetail",
 });
 
-const popupRef = ref<FaPopupInstance>();
+const faPopupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<QueryEmployeeDetailOutput>();
 const roleNames = computed(() => formData.value.roleList?.map((item) => item.roleName).join("，"));
 
 const detail = throttle(
 	async (employeeId: string) =>
-		await popupRef.value.open(async () => {
+		await faPopupRef.value.open(async () => {
 			formData.value = await employeeApi.queryEmployeeDetail(employeeId);
 		})
 );

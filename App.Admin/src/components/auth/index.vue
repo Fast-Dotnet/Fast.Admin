@@ -26,9 +26,5 @@ const props = defineProps({
 
 const userInfoStore = useUserInfo();
 
-const isAuth = computed(() => {
-	if (userInfoStore.isSuperAdmin) return true;
-	const codes = Array.isArray(props.code) ? props.code : [props.code];
-	return codes.some((code) => userInfoStore.buttonCodeList.includes(code));
-});
+const isAuth = computed(() => userInfoStore.hasButtonPermission(props.code));
 </script>

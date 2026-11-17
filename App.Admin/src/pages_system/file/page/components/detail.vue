@@ -1,5 +1,5 @@
 <template>
-	<FaPopup ref="popupRef" title="文件存储详情" height="70%" position="bottom" closable>
+	<FaPopup ref="faPopupRef" title="文件存储详情" height="70%" position="bottom" closable>
 		<template #titlePrefix>
 			<wd-button
 				v-if="state.imageMimeType.includes(state.formData.fileMimeType)"
@@ -48,7 +48,7 @@ defineOptions({
 
 const userInfoStore = useUserInfo();
 
-const popupRef = ref<FaPopupInstance>();
+const faPopupRef = ref<FaPopupInstance>();
 
 const state = reactive({
 	formData: withDefineType<QueryFilePagedOutput>({}),
@@ -72,7 +72,7 @@ const formatFileSize = (value?: string) => {
 
 const detail = throttle(
 	async (data: QueryFilePagedOutput) =>
-		await popupRef.value.open(() => {
+		await faPopupRef.value.open(() => {
 			state.formData = data;
 		})
 );

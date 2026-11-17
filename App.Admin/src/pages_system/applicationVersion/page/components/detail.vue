@@ -1,5 +1,5 @@
 <template>
-	<FaPopup ref="popupRef" title="应用版本详情" height="70%" position="bottom" closable>
+	<FaPopup ref="faPopupRef" title="应用版本详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
 			<FaField label="应用名称" :value="formData.appName" />
 			<FaField label="应用标识" :value="formData.appKey" />
@@ -47,13 +47,13 @@ defineOptions({
 	name: "SystemApplicationVersionDetail",
 });
 
-const popupRef = ref<FaPopupInstance>();
+const faPopupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<QueryApplicationVersionDetailOutput>();
 
 const detail = throttle(
 	async (recordId: string) =>
-		await popupRef.value.open(async () => {
+		await faPopupRef.value.open(async () => {
 			formData.value = await applicationVersionApi.queryApplicationVersionDetail(recordId);
 		})
 );

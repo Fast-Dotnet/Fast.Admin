@@ -1,5 +1,5 @@
 <template>
-	<FaPopup ref="popupRef" title="数据库配置详情" height="70%" position="bottom" closable>
+	<FaPopup ref="faPopupRef" title="数据库配置详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
 			<FaField label="数据库名称" :value="formData.dbName" />
 			<FaField label="租户" :value="formData.tenantName" />
@@ -43,13 +43,13 @@ defineOptions({
 	name: "SystemDatabaseDetail",
 });
 
-const popupRef = ref<FaPopupInstance>();
+const faPopupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<QueryDatabasePagedOutput>();
 
 const detail = throttle(
 	async (item: QueryDatabasePagedOutput) =>
-		await popupRef.value.open(() => {
+		await faPopupRef.value.open(() => {
 			formData.value = item;
 		})
 );

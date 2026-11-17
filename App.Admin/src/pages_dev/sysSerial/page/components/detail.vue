@@ -1,5 +1,5 @@
 <template>
-	<FaPopup ref="popupRef" title="序号配置详情" height="70%" position="bottom" closable>
+	<FaPopup ref="faPopupRef" title="序号配置详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
 			<FaField label="规则类型" center>
 				<FaTag name="SysSerialRuleTypeEnum" :value="formData.ruleType" />
@@ -33,13 +33,13 @@ defineOptions({
 	name: "DevSysSerialDetail",
 });
 
-const popupRef = ref<FaPopupInstance>();
+const faPopupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<QuerySysSerialRulePagedOutput>();
 
 const detail = throttle(
 	async (item: QuerySysSerialRulePagedOutput) =>
-		await popupRef.value.open(() => {
+		await faPopupRef.value.open(() => {
 			formData.value = item;
 		})
 );

@@ -1,5 +1,5 @@
 <template>
-	<FaPopup ref="popupRef" title="配置详情" height="70%" position="bottom" closable>
+	<FaPopup ref="faPopupRef" title="配置详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
 			<FaField label="配置名称" :value="formData.configName" />
 			<FaField label="配置编码" :value="formData.configCode" />
@@ -24,13 +24,13 @@ defineOptions({
 	name: "DevConfigDetail",
 });
 
-const popupRef = ref<FaPopupInstance>();
+const faPopupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<QueryConfigDetailOutput>();
 
 const detail = throttle(
 	async (configId: string) =>
-		await popupRef.value.open(async () => {
+		await faPopupRef.value.open(async () => {
 			formData.value = await configApi.queryConfigDetail(configId);
 		})
 );

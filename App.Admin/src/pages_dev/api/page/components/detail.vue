@@ -1,5 +1,5 @@
 <template>
-	<FaPopup ref="popupRef" title="接口详情" height="70%" position="bottom" closable>
+	<FaPopup ref="faPopupRef" title="接口详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
 			<FaField label="接口名称" :value="formData.apiName" />
 			<FaField label="接口地址" :value="formData.apiUrl" copyable />
@@ -47,13 +47,13 @@ defineOptions({
 	name: "DevApiDetail",
 });
 
-const popupRef = ref<FaPopupInstance>();
+const faPopupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<ApiInfoModel>();
 
 const detail = throttle(
 	async (data: ApiInfoModel) =>
-		await popupRef.value.open(() => {
+		await faPopupRef.value.open(() => {
 			formData.value = data;
 		})
 );

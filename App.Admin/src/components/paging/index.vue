@@ -42,18 +42,18 @@
 		@inner-cell-click="(item, index?: number) => emit('innerCellClick', item, index)"
 		@virtual-top-height-change="emit('virtualTopHeightChange', $event)"
 	>
-		<slot :paged-list="pagedList" :search-param="slotState.searchParam" :refresh="handleRefresh" />
+		<slot :paged-list="pagedList" :total-rows="totalRows" :search-param="slotState.searchParam" :refresh="handleRefresh" />
 		<template v-if="slots.top" #top>
-			<slot name="top" :paged-list="pagedList" :search-param="slotState.searchParam" :refresh="handleRefresh" />
+			<slot name="top" :paged-list="pagedList" :total-rows="totalRows" :search-param="slotState.searchParam" :refresh="handleRefresh" />
 		</template>
 		<template v-if="slots.bottom" #bottom>
-			<slot name="bottom" :paged-list="pagedList" :search-param="slotState.searchParam" :refresh="handleRefresh" />
+			<slot name="bottom" :paged-list="pagedList" :total-rows="totalRows" :search-param="slotState.searchParam" :refresh="handleRefresh" />
 		</template>
 		<template v-if="slots.left" #left>
-			<slot name="left" :paged-list="pagedList" :search-param="slotState.searchParam" :refresh="handleRefresh" />
+			<slot name="left" :paged-list="pagedList" :total-rows="totalRows" :search-param="slotState.searchParam" :refresh="handleRefresh" />
 		</template>
 		<template v-if="slots.right" #right>
-			<slot name="right" :paged-list="pagedList" :search-param="slotState.searchParam" :refresh="handleRefresh" />
+			<slot name="right" :paged-list="pagedList" :total-rows="totalRows" :search-param="slotState.searchParam" :refresh="handleRefresh" />
 		</template>
 
 		<template v-if="slots.refresher" #refresher="{ refresherStatus }">
@@ -336,30 +336,35 @@ const slots = defineSlots<{
 	/** 当前用于渲染的列表和查询条件 */
 	default?: (props: {
 		pagedList: TResult[];
+		totalRows: number;
 		searchParam: Ref<Partial<TInput extends PagedInput ? TInput : PagedInput>>;
 		refresh: (pageIndex?: number) => Promise<void>;
 	}) => VNode[];
 	/** 顶部区域，用于导航栏、搜索栏等 */
 	top?: (props: {
 		pagedList: TResult[];
+		totalRows: number;
 		searchParam: Ref<Partial<TInput extends PagedInput ? TInput : PagedInput>>;
 		refresh: (pageIndex?: number) => Promise<void>;
 	}) => VNode[];
 	/** 底部区域，用于底部操作栏等 */
 	bottom?: (props: {
 		pagedList: TResult[];
+		totalRows: number;
 		searchParam: Ref<Partial<TInput extends PagedInput ? TInput : PagedInput>>;
 		refresh: (pageIndex?: number) => Promise<void>;
 	}) => VNode[];
 	/** 列表左侧区域 */
 	left?: (props: {
 		pagedList: TResult[];
+		totalRows: number;
 		searchParam: Ref<Partial<TInput extends PagedInput ? TInput : PagedInput>>;
 		refresh: (pageIndex?: number) => Promise<void>;
 	}) => VNode[];
 	/** 列表右侧区域 */
 	right?: (props: {
 		pagedList: TResult[];
+		totalRows: number;
 		searchParam: Ref<Partial<TInput extends PagedInput ? TInput : PagedInput>>;
 		refresh: (pageIndex?: number) => Promise<void>;
 	}) => VNode[];
@@ -428,6 +433,8 @@ const paging = shallowRef<ZPagingRef<TResult> & Pick<ComponentPublicInstance, "$
 const virtualList = shallowRef<TResult[]>([]);
 /** 实际渲染的数据 */
 const pagedList = computed(() => (props.useVirtualList && !props.usePageScroll ? virtualList.value : modelValue.value));
+/** 数据总数 */
+const totalRows = shallowRef(0);
 
 /** 查询接口并回填列表、总条数与加载状态。 */
 const handleQuery = async (pageNo: number, pageSize: number, from: ZPagingEnums.QueryFrom) => {
@@ -440,41 +447,42 @@ const handleQuery = async (pageNo: number, pageSize: number, from: ZPagingEnums.
 					: Object.assign(requestParam, props.initParam, searchParam.value, props.pagination ? { pageIndex: pageNo, pageSize } : {});
 			const apiRes = await props.requestApi(params);
 
-			let pageData = [] as TResult[];
-			let totalRows = 0;
+			let _pageData = [] as TResult[];
+			let _totalRows = 0;
 			if (props.pagination) {
 				if (Array.isArray(apiRes)) {
-					pageData = apiRes ?? [];
-					totalRows = pageData.length;
+					_pageData = apiRes ?? [];
+					_totalRows = _pageData.length;
 				} else {
-					pageData = apiRes.rows ?? [];
-					totalRows = apiRes.totalRows ?? pageData.length;
+					_pageData = apiRes.rows ?? [];
+					_totalRows = apiRes.totalRows ?? _pageData.length;
 				}
-				await paging.value.completeByTotal(pageData, totalRows);
+				await paging.value.completeByTotal(_pageData, _totalRows);
 			} else {
-				pageData = (apiRes ?? []) as TResult[];
-				totalRows = pageData.length;
-				await paging.value.completeByNoMore(pageData, true);
+				_pageData = (apiRes ?? []) as TResult[];
+				_totalRows = _pageData.length;
+				await paging.value.completeByNoMore(_pageData, true);
 			}
-			emit("query", pageData, pageNo, pageSize, totalRows, from);
+			totalRows.value = _totalRows;
+			emit("query", _pageData, pageNo, pageSize, _totalRows, from);
 		} else {
-			let pageData = [] as TResult[];
-			let totalRows = 0;
+			let _pageData = [] as TResult[];
+			let _totalRows = 0;
 			if (props.pagination) {
 				const allData = props.data?.slice() ?? [];
 				await paging.value.setLocalPaging(allData);
 
 				const size = Math.max(1, pageSize);
 				const start = (Math.max(1, pageNo) - 1) * size;
-				pageData = allData.slice(start, start + size);
-				totalRows = allData.length;
+				_pageData = allData.slice(start, start + size);
+				_totalRows = allData.length;
 			} else {
-				pageData = props.data?.slice() ?? [];
-				totalRows = pageData.length;
-				await paging.value.completeByNoMore(pageData, true);
+				_pageData = props.data?.slice() ?? [];
+				_totalRows = _pageData.length;
+				await paging.value.completeByNoMore(_pageData, true);
 			}
-
-			emit("query", pageData, pageNo, pageSize, totalRows, from);
+			totalRows.value = _totalRows;
+			emit("query", _pageData, pageNo, pageSize, _totalRows, from);
 		}
 	} catch (error) {
 		await paging.value.complete(false);
@@ -534,8 +542,10 @@ onShow(() => {
 defineExpose({
 	/** 已加载的数据 */
 	pagedList: computed(() => modelValue.value),
+	/** 数据总数 */
+	totalRows: computed(() => totalRows.value),
 	/** 搜索参数 */
-	searchParam: computed(() => searchParam.value),
+	searchParam,
 	/** 清空搜索参数 */
 	clearSearchParam: () => {
 		searchParam.value = {};

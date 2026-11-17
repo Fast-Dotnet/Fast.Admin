@@ -1,5 +1,5 @@
 <template>
-	<FaPopup ref="popupRef" title="租户详情" height="70%" position="bottom" closable>
+	<FaPopup ref="faPopupRef" title="租户详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
 			<FaField label="租户名称" :value="formData.tenantName" />
 			<FaField label="租户编号" :value="formData.tenantNo" />
@@ -49,13 +49,13 @@ defineOptions({
 	name: "SystemTenantDetail",
 });
 
-const popupRef = ref<FaPopupInstance>();
+const faPopupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<QueryTenantDetailOutput>();
 
 const detail = throttle(
 	async (tenantId: string) =>
-		await popupRef.value.open(async () => {
+		await faPopupRef.value.open(async () => {
 			formData.value = await tenantApi.queryTenantDetail(tenantId);
 		})
 );

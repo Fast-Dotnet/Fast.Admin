@@ -80,13 +80,10 @@ router.beforeEach(async (to, from, next) => {
 		const hasRedirect = !!redirect && redirect !== to.fullPath;
 		// 重定向不会再次执行守卫，先校验实际目标页的权限。
 		const targetRoute = hasRedirect ? router.routes.find((route) => route.path === redirect.split("?")[0]) : to;
-		if (targetRoute?.authCode && !userInfoStore.isSuperAdmin) {
-			const codes = Array.isArray(targetRoute.authCode) ? targetRoute.authCode : [targetRoute.authCode];
-			if (!codes.some((code) => userInfoStore.buttonCodeList.includes(code))) {
-				useToast.warning("暂无访问权限");
-				next(false);
-				return;
-			}
+		if (targetRoute?.authCode && !userInfoStore.hasButtonPermission(targetRoute.authCode)) {
+			useToast.warning("暂无访问权限");
+			next(false);
+			return;
 		}
 
 		if (hasRedirect) {

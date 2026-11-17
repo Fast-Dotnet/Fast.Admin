@@ -2,7 +2,7 @@
 	<FaCellPicker
 		v-bind="$attrs"
 		:title="props.title"
-		:value="props.multiple ? `已选 ${modelValue.length} 个部门` : String(departmentName)"
+		:value="props.multiple ? `已选 ${modelValue.length} 个部门` : departmentName ? String(departmentName) : undefined"
 		:is-link="!props.disabled"
 		placeholder="请选择部门"
 	>

@@ -1,5 +1,5 @@
 <template>
-	<FaPopup ref="popupRef" title="角色详情" height="70%" position="bottom" closable>
+	<FaPopup ref="faPopupRef" title="角色详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
 			<FaField label="角色名称" :value="state.formData.roleName" />
 			<FaField label="角色编码" :value="state.formData.roleCode" selectable />
@@ -36,7 +36,7 @@ defineOptions({
 	name: "AdminRoleDetail",
 });
 
-const popupRef = ref<FaPopupInstance>();
+const faPopupRef = ref<FaPopupInstance>();
 
 const state = reactive({
 	formData: withDefineType<QueryRoleDetailOutput>({}),
@@ -50,7 +50,7 @@ const roleNames = computed(() =>
 
 const detail = throttle(
 	async (roleId: string) =>
-		await popupRef.value.open(async () => {
+		await faPopupRef.value.open(async () => {
 			const apiRes = await roleApi.queryRoleDetail(roleId);
 			state.formData = apiRes;
 			state.roleList = await roleApi.roleSelector();

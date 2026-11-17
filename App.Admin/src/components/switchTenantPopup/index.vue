@@ -1,5 +1,5 @@
 <template>
-	<FaPopup ref="popupRef" title="切换工作空间" height="70%" position="bottom" closable>
+	<FaPopup ref="faPopupRef" title="切换工作空间" height="70%" position="bottom" closable>
 		<view v-for="item in tenantList" :key="item.userKey" class="fa-tenant-card" @click="handleTenantLogin(item)">
 			<image class="fa-tenant-card__image" :src="item.logoUrl" mode="aspectFill" />
 			<view class="fa-tenant-card__content">
@@ -39,14 +39,14 @@ const emit = defineEmits<{
 
 const userInfoStore = useUserInfo();
 
-const popupRef = ref<InstanceType<typeof FaPopup>>();
+const faPopupRef = ref<InstanceType<typeof FaPopup>>();
 const tenantList = ref<LoginTenantOutput[]>([]);
 
 /** 处理租户登录 */
 const handleTenantLogin = (data: LoginTenantOutput) => {
 	const { userKey } = userInfoStore;
 	if (data.userKey === userKey) return;
-	popupRef.value.close(async () => {
+	faPopupRef.value.close(async () => {
 		const loginRes = await loginApi.tryLogin({ userKey: data.userKey });
 		if (loginRes.status !== LoginStatusEnum.Success) {
 			useToast.error(loginRes.message);
@@ -66,7 +66,7 @@ const handleTenantLogin = (data: LoginTenantOutput) => {
 };
 
 const open = () => {
-	popupRef.value.open(async () => {
+	faPopupRef.value.open(async () => {
 		tenantList.value = await loginApi.queryLoginUser();
 	});
 };

@@ -64,4 +64,8 @@
 		transform: scaleY(0.5);
 		background: var(--wot-border-main);
 	}
+
+	&:empty {
+		display: none;
+	}
 }

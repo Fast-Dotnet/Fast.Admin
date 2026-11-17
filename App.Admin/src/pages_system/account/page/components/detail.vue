@@ -1,5 +1,5 @@
 <template>
-	<FaPopup ref="popupRef" title="账号详情" height="70%" position="bottom" closable>
+	<FaPopup ref="faPopupRef" title="账号详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
 			<FaField label="昵称" :value="formData.nickName" />
 			<FaField label="手机" :value="formData.mobile" />
@@ -57,13 +57,13 @@ defineOptions({
 	name: "SystemAccountDetail",
 });
 
-const popupRef = ref<FaPopupInstance>();
+const faPopupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<QueryAccountDetailOutput>();
 
 const detail = throttle(
 	async (accountId: string) =>
-		await popupRef.value.open(async () => {
+		await faPopupRef.value.open(async () => {
 			formData.value = await accountApi.queryAccountDetail(accountId);
 		})
 );

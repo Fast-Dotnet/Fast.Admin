@@ -15,6 +15,10 @@
 		@close="visible = false"
 		@confirm="handleConfirm"
 	>
+		<template v-if="$slots.titlePrefix" #titlePrefix="{ loading }">
+			<slot name="titlePrefix" :loading="loading" />
+		</template>
+
 		<template #default="{ loading }">
 			<FaSearchInput
 				v-model:search-param="searchParam"
@@ -74,6 +78,10 @@
 			</template>
 
 			<wd-empty v-else-if="!loading" icon="no-content" tip="暂无数据~" />
+		</template>
+
+		<template v-if="$slots.footer" #footer="{ loading, close }">
+			<slot name="footer" :loading="loading" :close="close" />
 		</template>
 	</FaPopup>
 </template>
@@ -293,7 +301,7 @@ const loadData = async () => {
 	}
 };
 
-const open = () => {
+const handleOpen = () => {
 	if (faPopupRef.value && !faPopupRef.value.visible) {
 		faPopupRef.value.open(async () => {
 			await loadData();
@@ -302,7 +310,7 @@ const open = () => {
 	}
 };
 
-const close = () => {
+const handleClose = () => {
 	if (faPopupRef.value?.visible) {
 		faPopupRef.value.close();
 	}
@@ -323,7 +331,7 @@ const handleConfirm = () => {
 	modelValue.value = item?.rawValue;
 	selectedLabel.value = selected?.label;
 	emit("change", selected ?? null, selected ? path : null);
-	close();
+	handleClose();
 };
 
 const handleSelect = (item: TResult, level: number) => {
@@ -346,7 +354,7 @@ const handleClear = () => {
 	emit("clear");
 	emit("change", null, null);
 	setPath([]);
-	close();
+	handleClose();
 };
 
 // 标题宽度变化时，当前 Tab 可能不变，需要重新测量指示线。
@@ -360,15 +368,15 @@ watch(modelValue, () => {
 	return undefined;
 });
 
-watch([visible, faPopupRef], ([isVisible]) => (isVisible ? open() : close()), { immediate: true, flush: "post" });
+watch([visible, faPopupRef], ([isVisible]) => (isVisible ? handleOpen() : handleClose()), { immediate: true, flush: "post" });
 
 defineExpose({
 	/** 已加载的数据 */
 	treeList: computed(() => treeList.value),
 	/** 当前搜索参数 */
 	searchParam: computed(() => searchParam.value),
-	open,
-	close,
+	open: handleOpen,
+	close: handleClose,
 	/** 执行异步操作并在结束时恢复加载状态；异常继续向调用方传播。 */
 	doLoading: computed(() => faPopupRef.value?.doLoading),
 });

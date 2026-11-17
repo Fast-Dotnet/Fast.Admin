@@ -1,6 +1,6 @@
 <template>
 	<FaPopup
-		ref="popupRef"
+		ref="faPopupRef"
 		title="处理投诉"
 		position="bottom"
 		closable
@@ -47,7 +47,7 @@ defineOptions({
 
 const emit = defineEmits(["ok"]);
 
-const popupRef = ref<FaPopupInstance>();
+const faPopupRef = ref<FaPopupInstance>();
 const formRef = ref<FormInstance>();
 
 const state = reactive({
@@ -60,7 +60,7 @@ const state = reactive({
 const handleConfirm = throttle(async () => {
 	const { valid } = await formRef.value.validate();
 	if (!valid) return;
-	await popupRef.value.close(async () => {
+	await faPopupRef.value.close(async () => {
 		await complaintApi.handleComplaint(state.formData);
 		useToast.success("处理成功！");
 		emit("ok");
@@ -68,7 +68,7 @@ const handleConfirm = throttle(async () => {
 });
 
 const open = throttle(async (complaintId: string) => {
-	await popupRef.value.open(async () => {
+	await faPopupRef.value.open(async () => {
 		const apiRes = await complaintApi.queryComplaintDetail(complaintId);
 		state.formData = apiRes;
 	});

@@ -1,5 +1,5 @@
 <template>
-	<FaPopup ref="popupRef" title="投诉工单详情" height="70%" position="bottom" closable>
+	<FaPopup ref="faPopupRef" title="投诉工单详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
 			<FaField label="应用名称" :value="formData.appName" />
 			<FaField label="应用标识" :value="formData.appKey" />
@@ -39,13 +39,13 @@ defineOptions({
 	name: "SystemComplaintDetail",
 });
 
-const popupRef = ref<FaPopupInstance>();
+const faPopupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<QueryComplaintPagedOutput>();
 
 const detail = throttle(
 	async (data: QueryComplaintPagedOutput) =>
-		await popupRef.value.open(() => {
+		await faPopupRef.value.open(() => {
 			formData.value = data;
 		})
 );
