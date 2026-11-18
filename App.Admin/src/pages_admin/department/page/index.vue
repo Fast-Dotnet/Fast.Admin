@@ -146,7 +146,7 @@ const state = reactive({
 	/** 弹出菜单显示 */
 	actionVisible: false,
 	/** 弹出菜单集合 */
-	actionList: withDefineType<{ name: string }[]>([]),
+	actionList: withDefineType<{ name: string; color?: string }[]>([]),
 	/** 点击的机构 */
 	clickedOrganization: withDefineType<ElSelectorOutput<string>>(),
 	/** 选中的机构 */
@@ -228,10 +228,10 @@ const handleOrgMoreClick = throttle((item: ElSelectorOutput<string>) => {
 	state.clickedOrganization = item;
 	state.actionList = [
 		{ name: "编辑机构", permission: "Department:Edit" },
-		{ name: "删除机构", permission: "Department:Delete" },
+		{ name: "删除机构", color: "var(--wot-danger-main)", permission: "Department:Delete" },
 	]
 		.filter(({ permission }) => userInfoStore.hasButtonPermission(permission))
-		.map(({ name }) => ({ name }));
+		.map(({ name, color }) => ({ name, color }));
 	state.actionVisible = true;
 });
 

@@ -146,6 +146,7 @@ public class ApplicationClientService : IDynamicApplication
         await _repository.InsertAsync(applicationClientModel);
         // 删除缓存
         await ApplicationContext.DeleteApplication(applicationClientModel.AppKey);
+        await ApplicationContext.DeleteAllBrowserRedirect();
     }
 
     /// <summary>
@@ -173,6 +174,7 @@ public class ApplicationClientService : IDynamicApplication
             throw new UserFriendlyException("数据不存在！");
         }
 
+        string oldAppKey = applicationClientModel.AppKey;
         applicationClientModel.AppKey = input.AppKey;
         applicationClientModel.AppId = applicationModel.AppId;
         applicationClientModel.AppType = input.AppType;
@@ -189,8 +191,15 @@ public class ApplicationClientService : IDynamicApplication
         applicationClientModel.RowVersion = input.RowVersion;
 
         await _repository.UpdateAsync(applicationClientModel);
+        // 标识变更后，旧来源的应用缓存也需要失效
+        if (oldAppKey != applicationClientModel.AppKey)
+        {
+            await ApplicationContext.DeleteApplication(oldAppKey);
+        }
+
         // 删除缓存
         await ApplicationContext.DeleteApplication(applicationClientModel.AppKey);
+        await ApplicationContext.DeleteAllBrowserRedirect();
     }
 
     /// <summary>
@@ -210,5 +219,6 @@ public class ApplicationClientService : IDynamicApplication
         await _repository.DeleteAsync(applicationClientModel);
         // 删除缓存
         await ApplicationContext.DeleteApplication(applicationClientModel.AppKey);
+        await ApplicationContext.DeleteAllBrowserRedirect();
     }
 }

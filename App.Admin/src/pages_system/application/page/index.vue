@@ -141,7 +141,7 @@ const state = reactive({
 	selectedApplication: withDefineType<QueryApplicationPagedOutput>(),
 	clickedApplication: withDefineType<QueryApplicationPagedOutput>(),
 	actionVisible: false,
-	actionList: withDefineType<{ name: string }[]>([]),
+	actionList: withDefineType<{ name: string; color?: string }[]>([]),
 });
 
 let pageVersion: number;
@@ -205,10 +205,10 @@ const handleMoreClick = throttle((item: QueryApplicationPagedOutput) => {
 	state.actionList = [
 		{ name: "应用详情", permission: "App:Detail" },
 		{ name: "编辑应用", permission: "App:Edit" },
-		{ name: "删除应用", permission: "App:Delete" },
+		{ name: "删除应用", color: "var(--wot-danger-main)", permission: "App:Delete" },
 	]
 		.filter(({ permission }) => userInfoStore.hasButtonPermission(permission))
-		.map(({ name }) => ({ name }));
+		.map(({ name, color }) => ({ name, color }));
 	state.actionVisible = true;
 });
 

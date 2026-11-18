@@ -153,5 +153,15 @@ public class ApplicationContext
 
         string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.App, "*");
         await centerCache.DelByPatternAsync(cacheKey);
+        await DeleteAllBrowserRedirect();
+    }
+
+    /// <summary>
+    /// 删除所有浏览器重定向缓存
+    /// </summary>
+    public static async Task DeleteAllBrowserRedirect()
+    {
+        string cacheKey = CacheConst.GetCacheKey(CacheConst.Center.BrowserRedirect, "*", "*", "*");
+        await centerCache.DelByPatternAsync(cacheKey);
     }
 }

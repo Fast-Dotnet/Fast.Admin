@@ -269,6 +269,8 @@ public class MenuService : IDynamicApplication
             await _repository.InsertAsync(menuModel);
             await _repository.Insertable(addButtonList).ExecuteCommandAsync();
         }, ex => throw ex);
+
+        await ApplicationContext.DeleteAllBrowserRedirect();
     }
 
     /// <summary>
@@ -410,6 +412,8 @@ public class MenuService : IDynamicApplication
             await _repository.Updateable(updateButtonList).ExecuteCommandAsync();
             await _repository.Insertable(addButtonList).ExecuteCommandAsync();
         }, ex => throw ex);
+
+        await ApplicationContext.DeleteAllBrowserRedirect();
     }
 
     /// <summary>
@@ -437,6 +441,7 @@ public class MenuService : IDynamicApplication
         }
 
         await _repository.DeleteAsync(menuModel);
+        await ApplicationContext.DeleteAllBrowserRedirect();
     }
 
     /// <summary>
@@ -461,6 +466,8 @@ public class MenuService : IDynamicApplication
         };
         menuModel.RowVersion = input.RowVersion;
 
+
         await _repository.UpdateAsync(menuModel);
+        await ApplicationContext.DeleteAllBrowserRedirect();
     }
 }

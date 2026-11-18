@@ -100,6 +100,12 @@ public static class CacheConst
         public const string Rabot = "Rabot:{0}";
 
         /// <summary>
+        /// 浏览器重定向
+        /// </summary>
+        /// <remarks>{0}来源，{1}设备类型，{2}路径</remarks>
+        public const string BrowserRedirect = "BrowserRedirect:{0}:{1}:{2}";
+
+        /// <summary>
         /// 应用
         /// </summary>
         /// <remarks>{0}应用标识</remarks>
