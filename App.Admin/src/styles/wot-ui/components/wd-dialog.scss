@@ -4,3 +4,63 @@
 	--wot-dialog-img-border-radius: var(--wot-radius-extra-large);
 	--wot-dialog-actions-confirm-font-weight: var(--wot-font-weight-semibold);
 }
+
+// 避免外层方形背景露出，遮住内部容器的圆角。
+.wd-popup.wd-dialog.wd-popup--center {
+	background: transparent;
+}
+
+.wd-dialog__flex {
+	display: flex;
+}
+
+.wd-dialog__block {
+	display: block;
+}
+
+// 自定义 actions 使用全局样式，不依赖 Wot 组件的作用域。
+.wd-dialog__actions {
+	padding: var(--wot-dialog-actions-padding, var(--wot-padding-super-loose, 20px));
+
+	.wd-dialog__actions-btn:not(:last-child) {
+		margin-right: var(--wot-dialog-actions-spacing, var(--wot-spacing-loose, 12px));
+	}
+
+	.wd-dialog__actions-btn--confirm {
+		font-weight: var(--wot-dialog-actions-confirm-font-weight, 600);
+	}
+}
+
+.wd-dialog__actions--vertical {
+	flex-direction: column;
+	padding: var(
+		--wot-dialog-actions-padding-vertical,
+		var(--wot-padding-super-loose, 20px) var(--wot-padding-loose, 12px) var(--wot-padding-loose, 12px)
+	);
+
+	.wd-dialog__actions-btn:not(:last-child) {
+		margin-right: 0;
+		margin-bottom: var(--wot-dialog-actions-spacing-vertical, var(--wot-spacing-tight, 8px));
+	}
+}
+
+.wd-dialog__actions.is-text {
+	padding: var(--wot-padding-super-loose, 20px) 0 0;
+
+	.wd-dialog__actions-btn {
+		margin: 0;
+		border-radius: 0;
+		padding: var(--wot-dialog-action-text-button-padding, var(--wot-padding-loose, 12px) var(--wot-padding-extra-loose, 16px));
+		border-top: var(--wot-dialog-action-text-border, var(--wot-stroke-light, 0.5px)) solid
+			var(--wot-dialog-action-text-border-color, var(--wot-border-main));
+
+		&:not(:last-child) {
+			border-right: var(--wot-dialog-action-text-border, var(--wot-stroke-light, 0.5px)) solid
+				var(--wot-dialog-action-text-border-color, var(--wot-border-main));
+		}
+	}
+}
+
+.wd-dialog__actions--vertical.is-text .wd-dialog__actions-btn:not(:last-child) {
+	border-right: none;
+}

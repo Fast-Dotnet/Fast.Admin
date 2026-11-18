@@ -39,7 +39,7 @@ defineOptions({
 
 const faPopupRef = ref<FaPopupInstance>();
 
-const formData = shallowRef<SqlTimeoutLogModel>();
+const formData = shallowRef<SqlTimeoutLogModel>({});
 
 const detail = throttle(
 	async (data: SqlTimeoutLogModel) =>

@@ -34,7 +34,7 @@ const userInfoStore = useUserInfo();
 
 const faPopupRef = ref<FaPopupInstance>();
 
-const formData = shallowRef<VisitLogModel>();
+const formData = shallowRef<VisitLogModel>({});
 
 const detail = throttle(
 	async (data: VisitLogModel) =>

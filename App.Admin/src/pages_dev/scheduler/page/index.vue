@@ -127,11 +127,16 @@
 		</view>
 
 		<template #footer="{ loading }">
-			<FaAuth v-if="state.schedulerDetail.schedulerInStandbyMode" code="Scheduler:Start">
-				<wd-button custom-style="flex: 1;" type="primary" block :loading="loading" @click="handleStart">启动</wd-button>
-			</FaAuth>
-			<FaAuth v-else code="Scheduler:Stop">
-				<wd-button custom-style="flex: 1;" type="danger" block :loading="loading" @click="handleStop">待机</wd-button>
+			<FaAuth :code="state.schedulerDetail.schedulerInStandbyMode ? 'Scheduler:Start' : 'Scheduler:Stop'">
+				<wd-button
+					custom-style="flex: 1;"
+					:type="state.schedulerDetail.schedulerInStandbyMode ? 'primary' : 'danger'"
+					block
+					:loading="loading"
+					@click="state.schedulerDetail.schedulerInStandbyMode ? handleStart() : handleStop()"
+				>
+					{{ state.schedulerDetail.schedulerInStandbyMode ? "启动" : "待机" }}
+				</wd-button>
 			</FaAuth>
 		</template>
 	</FaPopup>

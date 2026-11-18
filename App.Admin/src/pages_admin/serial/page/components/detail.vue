@@ -35,7 +35,7 @@ defineOptions({
 
 const faPopupRef = ref<FaPopupInstance>();
 
-const formData = shallowRef<QuerySerialRulePagedOutput>();
+const formData = shallowRef<QuerySerialRulePagedOutput>({});
 
 const detail = throttle(
 	async (item: QuerySerialRulePagedOutput) =>

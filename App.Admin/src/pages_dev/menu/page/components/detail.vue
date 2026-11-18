@@ -89,7 +89,7 @@ defineOptions({
 
 const faPopupRef = ref<FaPopupInstance>();
 
-const formData = shallowRef<QueryMenuDetailOutput>();
+const formData = shallowRef<QueryMenuDetailOutput>({});
 
 const detail = throttle(
 	async (menuId: string) =>

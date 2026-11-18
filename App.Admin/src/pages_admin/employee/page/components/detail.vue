@@ -56,7 +56,7 @@ defineOptions({
 
 const faPopupRef = ref<FaPopupInstance>();
 
-const formData = shallowRef<QueryEmployeeDetailOutput>();
+const formData = shallowRef<QueryEmployeeDetailOutput>({});
 const roleNames = computed(() => formData.value.roleList?.map((item) => item.roleName).join("，"));
 
 const detail = throttle(

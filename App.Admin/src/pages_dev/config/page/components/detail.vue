@@ -26,7 +26,7 @@ defineOptions({
 
 const faPopupRef = ref<FaPopupInstance>();
 
-const formData = shallowRef<QueryConfigDetailOutput>();
+const formData = shallowRef<QueryConfigDetailOutput>({});
 
 const detail = throttle(
 	async (configId: string) =>

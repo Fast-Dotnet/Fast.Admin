@@ -59,7 +59,7 @@ defineOptions({
 
 const faPopupRef = ref<FaPopupInstance>();
 
-const formData = shallowRef<QueryDictionaryDetailOutput>();
+const formData = shallowRef<QueryDictionaryDetailOutput>({});
 
 const detail = throttle(
 	async (dictionaryId: string) =>

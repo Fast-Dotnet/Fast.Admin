@@ -51,7 +51,7 @@ defineOptions({
 
 const faPopupRef = ref<FaPopupInstance>();
 
-const formData = shallowRef<QueryTenantDetailOutput>();
+const formData = shallowRef<QueryTenantDetailOutput>({});
 
 const detail = throttle(
 	async (tenantId: string) =>

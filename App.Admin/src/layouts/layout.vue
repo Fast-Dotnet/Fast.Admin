@@ -55,10 +55,21 @@
 		<wd-toast selector="#fast_toast" />
 		<!-- 消息弹窗 -->
 		<wd-dialog selector="#fast_dialog">
-			<template v-if="wdHookState.wdDialogState.loading" #actions>
-				<view style="padding: var(--wot-padding-super-loose) 0 0">
-					<wd-button custom-class="wd-dialog__actions-btn wd-dialog__actions-btn--confirm" type="info" variant="plain" block loading>
-						加载中...
+			<template #actions="{ confirm, cancel }">
+				<view
+					:class="[
+						'wd-dialog__actions',
+						dialogOptions.actionLayout === 'vertical' ? 'wd-dialog__actions--vertical' : '',
+						dialogOptions.actionLayout === 'vertical' || cancelButton.show ? 'wd-dialog__flex' : 'wd-dialog__block',
+						dialogOptions.theme === 'text' ? 'is-text' : '',
+					]"
+				>
+					<wd-button v-if="cancelButton.show" v-bind="cancelButton.props" @click="cancel">
+						{{ cancelButton.text }}
+					</wd-button>
+
+					<wd-button v-if="confirmButton.show" v-bind="confirmButton.props" @click="confirm">
+						{{ confirmButton.text }}
 					</wd-button>
 				</view>
 			</template>
@@ -104,10 +115,11 @@
 
 <script setup lang="ts">
 import { onHide, onLoad, onShow } from "@dcloudio/uni-app";
-import { computed, nextTick, onBeforeMount, onMounted, reactive, ref, watch } from "vue";
+import { computed, nextTick, onBeforeMount, onMounted, reactive, ref, shallowRef, watch } from "vue";
 import { logger } from "@fast-china/utils";
 import { useRoute, useRouter } from "@wot-ui/router";
-import { useDialog } from "@wot-ui/ui/components/wd-dialog";
+import { defaultOptions as dialogDefaultOptions, useDialog } from "@wot-ui/ui/components/wd-dialog";
+import { OPEN_TYPE_EVENT_KEYS } from "@wot-ui/ui/components/wd-dialog/types";
 import { useNotify } from "@wot-ui/ui/components/wd-notify";
 import { useToast } from "@wot-ui/ui/components/wd-toast";
 import { LoginStatusEnum } from "@/api/enums/LoginStatusEnum";
@@ -116,6 +128,8 @@ import { CommonRoute } from "@/common";
 import { useMessageBox, wdHookState } from "@/hooks";
 import defaultLogo from "@/static/logo.png";
 import { useApp, useConfig, useUserInfo } from "@/stores";
+import type { ButtonProps } from "@wot-ui/ui/components/wd-button/types";
+import type { DialogBoxButtonOption, DialogOptions } from "@wot-ui/ui/components/wd-dialog/types";
 import type { WatchStopHandle } from "vue";
 import type { FaPopupInstance } from "@/components";
 
@@ -183,6 +197,45 @@ const mainStyle = computed(() => {
 	}
 	return style;
 });
+
+// 请求消费后会清空，单独保留当前弹窗配置。
+const dialogOptions = shallowRef<DialogOptions>({});
+
+const ignoredDialogButtonFields = new Set<string>(["text", ...OPEN_TYPE_EVENT_KEYS]);
+
+function createDialogButton(option: DialogBoxButtonOption | undefined, isConfirm: boolean) {
+	const buttonProps: Partial<ButtonProps> = isConfirm ? { block: true } : { block: true, type: "info", variant: "plain" };
+
+	if (option !== null && typeof option === "object") {
+		Object.assign(
+			buttonProps,
+			Object.fromEntries(Object.entries(option).filter(([key, value]) => value !== undefined && !ignoredDialogButtonFields.has(key)))
+		);
+	}
+
+	// text 主题优先于按钮自身的 variant，与源码一致。
+	if (dialogOptions.value.theme === "text") {
+		buttonProps.variant = "text";
+	}
+
+	buttonProps.customClass = `${buttonProps.customClass || ""} wd-dialog__actions-btn${isConfirm ? " wd-dialog__actions-btn--confirm" : ""}`;
+
+	const loading = wdHookState.wdDialogState.loading;
+	buttonProps.disabled ||= loading;
+
+	if (isConfirm) {
+		buttonProps.loading ||= loading;
+	}
+
+	return {
+		show: option !== undefined && option !== null,
+		text: typeof option === "string" ? option : option?.text || (isConfirm ? "确定" : "取消"),
+		props: buttonProps,
+	};
+}
+
+const cancelButton = computed(() => createDialogButton(dialogOptions.value.cancelButtonProps, false));
+const confirmButton = computed(() => createDialogButton(dialogOptions.value.confirmButtonProps, true));
 
 /** 手机登录 */
 const handlePhoneLogin = ({ detail }: { detail: UniHelper.ButtonOnGetphonenumberDetail }) => {
@@ -252,11 +305,52 @@ const handleWatch = () => {
 		() => wdHookState.wdDialog,
 		(newValue) => {
 			if (!newValue?.type) return;
+
 			if (newValue.type === "close") {
 				uDialog.close();
 			} else {
+				const options: DialogOptions = {
+					...(newValue.type === "show" ? {} : { type: newValue.type }),
+					...(newValue.options ?? {}),
+				};
+
+				// 与源码一致，show 方法不处理快捷配置。
+				if (newValue.type !== "show") {
+					if (options.cancelButtonProps === undefined && options.showCancelButton === undefined) {
+						options.showCancelButton = options.type === "confirm" || options.type === "prompt";
+					}
+
+					for (const [key, text] of [
+						["confirmButtonProps", options.confirmButtonText],
+						["cancelButtonProps", options.cancelButtonText],
+					] as const) {
+						if (!text) continue;
+
+						const button = options[key];
+						if (button !== null && typeof button === "object") {
+							options[key] = { ...button, text };
+						} else if (!button) {
+							options[key] = text;
+						}
+					}
+
+					const hasCancelProps = options.cancelButtonProps !== undefined && options.cancelButtonProps !== null;
+
+					if (options.showCancelButton === false && !hasCancelProps) {
+						options.cancelButtonProps = null;
+					} else if (options.showCancelButton === true && !hasCancelProps) {
+						options.cancelButtonProps = {};
+					}
+				}
+
+				dialogOptions.value = {
+					...dialogDefaultOptions,
+					...options,
+				};
+
 				uDialog[newValue.type](newValue.options).then(newValue.then).catch(newValue.catch);
 			}
+
 			wdHookState.wdDialog = undefined;
 		},
 		{

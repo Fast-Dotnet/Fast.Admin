@@ -45,7 +45,10 @@ const emit = defineEmits<{
 }>();
 
 /** flags 组合值；选择后回写十进制字符串，全部取消时为 undefined */
-const modelValue = defineModel<string | number | boolean>();
+const modelValue = defineModel<string | number | boolean>({
+	type: [String, Number, Boolean],
+	default: undefined,
+});
 
 const appStore = useApp();
 

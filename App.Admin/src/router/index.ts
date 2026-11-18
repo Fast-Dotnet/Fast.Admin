@@ -94,7 +94,11 @@ router.beforeEach(async (to, from, next) => {
 			!userInfoStore.hasButtonPermission(Array.isArray(targetRoute.authCode) ? targetRoute.authCode : [targetRoute.authCode])
 		) {
 			useToast.warning("暂无访问权限");
-			next(false);
+			// 工作台是 TabBar 页面，切换过去，避免停留在无权限业务页。
+			next({
+				path: CommonRoute.Workbench,
+				navType: "pushTab",
+			});
 			return;
 		}
 

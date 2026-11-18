@@ -47,7 +47,7 @@ defineOptions({
 
 const faPopupRef = ref<FaPopupInstance>();
 
-const formData = shallowRef<PayRecordModel>();
+const formData = shallowRef<PayRecordModel>({});
 
 const detail = throttle(
 	async (data: PayRecordModel) =>

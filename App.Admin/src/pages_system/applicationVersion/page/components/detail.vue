@@ -49,7 +49,7 @@ defineOptions({
 
 const faPopupRef = ref<FaPopupInstance>();
 
-const formData = shallowRef<QueryApplicationVersionDetailOutput>();
+const formData = shallowRef<QueryApplicationVersionDetailOutput>({});
 
 const detail = throttle(
 	async (recordId: string) =>

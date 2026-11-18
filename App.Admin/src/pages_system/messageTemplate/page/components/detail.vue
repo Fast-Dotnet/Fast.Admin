@@ -41,7 +41,7 @@ defineOptions({
 
 const faPopupRef = ref<FaPopupInstance>();
 
-const formData = shallowRef<QueryMessageTemplateDetailOutput>();
+const formData = shallowRef<QueryMessageTemplateDetailOutput>({});
 
 const detail = throttle(
 	async (recordId: string) =>

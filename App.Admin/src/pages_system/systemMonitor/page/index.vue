@@ -78,7 +78,7 @@
 			</wd-tab>
 
 			<wd-tab title="程序集" :name="2">
-				<wd-cell-group :title="`程序集（${state.programDetail.assemblys.length}）`" border>
+				<wd-cell-group :title="`程序集（${state.programDetail.assemblys?.length ?? 0}）`" border>
 					<wd-cell v-for="(item, index) in state.programDetail.assemblys" :key="index" :title="item.name">
 						<wd-tag type="primary" variant="plain" size="small">v{{ item.version }}</wd-tag>
 					</wd-cell>

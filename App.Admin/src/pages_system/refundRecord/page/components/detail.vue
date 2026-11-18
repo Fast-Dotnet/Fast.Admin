@@ -42,7 +42,7 @@ defineOptions({
 
 const faPopupRef = ref<FaPopupInstance>();
 
-const formData = shallowRef<RefundRecordModel>();
+const formData = shallowRef<RefundRecordModel>({});
 
 const detail = throttle(
 	async (data: RefundRecordModel) =>

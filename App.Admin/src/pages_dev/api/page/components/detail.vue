@@ -49,7 +49,7 @@ defineOptions({
 
 const faPopupRef = ref<FaPopupInstance>();
 
-const formData = shallowRef<ApiInfoModel>();
+const formData = shallowRef<ApiInfoModel>({});
 
 const detail = throttle(
 	async (data: ApiInfoModel) =>

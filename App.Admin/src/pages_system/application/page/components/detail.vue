@@ -33,7 +33,7 @@ defineOptions({
 
 const faPopupRef = ref<FaPopupInstance>();
 
-const formData = shallowRef<QueryApplicationDetailOutput>();
+const formData = shallowRef<QueryApplicationDetailOutput>({});
 
 const detail = throttle(
 	async (appId: string) =>

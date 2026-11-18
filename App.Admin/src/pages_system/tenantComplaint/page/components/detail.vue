@@ -40,7 +40,7 @@ defineOptions({
 
 const faPopupRef = ref<FaPopupInstance>();
 
-const formData = shallowRef<QueryComplaintPagedOutput>();
+const formData = shallowRef<QueryComplaintPagedOutput>({});
 
 const detail = throttle(
 	async (data: QueryComplaintPagedOutput) =>

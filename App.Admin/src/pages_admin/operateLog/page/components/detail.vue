@@ -36,7 +36,7 @@ defineOptions({
 
 const faPopupRef = ref<FaPopupInstance>();
 
-const formData = shallowRef<OperateLogModel>();
+const formData = shallowRef<OperateLogModel>({});
 
 const detail = throttle(
 	async (data: OperateLogModel) =>
