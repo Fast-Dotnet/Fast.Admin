@@ -143,6 +143,7 @@ export default defineConfig(({ command, mode }): UserConfig => {
 					VITE_APP_VERSION: true,
 					VITE_STORAGE_CRYPTO: { values: ["true", "false"] },
 					VITE_ENABLE_MOBILE: { values: ["true", "false"] },
+					VITE_ENABLE_BROWSER_REDIRECT: { values: ["true", "false"] },
 					API_PROXY_URL: { required: isDevelopment, pattern: /^https?:\/\//u, description: "开发接口代理地址" },
 				},
 			}),

@@ -31,7 +31,7 @@ public class AppService : IDynamicApplication
     /// <summary>
     /// 获取浏览器重定向
     /// </summary>
-    [HttpPost("/queryBrowserRedirect")]
+    [HttpGet("/queryBrowserRedirect")]
     [ApiInfo("获取浏览器重定向", HttpRequestActionEnum.Query)]
     [AllowAnonymous]
     [DisabledRequestLog]
@@ -64,6 +64,7 @@ public class AppService : IDynamicApplication
                 .Where(wh => wh.EnvironmentType == applicationClientModel.EnvironmentType)
                 .Where(wh => wh.AppKey != applicationClientModel.AppKey)
                 .Where(wh => (wh.AppType & targetType) != 0)
+                .OrderBy(ob => ob.RecordId)
                 .Select(sl => sl.AppKey)
                 .FirstAsync();
 
@@ -100,6 +101,7 @@ public class AppService : IDynamicApplication
                     .Where(wh => wh.HasWeb && wh.HasMobile)
                     .WhereIF(fromWeb, wh => wh.WebRouter == path)
                     .WhereIF(!fromWeb, wh => wh.MobileRouter == path)
+                    .OrderBy(ob => ob.MenuId)
                     .FirstAsync();
 
                 targetPath = fromWeb ? menu?.MobileRouter : menu?.WebRouter;

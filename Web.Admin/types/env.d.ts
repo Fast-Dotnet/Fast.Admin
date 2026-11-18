@@ -33,6 +33,10 @@ declare interface ImportMetaEnv {
 	 */
 	readonly VITE_ENABLE_MOBILE: "true" | "false";
 	/**
+	 * 启用 Web 与 H5 自动跳转
+	 */
+	readonly VITE_ENABLE_BROWSER_REDIRECT: "true" | "false";
+	/**
 	 * 应用版本号
 	 */
 	readonly VITE_APP_VERSION: string;

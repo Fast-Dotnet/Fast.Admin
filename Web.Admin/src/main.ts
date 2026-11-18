@@ -1,4 +1,5 @@
 import { createApp } from "vue";
+import { tryBrowserRedirect } from "@/browser";
 import App from "./App.vue";
 import { loadDirectives } from "./directives";
 import { loadPlugins } from "./plugins";
@@ -24,13 +25,15 @@ loadPinia(app);
 /** 加载插件 */
 loadPlugins(app);
 
-/** Launch */
-await useApp().launch();
+if (!(await tryBrowserRedirect("Web"))) {
+	/** Launch */
+	await useApp().launch();
 
-/** 加载路由 */
-app.use(router);
+	/** 加载路由 */
+	app.use(router);
 
-/** 加载自定义指令 */
-loadDirectives(app);
+	/** 加载自定义指令 */
+	loadDirectives(app);
 
-app.mount("#app");
+	app.mount("#app");
+}

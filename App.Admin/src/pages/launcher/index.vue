@@ -61,6 +61,7 @@ import { logger, throttle, withDefineType } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { LoginStatusEnum } from "@/api/enums/LoginStatusEnum";
 import { loginApi } from "@/api/services/Auth/login";
+import { tryBrowserRedirect } from "@/browser";
 import { CommonRoute } from "@/common";
 import { useToast, useUpdate } from "@/hooks";
 import { usePrivacy } from "@/hooks/use-privacy";
@@ -166,6 +167,11 @@ const checkUpdate = async (manual = false) => {
 // 启动流程只限制并发，隐私确认或更新重试后无需额外等待冷却窗口。
 const start = throttle(async (manual: boolean = false) => {
 	if (pageUnloaded) return;
+
+	// #ifdef H5
+	if ((await tryBrowserRedirect("H5")) || pageUnloaded) return;
+	// #endif
+
 	if (!state.hasPrivacyConsent) {
 		state.loading = false;
 		state.statusText = "请阅读并同意隐私政策后继续";

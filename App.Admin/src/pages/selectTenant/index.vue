@@ -54,7 +54,11 @@ const handleTenantLogin = throttle(async (userKey: string) => {
 	const apiRes = await loginApi.tenantLogin({ userKey, loginTicket: state.loginTicket });
 	if (apiRes.status === LoginStatusEnum.Success) {
 		userInfoStore.login(apiRes);
-		router.replaceAll(CommonRoute.Workbench);
+		const redirect = router.currentRoute.value.query.redirect;
+		router.replaceAll({
+			path: CommonRoute.Workbench,
+			query: typeof redirect === "string" ? { redirect } : {},
+		});
 	} else {
 		useMessageBox.alert(apiRes.message || "租户登录失败");
 	}

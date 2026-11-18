@@ -167,20 +167,29 @@ const agreementCheck = async () => {
 const loginSuccess = (loginRes: LoginOutput) => {
 	switch (loginRes.status) {
 		case LoginStatusEnum.Success:
-			userInfoStore.login(loginRes);
-			router.replaceAll(CommonRoute.Workbench);
+			{
+				userInfoStore.login(loginRes);
+				const redirect = router.currentRoute.value.query.redirect;
+				router.replaceAll({
+					path: CommonRoute.Workbench,
+					query: typeof redirect === "string" ? { redirect } : {},
+				});
+			}
 			break;
 		case LoginStatusEnum.SelectTenant:
-			uni.navigateTo({
-				url: CommonRoute.SelectTenant,
-				success({ eventChannel }) {
-					eventChannel.emit("selectTenantLogin", {
-						nickName: loginRes.nickName,
-						loginTicket: loginRes.loginTicket,
-						tenantList: loginRes.tenantList,
-					});
-				},
-			});
+			{
+				const redirect = router.currentRoute.value.query.redirect;
+				uni.navigateTo({
+					url: CommonRoute.SelectTenant + (typeof redirect === "string" ? `?redirect=${encodeURIComponent(redirect)}` : ""),
+					success({ eventChannel }) {
+						eventChannel.emit("selectTenantLogin", {
+							nickName: loginRes.nickName,
+							loginTicket: loginRes.loginTicket,
+							tenantList: loginRes.tenantList,
+						});
+					},
+				});
+			}
 			break;
 		case LoginStatusEnum.NotAccount:
 			// #ifdef MP-WEIXIN

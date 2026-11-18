@@ -63,8 +63,8 @@ router.beforeEach(async (to, from) => {
 			if (from.path === to.path) {
 				return { path: "/login", query: from.query };
 			}
-			// 如果是默认路由，则不处理重定向
-			if (defaultRoutePath.includes(to.path)) {
+			// 动态菜单注册前可能先重定向到 404，按原始目标判断是否保留登录后的返回地址。
+			if (defaultRoutePath.includes(to.redirectedFrom?.path ?? to.path)) {
 				return { path: "/login" };
 			}
 			return { path: "/login", query: { redirect: to.redirectedFrom?.fullPath ?? to.fullPath } };

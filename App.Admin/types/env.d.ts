@@ -15,6 +15,10 @@ declare interface ImportMetaEnv {
 	 */
 	readonly VITE_STORAGE_CRYPTO: "true" | "false";
 	/**
+	 * 启用 Web 与 H5 自动跳转
+	 */
+	readonly VITE_ENABLE_BROWSER_REDIRECT: "true" | "false";
+	/**
 	 * App Store 中的数字 ID
 	 */
 	readonly VITE_APPLE_STORE_APP_ID: string;

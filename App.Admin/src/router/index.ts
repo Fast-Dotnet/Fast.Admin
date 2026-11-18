@@ -2,6 +2,7 @@
 import { getLocalTimeGreeting, logger } from "@fast-china/utils";
 import { type RouteRecordRaw, createRouter } from "@wot-ui/router";
 import { pages, subPackages } from "virtual:uni-pages";
+import { tryBrowserRedirect } from "@/browser";
 import { CommonRoute, TabBarRoute } from "@/common";
 import { useToast } from "@/hooks";
 import { initWebSocket } from "@/signalR";
@@ -26,6 +27,13 @@ const getLoginRedirect = (value: unknown) => {
 };
 
 router.beforeEach(async (to, from, next) => {
+	// #ifdef H5
+	if (await tryBrowserRedirect("H5")) {
+		next(false);
+		return;
+	}
+	// #endif
+
 	const userInfoStore = useUserInfo();
 
 	// 判断是否存在Token
@@ -78,8 +86,9 @@ router.beforeEach(async (to, from, next) => {
 		// 判断是否存在重定向路径，如果有则跳转
 		const redirect = getLoginRedirect(decodeURIComponent(String(to.query.redirect ?? "")));
 		const hasRedirect = !!redirect && redirect !== to.fullPath;
+		const redirectPath = redirect.split("?")[0];
 		// 重定向不会再次执行守卫，先校验实际目标页的权限。
-		const targetRoute = hasRedirect ? router.routes.find((route) => route.path === redirect.split("?")[0]) : to;
+		const targetRoute = hasRedirect ? router.routes.find((route) => route.path === redirectPath) : to;
 		if (
 			targetRoute?.authCode &&
 			!userInfoStore.hasButtonPermission(Array.isArray(targetRoute.authCode) ? targetRoute.authCode : [targetRoute.authCode])
@@ -90,9 +99,9 @@ router.beforeEach(async (to, from, next) => {
 		}
 
 		if (hasRedirect) {
-			// 判断是否为 TabBar 页面
-			if (TabBarRoute.some((item) => redirect.startsWith(item))) {
-				next({ path: redirect, navType: "pushTab" });
+			// switchTab 只接受 TabBar 页面路径，去掉 __client 等查询参数。
+			if (TabBarRoute.includes(redirectPath)) {
+				next({ path: redirectPath, navType: "pushTab" });
 				return;
 			} else {
 				next({ path: redirect, navType: "replace" });
