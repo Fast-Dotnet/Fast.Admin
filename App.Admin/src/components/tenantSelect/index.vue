@@ -41,7 +41,7 @@ defineOptions({
 });
 
 const props = defineProps({
-	/** 标题 */
+	/** 选择入口的标题 */
 	title: {
 		type: String,
 		default: "租户",
@@ -57,11 +57,11 @@ const emit = defineEmits<{
 
 /** 选中的租户 ID */
 const modelValue = defineModel<string>();
-/** 选中租户的名称 */
+/** 选中租户的名称；清空选择时同步清空 */
 const tenantName = defineModel<string>("tenantName");
-/** 选中租户的编号 */
+/** 选中租户的编号；清空选择时同步清空 */
 const tenantNo = defineModel<string>("tenantNo");
-/** 选中租户的编码 */
+/** 选中租户的编码；清空选择时同步清空 */
 const tenantCode = defineModel<string>("tenantCode");
 
 const handleChange = (item: ElSelectorOutput<string>) => {

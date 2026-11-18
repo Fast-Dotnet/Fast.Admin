@@ -22,7 +22,7 @@ const appStore = useApp();
 
 let domain = "";
 const host = import.meta.env.VITE_API_REQUEST_URL.replace(/^https?:\/\//, "").split(/[/:]/)[0];
-// ip 或者 localhost
+// IPv4 和 localhost 原样展示；普通域名仅保留最后两段。
 if (/^\d{1,3}(?:\.\d{1,3}){3}$/.test(host) || host === "localhost") {
 	domain = host;
 } else {
@@ -30,6 +30,6 @@ if (/^\d{1,3}(?:\.\d{1,3}){3}$/.test(host) || host === "localhost") {
 	domain =
 		hostParts.length >= 2
 			? hostParts.slice(-2).join(".") // example.com
-			: host; // localhost 或 IP
+			: host; // 单段主机名
 }
 </script>

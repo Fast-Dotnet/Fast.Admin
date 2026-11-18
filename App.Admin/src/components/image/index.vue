@@ -43,29 +43,29 @@ defineOptions({
 
 const props = defineProps({
 	...imgProps,
-	/** 是否允许预览 */
+	/** 是否允许预览已提供的原图 */
 	enablePreview: {
 		type: Boolean,
 		default: true,
 	},
-	/** 宽度 */
+	/** 图片宽度，数字按 px 处理 */
 	width: {
 		type: [String, Number],
 		default: "100%",
 	},
-	/** 高度 */
+	/** 图片高度，数字按 px 处理 */
 	height: {
 		type: [String, Number],
 		default: "100%",
 	},
-	/** 是否显示占位图 */
+	/** 是否显示隐藏图片时的占位图 */
 	hideImage: {
 		type: Boolean,
 		default: undefined,
 	},
 	/** src 是否为不带 Data URL 前缀的 PNG Base64 内容 */
 	base64: Boolean,
-	/** 是否直接使用原始地址，优先于其他图片规格 */
+	/** 非 Base64 图片是否直接使用原地址，优先于其他规格 */
 	original: Boolean,
 	/** 是否使用 @!normal 图片规格 */
 	normal: Boolean,
@@ -78,11 +78,11 @@ const props = defineProps({
 const wdImgProps = useProps(props, imgProps, ["customClass", "customStyle", "src", "previewSrc", "enablePreview"]);
 
 const emit = defineEmits<{
-	/** 点击事件 */
+	/** 图片点击时触发 */
 	click: [event: MouseEvent];
 	/** 当图片载入完毕时触发 */
 	load: [event: Event];
-	/** 当错误发生时触发 */
+	/** 图片加载失败时触发，同时启用原地址回退 */
 	error: [event: Event];
 }>();
 

@@ -38,7 +38,7 @@ defineOptions({
 });
 
 const props = defineProps({
-	/** 标题 */
+	/** 选择入口的标题 */
 	title: {
 		type: String,
 		default: "职员",
@@ -54,11 +54,11 @@ const emit = defineEmits<{
 
 /** 选中的职员 ID */
 const modelValue = defineModel<string>();
-/** 选中职员的姓名 */
+/** 选中职员的姓名；清空选择时同步清空 */
 const employeeName = defineModel<string>("employeeName");
-/** 选中职员的工号 */
+/** 选中职员的工号；清空选择时同步清空 */
 const employeeNo = defineModel<string>("employeeNo");
-/** 选中职员的手机号 */
+/** 选中职员的手机号；清空选择时同步清空 */
 const mobile = defineModel<string>("mobile");
 
 const handleChange = (item: ElSelectorOutput<string>) => {

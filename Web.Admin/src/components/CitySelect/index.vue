@@ -23,11 +23,11 @@ defineOptions({
 });
 
 const emit = defineEmits<{
-	/** 选项变化事件，透传选中的数据 */
+	/** 城市选择变化时返回城市选项；清空时为 undefined */
 	change: [value: ElSelectorOutput<string> | undefined];
 }>();
 
-/** 选中的城市编码；清空选择时为 null */
+/** 选中的城市 ID；清空选择时为 null */
 const modelValue = defineModel<string>();
 /** 选中城市所属的省份名称 */
 const provinceName = defineModel<string>("provinceName");

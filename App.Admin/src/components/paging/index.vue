@@ -166,7 +166,7 @@ const props = defineProps({
 	...zPagingScrollProps,
 	...zPagingBackToTopProps,
 	...zPagingVirtualListProps,
-	/** 页面Key */
+	/** 页面数据版本键，用于页面重新显示时判断是否需要重载 */
 	pageKey: String,
 	/** 初始页码 */
 	defaultPageNo: {
@@ -271,26 +271,26 @@ const props = defineProps({
 		type: Boolean,
 		default: true,
 	},
-	/** 完整的本地列表，空数组表示空数据 */
+	/** 完整本地列表，未提供 requestApi 时使用，空数组表示空数据 */
 	data: {
 		type: Array as PropType<TResult[]>,
 		default: undefined,
 	},
-	/** 请求数据的函数 */
+	/** 优先使用的远程查询函数；分页时可返回分页对象或数组，关闭分页时应返回完整数组 */
 	requestApi: {
 		type: Function as PropType<(params?: TInput) => Promise<PagedResult<TResult> | TResult[]>>,
 	},
-	/** 初始化参数 */
+	/** 接口初始参数；标量直接传入，对象依次合并搜索条件及分页参数，后者覆盖同名字段 */
 	initParam: {
 		type: [String, Number, Boolean, Object] as PropType<TInput>,
 		default: undefined,
 	},
-	/** 分页 */
+	/** 是否分页；关闭时不追加分页参数，并将返回数组作为完整列表 */
 	pagination: {
 		type: Boolean,
 		default: true,
 	},
-	/** 本地数据数组发生变化时是否重新分页 */
+	/** 未提供 requestApi 时，本地数组内容变化后是否自动刷新列表 */
 	autoRefresh: {
 		type: Boolean,
 		default: true,
@@ -328,7 +328,7 @@ type ZPagingEmit = ZPagingBaseEmit &
 
 const emit = defineEmits<
 	Omit<ZPagingEmit, "query"> & {
-		/** 请求分页数据，参数依次为页码、请求条数和触发来源 */
+		/** 查询完成后触发，参数依次为本页数据、页码、请求条数、总条数和触发来源 */
 		query: [pageData: TResult[], pageNo: number, pageSize: number, totalRows: number, from: ZPagingEnums.QueryFrom];
 	}
 >();
@@ -336,7 +336,7 @@ const emit = defineEmits<
 const slots = defineSlots<{
 	// 主体布局
 
-	/** 当前用于渲染的列表和查询条件 */
+	/** 列表正文，提供渲染数据、总条数、搜索条件 Ref 和从默认页重载的 refresh 方法 */
 	default?: (props: {
 		pagedList: TResult[];
 		totalRows: number;
@@ -420,12 +420,12 @@ const slots = defineSlots<{
 	chatNoMore?: () => VNode[];
 }>();
 
-/** 分页版本 */
+// 记录默认页成功加载时的数据版本，避免返回页面后重复加载未变化的数据。
 const pagingVersion = shallowRef<number>(undefined);
 
-/** `v-model` 绑定的已加载列表 */
+/** 已加载的完整列表，追加页数据由 z-paging 合并 */
 const modelValue = defineModel<TResult[]>({ default: () => [] });
-/** 分页搜索参数 */
+/** 搜索条件对象；作为 Ref 提供给布局插槽，业务字段与 requestApi 入参类型对齐 */
 const searchParam = defineModel<Partial<TInput extends PagedInput ? TInput : PagedInput>>("searchParam", {
 	default: () => ({}),
 	get: shallowReactive,
@@ -518,7 +518,7 @@ const handleReload = async (animate?: boolean) => {
 	return await paging.value.reload(animate);
 };
 
-/** 重新加载列表；传入页码时刷新至该页，省略时从首页加载。 */
+/** 刷新已加载页的数据；传入页数时刷新至该页，省略时保留当前分页进度。 */
 const handleRefresh = async (pageIndex?: number): Promise<void> => {
 	await nextTick();
 	if (pageIndex) {
@@ -552,16 +552,17 @@ onShow(() => {
 });
 
 defineExpose({
-	/** 已加载的数据 */
+	/** 已加载的完整列表，不限于虚拟列表当前渲染的可见部分 */
 	pagedList: computed(() => modelValue.value),
-	/** 数据总数 */
+	/** 接口返回的总条数，或本地完整列表的条数 */
 	totalRows: computed(() => totalRows.value),
-	/** 搜索参数 */
+	/** 当前搜索条件对象 */
 	searchParam,
-	/** 清空搜索参数 */
+	/** 清空搜索条件，不主动刷新列表。 */
 	clearSearchParam: () => {
 		searchParam.value = {};
 	},
+	/** 最后成功加载默认页时记录的页面版本 */
 	pagingVersion: computed(() => pagingVersion.value),
 	// 数据刷新与处理
 
@@ -573,9 +574,10 @@ defineExpose({
 	 */
 	reload: handleReload,
 	/**
-	 * 重新请求已加载页的全部数据，保留当前分页进度。
+	 * 刷新已加载页的数据；指定页数时刷新至该页。
 	 *
-	 * @returns 刷新后的总列表与是否已无更多数据
+	 * @param pageIndex - 目标页数，省略时保留当前已加载的分页范围
+	 * @returns 刷新操作完成后结束，不返回分页结果
 	 */
 	refresh: handleRefresh,
 	/**

@@ -34,7 +34,7 @@ defineOptions({
 
 const props = defineProps({
 	...baseProps,
-	/** 标题 */
+	/** 卡片标题；使用 title 插槽时由插槽接管 */
 	title: String,
 	/** 内容点击的权限编码，省略时直接触发点击，数组命中任意一项即可 */
 	code: {
@@ -43,7 +43,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-	/** 内容点击事件 */
+	/** 正文区域点击并通过 code 权限校验时触发；未设置 code 时直接触发 */
 	click: [event: BaseEvent];
 }>();
 

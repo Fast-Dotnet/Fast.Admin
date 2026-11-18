@@ -19,11 +19,11 @@ defineOptions({
 });
 
 const emit = defineEmits<{
-	/** 选项变化事件，透传选中的数据 */
+	/** 选项变化时透传基础选择组件的结果 */
 	change: [value: ElSelectorOutput];
 }>();
 
-/** 选中的省份编码 */
+/** 选中的省份 ID */
 const modelValue = defineModel<string>();
 /** 选中省份的名称 */
 const provinceName = defineModel<string>("provinceName");

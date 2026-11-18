@@ -35,7 +35,7 @@ const props = defineProps({
 		type: String,
 		required: true,
 	},
-	/** 用于匹配字典项的值 */
+	/** flags 组合值，较大的整数可使用十进制字符串 */
 	value: {
 		type: [Number, String],
 		default: undefined,
@@ -46,9 +46,9 @@ const props = defineProps({
 const elTagProps = useProps(props, tagProps, ["type"]);
 
 const emit = defineEmits<{
-	/** 点击 Tag 时触发的事件 */
+	/** 点击标签关闭按钮时触发，并传递对应字典项 */
 	close: [evt: MouseEvent, value: FaTableEnumColumnCtx];
-	/** 关闭 Tag 时触发的事件 */
+	/** 点击标签时触发，并传递对应字典项 */
 	click: [evt: MouseEvent, value: FaTableEnumColumnCtx];
 }>();
 

@@ -58,27 +58,27 @@ defineOptions({
 });
 
 const props = defineProps({
-	/** 标题 */
+	/** 选择入口的标题 */
 	title: {
 		type: String,
 		default: "部门",
 	},
 	/** 是否禁用选择 */
 	disabled: Boolean,
-	/** 是否多选 */
+	/** 是否使用多选分组列表；关闭时使用逐级单选 */
 	multiple: Boolean,
-	/** 查询部门时使用的机构 ID */
+	/** 查询部门时使用的机构 ID，每次打开选择器时读取 */
 	orgId: String,
 });
 
 const emit = defineEmits<{
-	/** 单选返回节点和完整路径，多选返回选项数组，清空时返回 null */
+	/** 单选返回节点及完整路径；多选确认返回选项数组和 null，点击清空时两个参数均为 null */
 	change: [value: ElSelectorOutput<string> | ElSelectorOutput<string>[] | null, values: ElSelectorOutput<string>[] | null];
 }>();
 
 /** 单选时为部门 ID，多选时为部门 ID 数组 */
 const modelValue = defineModel<string | string[]>();
-/** 单选时为部门名称，多选时为部门路径数组 */
+/** 单选时为部门名称，多选时为选中项标签数组 */
 const departmentName = defineModel<string | string[]>("departmentName");
 
 const departmentList = shallowRef<ElSelectorOutput<string>[]>([]);

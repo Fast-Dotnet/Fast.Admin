@@ -23,14 +23,15 @@ interface UploadComposable {
 }
 
 /**
- * 创建上传组件共享的文件状态和操作方法。
+ * 创建单文件和多文件上传组件共用的状态与操作方法。
  *
- * @param componentName - 组件名称
- * @param fileTypeName - 文件类型名称
- * @param props - 上传组件的 Props
- * @param emit - 上传组件事件触发器
- * @param data - 文件大小和上传配置
- * @returns 文件列表、上传配置和事件处理方法
+ * @typeParam T - 单文件资源地址或多文件资源地址数组
+ * @param componentName - 用于日志提示的组件名称
+ * @param fileTypeName - 用于提示文案的文件类型名称
+ * @param props - 上传组件的 Props，包含文件列表及模型值
+ * @param emit - 模型更新、超限和列表变化事件的触发器
+ * @param data - 上传接口、直传地址及大小配置，可用 getter 保持响应性
+ * @returns 文件列表、禁用状态、大小上限及上传事件处理方法
  */
 export const useUpload = <T extends string | string[]>(
 	componentName: string,

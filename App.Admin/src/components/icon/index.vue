@@ -24,12 +24,12 @@ defineOptions({
 
 const props = defineProps({
 	...baseProps,
-	/** 阿里矢量图标名称 */
+	/** 项目 iconfont 中的图标名称，不带 fa-icon- 前缀 */
 	name: {
 		type: String,
 		required: true,
 	},
-	/** 图标的字体大小 */
+	/** 图标字号，数字按 px 处理 */
 	size: {
 		type: [String, Number],
 	},

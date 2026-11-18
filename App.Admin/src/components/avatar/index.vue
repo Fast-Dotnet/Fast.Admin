@@ -36,7 +36,7 @@ const props = defineProps({
 	},
 	/** src 是否为不带 Data URL 前缀的 PNG Base64 内容 */
 	base64: Boolean,
-	/** 是否直接使用原始地址，优先于其他图片规格 */
+	/** 非 Base64 图片是否直接使用原地址，优先于其他规格 */
 	original: Boolean,
 	/** 是否使用 @!normal 图片规格 */
 	normal: Boolean,
@@ -49,9 +49,9 @@ const props = defineProps({
 const wdAvatarProps = useProps(props, avatarProps, ["customClass", "src"]);
 
 const emit = defineEmits<{
-	/** 点击事件 */
+	/** 头像点击时触发 */
 	click: [];
-	/** 当错误发生时触发 */
+	/** 图片加载失败时触发，同时启用原地址回退 */
 	error: [event: Event];
 }>();
 

@@ -33,7 +33,7 @@ defineOptions({
 });
 
 const emit = defineEmits<{
-	/** 工作空间改变触发 */
+	/** 登录成功并刷新用户信息后触发，传递选中的工作空间 */
 	change: [data: LoginTenantOutput];
 }>();
 
@@ -42,7 +42,7 @@ const userInfoStore = useUserInfo();
 const faPopupRef = ref<InstanceType<typeof FaPopup>>();
 const tenantList = ref<LoginTenantOutput[]>([]);
 
-/** 处理租户登录 */
+// 当前空间不重复登录；新空间在登录及用户信息刷新后才通知调用方。
 const handleTenantLogin = (data: LoginTenantOutput) => {
 	const { userKey } = userInfoStore;
 	if (data.userKey === userKey) return;
@@ -72,6 +72,7 @@ const open = () => {
 };
 
 defineExpose({
+	/** 打开工作空间列表并加载当前账号可登录的租户。 */
 	open,
 });
 </script>

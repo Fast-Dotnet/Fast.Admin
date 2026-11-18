@@ -103,12 +103,12 @@ defineOptions({
 const props = defineProps({
 	...cellProps,
 	...formItemProps,
-	/** 标题 */
+	/** 选择入口标题，同时作为内置弹窗标题 */
 	title: {
 		type: String,
 		required: true,
 	},
-	/** 右侧内容 */
+	/** 优先显示的内容；未传时按当前值查找字典标签 */
 	value: {
 		type: [Number, String],
 		default: undefined,
@@ -118,25 +118,25 @@ const props = defineProps({
 		type: String,
 		default: "请选择",
 	},
-	/** 是否展示右侧箭头并开启点击反馈 */
+	/** 是否显示右侧箭头；行内单选模式不显示箭头 */
 	isLink: {
 		type: Boolean,
 		default: true,
 	},
-	/** 是否垂直居中 */
+	/** 标题和内容是否垂直居中 */
 	center: {
 		type: Boolean,
 		default: true,
 	},
-	/** 字典名称 */
+	/** 内置选择器使用的字典名称；使用自定义插槽时可省略 */
 	name: String,
 	/** 禁用选择 */
 	disabled: Boolean,
-	/** 在 Cell 下方直接显示单选按钮 */
+	/** 是否在单元格下方直接显示单选按钮 */
 	radio: Boolean,
-	/** 已选中时提供清空操作，单选按钮模式显示在单元格右侧，弹窗模式显示在标题左侧 */
+	/** 是否显示清空入口；单选模式位于单元格右侧，弹窗模式位于标题左侧 */
 	clearable: Boolean,
-	/** 是否在结果首部增加值为 null 的“全部”选项 */
+	/** 是否在字典选项首部增加“全部”；选择后回写 undefined */
 	includeAll: Boolean,
 });
 
@@ -144,11 +144,11 @@ const wdCellProps = useProps(props, cellProps, ["value", "placeholder", "isLink"
 const wdFormItemProps = useProps(props, formItemProps, ["value", "placeholder", "isLink", "clickable", "disabled"]);
 
 const emit = defineEmits<{
-	/** 内容点击事件 */
+	/** 点击选择入口时触发 */
 	click: [];
-	/** 当绑定值变化时触发的事件 */
+	/** 选择、清空或选择“全部”时触发，传递字典项的原始值或 undefined */
 	change: [value: TValue | undefined];
-	/** 清空选择时触发 */
+	/** 点击清空入口时触发 */
 	clear: [];
 }>();
 
@@ -167,6 +167,7 @@ const handleClick = () => {
 	emit("click");
 };
 
+/** 选中字典项的原始值；清空或选择“全部”时为 undefined */
 const modelValue = defineModel<TValue>();
 const allValue = randomString(6);
 const modelValues = computed(() => (modelValue.value == null ? [] : [`${typeof modelValue.value}:${modelValue.value}`]));
@@ -186,7 +187,7 @@ const dictionaries = computed<PickerOption[]>(() => {
 
 	return props.includeAll ? [{ label: "全部", value: allValue, rawValue: undefined }, ...options] : options;
 });
-// 字典值
+// 显式传入的显示内容优先，其次根据原始值匹配字典标签。
 const dictionaryLabel = computed(
 	() => props.value ?? dictionaries.value.find((item) => item.rawValue === (modelValue.value === null ? allValue : modelValue.value))?.label
 );

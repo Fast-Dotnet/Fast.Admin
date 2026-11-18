@@ -7,8 +7,8 @@
 						<el-text tag="b" size="large" type="primary">{{ state.schedulerDetail.schedulerName }}</el-text>
 					</div>
 
-					<div v-if="state.tenantName" style="padding-bottom: 10px; text-align: center">
-						<el-text tag="b" size="large" type="primary">{{ state.tenantName }}</el-text>
+					<div v-if="state.tenantName" style="text-align: right">
+						<el-text size="default" type="info">{{ state.tenantName }}</el-text>
 					</div>
 
 					<div style="border-bottom: var(--el-border); text-align: right; margin-bottom: 10px">
@@ -113,7 +113,7 @@
 				</template>
 				<!-- 表格按钮操作区域 -->
 				<template #header>
-					<TenantSelectPage style="padding-right: 12px" width="280px" v-model="state.tenantId" />
+					<TenantSelectPage style="padding-right: 12px" width="280px" v-model="state.tenantId" v-model:tenant-name="state.tenantName" />
 					<el-button v-auth="'Scheduler:Add'" type="primary" :icon="Plus" @click="editFormRef.add(state.tenantId, state.activeJobGroup)">
 						添加作业
 					</el-button>

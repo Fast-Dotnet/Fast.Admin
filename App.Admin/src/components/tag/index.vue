@@ -41,7 +41,7 @@ const props = defineProps({
 		type: String,
 		required: true,
 	},
-	/** 值 */
+	/** 用于严格匹配字典项的值；null 或 undefined 时不渲染 */
 	value: {
 		type: [Number, String, Boolean],
 		default: undefined,
@@ -61,9 +61,9 @@ const emit = defineEmits<{
 
 const appStore = useApp();
 
-// 字典
+// 指定名称对应的字典项
 const dictionaries = computed(() => (props.name ? appStore.getDictionary(props.name) : []));
-// 字典值
+// 与当前值严格匹配的字典项
 const dictionary = computed(() => (props.value == null ? null : dictionaries.value.find((f) => f.value === props.value)));
 
 const type = computed(() => (dictionary?.value?.type === "info" ? "default" : dictionary?.value?.type));

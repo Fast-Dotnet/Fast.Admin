@@ -32,9 +32,9 @@ const emit = defineEmits<{
 
 /** 选中的应用标识 */
 const modelValue = defineModel<string>();
-/** 选中应用的Id */
+/** 选中标识所属的应用 ID；清空选择时同步清空 */
 const appId = defineModel<string>("appId");
-/** 选中应用的名称 */
+/** 选中标识所属的应用名称；清空选择时同步清空 */
 const appName = defineModel<string>("appName");
 
 const handleChange = (data: ElSelectorOutput) => {

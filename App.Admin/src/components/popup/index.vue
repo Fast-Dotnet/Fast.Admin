@@ -95,7 +95,7 @@ defineOptions({
 
 const props = defineProps({
 	...popupProps,
-	/** 是否开启圆角,开启后根据弹出位置自动适配（底部弹出→上圆角，顶部弹出→下圆角，居中→四圆角）*/
+	/** 是否根据弹出位置添加圆角 */
 	round: {
 		type: Boolean,
 		default: true,
@@ -109,7 +109,7 @@ const props = defineProps({
 		type: definePropType<"auto" | "scroll-view" | "none">(String),
 		default: "auto",
 	},
-	/** 弹窗显示后的初始化回调，优先于 open 方法传入的回调 */
+	/** 打开时执行的初始化回调；设置后替代 open 方法传入的回调 */
 	afterOpen: {
 		type: definePropType<() => void | Promise<void>>(Function),
 	},
@@ -117,7 +117,7 @@ const props = defineProps({
 	title: String,
 	/** 是否显示确认按钮 */
 	showConfirmButton: Boolean,
-	/** 显示底部取消按钮，与右上角的 closable 独立控制 */
+	/** 是否显示底部取消按钮，与右上角 closable 独立控制 */
 	showCloseButton: Boolean,
 	/** 禁用确认按钮 */
 	disabledConfirmButton: Boolean,
@@ -150,20 +150,20 @@ const emit = defineEmits<{
 	afterLeave: [];
 	/** 点击遮罩时触发 */
 	clickModal: [];
-	/** 弹出层打开时触发 */
+	/** 初始化回调成功完成后触发，不表示入场动画已结束 */
 	open: [];
-	/** 弹出层关闭时触发 */
+	/** 关闭回调成功完成后触发 */
 	close: [];
-	/** 确认按钮点击事件 */
+	/** 点击确认按钮且当前未处于加载状态时触发 */
 	confirm: [];
 }>();
 
 const slots = defineSlots<{
-	/** 默认内容插槽 */
+	/** 正文插槽，初始化成功后才渲染，提供当前 loading 状态 */
 	default?: (props: { loading: boolean }) => VNode[];
-	/** 标题前缀插槽 */
+	/** 标题左侧插槽，仅底部和居中弹窗显示，提供 loading 状态 */
 	titlePrefix?: (props: { loading: boolean }) => VNode[];
-	/** 底部插槽 */
+	/** 自定义底部内容，提供 loading 和受加载状态保护的 close 方法 */
 	footer?: (props: { loading: boolean; close: () => void }) => VNode[];
 }>();
 
@@ -255,11 +255,32 @@ defineExpose({
 	loading: toRef(state, "loading"),
 	/** 是否显示 */
 	visible: toRef(state, "visible"),
-	/** 显示弹窗并等待初始化回调；失败时关闭弹窗并向调用方抛出异常。 */
+	/**
+	 * 显示弹窗并等待初始化完成。
+	 *
+	 * @param openFunction - 未设置 afterOpen 时使用的初始化回调
+	 *
+	 * @remarks
+	 * 初始化完成前不渲染正文；回调失败时关闭弹窗并继续抛出异常。
+	 */
 	open: handleOpen,
-	/** 等待关闭回调成功后隐藏弹窗；回调失败时保留显示状态并抛出异常。 */
+	/**
+	 * 等待关闭回调成功后隐藏弹窗。
+	 *
+	 * @param closeFunction - 关闭前执行的同步或异步回调
+	 *
+	 * @remarks
+	 * 回调失败时保留弹窗并继续抛出异常，结束后恢复 loading 状态。
+	 */
 	close: handleClose,
-	/** 执行异步操作并在结束时恢复加载状态；异常继续向调用方传播。 */
+	/**
+	 * 执行操作并在结束时恢复加载状态。
+	 *
+	 * @param loadingFunction - 需要显示加载状态的同步或异步操作
+	 *
+	 * @remarks
+	 * 不改变弹窗显隐状态，操作异常继续向调用方传播。
+	 */
 	doLoading: handleLoading,
 });
 </script>

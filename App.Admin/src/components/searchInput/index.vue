@@ -107,7 +107,7 @@ defineOptions({
 const props = defineProps({
 	/** 占位文本 */
 	placeholder: String,
-	/** 显示扫描图标 */
+	/** 是否显示相机扫码入口；扫码成功只回填搜索文本，不自动触发 search */
 	scan: {
 		type: Boolean,
 		default: false,
@@ -117,18 +117,18 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
-	/** 显示筛选图标 */
+	/** 是否显示高级筛选入口 */
 	filter: {
 		type: Boolean,
 		default: true,
 	},
-	/** 禁用搜素输入框 */
+	/** 是否禁用关键词输入框 */
 	disabled: Boolean,
-	/** 隐藏搜索时间 */
+	/** 是否隐藏高级筛选中的日期范围 */
 	hideSearchTime: Boolean,
 	/** 是否使用从今天起向未来延伸的快捷日期范围 */
 	futureSearchTime: Boolean,
-	/** 搜索时间范围 */
+	/** 默认及重置时使用的快捷日期范围，默认 Past3D */
 	dataSearchRange: {
 		type: definePropType<FaTableDataRange>(String),
 		default: "Past3D",
@@ -144,15 +144,15 @@ const emit = defineEmits<{
 	blur: [detail: UniHelper.InputOnBlurDetail];
 	/** 键盘确认事件 */
 	confirm: [detail: UniHelper.InputOnConfirmDetail];
-	/** 清空输入事件 */
+	/** 点击输入框清空按钮时触发，只清空 searchValue */
 	clear: [];
-	/** 搜索按钮或筛选确认按钮点击事件 */
+	/** 点击搜索、确认高级筛选或重置筛选后触发 */
 	search: [];
 }>();
 
 /** 搜索文本，与 searchParam.searchValue 双向同步 */
 const modelValue = defineModel<string>();
-/** 分页搜索参数，包含搜索文本和格式化后的日期范围 */
+/** 搜索条件对象，searchValue 与文本同步，searchTimeList 为按天扩展的本地时间字符串 */
 const searchParam = defineModel<Partial<TInput>>("searchParam", { default: () => ({}) });
 const slotState = { searchParam };
 

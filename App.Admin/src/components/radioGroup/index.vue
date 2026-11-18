@@ -47,7 +47,7 @@ const emit = defineEmits<{
 	change: [value: string | number | boolean];
 }>();
 
-/** 当前选中的字典值 */
+/** 选中的字典值，保留字典项的原始类型 */
 const modelValue = defineModel<string | number | boolean>();
 
 const appStore = useApp();

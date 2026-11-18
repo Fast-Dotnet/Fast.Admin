@@ -36,7 +36,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	/** 选项变化事件，透传选中的数据 */
+	/** 选项变化时透传基础选择组件的结果 */
 	change: [value: ElSelectorOutput];
 }>();
 

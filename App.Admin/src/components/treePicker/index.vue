@@ -115,7 +115,7 @@ const props = defineProps({
 		type: String,
 		default: "请选择",
 	},
-	/** 弹窗高度 */
+	/** 弹窗高度，数字按 px 处理 */
 	height: {
 		type: [String, Number],
 		default: "80%",
@@ -130,21 +130,21 @@ const props = defineProps({
 		type: Boolean,
 		default: true,
 	},
-	/** 值Key */
+	/** 选项原始值所在的字段名 */
 	valueKey: {
 		type: String,
 		default: "value",
 	},
-	/** 配置选项 */
+	/** 选项标签、显隐、禁用状态和子节点的字段映射 */
 	props: {
 		type: Object as PropType<{
-			/** 指定标签为节点的某个属性值 */
+			/** 标签字段名或根据选项计算标签的函数 */
 			label?: string | ((data: TResult) => string);
-			/** 指定是否隐藏为节点的某个属性值 */
+			/** 隐藏状态字段名或判断函数，只有 true 表示隐藏 */
 			hide?: string | ((data: TResult) => boolean);
-			/** 指定是否禁用为节点的某个属性值 */
+			/** 禁用状态字段名或判断函数，只有 true 表示禁用 */
 			disabled?: string | ((data: TResult) => boolean);
-			/** 指定子节点对象为节点的某个属性值 */
+			/** 子节点数组所在的字段名 */
 			children?: string;
 		}>,
 		default: () => ({
@@ -154,31 +154,32 @@ const props = defineProps({
 			children: "children",
 		}),
 	},
-	/** 允许确认任意层级的节点 */
+	/** 是否允许确认任意层级；关闭时点击叶子节点立即提交 */
 	checkStrictly: Boolean,
-	/** 禁用搜素输入框 */
+	/** 是否禁用搜索输入框 */
 	disabledSearch: Boolean,
-	/** 完整的本地列表，空数组表示空数据 */
+	/** 完整本地树，未提供 requestApi 时使用；搜索保留命中节点及其祖先路径 */
 	data: {
 		type: Array as PropType<TResult[]>,
 		default: undefined,
 	},
-	/** 请求数据的函数 */
+	/** 返回完整树形数组的查询函数，优先于本地 data */
 	requestApi: {
 		type: Function as PropType<(params?: TInput) => Promise<TResult[]>>,
 	},
-	/** 初始化参数 */
+	/** 接口初始参数；标量直接传入，传对象时搜索参数覆盖同名字段 */
 	initParam: {
 		type: [String, Number, Boolean, Object] as PropType<TInput>,
 		default: undefined,
 	},
-	/** 打开弹窗并加载树形数据后执行的回调 */
+	/** 树形数据加载和已选路径恢复后执行的初始化回调 */
 	openCallback: Function as PropType<() => void | Promise<void>>,
 });
 
 const emit = defineEmits<{
 	/** 返回提交的节点和完整路径，value 为原始值，确认空路径或清空时两个参数均为 null */
 	change: [value: TResult | null, values: TResult[] | null];
+	/** 点击清空按钮时触发，同时清除选中路径、标签和搜索条件并关闭弹窗 */
 	clear: [];
 }>();
 
@@ -377,11 +378,13 @@ watch(modelValue, () => {
 watch([visible, faPopupRef], ([isVisible]) => (isVisible ? handleOpen() : handleClose()), { immediate: true, flush: "post" });
 
 defineExpose({
-	/** 已加载的数据 */
+	/** 经过字段映射和隐藏过滤后的树形数据 */
 	treeList: computed(() => treeList.value),
-	/** 当前搜索参数 */
+	/** 当前搜索参数，不会因列表翻页而自动清空 */
 	searchParam: computed(() => searchParam.value),
+	/** 请求打开选择弹窗并执行初始化流程；此方法不返回初始化完成的 Promise。 */
 	open: handleOpen,
+	/** 请求关闭选择弹窗。 */
 	close: handleClose,
 	/** 执行异步操作并在结束时恢复加载状态；异常继续向调用方传播。 */
 	doLoading: computed(() => faPopupRef.value?.doLoading),

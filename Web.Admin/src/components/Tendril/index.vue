@@ -93,7 +93,7 @@ class Oscillator {
 		this.amplitude = options.amplitude ?? 1;
 	}
 
-	/** 更新当前值 */
+	/** 推进相位并返回当前振荡值。 */
 	update() {
 		this.phase += this.frequency;
 		this.value = this.offset + Math.sin(this.phase) * this.amplitude;
@@ -121,7 +121,7 @@ class Tendril {
 	nodes: TendrilNode[];
 
 	constructor(options: { spring: number }) {
-		/* 轻微随机化弹力和摩擦力，使多条丝带的运动轨迹产生差异。 */
+		// 轻微随机化弹力和摩擦力，使多条丝带的运动轨迹产生差异。
 		this.spring = options.spring + Math.random() * 0.1 - 0.05;
 		this.friction = props.friction + Math.random() * 0.01 - 0.005;
 		this.nodes = [];
@@ -130,7 +130,7 @@ class Tendril {
 		}
 	}
 
-	/** 更新节点位置，根据目标点和上一节点计算运动 */
+	/** 根据目标点和前一节点的速度更新整条丝带的位置。 */
 	update() {
 		let spring = this.spring;
 		let node = this.nodes[0];
@@ -155,7 +155,7 @@ class Tendril {
 		}
 	}
 
-	/** 绘制丝带曲线 */
+	/** 使用相邻节点的中点绘制平滑曲线。 */
 	draw() {
 		if (!ctx) return;
 		let x = this.nodes[0].x;
@@ -185,7 +185,7 @@ const reset = () => {
 	state.tendrils = [];
 	for (let i = 0; i < props.trails; i++) {
 		const tendril = new Tendril({ spring: 0.45 + 0.025 * (i / props.trails) });
-		/* 新丝带从当前目标点开始，避免首次绘制跨越整个画布。 */
+		// 新丝带从当前目标点开始，避免首次绘制跨越整个画布。
 		tendril.nodes.forEach((node) => {
 			node.x = state.target.x;
 			node.y = state.target.y;
@@ -199,7 +199,7 @@ const loop = () => {
 	animationFrameId = null;
 	if (!state.running || !ctx) return;
 
-	/* 清除上一帧并使用 lighter 混合模式叠加丝带颜色。 */
+	// 清除上一帧并使用 lighter 混合模式叠加丝带颜色。
 	ctx.globalCompositeOperation = "source-over";
 	ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
@@ -212,7 +212,7 @@ const loop = () => {
 		tendril.draw();
 	}
 
-	/* 更新并绘制点击产生的上浮文字。 */
+	// 更新并绘制点击产生的上浮文字。
 	ctx.globalCompositeOperation = "source-over";
 	ctx.font = textFont;
 	ctx.textBaseline = "top";
@@ -308,7 +308,7 @@ const handleClick = (event: PointerEvent) => {
 onMounted(() => {
 	if (!canvasRef.value) return;
 
-	/* 获取 2D 绘图上下文；不支持时不再初始化动画。 */
+	// 获取 2D 绘图上下文；不支持时不再初始化动画。
 	ctx = canvasRef.value.getContext("2d");
 	if (!ctx) return;
 	textFont = `600 18px ${getComputedStyle(canvasRef.value).fontFamily}`;
@@ -321,7 +321,7 @@ onMounted(() => {
 		offset: 285,
 	});
 
-	/* 首次鼠标或触摸交互时再启动动画，减少未交互页面的资源消耗。 */
+	// 首次鼠标或触摸交互时再启动动画，减少未交互页面的资源消耗。
 	document.addEventListener("mousemove", init);
 	document.addEventListener("touchstart", init);
 	document.body.addEventListener("orientationchange", resize);
@@ -329,7 +329,7 @@ onMounted(() => {
 	window.addEventListener("focus", start);
 	window.addEventListener("blur", stop);
 
-	/* 初始化画布像素尺寸。 */
+	// 初始化画布像素尺寸。
 	resize();
 });
 

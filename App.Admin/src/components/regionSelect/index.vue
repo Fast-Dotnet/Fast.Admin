@@ -33,7 +33,7 @@ defineOptions({
 });
 
 const props = defineProps({
-	/** 标题 */
+	/** 选择入口的标题 */
 	title: {
 		type: String,
 		default: "地区",
@@ -43,11 +43,11 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-	/** 选中项变化，清空时返回 null */
+	/** 返回区县选项，data 中附加省份和城市名称；清空时为 null */
 	change: [item: ElSelectorOutput<string> | null];
 }>();
 
-/** 选中的地区 ID */
+/** 选中的区县 ID */
 const modelValue = defineModel<string>();
 /** 选中路径中的省份名称 */
 const provinceName = defineModel<string>("provinceName");

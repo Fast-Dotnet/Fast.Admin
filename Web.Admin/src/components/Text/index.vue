@@ -25,7 +25,7 @@ const props = defineProps({
 		type: String,
 		required: true,
 	},
-	/** 用于匹配字典项的值 */
+	/** 用于严格匹配字典项的值，不做类型转换 */
 	value: {
 		type: [Number, String, Boolean],
 		default: undefined,

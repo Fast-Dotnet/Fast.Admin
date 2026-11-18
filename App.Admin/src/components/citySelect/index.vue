@@ -35,7 +35,7 @@ defineOptions({
 });
 
 const props = defineProps({
-	/** 标题 */
+	/** 选择入口的标题 */
 	title: {
 		type: String,
 		default: "城市",
@@ -45,7 +45,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-	/** 选中项变化，清空时返回 null */
+	/** 城市选择变化时返回城市和所属省份选项；清空时两个参数均为 null */
 	change: [item: ElSelectorOutput<string> | null, parentItem: ElSelectorOutput<string> | null];
 }>();
 

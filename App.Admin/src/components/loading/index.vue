@@ -25,7 +25,7 @@ const props = defineProps({
 		type: String,
 		default: "加载中...",
 	},
-	/** 是否遮罩层，一般用于组件内部 */
+	/** 是否使用父级容器内的绝对定位遮罩；父级需提供定位上下文 */
 	mask: Boolean,
 });
 </script>

@@ -6,18 +6,11 @@ import { tableApi } from "@/api/services/Center/table";
 import { useApp, useUserInfo } from "@/stores";
 import type { FaTableColumnCtx, FaTableInstance, FaTableSlots } from "fast-element-plus";
 
-/**
- * 集成用户列配置和应用表格偏好的表格组件。
- *
- * @remarks
- * 传入 columns 时使用静态列，并跳过用户列配置操作；否则通过 tableKey 读取缓存或服务端列配置。
- * 其余 Props、事件、插槽和实例方法沿用基础 FaTable 合同。
- */
 export default defineComponent({
 	name: "FastTable",
 	props: {
 		...faTableProps,
-		/** 表格Key */
+		/** 用于加载和缓存列配置的表格唯一键 */
 		tableKey: {
 			type: String,
 			required: true,
@@ -386,13 +379,13 @@ export default defineComponent({
 			tableWidth: computed(() => faTableRef.value?.tableWidth),
 			/** 表格高度 */
 			tableHeight: computed(() => faTableRef.value?.tableHeight),
-			/** 切换多选表格中某一行的半选状态；第二个参数可直接指定是否半选 */
+			/** 切换多选表格中某一行的半选状态；第二个参数可直接指定是否半选。 */
 			toggleRowIndeterminateSelection: computed(() => faTableRef.value?.toggleRowIndeterminateSelection),
 			/** 刷新表格数据。 */
 			refresh: computed(() => faTableRef.value?.refresh),
 			/** 重置表格状态和数据。 */
 			reset: computed(() => faTableRef.value?.reset),
-			/** 重新加载并渲染表格，适用于 tableKey 发生变化的场景 */
+			/** 重新加载并渲染表格，适用于 tableKey 发生变化的场景。 */
 			doRender,
 			/** 在异步操作期间显示 Table 加载状态。 */
 			doLoading: computed(() => faTableRef.value?.doLoading),

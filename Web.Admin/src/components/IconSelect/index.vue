@@ -52,5 +52,6 @@ const iconList = withDefineType<ElSelectorOutput<string>[]>([
 	},
 ]);
 
+/** 级联图标选择器的绑定值 */
 const modelValue = defineModel<string>();
 </script>

@@ -38,7 +38,7 @@ defineOptions({
 });
 
 const props = defineProps({
-	/** 标题 */
+	/** 选择入口的标题 */
 	title: {
 		type: String,
 		default: "账号",
@@ -54,11 +54,11 @@ const emit = defineEmits<{
 
 /** 选中的账号 ID */
 const modelValue = defineModel<string>();
-/** 选中的手机号 */
+/** 选中账号的手机号；清空选择时同步清空 */
 const mobile = defineModel<string>("mobile");
-/** 选中账号的邮箱 */
+/** 选中账号的邮箱；清空选择时同步清空 */
 const email = defineModel<string>("email");
-/** 选中账号的标识 */
+/** 选中账号的标识；清空选择时同步清空 */
 const accountKey = defineModel<string>("accountKey");
 
 const handleChange = (item: ElSelectorOutput<string>) => {

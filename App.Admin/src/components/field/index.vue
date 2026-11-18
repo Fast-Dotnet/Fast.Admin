@@ -31,26 +31,26 @@ defineOptions({
 });
 
 const props = defineProps({
-	/** 标签 */
+	/** 字段标签 */
 	label: {
 		type: String,
 		required: true,
 	},
-	/** 值 */
+	/** 默认展示及复制使用的值 */
 	value: {
 		type: [String, Number],
 		default: undefined,
 	},
-	/** 内容的字体大小 */
+	/** 默认值文本的字号，数字按 px 处理 */
 	size: {
 		type: [String, Number],
 	},
-	/** 内容的颜色 */
+	/** 默认值文本的颜色；不影响自定义插槽 */
 	color: {
 		type: String,
 		default: "var(--wot-text-main)",
 	},
-	/** 垂直居中对齐 */
+	/** 标签与内容是否垂直居中 */
 	center: Boolean,
 	/** 是否允许选中内容文本 */
 	selectable: Boolean,

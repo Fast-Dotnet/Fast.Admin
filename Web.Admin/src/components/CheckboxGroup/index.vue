@@ -42,7 +42,7 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
-	/** 字典名称 */
+	/** 字典名称；传 false 时由默认插槽提供数字 flags 选项 */
 	name: {
 		type: [String, Boolean] as PropType<string | false>,
 		required: true,
@@ -53,11 +53,11 @@ const props = defineProps({
 const elCheckboxGroupProps = useProps(props, checkboxGroupProps, ["modelValue"]);
 
 const emit = defineEmits<{
-	/** 当绑定值变化时触发的事件 */
+	/** 选项变化时触发，返回十进制 flags 字符串；全部取消时为 undefined */
 	change: [value: string | number | boolean];
 }>();
 
-/** 当前选中的字典值 */
+/** flags 组合值；选择后回写十进制字符串，全部取消时为 undefined */
 const modelValue = defineModel<string | number | boolean>();
 
 const appStore = useApp();
@@ -70,7 +70,7 @@ const dictionaries = computed(() => {
 		return item.show && (flag & (flag - 1n)) === 0n;
 	});
 });
-// 选择的值
+// 字典选项使用字符串标识，手写插槽选项使用数字枚举；只在对外回写时合并为 flags。
 const selectedValues = computed({
 	get: () => {
 		const value = BigInt(modelValue.value || 0n);

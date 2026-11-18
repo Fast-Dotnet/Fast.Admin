@@ -44,7 +44,7 @@ const props = defineProps({
 		type: String,
 		required: true,
 	},
-	/** 值 */
+	/** flags 组合值，较大的整数可使用十进制字符串 */
 	value: {
 		type: [Number, String],
 		default: undefined,
@@ -54,9 +54,9 @@ const props = defineProps({
 const wdTagProps = useProps(props, tagProps, ["type"]);
 
 const emit = defineEmits<{
-	/** 标签点击时触发 */
+	/** 点击标签时触发，并传递对应字典项 */
 	click: [event: MouseEvent, item: FaTableEnumColumnCtx];
-	/** 点击关闭按钮时触发 */
+	/** 点击标签关闭按钮时触发，并传递对应字典项 */
 	close: [event: MouseEvent, item: FaTableEnumColumnCtx];
 	/** 新增标签输入内容确定后触发 */
 	confirm: [detail: { value: string }];
