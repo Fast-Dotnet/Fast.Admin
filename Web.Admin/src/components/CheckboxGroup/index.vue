@@ -1,29 +1,31 @@
 <template>
 	<ElCheckboxGroup v-bind="elCheckboxGroupProps" v-model="selectedValues" @change="(_) => emit('change', modelValue)">
-		<template v-if="props.button">
-			<ElCheckboxButton
-				v-for="(item, index) in dictionaries"
-				:key="index"
-				:value="String(item.value)"
-				:label="item.label"
-				:disabled="item.disabled === false ? undefined : item.disabled"
-				border
-			/>
-		</template>
-		<template v-else>
-			<ElCheckbox
-				v-for="(item, index) in dictionaries"
-				:key="index"
-				:value="String(item.value)"
-				:label="item.label"
-				:disabled="item.disabled === false ? undefined : item.disabled"
-			/>
-		</template>
+		<slot :item-list="dictionaries">
+			<template v-if="props.button">
+				<ElCheckboxButton
+					v-for="(item, index) in dictionaries"
+					:key="index"
+					:value="String(item.value)"
+					:label="item.label"
+					:disabled="item.disabled === false ? undefined : item.disabled"
+					border
+				/>
+			</template>
+			<template v-else>
+				<ElCheckbox
+					v-for="(item, index) in dictionaries"
+					:key="index"
+					:value="String(item.value)"
+					:label="item.label"
+					:disabled="item.disabled === false ? undefined : item.disabled"
+				/>
+			</template>
+		</slot>
 	</ElCheckboxGroup>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { type PropType, computed } from "vue";
 import { checkboxGroupProps } from "element-plus";
 import { useProps } from "@fast-china/utils";
 import { useApp } from "@/stores";
@@ -42,7 +44,7 @@ const props = defineProps({
 	},
 	/** 字典名称 */
 	name: {
-		type: String,
+		type: [String, Boolean] as PropType<string | false>,
 		required: true,
 	},
 });
@@ -72,9 +74,17 @@ const dictionaries = computed(() => {
 const selectedValues = computed({
 	get: () => {
 		const value = BigInt(modelValue.value || 0n);
-		return dictionaries.value.filter((item) => (value & BigInt(item.value)) !== 0n).map((item) => String(item.value));
+		if (props.name !== false) {
+			return dictionaries.value.filter((item) => (value & BigInt(item.value)) !== 0n).map((item) => String(item.value));
+		}
+
+		const values: number[] = [];
+		for (let flag = 1n; flag <= value; flag <<= 1n) {
+			if ((value & flag) !== 0n) values.push(Number(flag));
+		}
+		return values;
 	},
-	set: (values: string[]) => {
+	set: (values: (string | number)[]) => {
 		modelValue.value = values.length ? values.reduce((value, item) => value | BigInt(item), 0n).toString() : undefined;
 	},
 });

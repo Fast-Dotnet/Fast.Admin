@@ -89,12 +89,14 @@
 			<el-form-item prop="description" label="描述">
 				<el-input v-model="state.formData.description" type="textarea" maxlength="100" placeholder="请输入描述" />
 			</el-form-item>
+
 			<el-divider content-position="left">触发器信息</el-divider>
 			<el-form-item prop="triggerType" label-width="0">
 				<el-radio-group v-model="state.formData.triggerType" style="justify-content: center">
 					<el-radio-button v-for="(item, idx) in triggerTypeEnum" :key="idx" :label="item.label" :value="item.value" />
 				</el-radio-group>
 			</el-form-item>
+
 			<template v-if="state.formData.triggerType == TriggerTypeEnum.Cron">
 				<el-form-item prop="cron" label="Cron表达式">
 					<div style="display: flex; align-items: center; gap: 5px">
@@ -112,6 +114,7 @@
 					</el-scrollbar>
 				</el-form-item>
 			</template>
+
 			<template v-if="state.formData.triggerType == TriggerTypeEnum.Daily">
 				<el-form-item prop="weeks" label="运行周期">
 					<el-checkbox-group v-model="state.formData.weeks">
@@ -137,6 +140,7 @@
 					</el-col>
 				</el-row>
 			</template>
+
 			<template v-if="state.formData.triggerType == TriggerTypeEnum.Daily || state.formData.triggerType == TriggerTypeEnum.Simple">
 				<el-row>
 					<el-col :span="12">
@@ -155,12 +159,14 @@
 					</el-col>
 				</el-row>
 			</template>
+
 			<el-divider content-position="left">作业信息</el-divider>
 			<el-form-item prop="jobType" label="作业类型">
 				<el-radio-group v-model="state.formData.jobType">
 					<el-radio-button v-for="(item, idx) in schedulerJobTypeEnum" :key="idx" :label="item.label" :value="item.value" />
 				</el-radio-group>
 			</el-form-item>
+
 			<template v-if="state.formData.jobType == SchedulerJobTypeEnum.IntranetUrl || state.formData.jobType == SchedulerJobTypeEnum.OuterNetUrl">
 				<el-row>
 					<el-col :span="12">
@@ -261,12 +267,7 @@ const schedulerJobTypeEnum = appStore.getDictionary("SchedulerJobTypeEnum");
 type IFormData = EditSchedulerJobInput & { mailMessages?: MailMessageEnum[]; weeks?: WeekEnum[] };
 
 const state = reactive({
-	formData: withDefineType<IFormData>({
-		jobType: SchedulerJobTypeEnum.IntranetUrl,
-		beginTime: "1970-01-01 00:00:00",
-		triggerType: TriggerTypeEnum.Cron,
-		mailMessages: [MailMessageEnum.None],
-	}),
+	formData: withDefineType<IFormData>({}),
 	formRules: withDefineType<FormRules<IFormData>>({
 		jobName: [{ required: true, message: "请输入作业名称", trigger: "blur" }],
 		jobGroup: [{ required: true, message: "请选择作业分组", trigger: "change" }],
@@ -406,10 +407,16 @@ const add = (tenantId: string, jobGroup: SchedulerJobGroupEnum) => {
 	faDialogRef.value.open(() => {
 		state.dialogState = "add";
 		state.dialogTitle = "添加调度作业";
-		state.formData.tenantId = tenantId;
-		state.formData.jobGroup = jobGroup;
-		state.formData.oldJobName = undefined;
-		state.formData.oldJobGroup = undefined;
+		state.formData = {
+			tenantId,
+			jobGroup,
+			oldJobName: undefined,
+			oldJobGroup: undefined,
+			jobType: SchedulerJobTypeEnum.IntranetUrl,
+			beginTime: "1970-01-01 00:00:00",
+			triggerType: TriggerTypeEnum.Cron,
+			mailMessages: [MailMessageEnum.None],
+		};
 	});
 };
 
