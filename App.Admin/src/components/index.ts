@@ -62,87 +62,62 @@ export type FaEmployeeSelectInstance = InstanceType<typeof EmployeeSelect>;
 export { Field };
 export type FaFieldInstance = InstanceType<typeof Field>;
 export { Footer };
-/** Footer 组件实例 */
 export type FaFooterInstance = InstanceType<typeof Footer>;
 export { Icon };
-/** Icon 组件实例 */
 export type FaIconInstance = InstanceType<typeof Icon>;
 export { Image };
-/** Image 组件实例 */
 export type FaImageInstance = InstanceType<typeof Image>;
 export { ImageCaptcha };
-/** ImageCaptcha 组件实例 */
 export type FaImageCaptchaInstance = InstanceType<typeof ImageCaptcha>;
 export { Loading };
-/** Loading 组件实例 */
 export type FaLoadingInstance = InstanceType<typeof Loading>;
 export { LoadingPage };
-/** LoadingPage 组件实例 */
 export type FaLoadingPageInstance = InstanceType<typeof LoadingPage>;
 export { MerchantSelect };
-/** MerchantSelect 组件实例 */
 export type FaMerchantSelectInstance = InstanceType<typeof MerchantSelect>;
 export { NavbarCapsule };
-/** NavbarCapsule 组件实例 */
 export type FaNavbarCapsuleInstance = InstanceType<typeof NavbarCapsule>;
 export { Overlay };
-/** Overlay 组件实例 */
 export type FaOverlayInstance = InstanceType<typeof Overlay>;
 export { Paging };
-/** Paging 组件实例，保留组件泛型参数 */
 export type FaPagingInstance<TResult = unknown, TInput extends string | number | boolean | PagedInput = PagedInput> = ComponentExposed<
 	typeof Paging<TResult, TInput>
 >;
 export { Popup };
-/** Popup 组件实例 */
 export type FaPopupInstance = InstanceType<typeof Popup>;
 export { ProvinceSelect };
-/** ProvinceSelect 组件实例 */
 export type FaProvinceSelectInstance = InstanceType<typeof ProvinceSelect>;
 export { RadioGroup };
-/** RadioGroup 组件实例 */
 export type FaRadioGroupInstance = InstanceType<typeof RadioGroup>;
 export { RegionSelect };
-/** RegionSelect 组件实例 */
 export type FaRegionSelectInstance = InstanceType<typeof RegionSelect>;
 export { SearchInput };
-/** SearchInput 组件实例，保留组件泛型参数 */
 export type FaSearchInputInstance<TInput extends PagedInput = PagedInput> = ComponentExposed<typeof SearchInput<TInput>>;
 export { SelectPage };
-/** SelectPage 组件实例，保留组件泛型参数 */
 export type FaSelectPageInstance<
 	TValue extends string | number | boolean,
 	TResult extends ElSelectorOutput = ElSelectorOutput<TValue>,
 	TInput extends string | number | boolean | PagedInput = PagedInput,
 > = ComponentExposed<typeof SelectPage<TValue, TResult, TInput>>;
 export { SwitchTenantPopup };
-/** SwitchTenantPopup 组件实例 */
 export type FaSwitchTenantPopupInstance = InstanceType<typeof SwitchTenantPopup>;
 export { Tag };
-/** Tag 组件实例 */
 export type FaTagInstance = InstanceType<typeof Tag>;
 export { TagFlag };
-/** TagFlag 组件实例 */
 export type FaTagFlagInstance = InstanceType<typeof TagFlag>;
 export { TenantSelect };
-/** TenantSelect 组件实例 */
 export type FaTenantSelectInstance = InstanceType<typeof TenantSelect>;
 export { Text };
-/** Text 组件实例 */
 export type FaTextInstance = InstanceType<typeof Text>;
 export { TreePicker };
-/** TreePicker 组件实例，保留组件泛型参数 */
 export type FaTreePickerInstance<
 	TValue extends string | number | boolean,
 	TResult extends ElTreeOutput = ElTreeOutput<TValue>,
 	TInput extends string | number | boolean | PagedInput = PagedInput,
 > = ComponentExposed<typeof TreePicker<TValue, TResult, TInput>>;
 export { UploadImage };
-/** UploadImage 组件实例 */
 export type FaUploadImageInstance = InstanceType<typeof UploadImage>;
 export { UploadImages };
-/** UploadImages 组件实例 */
 export type FaUploadImagesInstance = InstanceType<typeof UploadImages>;
 export { Watermark };
-/** Watermark 组件实例 */
 export type FaWatermarkInstance = InstanceType<typeof Watermark>;

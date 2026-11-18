@@ -111,9 +111,19 @@
 	overscroll-behavior-y: contain;
 
 	// 保留正文子项的自然高度
+	/* #ifdef H5 */
 	> * {
 		flex-shrink: 0;
 	}
+	/* #endif */
+	/* #ifndef H5 */
+	// WXSS 不支持通配选择器，使用原生内容容器选择器。
+	> view,
+	> scroll-view,
+	> form {
+		flex-shrink: 0;
+	}
+	/* #endif */
 }
 
 .fa-popup__body--no-scroll {
