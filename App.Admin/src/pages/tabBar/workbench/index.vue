@@ -70,7 +70,7 @@ import { onLoad, onPullDownRefresh, onShareAppMessage, onShareTimeline } from "@
 import { computed, reactive, ref, watch } from "vue";
 import { Local, throttle, withDefineType } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
-import { employeeApi } from "@/api/services/Admin/employee/index.ts";
+import { employeeApi } from "@/api/services/Admin/employee/index";
 import { CommonRoute } from "@/common";
 import defaultLogo from "@/static/logo.png";
 import { useApp, useUserInfo } from "@/stores";

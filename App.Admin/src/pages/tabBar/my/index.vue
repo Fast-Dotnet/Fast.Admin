@@ -84,7 +84,7 @@ import { CommonRoute } from "@/common";
 import { useMessageBox, useToast, useUpdate } from "@/hooks";
 import defaultLogo from "@/static/logo.png";
 import { useApp, useUserInfo } from "@/stores";
-import type { FaSwitchTenantPopupInstance } from "@/components/index.ts";
+import type { FaSwitchTenantPopupInstance } from "@/components";
 
 definePage({
 	name: "My",
