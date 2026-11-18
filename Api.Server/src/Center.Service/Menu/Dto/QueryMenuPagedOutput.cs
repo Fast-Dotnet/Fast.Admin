@@ -38,13 +38,11 @@ public class QueryMenuPagedOutput : PagedOutput, ITreeNode<long>
     /// <summary>
     /// 菜单编码
     /// </summary>
-    [SugarSearchValue]
     public string MenuCode { get; set; }
 
     /// <summary>
     /// 菜单名称
     /// </summary>
-    [SugarSearchValue]
     public string MenuName { get; set; }
 
     /// <summary>

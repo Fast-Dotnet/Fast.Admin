@@ -12,8 +12,13 @@ namespace Fast.Center.Service.Menu.Dto;
 /// <summary>
 /// 获取菜单列表输入
 /// </summary>
-public class QueryMenuPagedInput : PagedInput
+public class QueryMenuPagedInput
 {
+    /// <summary>
+    /// 搜索值
+    /// </summary>
+    public string SearchValue { get; set; }
+
     /// <summary>
     /// 版本
     /// </summary>

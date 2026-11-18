@@ -132,7 +132,7 @@ const add = () => {
 			hasWeb: true,
 			hasMobile: false,
 			hasDesktop: false,
-			sort: 1,
+			sort: modelValue.value.length + 1,
 			status: CommonStatusEnum.Enable,
 		};
 	});

@@ -59,6 +59,8 @@ public class MenuService : IDynamicApplication
     {
         List<QueryMenuPagedOutput> data = await _repository.Queryable<MenuModel>()
             .LeftJoin<ApplicationModel>((t1, t2) => t1.AppId == t2.AppId)
+            .WhereIF(!string.IsNullOrWhiteSpace(input.SearchValue),
+                t1 => t1.MenuCode.Contains(input.SearchValue) || t1.MenuName.Contains(input.SearchValue))
             .WhereIF(input.Edition != null, t1 => t1.Edition == input.Edition)
             .WhereIF(input.AppId != null, t1 => t1.AppId == input.AppId)
             .WhereIF(input.MenuType != null, t1 => t1.MenuType == input.MenuType)
@@ -67,7 +69,7 @@ public class MenuService : IDynamicApplication
             .WhereIF(input.Visible != null, t1 => t1.Visible == input.Visible)
             .WhereIF(input.HasMobile != null, t1 => t1.HasMobile == input.HasMobile)
             .WhereIF(input.Status != null, t1 => t1.Status == input.Status)
-            .OrderByIF(input.IsOrderBy, t1 => t1.Sort)
+            .OrderBy(t1 => t1.Sort)
             .Select((t1, t2) => new QueryMenuPagedOutput
             {
                 MenuId = t1.MenuId,
@@ -102,7 +104,6 @@ public class MenuService : IDynamicApplication
                 UpdatedTime = t1.UpdatedTime,
                 RowVersion = t1.RowVersion
             })
-            .SugarPaged(input)
             .ToListAsync();
 
         return input.TreeData ? new TreeBuildUtil<QueryMenuPagedOutput, long>().Build(data) : data;

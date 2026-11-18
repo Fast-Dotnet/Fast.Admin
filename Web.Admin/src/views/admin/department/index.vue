@@ -36,32 +36,22 @@
 					width="200"
 					small-width="180"
 					copy
-					sortable
 					:link="userInfoStore.hasButtonPermission('Department:Detail')"
 					:click="({ row }) => detailFormRef.detail(row.departmentId)"
 				/>
-				<FaTableColumn prop="departmentCode" label="部门编码" width="200" small-width="180" copy sortable />
-				<FaTableColumn prop="contacts" label="联系人" width="150" small-width="130" sortable />
-				<FaTableColumn prop="phone" label="电话" width="150" small-width="130" sortable />
-				<FaTableColumn prop="email" label="邮箱" width="150" small-width="130" sortable />
-				<FaTableColumn prop="sort" label="排序" width="100" small-width="80" sortable />
-				<FaTableColumn
-					prop="dataPublic"
-					label="数据公开"
-					width="120"
-					small-width="100"
-					sortable
-					tag
-					:enum="appStore.getDictionary('BooleanEnum')"
-				/>
-				<FaTableColumn prop="remark" label="备注" width="200" small-width="180" sortable />
-				<FaTableColumn prop="createdTime" label="创建时间" width="240" small-width="220" sortable type="timeInfo" />
+				<FaTableColumn prop="departmentCode" label="部门编码" width="200" small-width="180" copy />
+				<FaTableColumn prop="contacts" label="联系人" width="150" small-width="130" />
+				<FaTableColumn prop="phone" label="电话" width="150" small-width="130" />
+				<FaTableColumn prop="email" label="邮箱" width="150" small-width="130" />
+				<FaTableColumn prop="sort" label="排序" width="100" small-width="80" />
+				<FaTableColumn prop="dataPublic" label="数据公开" width="120" small-width="100" tag :enum="appStore.getDictionary('BooleanEnum')" />
+				<FaTableColumn prop="remark" label="备注" width="200" small-width="180" />
+				<FaTableColumn prop="createdTime" label="创建时间" width="240" small-width="220" type="timeInfo" />
 				<FaTableColumn
 					prop="updatedTime"
 					label="更新时间"
 					width="240"
 					small-width="220"
-					sortable
 					type="timeInfo"
 					:time-info-field="{ userName: 'updatedUserName', time: 'updatedTime' }"
 				/>

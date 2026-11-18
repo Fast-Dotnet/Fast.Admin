@@ -10,8 +10,13 @@ namespace Fast.Admin.Service.Department.Dto;
 /// <summary>
 /// 获取部门分页列表输入
 /// </summary>
-public class QueryDepartmentPagedInput : PagedInput
+public class QueryDepartmentPagedInput
 {
+    /// <summary>
+    /// 搜索值
+    /// </summary>
+    public string SearchValue { get; set; }
+
     /// <summary>
     /// 机构Id
     /// </summary>

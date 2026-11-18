@@ -214,6 +214,9 @@ const handlePopupClear = () => {
 
 // #ifdef H5
 onHide(() => {
+	// 浏览器进入后台时保留弹窗。
+	if (document.visibilityState === "hidden") return;
+
 	visible.value = false;
 });
 // #endif

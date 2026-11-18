@@ -163,7 +163,7 @@ public class DepartmentService : IDynamicApplication
                                               || customDepartmentIds.Contains(wh.DepartmentId));
         }
 
-        List<QueryDepartmentPagedOutput> data = await queryable.OrderByIF(input.IsOrderBy, ob => ob.Sort)
+        List<QueryDepartmentPagedOutput> data = await queryable.OrderBy(ob => ob.Sort)
             .Select(sl => new QueryDepartmentPagedOutput
             {
                 DepartmentId = sl.DepartmentId,
@@ -187,7 +187,6 @@ public class DepartmentService : IDynamicApplication
                 UpdatedTime = sl.UpdatedTime,
                 RowVersion = sl.RowVersion
             })
-            .SugarPaged(input)
             .ToListAsync();
 
         return input.TreeData ? new TreeBuildUtil<QueryDepartmentPagedOutput, long>().Build(data) : data;

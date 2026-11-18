@@ -13,7 +13,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { useProps } from "@fast-china/utils";
+import { omit, useProps } from "@fast-china/utils";
 import { checkboxGroupProps } from "@wot-ui/ui/components/wd-checkbox-group/types";
 import { useApp } from "@/stores";
 
@@ -27,7 +27,7 @@ defineOptions({
 });
 
 const props = defineProps({
-	...checkboxGroupProps,
+	...omit(checkboxGroupProps, ["modelValue"]),
 	/** 字典名称 */
 	name: {
 		type: String,
@@ -43,7 +43,7 @@ const emit = defineEmits<{
 }>();
 
 /** 当前选中的字典值 */
-const modelValue = defineModel<string | number | boolean>({ type: [String, Number, Boolean] });
+const modelValue = defineModel<string | number | boolean>();
 
 const appStore = useApp();
 

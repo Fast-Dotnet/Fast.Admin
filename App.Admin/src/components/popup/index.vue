@@ -240,6 +240,8 @@ const handleCloseClick = () => {
 
 // #ifdef H5
 onHide(() => {
+	// 浏览器进入后台时保留弹窗。
+	if (document.visibilityState === "hidden") return;
 	// 传送到 body 的弹窗需要随页面隐藏一起关闭。
 	if (props.rootPortal && state.visible) {
 		state.visible = false;

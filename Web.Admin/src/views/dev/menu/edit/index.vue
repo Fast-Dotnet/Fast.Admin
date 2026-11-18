@@ -27,7 +27,7 @@
 					:props="{ checkStrictly: true, checkOnClickNode: true, emitPath: false }"
 				/>
 			</FaFormItem>
-			<FaFormItem prop="menuType" label="菜单类型">
+			<FaFormItem prop="menuType" label="菜单类型" span="2">
 				<RadioGroup name="MenuTypeEnum" v-model="state.formData.menuType" />
 			</FaFormItem>
 			<FaFormItem prop="edition" label="版本" span="4">
@@ -287,6 +287,7 @@ const add = () => {
 			webKeepAlive: false,
 			hasMobile: false,
 			hasDesktop: false,
+			sort: 1,
 			status: CommonStatusEnum.Enable,
 			buttonList: [],
 		};

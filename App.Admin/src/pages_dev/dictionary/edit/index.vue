@@ -172,7 +172,7 @@ const state = reactive({
 	}),
 });
 
-const handleItemAdd = () => {
+const handleItemAdd = throttle(async () => {
 	state.popupTitle = "新增字典项";
 	state.itemIndex = -1;
 	state.itemFormData = {
@@ -181,15 +181,15 @@ const handleItemAdd = () => {
 		visible: true,
 		status: CommonStatusEnum.Enable,
 	};
-	faPopupRef.value.open();
-};
+	await faPopupRef.value.open();
+});
 
-const handleItemEdit = (item: EditDictionaryItemInput, index: number) => {
+const handleItemEdit = throttle(async (item: EditDictionaryItemInput, index: number) => {
 	state.popupTitle = "编辑字典项";
 	state.itemIndex = index;
 	state.itemFormData = { ...item };
-	faPopupRef.value.open();
-};
+	await faPopupRef.value.open();
+});
 
 const handleItemDelete = throttle(async (index: number) => {
 	await useMessageBox.confirm("确定要删除字典项？");

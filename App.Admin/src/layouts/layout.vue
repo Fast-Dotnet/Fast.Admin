@@ -229,6 +229,7 @@ const handleWatch = () => {
 			wdHookState.wdNotify = undefined;
 		},
 		{
+			immediate: true,
 			flush: "post",
 		}
 	);
@@ -242,6 +243,7 @@ const handleWatch = () => {
 			wdHookState.wdToast = undefined;
 		},
 		{
+			immediate: true,
 			flush: "post",
 		}
 	);
@@ -258,6 +260,7 @@ const handleWatch = () => {
 			wdHookState.wdDialog = undefined;
 		},
 		{
+			immediate: true,
 			flush: "post",
 		}
 	);
