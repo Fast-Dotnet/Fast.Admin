@@ -1,7 +1,7 @@
 <template>
 	<view class="page">
 		<FaLoading mask :loading="state.loading" />
-		<wd-tabs v-model="state.activeTab" swipeable animated>
+		<wd-tabs v-model="state.activeTab" line-theme="underline" swipeable animated>
 			<wd-tab title="概览" :name="1">
 				<wd-cell-group title="系统信息">
 					<view class="monitor-metric">
@@ -263,7 +263,7 @@ const startInterval = () => {
 			fetchData()
 				.catch((error: unknown) => logger.error("System", "刷新系统监控数据失败。", error))
 				.finally(schedule);
-		}, 5 * 1000);
+		}, 10 * 1000);
 	};
 	schedule();
 };

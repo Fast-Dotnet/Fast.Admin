@@ -296,7 +296,7 @@ const startInterval = () => {
 			fetchData()
 				.catch((error: unknown) => logger.error("System", "刷新系统监控数据失败。", error))
 				.finally(schedule);
-		}, 5 * 1000);
+		}, 10 * 1000);
 	};
 	schedule();
 };

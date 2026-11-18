@@ -327,11 +327,11 @@ const handleConfirm = () => {
 		}
 		switch (dialogState) {
 			case "add":
+			case "copy":
 				await schedulerApi.addSchedulerJob(formData);
-				ElMessage.success("新增成功！");
+				ElMessage.success(state.dialogState === "copy" ? "复制成功！" : "新增成功！");
 				break;
 			case "edit":
-			case "copy":
 				await schedulerApi.editSchedulerJob(formData);
 				ElMessage.success("保存成功！");
 				break;
@@ -429,8 +429,8 @@ const edit = (tenantId: string, jobName: string, jobGroup: SchedulerJobGroupEnum
 		});
 		state.formData = apiRes;
 		state.dialogTitle = `编辑调度作业 - ${apiRes.jobName}`;
-		state.formData.oldJobName = jobName;
-		state.formData.oldJobGroup = jobGroup;
+		state.formData.oldJobName = undefined;
+		state.formData.oldJobGroup = undefined;
 		handleFlagsEnum();
 		handleObj();
 	});

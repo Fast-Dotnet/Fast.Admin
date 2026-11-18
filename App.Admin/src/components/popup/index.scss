@@ -142,4 +142,8 @@
 	padding: 24rpx var(--fa-spacing-page);
 	border-top: 1px solid var(--wot-border-light);
 	background: var(--wot-filled-oppo);
+
+	&:empty {
+		display: none;
+	}
 }

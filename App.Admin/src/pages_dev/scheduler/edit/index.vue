@@ -425,8 +425,9 @@ const handleConfirm = throttle(async () => {
 		};
 		switch (state.pageMode) {
 			case "add":
+			case "copy":
 				await schedulerApi.addSchedulerJob(formData);
-				useToast.success("新增成功！");
+				useToast.success(state.pageMode === "copy" ? "复制成功！" : "新增成功！");
 				break;
 			case "edit":
 				await schedulerApi.editSchedulerJob(formData);
@@ -473,6 +474,20 @@ const handleLoad = async () => {
 						value: typeof value === "string" ? value : (JSON.stringify(value) ?? ""),
 					}));
 					uni.setNavigationBarTitle({ title: `编辑调度作业 - ${apiRes.jobName}` });
+				}
+				break;
+			case "copy":
+				{
+					const apiRes = await schedulerApi.querySchedulerJob(state.tenantId, { jobName: state.jobName, jobGroup: state.jobGroup });
+					state.formData = apiRes;
+					state.formData.oldJobName = undefined;
+					state.formData.oldJobGroup = undefined;
+					state.requestHeaderObj = Object.entries(apiRes.requestHeader ?? {}).map(([key, value]) => ({ key, value }));
+					state.requestParamsObj = Object.entries(apiRes.requestParams ?? {}).map(([key, value]) => ({
+						key,
+						value: typeof value === "string" ? value : (JSON.stringify(value) ?? ""),
+					}));
+					uni.setNavigationBarTitle({ title: `复制调度作业 - ${apiRes.jobName}` });
 				}
 				break;
 		}

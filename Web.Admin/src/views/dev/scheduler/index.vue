@@ -50,11 +50,8 @@
 							<el-text tag="b">{{ state.schedulerDetail.desiredStatus }}</el-text>
 						</el-form-item>
 						<el-form-item label="执行宿主">
-							<div>
-								<el-tag :type="state.schedulerDetail.executionOnline ? 'success' : 'danger'">
-									{{ state.schedulerDetail.executionOnline ? "在线" : "离线" }}
-								</el-tag>
-							</div>
+							<el-tag v-if="state.schedulerDetail.executionOnline" style="width: auto" type="success">在线</el-tag>
+							<el-tag v-else style="width: auto" type="danger">离线</el-tag>
 						</el-form-item>
 						<el-form-item label="集群">
 							<el-text tag="b">{{ state.schedulerDetail.clustered ? "True" : "False" }}</el-text>
@@ -127,36 +124,18 @@
 					small-width="80"
 					tag
 					:enum="[
-						{
-							label: '正常',
-							value: TriggerState.Normal,
-						},
-						{
-							label: '暂停',
-							value: TriggerState.Paused,
-						},
-						{
-							label: '完成',
-							value: TriggerState.Complete,
-						},
-						{
-							label: '异常',
-							value: TriggerState.Error,
-						},
-						{
-							label: '阻塞',
-							value: TriggerState.Blocked,
-						},
-						{
-							label: '不存在',
-							value: TriggerState.None,
-						},
+						{ label: '正常', value: TriggerState.Normal, type: 'primary' },
+						{ label: '暂停', value: TriggerState.Paused, type: 'info' },
+						{ label: '完成', value: TriggerState.Complete, type: 'success' },
+						{ label: '异常', value: TriggerState.Error, type: 'danger' },
+						{ label: '阻塞', value: TriggerState.Blocked, type: 'warning' },
+						{ label: '不存在', value: TriggerState.None, type: 'info' },
 					]"
 				/>
 				<FaTableColumn prop="runNumber" label="触发次数" width="100" small-width="80" />
 				<FaTableColumn
 					prop="jobType"
-					label="任务类型"
+					label="作业类型"
 					width="100"
 					small-width="80"
 					tag
@@ -176,7 +155,7 @@
 							v-if="row.exception"
 							type="danger"
 							style="cursor: pointer"
-							closable
+							:closable="userInfoStore.hasButtonPermission('Scheduler:Delete')"
 							@click="handleShowException(row)"
 							@close="handleDelException(row)"
 						>
@@ -223,11 +202,7 @@
 						>
 							编辑
 						</el-button>
-						<el-button
-							v-auth="'Scheduler:Edit'"
-							size="small"
-							@click="editFormRef.copy(state.tenantId, row.jobName, state.activeJobGroup)"
-						>
+						<el-button v-auth="'Scheduler:Add'" size="small" @click="editFormRef.copy(state.tenantId, row.jobName, state.activeJobGroup)">
 							复制
 						</el-button>
 						<el-button
@@ -270,7 +245,7 @@ import { logger, withDefineType } from "@fast-china/utils";
 import { SchedulerJobGroupEnum } from "@/api/enums/SchedulerJobGroupEnum";
 import { TriggerState } from "@/api/enums/TriggerState";
 import { schedulerApi } from "@/api/services/Scheduler";
-import { useApp } from "@/stores";
+import { useApp, useUserInfo } from "@/stores";
 import SchedulerEdit from "./edit/index.vue";
 import type { QuerySchedulerDetailOutput } from "@/api/services/Scheduler/models/QuerySchedulerDetailOutput";
 import type { SchedulerJobInfoDto } from "@/api/services/Scheduler/models/SchedulerJobInfoDto";
@@ -280,6 +255,7 @@ defineOptions({
 });
 
 const appStore = useApp();
+const userInfoStore = useUserInfo();
 
 const editFormRef = useTemplateRef<InstanceType<typeof SchedulerEdit>>("editFormRef");
 
@@ -354,7 +330,7 @@ const startInterval = () => {
 			fetchData()
 				.catch((error: unknown) => logger.error("Dev", "刷新调度器数据失败。", error))
 				.finally(schedule);
-		}, 5000);
+		}, 10 * 1000);
 	};
 	schedule();
 };
