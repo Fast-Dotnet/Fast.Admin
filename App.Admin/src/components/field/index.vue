@@ -6,7 +6,11 @@
 				class="fa-field__content"
 				:selectable="props.selectable || props.copyable"
 				:user-select="props.selectable || props.copyable"
-				:style="{ color: props.color, fontSize: props.size ? `${addCssUnit(props.size)}` : undefined }"
+				:style="{
+					color: props.color,
+					fontSize: props.size ? `${addCssUnit(props.size)}` : undefined,
+					fontWeight: props.bold ? 'var(--wot-font-weight-semibold)' : undefined,
+				}"
 			>
 				{{ props.value }}
 			</text>
@@ -50,6 +54,8 @@ const props = defineProps({
 		type: String,
 		default: "var(--wot-text-main)",
 	},
+	/** 默认值文本是否加粗；不影响自定义插槽 */
+	bold: Boolean,
 	/** 标签与内容是否垂直居中 */
 	center: Boolean,
 	/** 是否允许选中内容文本 */
