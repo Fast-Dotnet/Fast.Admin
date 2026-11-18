@@ -13,7 +13,7 @@
 			<wd-button type="danger" variant="plain" size="small" @click="handleDelete">删除</wd-button>
 		</template>
 
-		<wd-form ref="formRef" :model="state.formData" border>
+		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" border>
 			<wd-form-item title="绑定字段" prop="prop">
 				<wd-input v-model="state.formData.prop" clearable :maxlength="50" placeholder="请输入绑定字段" />
 			</wd-form-item>
@@ -183,7 +183,7 @@
 import { reactive, ref } from "vue";
 import { throttle, withDefineType } from "@fast-china/utils";
 import { ColumnAdvancedTypeEnum } from "@/api/enums/ColumnAdvancedTypeEnum";
-import { useMessageBox, useToast } from "@/hooks";
+import { useFormSchema, useMessageBox, useToast } from "@/hooks";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";
 import type { FaTableColumnCtx } from "@/api/services/Center/table/models/FaTableColumnCtx";
 import type { FaPopupInstance } from "@/components";
@@ -204,6 +204,28 @@ const advancedSections = [
 
 const state = reactive({
 	formData: withDefineType<FaTableColumnCtx & { authTagStr?: string }>({ searchConfig: [], otherConfig: [] }),
+	formSchema: useFormSchema<FaTableColumnCtx>({
+		order: {
+			required: true,
+			message: "请输入顺序",
+			validator: (value) => (Number.isInteger(value) && value >= 0 && value <= 999 ? undefined : "顺序必须是 0 到 999 之间的整数"),
+		},
+		width: {
+			required: true,
+			message: "请输入宽度",
+			validator: (value) => (Number.isInteger(value) && value >= 0 && value <= 999 ? undefined : "宽度必须是 0 到 999 之间的整数"),
+		},
+		smallWidth: {
+			required: true,
+			message: "请输入最小宽度",
+			validator: (value) => (Number.isInteger(value) && value >= 0 && value <= 999 ? undefined : "最小宽度必须是 0 到 999 之间的整数"),
+		},
+		searchOrder: {
+			required: true,
+			message: "请输入搜索项排序",
+			validator: (value) => (Number.isInteger(value) && value >= 0 && value <= 999 ? undefined : "搜索项排序必须是 0 到 999 之间的整数"),
+		},
+	}),
 	columnIndex: -1,
 });
 
@@ -291,6 +313,7 @@ const add = throttle(
 				dateFix: false,
 				dateFormat: "",
 				authTag: [],
+				authTagStr: "",
 				dataDeleteField: "",
 				slot: "",
 				otherConfig: [],
@@ -312,6 +335,7 @@ const edit = throttle(
 			state.columnIndex = index;
 			state.formData = {
 				...item,
+				authTagStr: item.authTag?.join(",") ?? "",
 				searchConfig: item.searchConfig?.map((config) => ({ ...config })) ?? [],
 				otherConfig: item.otherConfig?.map((config) => ({ ...config })) ?? [],
 			};
