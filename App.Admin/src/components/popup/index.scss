@@ -109,6 +109,11 @@
 	min-height: 0;
 	overflow: auto;
 	overscroll-behavior-y: contain;
+
+	// 保留正文子项的自然高度
+	> * {
+		flex-shrink: 0;
+	}
 }
 
 .fa-popup__body--no-scroll {

@@ -71,6 +71,7 @@ const add = () => {
 	faDialogRef.value.open(() => {
 		state.formData = {
 			valueType: DictionaryValueTypeEnum.String,
+			dictionaryItemList: [],
 		};
 	});
 };

@@ -34,20 +34,19 @@
 			</view>
 		</view>
 		<view
+			v-if="!state.rendering"
 			class="fa-popup__body"
 			:class="{
 				'fa-popup__body--no-scroll': props.bodyScroll !== 'auto',
 				'fa-popup__body--scroll-view': props.bodyScroll === 'scroll-view',
 			}"
 		>
-			<template v-if="!state.rendering">
-				<scroll-view v-if="props.bodyScroll === 'scroll-view'" class="fa-popup__scroll-view" scroll-y>
-					<view class="fa-popup__scroll-content">
-						<slot :loading="state.loading" />
-					</view>
-				</scroll-view>
-				<slot v-else :loading="state.loading" />
-			</template>
+			<scroll-view v-if="props.bodyScroll === 'scroll-view'" class="fa-popup__scroll-view" scroll-y>
+				<view class="fa-popup__scroll-content">
+					<slot :loading="state.loading" />
+				</view>
+			</scroll-view>
+			<slot v-else :loading="state.loading" />
 		</view>
 		<view v-if="hasFooter()" class="fa-popup__footer">
 			<slot name="footer" :loading="state.loading" :close="handleCloseClick" />

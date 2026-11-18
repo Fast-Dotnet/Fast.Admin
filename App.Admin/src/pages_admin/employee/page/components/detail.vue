@@ -1,6 +1,6 @@
 <template>
 	<FaPopup ref="faPopupRef" title="职员详情" height="70%" position="bottom" closable>
-		<view class="page-detail__popup" style="margin-bottom: var(--wot-spacing-extra-loose)">
+		<view class="page-detail__popup">
 			<FaField label="姓名" :value="formData.employeeName" />
 			<FaField label="工号" :value="formData.employeeNo" />
 			<FaField label="手机" :value="formData.mobile" />
@@ -27,18 +27,19 @@
 			<FaField label="更新时间" :value="formData.updatedTime" />
 
 			<wd-divider content-position="left">组织架构</wd-divider>
-			<FaCard v-for="item in formData.orgList" :key="item.departmentId" :title="item.departmentName">
-				<template #titleExtra>
-					<wd-tag v-if="item.isPrincipal" type="primary">负责人</wd-tag>
-				</template>
-				<FaField label="主部门" center>
-					<FaTag name="BooleanEnum" :value="item.isPrimary" />
-				</FaField>
-				<FaField label="机构" :value="item.orgName" />
-				<FaField label="职位" :value="item.positionName" />
-				<FaField label="职级" :value="item.jobLevelName" />
-			</FaCard>
 		</view>
+
+		<FaCard v-for="item in formData.orgList" :key="item.departmentId" :title="item.departmentName">
+			<template #titleExtra>
+				<wd-tag v-if="item.isPrincipal" type="primary">负责人</wd-tag>
+			</template>
+			<FaField label="主部门" center>
+				<FaTag name="BooleanEnum" :value="item.isPrimary" />
+			</FaField>
+			<FaField label="机构" :value="item.orgName" />
+			<FaField label="职位" :value="item.positionName" />
+			<FaField label="职级" :value="item.jobLevelName" />
+		</FaCard>
 	</FaPopup>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-	<view class="fa-card">
+	<view :class="`fa-card ${props.customClass}`" :style="props.customStyle">
 		<view v-if="props.title || $slots.title || $slots.titleExtra" class="fa-card__title">
 			<slot name="title">
 				<text v-if="props.title" class="fa-card__title-text">{{ props.title }}</text>
@@ -19,6 +19,7 @@
 
 <script setup lang="ts">
 import { definePropType } from "@fast-china/utils";
+import { baseProps } from "@wot-ui/ui/common/props";
 import { useUserInfo } from "@/stores";
 import type { BaseEvent } from "@uni-helper/uni-types";
 
@@ -32,6 +33,7 @@ defineOptions({
 });
 
 const props = defineProps({
+	...baseProps,
 	/** 标题 */
 	title: String,
 	/** 内容点击的权限编码，省略时直接触发点击，数组命中任意一项即可 */

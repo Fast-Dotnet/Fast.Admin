@@ -99,6 +99,7 @@ const add = () => {
 		state.dialogTitle = "添加数据字典项";
 		state.formData = {
 			type: TagTypeEnum.Primary,
+			order: modelValue.value.length + 1,
 			visible: true,
 			status: CommonStatusEnum.Enable,
 		};
