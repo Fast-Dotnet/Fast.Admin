@@ -352,7 +352,7 @@ const startInterval = () => {
 		state.interval = setTimeout(() => {
 			state.lastUpdateTime = new Date();
 			fetchData()
-				.catch((error: unknown) => logger.error("Admin", "刷新调度器数据失败。", error))
+				.catch((error: unknown) => logger.error("Dev", "刷新调度器数据失败。", error))
 				.finally(schedule);
 		}, 5000);
 	};
@@ -497,7 +497,7 @@ const activate = (showLoading = false) => {
 	const session = ++activeSession;
 	if (showLoading) state.loading = true;
 	fetchData()
-		.catch((error: unknown) => logger.error("Admin", "加载调度器数据失败。", error))
+		.catch((error: unknown) => logger.error("Dev", "加载调度器数据失败。", error))
 		.finally(() => {
 			if (!isActive || session !== activeSession) return;
 			state.loading = false;

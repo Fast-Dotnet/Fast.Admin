@@ -294,7 +294,7 @@ const startInterval = () => {
 		if (!state.polling) return;
 		state.interval = setTimeout(() => {
 			fetchData()
-				.catch((error: unknown) => logger.error("Admin", "刷新系统监控数据失败。", error))
+				.catch((error: unknown) => logger.error("System", "刷新系统监控数据失败。", error))
 				.finally(schedule);
 		}, 5 * 1000);
 	};
@@ -308,7 +308,7 @@ const activate = (showLoading = false) => {
 	const session = ++activeSession;
 	if (showLoading) state.loading = true;
 	fetchData()
-		.catch((error: unknown) => logger.error("Admin", "加载系统监控数据失败。", error))
+		.catch((error: unknown) => logger.error("System", "加载系统监控数据失败。", error))
 		.finally(() => {
 			if (!isActive || session !== activeSession) return;
 			state.loading = false;
