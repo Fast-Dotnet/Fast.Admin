@@ -182,7 +182,7 @@ const handleResetPassword = (row: QueryAccountPagedOutput) => {
 				rowVersion,
 			});
 			ElMessage.success("操作成功！");
-			faTableRef.value?.refresh();
+			faTableRef.value.refresh();
 		},
 	});
 };
@@ -198,7 +198,7 @@ const handleUnlock = (row: QueryAccountPagedOutput) => {
 				rowVersion,
 			});
 			ElMessage.success("操作成功！");
-			faTableRef.value?.refresh();
+			faTableRef.value.refresh();
 		},
 	});
 };
@@ -214,7 +214,7 @@ const handleChangeStatus = (row: QueryAccountPagedOutput) => {
 				rowVersion,
 			});
 			ElMessage.success("操作成功！");
-			faTableRef.value?.refresh();
+			faTableRef.value.refresh();
 		},
 	});
 };

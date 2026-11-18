@@ -15,7 +15,7 @@
 					:value="state.selectedOrganization?.label"
 					placeholder="请选择机构"
 					is-link
-					@click="faPopupRef?.open()"
+					@click="faPopupRef.open()"
 				/>
 				<view class="department-header__search-row">
 					<wd-input
@@ -38,7 +38,7 @@
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.departmentId" code="Department:Detail" @click="detailFormRef?.detail(item.departmentId)">
+			<FaCard v-for="item in pagedList" :key="item.departmentId" code="Department:Detail" @click="detailFormRef.detail(item.departmentId)">
 				<FaField label="部门名称" :value="item.departmentName" />
 				<FaField label="部门编码" :value="item.departmentCode" />
 				<FaField label="父级" :value="item.parentName" />

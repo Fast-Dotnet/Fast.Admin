@@ -17,7 +17,7 @@
 				:key="item.configId"
 				:title="item.configName"
 				code="Config:Detail"
-				@click="detailFormRef?.detail(item.configId)"
+				@click="detailFormRef.detail(item.configId)"
 			>
 				<FaField label="配置编码" :value="item.configCode" />
 				<FaField label="配置值">

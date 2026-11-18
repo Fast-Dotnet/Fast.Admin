@@ -4,17 +4,23 @@
 		width="1000"
 		:title="state.dialogTitle"
 		:show-fullscreen="false"
+		:show-refresh="!state.uploading"
 		show-before-close
 		confirm-button-text="保存"
 		@confirm-click="handleConfirm"
-		@close="faFormRef.resetFields()"
+		@close="handleClose"
 	>
 		<FaForm ref="faFormRef" :model="state.formData" :rules="state.formRules" cols="2">
 			<FaFormItem prop="appKey" label="应用标识">
 				<ApplicationClientSelect v-model="state.formData.appKey" />
 			</FaFormItem>
 			<FaFormItem prop="packageType" label="包类型">
-				<RadioGroup name="ApplicationPackageTypeEnum" v-model="state.formData.packageType" @change="handlePackageTypeChange" />
+				<RadioGroup
+					name="ApplicationPackageTypeEnum"
+					v-model="state.formData.packageType"
+					:disabled="state.uploading"
+					@change="handlePackageTypeChange"
+				/>
 			</FaFormItem>
 			<FaFormItem prop="appType" label="应用类型" span="2">
 				<el-radio-group v-if="state.formData.packageType === ApplicationPackageTypeEnum.FullPackage" v-model="state.formData.appType">
@@ -63,6 +69,7 @@
 				<FaUpload
 					v-model="state.formData.fileUrl"
 					:upload-api="handleUpload"
+					:disabled="state.uploading"
 					:before-upload="handleBeforeUpload"
 					:accept="packageAccept"
 					:max-size="512 * 1024"
@@ -159,12 +166,14 @@ const appTypes = computed({
 });
 const packageAccept = computed(() => (state.formData.packageType === ApplicationPackageTypeEnum.Wgt ? ".wgt" : ".apk,.app,.hap,.ipa,.exe,.msi"));
 
+let uploadVersion = 0;
+
 const handlePackageTypeChange = () => {
 	state.formData.appType = undefined;
 	state.formData.fileUrl = undefined;
 	state.formData.minNativeVersionCode = undefined;
 	state.formData.maxNativeVersionCode = undefined;
-	faFormRef.value?.clearValidate(["appType", "fileUrl", "minNativeVersionCode", "maxNativeVersionCode"]);
+	faFormRef.value.clearValidate(["appType", "fileUrl", "minNativeVersionCode", "maxNativeVersionCode"]);
 };
 
 const handleBeforeUpload = (file: UploadRawFile) => {
@@ -184,15 +193,24 @@ const handleBeforeUpload = (file: UploadRawFile) => {
 };
 
 const handleUpload = async (data: FormData) => {
+	if (state.uploading) return undefined;
+	const version = uploadVersion;
 	state.uploading = true;
 	state.uploadProgress = 0;
 	try {
-		return await fileApi.uploadPackage(data, ({ loaded, total }) => {
-			if (total) state.uploadProgress = Math.min(100, Math.round((loaded / total) * 100));
+		const fileUrl = await fileApi.uploadPackage(data, ({ loaded, total }) => {
+			if (version === uploadVersion && total) state.uploadProgress = Math.min(100, Math.round((loaded / total) * 100));
 		});
+		return version === uploadVersion ? fileUrl : undefined;
 	} finally {
-		state.uploading = false;
+		if (version === uploadVersion) state.uploading = false;
 	}
+};
+
+const handleClose = () => {
+	uploadVersion++;
+	state.uploading = false;
+	faFormRef.value.resetFields();
 };
 
 const handleConfirm = () => {

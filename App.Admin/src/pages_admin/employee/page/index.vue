@@ -16,7 +16,7 @@
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.employeeId" code="Employee:Detail" @click="detailFormRef?.detail(item.employeeId)">
+			<FaCard v-for="item in pagedList" :key="item.employeeId" code="Employee:Detail" @click="detailFormRef.detail(item.employeeId)">
 				<view style="display: flex; align-items: center; gap: 20rpx; margin-bottom: 10rpx">
 					<FaAvatar :src="item.idPhoto" size="88rpx" original />
 					<view style="flex: 1; display: flex; flex-direction: column">
@@ -67,7 +67,7 @@
 						v-if="item.employeeId !== userInfoStore.employeeId && item.status !== EmployeeStatusEnum.Resigned && !item.accountMobile"
 						code="Employee:Edit"
 					>
-						<wd-button size="mini" type="primary" variant="plain" @click="bindAccountFormRef?.open(item.employeeId)">
+						<wd-button size="mini" type="primary" variant="plain" @click="bindAccountFormRef.open(item.employeeId)">
 							绑定登录账号
 						</wd-button>
 					</FaAuth>

@@ -145,7 +145,7 @@ const handleDelete = (row: QueryMenuPagedOutput) => {
 		async beforeClose() {
 			await menuApi.deleteMenu({ menuId, rowVersion });
 			ElMessage.success("删除成功！");
-			faTableRef.value?.refresh();
+			faTableRef.value.refresh();
 		},
 	});
 };
@@ -161,7 +161,7 @@ const handleChangeStatus = (row: QueryMenuPagedOutput) => {
 				rowVersion,
 			});
 			ElMessage.success("操作成功！");
-			faTableRef.value?.refresh();
+			faTableRef.value.refresh();
 		},
 	});
 };

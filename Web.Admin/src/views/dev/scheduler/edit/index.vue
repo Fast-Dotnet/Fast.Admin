@@ -294,7 +294,7 @@ const handleClose = () => {
 	state.cronLogs = [];
 	state.requestHeaderObj = [];
 	state.requestParamsObj = [];
-	faFormRef?.value?.resetFields();
+	faFormRef.value.resetFields();
 };
 
 const handleConfirm = () => {

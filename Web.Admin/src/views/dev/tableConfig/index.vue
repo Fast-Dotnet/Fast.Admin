@@ -77,7 +77,7 @@ const handleDelete = (row: QueryTableConfigPagedOutput) => {
 		async beforeClose() {
 			await tableApi.deleteTableConfig({ tableId, rowVersion });
 			ElMessage.success("删除成功！");
-			faTableRef.value?.refresh();
+			faTableRef.value.refresh();
 		},
 	});
 };

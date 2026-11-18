@@ -11,7 +11,7 @@
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.tableName" @click="detailFormRef?.detail(item)">
+			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.tableName" @click="detailFormRef.detail(item)">
 				<template #titleExtra>
 					<view class="fa-card__title-view">
 						<FaTag name="DiffLogTypeEnum" :value="item.diffType" />

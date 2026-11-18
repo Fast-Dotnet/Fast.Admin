@@ -11,7 +11,7 @@
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.serialRuleId" @click="detailFormRef?.detail(item)">
+			<FaCard v-for="item in pagedList" :key="item.serialRuleId" @click="detailFormRef.detail(item)">
 				<FaField label="规则类型" center>
 					<FaTag name="SerialRuleTypeEnum" :value="item.ruleType" />
 				</FaField>

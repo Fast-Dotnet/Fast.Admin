@@ -35,7 +35,7 @@
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.tenantId" code="Tenant:Detail" @click="detailFormRef?.detail(item.tenantId)">
+			<FaCard v-for="item in pagedList" :key="item.tenantId" code="Tenant:Detail" @click="detailFormRef.detail(item.tenantId)">
 				<view style="display: flex; align-items: center; gap: 20rpx; margin-bottom: 10rpx">
 					<FaAvatar :src="item.logoUrl" size="88rpx" />
 					<view style="flex: 1; display: flex; flex-direction: column">

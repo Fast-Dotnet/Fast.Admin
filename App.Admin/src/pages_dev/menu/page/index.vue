@@ -14,13 +14,7 @@
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard
-				v-for="item in pagedList"
-				:key="item.menuId"
-				:title="item.menuName"
-				code="Menu:Detail"
-				@click="detailFormRef?.detail(item.menuId)"
-			>
+			<FaCard v-for="item in pagedList" :key="item.menuId" :title="item.menuName" code="Menu:Detail" @click="detailFormRef.detail(item.menuId)">
 				<template #titleExtra>
 					<view class="fa-card__title-view">
 						<FaTag name="MenuTypeEnum" :value="item.menuType" />

@@ -11,7 +11,7 @@
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.connectionId" @click="detailFormRef?.detail(item)">
+			<FaCard v-for="item in pagedList" :key="item.connectionId" @click="detailFormRef.detail(item)">
 				<view style="display: flex; align-items: center; gap: 20rpx; margin-bottom: 10rpx">
 					<FaAvatar :src="item.avatar" size="88rpx" />
 					<view style="flex: 1; display: flex; flex-direction: column">

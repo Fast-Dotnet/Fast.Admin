@@ -84,7 +84,7 @@ const handleDelete = (row: QueryDatabasePagedOutput) => {
 		async beforeClose() {
 			await databaseApi.deleteDatabase({ mainId, rowVersion });
 			ElMessage.success("删除成功！");
-			faTableRef.value?.refresh();
+			faTableRef.value.refresh();
 		},
 	});
 };
@@ -98,7 +98,7 @@ const handleInitDatabase = (row: QueryDatabasePagedOutput) => {
 		async beforeClose() {
 			await databaseApi.initDatabase({ tenantId, databaseType });
 			ElMessage.success("初始化成功！");
-			faTableRef.value?.refresh();
+			faTableRef.value.refresh();
 		},
 	});
 };

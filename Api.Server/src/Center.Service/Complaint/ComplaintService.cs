@@ -103,8 +103,11 @@ public class ComplaintService : IDynamicApplication
     [Permission(PermissionConst.Complaint.Detail, PermissionConst.Complaint.TenantDetail)]
     public async Task<QueryComplaintPagedOutput> QueryComplaintDetail([Required(ErrorMessage = "投诉Id不能为空")] long? complaintId)
     {
+        bool canQueryAll = _user.IsSuperAdmin
+                           || (_user.IsSystemTenant && _user.ButtonCodeList.Contains(PermissionConst.Complaint.Detail));
         QueryComplaintPagedOutput result = await _repository.Queryable<ComplaintModel>()
             .Where(wh => wh.ComplaintId == complaintId)
+            .WhereIF(!canQueryAll, wh => wh.TenantId == _user.TenantId)
             .Select(sl => new QueryComplaintPagedOutput
             {
                 ComplaintId = sl.ComplaintId,
@@ -176,7 +179,12 @@ public class ComplaintService : IDynamicApplication
     [Permission(PermissionConst.Complaint.Handle, PermissionConst.Complaint.TenantHandle)]
     public async Task HandleComplaint(HandleComplaintInput input)
     {
-        ComplaintModel complaintModel = await _repository.SingleOrDefaultAsync(input.ComplaintId);
+        bool canHandleAll = _user.IsSuperAdmin
+                            || (_user.IsSystemTenant && _user.ButtonCodeList.Contains(PermissionConst.Complaint.Handle));
+        ComplaintModel complaintModel = await _repository.Queryable<ComplaintModel>()
+            .Where(wh => wh.ComplaintId == input.ComplaintId)
+            .WhereIF(!canHandleAll, wh => wh.TenantId == _user.TenantId)
+            .SingleAsync();
         if (complaintModel == null)
         {
             throw new UserFriendlyException("数据不存在！");

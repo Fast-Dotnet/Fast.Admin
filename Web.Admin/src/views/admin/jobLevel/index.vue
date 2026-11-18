@@ -54,7 +54,7 @@ const handleDelete = (row: QueryJobLevelPagedOutput) => {
 		async beforeClose() {
 			await jobLevelApi.deleteJobLevel({ jobLevelId, rowVersion });
 			ElMessage.success("删除成功！");
-			faTableRef.value?.refresh();
+			faTableRef.value.refresh();
 		},
 	});
 };

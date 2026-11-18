@@ -22,7 +22,7 @@
 				:key="item.recordId"
 				:title="item.appKey"
 				code="AppClient:Detail"
-				@click="clientDetailFormRef?.detail(item.recordId)"
+				@click="clientDetailFormRef.detail(item.recordId)"
 			>
 				<template #titleExtra>
 					<FaTag name="EnvironmentTypeEnum" :value="item.environmentType" />

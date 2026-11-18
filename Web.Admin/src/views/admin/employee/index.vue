@@ -259,7 +259,7 @@ const handleChangeStatus = (row: QueryEmployeePagedOutput, status: EmployeeStatu
 				rowVersion,
 			});
 			ElMessage.success("操作成功！");
-			faTableRef.value?.refresh();
+			faTableRef.value.refresh();
 		},
 	});
 };
@@ -276,7 +276,7 @@ const handleChangeAccountStatus = (row: QueryEmployeePagedOutput) => {
 				rowVersion,
 			});
 			ElMessage.success("操作成功！");
-			faTableRef.value?.refresh();
+			faTableRef.value.refresh();
 		},
 	});
 };

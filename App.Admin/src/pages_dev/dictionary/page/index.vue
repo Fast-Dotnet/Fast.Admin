@@ -16,7 +16,7 @@
 				:key="item.dictionaryId"
 				:title="item.dictionaryKey"
 				code="Dictionary:Detail"
-				@click="detailFormRef?.detail(item.dictionaryId)"
+				@click="detailFormRef.detail(item.dictionaryId)"
 			>
 				<template #titleExtra>
 					<FaTag name="CommonStatusEnum" :value="item.status" />

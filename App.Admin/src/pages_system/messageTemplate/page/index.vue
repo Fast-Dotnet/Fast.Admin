@@ -19,7 +19,7 @@
 				:key="item.recordId"
 				:title="item.templateCode"
 				code="MessageTemplate:Detail"
-				@click="detailFormRef?.detail(item.recordId)"
+				@click="detailFormRef.detail(item.recordId)"
 			>
 				<template #titleExtra>
 					<FaTag name="MessageTemplateTypeEnum" :value="item.templateType" />

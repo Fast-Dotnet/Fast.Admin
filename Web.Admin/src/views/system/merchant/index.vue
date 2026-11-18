@@ -74,7 +74,7 @@ const handleDelete = (row: QueryMerchantPagedOutput) => {
 		async beforeClose() {
 			await merchantApi.deleteMerchant({ merchantId, rowVersion });
 			ElMessage.success("删除成功！");
-			faTableRef.value?.refresh();
+			faTableRef.value.refresh();
 		},
 	});
 };

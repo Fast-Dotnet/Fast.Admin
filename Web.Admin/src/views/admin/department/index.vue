@@ -132,7 +132,7 @@ const state = reactive({
 					async beforeClose() {
 						await organizationApi.deleteOrganization({ orgId, rowVersion: orgData?.rowVersion });
 						ElMessage.success("删除成功！");
-						orgTreeRef.value?.refresh();
+						orgTreeRef.value.refresh();
 					},
 				});
 			},
@@ -170,7 +170,7 @@ const handleDelete = (row: QueryDepartmentPagedOutput) => {
 		async beforeClose() {
 			await departmentApi.deleteDepartment({ departmentId, rowVersion });
 			ElMessage.success("删除成功！");
-			faTableRef.value?.refresh();
+			faTableRef.value.refresh();
 		},
 	});
 };

@@ -2,7 +2,7 @@
 	<view class="page">
 		<FaLoading mask :loading="state.loading" />
 		<view style="padding: var(--fa-spacing-page)">
-			<wd-button size="small" icon="plus" @click="columnFormRef?.add()">新增列</wd-button>
+			<wd-button size="small" icon="plus" @click="columnFormRef.add()">新增列</wd-button>
 		</view>
 		<wd-cell-group border>
 			<wd-cell
@@ -12,7 +12,7 @@
 				:value="item.label"
 				center
 				is-link
-				@click="columnFormRef?.edit(index)"
+				@click="columnFormRef.edit(index)"
 			/>
 		</wd-cell-group>
 		<wd-empty v-if="!state.formData.columns.length" icon="no-content" tip="暂无配置列" />

@@ -101,7 +101,7 @@ const handleChangeStatus = (row: QueryTenantPagedOutput) => {
 				rowVersion,
 			});
 			ElMessage.success("操作成功！");
-			faTableRef.value?.refresh();
+			faTableRef.value.refresh();
 		},
 	});
 };

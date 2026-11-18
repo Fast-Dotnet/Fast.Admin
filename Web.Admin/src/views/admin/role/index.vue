@@ -83,7 +83,7 @@ const handleDelete = (row: QueryRolePagedOutput) => {
 		async beforeClose() {
 			await roleApi.deleteRole({ roleId, rowVersion });
 			ElMessage.success("删除成功！");
-			faTableRef.value?.refresh();
+			faTableRef.value.refresh();
 		},
 	});
 };

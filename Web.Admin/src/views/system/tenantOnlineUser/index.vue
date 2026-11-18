@@ -133,7 +133,7 @@ const handleForceOffline = (row: TenantOnlineUserModel) => {
 				connectionId,
 			});
 			ElMessage.success("强制下线成功！");
-			faTableRef.value?.refresh();
+			faTableRef.value.refresh();
 		},
 	});
 };

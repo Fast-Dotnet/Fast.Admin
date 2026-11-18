@@ -17,7 +17,7 @@
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.mainId" :title="item.dbName" @click="detailFormRef?.detail(item)">
+			<FaCard v-for="item in pagedList" :key="item.mainId" :title="item.dbName" @click="detailFormRef.detail(item)">
 				<template #titleExtra>
 					<view class="fa-card__title-view">
 						<FaTag name="DatabaseTypeEnum" :value="item.databaseType" />

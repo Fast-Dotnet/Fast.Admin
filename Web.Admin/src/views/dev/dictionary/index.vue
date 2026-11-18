@@ -110,7 +110,7 @@ const handleDelete = (row: QueryDictionaryPagedOutput) => {
 		async beforeClose() {
 			await dictionaryApi.deleteDictionary({ dictionaryId, rowVersion });
 			ElMessage.success("删除成功！");
-			faTableRef.value?.refresh();
+			faTableRef.value.refresh();
 		},
 	});
 };

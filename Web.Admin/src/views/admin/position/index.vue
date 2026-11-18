@@ -54,7 +54,7 @@ const handleDelete = (row: QueryPositionPagedOutput) => {
 		async beforeClose() {
 			await positionApi.deletePosition({ positionId, rowVersion });
 			ElMessage.success("删除成功！");
-			faTableRef.value?.refresh();
+			faTableRef.value.refresh();
 		},
 	});
 };

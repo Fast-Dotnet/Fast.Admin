@@ -9,7 +9,7 @@
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.fileId" :title="item.fileObjectName" @click="editFormRef?.detail(item)">
+			<FaCard v-for="item in pagedList" :key="item.fileId" :title="item.fileObjectName" @click="editFormRef.detail(item)">
 				<template #titleExtra>
 					<view class="fa-card__title-view">
 						<wd-tag type="primary" variant="plain">{{ item.fileSuffix }}</wd-tag>

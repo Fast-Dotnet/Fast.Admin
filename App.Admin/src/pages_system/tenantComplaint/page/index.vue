@@ -14,7 +14,7 @@
 				:key="item.complaintId"
 				:title="item.appName"
 				code="Complaint:TenantDetail"
-				@click="detailFormRef?.detail(item)"
+				@click="detailFormRef.detail(item)"
 			>
 				<FaField label="投诉类型" center>
 					<FaTag name="ComplaintTypeEnum" :value="item.complaintType" />
@@ -31,7 +31,7 @@
 
 				<template v-if="!item.handleTime" #footer>
 					<FaAuth code="Complaint:TenantHandle">
-						<wd-button size="mini" type="primary" variant="plain" @click="handleFormRef?.open(item.complaintId)">处理</wd-button>
+						<wd-button size="mini" type="primary" variant="plain" @click="handleFormRef.open(item.complaintId)">处理</wd-button>
 					</FaAuth>
 				</template>
 			</FaCard>

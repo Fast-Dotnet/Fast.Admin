@@ -72,7 +72,7 @@ const handleDelete = (row: QueryConfigPagedOutput) => {
 		async beforeClose() {
 			await configApi.deleteConfigCache({ configCode });
 			ElMessage.success("删除成功！");
-			faTableRef.value?.refresh();
+			faTableRef.value.refresh();
 		},
 	});
 };
@@ -84,7 +84,7 @@ const handleDeleteAll = () => {
 		async beforeClose() {
 			await configApi.deleteAllConfigCache();
 			ElMessage.success("删除成功！");
-			faTableRef.value?.refresh();
+			faTableRef.value.refresh();
 		},
 	});
 };

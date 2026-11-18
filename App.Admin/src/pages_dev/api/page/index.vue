@@ -5,7 +5,7 @@
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.apiId" :title="item.apiName" @click="detailFormRef?.detail(item)">
+			<FaCard v-for="item in pagedList" :key="item.apiId" :title="item.apiName" @click="detailFormRef.detail(item)">
 				<template #titleExtra>
 					<view class="fa-card__title-view">
 						<FaTag name="HttpRequestActionEnum" :value="item.action" />

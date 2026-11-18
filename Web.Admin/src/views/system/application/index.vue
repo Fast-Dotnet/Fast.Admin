@@ -168,7 +168,7 @@ const handleDelete = (row: QueryApplicationPagedOutput) => {
 		async beforeClose() {
 			await applicationApi.deleteApplication({ appId, rowVersion });
 			ElMessage.success("删除成功！");
-			faTableRef.value?.refresh();
+			faTableRef.value.refresh();
 		},
 	});
 };
@@ -181,7 +181,7 @@ const handleClientDelete = (row: QueryApplicationClientOutput) => {
 		async beforeClose() {
 			await applicationClientApi.deleteApplicationClient({ recordId, rowVersion });
 			ElMessage.success("删除成功！");
-			faTableRef.value?.refresh();
+			faTableRef.value.refresh();
 		},
 	});
 };

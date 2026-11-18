@@ -7,6 +7,7 @@
 				<FaRadioGroup
 					name="ApplicationPackageTypeEnum"
 					v-model="state.formData.packageType"
+					:disabled="state.uploading"
 					direction="horizontal"
 					@change="handlePackageTypeChange"
 				/>
@@ -78,7 +79,7 @@
 </template>
 
 <script setup lang="ts">
-import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app";
+import { onLoad, onPullDownRefresh, onUnload } from "@dcloudio/uni-app";
 import { computed, reactive, ref } from "vue";
 import { axiosUtil } from "@fast-china/axios";
 import { throttle, withDefineType } from "@fast-china/utils";
@@ -172,6 +173,8 @@ const packageExtensionList = computed(() =>
 	state.formData.packageType === ApplicationPackageTypeEnum.Wgt ? [".wgt"] : [".apk", ".app", ".hap", ".ipa", ".exe", ".msi"]
 );
 
+let isUnloaded = false;
+
 const handlePackageTypeChange = () => {
 	state.formData.appType = undefined;
 	state.formData.fileUrl = undefined;
@@ -183,21 +186,30 @@ const handlePackageTypeChange = () => {
 };
 
 const handleUpload = throttle(async () => {
+	if (state.uploading) return;
+	// #ifdef APP-PLUS
+	if (plus.os.name === "Android" || plus.os.name === "iOS") {
+		await useMessageBox.alert("当前 App 暂不支持选择安装包，请使用 Web 端上传。");
+		return;
+	}
+	// #endif
+	const extensionList = packageExtensionList.value;
 	state.uploading = true;
 	state.uploadProgress = 0;
 	try {
-		const resFile = await new Promise<{ path: string; name: string; size: number; file?: File }>((resolve, reject) => {
+		const resFile = await new Promise<{ path: string; name: string; size: number; file?: File } | undefined>((resolve, reject) => {
 			// #ifdef MP-WEIXIN
 			wx.chooseMessageFile({
 				count: 1,
 				type: "file",
-				extension: packageExtensionList.value.map((extension) => extension.slice(1)),
+				extension: extensionList.map((extension) => extension.slice(1)),
 				success({ tempFiles }) {
 					const tempFile = tempFiles[0];
 					resolve({ path: tempFile.path, name: tempFile.name, size: tempFile.size });
 				},
 				fail(error) {
-					reject(new Error(error.errMsg));
+					if (error.errMsg === "chooseMessageFile:fail cancel") resolve(undefined);
+					else reject(new Error(error.errMsg));
 				},
 			});
 			// #endif
@@ -206,7 +218,7 @@ const handleUpload = throttle(async () => {
 			uni.chooseFile({
 				count: 1,
 				type: "all",
-				extension: packageExtensionList.value,
+				extension: extensionList,
 				success({ tempFilePaths, tempFiles }) {
 					const tempFile = Array.isArray(tempFiles) ? tempFiles[0] : tempFiles;
 					const path = Array.isArray(tempFilePaths) ? tempFilePaths[0] : tempFilePaths;
@@ -232,9 +244,9 @@ const handleUpload = throttle(async () => {
 			});
 			// #endif
 		});
-		if (!resFile) return;
+		if (!resFile || isUnloaded) return;
 		const suffix = resFile.name.match(/\.[^.]+$/)?.[0].toLowerCase();
-		if (!suffix || !packageExtensionList.value.includes(suffix)) {
+		if (!suffix || !extensionList.includes(suffix)) {
 			useToast.warning(`请选择 ${packageExtensionList.value.join("，")} 文件`);
 			return;
 		}
@@ -274,6 +286,7 @@ const handleUpload = throttle(async () => {
 		});
 		// #endif
 
+		if (isUnloaded) return;
 		if (!fileUrl) {
 			useToast.warning("未获取到应用包地址");
 			return;
@@ -351,6 +364,10 @@ onLoad((options: { mode?: IPageStateType; recordId?: string }) => {
 	state.pageMode = options.mode;
 	state.recordId = options.recordId;
 	handleLoad();
+});
+
+onUnload(() => {
+	isUnloaded = true;
 });
 
 onPullDownRefresh(() =>

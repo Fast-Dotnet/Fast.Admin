@@ -16,7 +16,7 @@
 		</template>
 
 		<template #default="{ pagedList }">
-			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.title" @click="detailFormRef?.detail(item)">
+			<FaCard v-for="item in pagedList" :key="item.recordId" :title="item.title" @click="detailFormRef.detail(item)">
 				<template #titleExtra>
 					<view class="fa-card__title-view">
 						<FaTag name="OperateLogTypeEnum" :value="item.operateType" />
