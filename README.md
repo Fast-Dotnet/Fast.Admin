@@ -18,9 +18,9 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" alt="Apache-2.0 License" /></a>
 </p>
 
-Fast.Admin is a separated frontend/backend open-source project for enterprise administration scenarios. It uses [Fast.NET](https://gitee.com/FastDotnet/Fast.NET) as its server-side infrastructure and provides organization and permission management, system configuration, operations monitoring, job scheduling, and common business administration capabilities. Its modular repository layout allows adopters to select the Web console, server applications, and future multi-platform clients as needed.
+Fast.Admin is a separated frontend/backend open-source project for enterprise administration scenarios. It uses [Fast.NET](https://gitee.com/FastDotnet/Fast.NET) as its server-side infrastructure and provides organization and permission management, system configuration, operations monitoring, job scheduling, and common business administration capabilities. Its modular repository includes a Web console, a mobile administration console, server applications, and a separate user-facing client project.
 
-> **Current maturity:** The primary validated scope is `Web.Admin` and `Api.Server`. `App.Admin` (administrator app) and `App.Client` (mobile client app) are still under development. They must not be treated as finished products and are not recommended for production use.
+> **Current maturity:** The core administration features of `Web.Admin`, `Api.Server`, and `App.Admin` are complete. `App.Admin` provides H5 and WeChat Mini Program interfaces; its notification page remains planned. The user-facing `App.Client` is still under development. Native app packaging and device compatibility require separate validation for each target platform.
 >
 > **Important disclaimer:** This project may only be used for lawful, compliant, and duly authorized purposes. It must not be used for illegal or criminal activity. Users are solely responsible for the compliance of deployment, configuration, data processing, derivative development, and operations. Read [Disclaimer and compliance requirements](#disclaimer-and-compliance-requirements) before use.
 
@@ -30,23 +30,23 @@ Fast.Admin is a separated frontend/backend open-source project for enterprise ad
 - **Built on Fast.NET**: Reuses caching, dependency injection, JWT, logging, dynamic APIs, OpenAPI, serialization, SqlSugar, Swagger, and unified-result infrastructure.
 - **Administration fundamentals**: Covers tenants, organizations, departments, employees, positions, roles, applications, menus, APIs, settings, dictionaries, and database administration.
 - **Operational governance**: Includes API rate limiting, access and operation logs, exception and SQL logs, online users, system monitoring, SignalR, and Quartz administration.
-- **Multi-platform roadmap**: Separate Web, administrator-app, and mobile-client projects are present, with unfinished clients explicitly marked.
+- **Web and mobile administration**: Both consoles share business APIs and permissions. The mobile console includes a workbench, search and filters, detail views, forms, role authorization, and light/dark themes.
 - **Engineering safeguards**: Centralized .NET dependency management plus frontend type checking, ESLint, Prettier, and production build workflows.
 
 ## Project status
 
-| Directory                  | Purpose                    | Status                     | Notes                                                                        |
-| -------------------------- | -------------------------- | -------------------------- | ---------------------------------------------------------------------------- |
-| [`Web.Admin`](Web.Admin)   | Web administration console | ✅ Primary validated scope | Main administration UI currently available                                   |
-| [`Api.Server`](Api.Server) | .NET server                | ✅ Primary validated scope | Contains API, file, and scheduler hosts plus domain and application services |
-| [`App.Admin`](App.Admin)   | Administrator app          | 🚧 In development          | Built with uni-app; features and platform support are incomplete             |
-| [`App.Client`](App.Client) | Mobile client app          | 🚧 In development          | Built with uni-app; features and platform support are incomplete             |
+| Directory                  | Purpose                       | Status                     | Notes                                                                         |
+| -------------------------- | ----------------------------- | -------------------------- | ----------------------------------------------------------------------------- |
+| [`Web.Admin`](Web.Admin)   | Web administration console    | ✅ Primary validated scope | Main administration UI currently available                                    |
+| [`Api.Server`](Api.Server) | .NET server                   | ✅ Primary validated scope | Contains API, file, and scheduler hosts plus domain and application services  |
+| [`App.Admin`](App.Admin)   | Mobile administration console | ✅ Core features complete  | uni-app with H5 and WeChat Mini Program interfaces; notification page planned |
+| [`App.Client`](App.Client) | Mobile client app             | 🚧 In development          | Built with uni-app; features and platform support are incomplete              |
 
 These labels describe the current maintenance and validation scope only. They do not guarantee coverage of every operating system, database, browser, device, or production deployment combination.
 
 ## Development Roadmap
 
-> “Completed” means that the repository currently contains the corresponding primary server implementation and Web administration pages. It does not mean that every production environment, third-party integration, or edge case has been validated. Planned items have no committed release or delivery date, and their priority and scope may change with actual requirements.
+> “Completed” means that the feature is included in the current administration scope. It does not mean that every platform, production environment, third-party integration, or edge case has been validated. Planned items have no committed release or delivery date, and their priority and scope may change with actual requirements.
 
 ### Completed
 
@@ -60,14 +60,17 @@ These labels describe the current maintenance and validation scope only. They do
 - [x] Separate file service and file-record administration.
 - [x] OpenAPI, Swagger, Knife4j, and API metadata administration.
 - [x] Common business modules for merchants, client users, payment records, refund records, complaint handling, and message-delivery records.
+- [x] A uni-app mobile administration console with H5 and WeChat Mini Program interfaces, a home page, workbench, profile, and light/dark themes.
+- [x] Mobile search, filters, pagination, detail views, forms, role authorization, and application-package URL display and copying.
+- [x] Mobile password recovery, password changes including WeChat authorization, and WebSocket session connections.
+- [x] Device- and menu-based switching between Web and H5, preserving the destination through login and tenant selection.
 
 ### Incomplete / Planned
 
 - [ ] **Quartz 4 upgrade**: Upgrade dependencies and validate database schema, persistence, serialization, and existing job compatibility.
-- [ ] **Message center**: Build on the current SMS, email, and delivery-record capabilities with in-app messages, templates, inboxes, unread state, receipts, push delivery, and channel management.
+- [ ] **Notifications and message center**: Complete the `App.Admin` notification page, and extend the existing SMS, email, templates, and delivery records with in-app messages, inboxes, unread state, receipts, push delivery, and channel management.
 - [ ] **Online chat**: Extend the SignalR foundation with direct and group conversations, conversation lists, message persistence, read receipts, and offline messages.
 - [ ] **Workflow engine**: Add visual process design, definitions and versions, process instances, tasks, approvals, countersigning, transfers, carbon copies, reminders, and audit records.
-- [ ] **Administrator app**: Continue completing `App.Admin` features, authorization, interaction design, and multi-platform support.
 - [ ] **Client app**: Continue completing `App.Client` user-facing business capabilities and multi-platform support.
 - [ ] **Single sign-on and external identity providers**: Evaluate and integrate OIDC, OAuth 2.0, WeCom, DingTalk, and similar authentication methods.
 - [ ] **Code generation and low-code configuration**: Gradually add generation for models, APIs, forms, lists, and foundational business code.
@@ -77,6 +80,8 @@ These labels describe the current maintenance and validation scope only. They do
 - [ ] **Compatibility and documentation**: Continue improving the database compatibility matrix, deployment documentation, development examples, and public demonstration environment.
 
 ## Interface Preview
+
+### Web administration
 
 > Click a thumbnail to view the full-size image. Some screenshots may come from production systems created through secondary development of this project and are provided only to demonstrate the interface. Business data and sensitive information must be redacted before publication, and the screens may differ from the open-source version.
 
@@ -97,6 +102,23 @@ These labels describe the current maintenance and validation scope only. They do
   </tr>
 </table>
 
+### Mobile administration (WeChat Mini Program)
+
+These `App.Admin` screenshots were captured in WeChat DevTools using the iPhone 15 Pro Max simulator (430 × 932), all in dark mode. They show login, the workbench, system monitoring, the scheduler, roles, and departments. Click an image to view it at full size.
+
+<table>
+  <tr>
+    <td align="center"><a href="docs/images/app-admin-mini-login.jpg"><img src="docs/images/app-admin-mini-login.jpg" width="200" alt="WeChat Mini Program login in dark mode on iPhone 15 Pro Max" /></a><br />Login</td>
+    <td align="center"><a href="docs/images/app-admin-mini-workbench.jpg"><img src="docs/images/app-admin-mini-workbench.jpg" width="200" alt="WeChat Mini Program workbench in dark mode on iPhone 15 Pro Max" /></a><br />Workbench</td>
+    <td align="center"><a href="docs/images/app-admin-mini-system-monitor.jpg"><img src="docs/images/app-admin-mini-system-monitor.jpg" width="200" alt="WeChat Mini Program system monitoring in dark mode on iPhone 15 Pro Max" /></a><br />System Monitoring</td>
+  </tr>
+  <tr>
+    <td align="center"><a href="docs/images/app-admin-mini-scheduler.jpg"><img src="docs/images/app-admin-mini-scheduler.jpg" width="200" alt="WeChat Mini Program scheduler in dark mode on iPhone 15 Pro Max" /></a><br />Scheduler</td>
+    <td align="center"><a href="docs/images/app-admin-mini-roles.jpg"><img src="docs/images/app-admin-mini-roles.jpg" width="200" alt="WeChat Mini Program role management in dark mode on iPhone 15 Pro Max" /></a><br />Roles</td>
+    <td align="center"><a href="docs/images/app-admin-mini-department.jpg"><img src="docs/images/app-admin-mini-department.jpg" width="200" alt="WeChat Mini Program department management in dark mode on iPhone 15 Pro Max" /></a><br />Departments</td>
+  </tr>
+</table>
+
 ## Core capabilities
 
 - Tenant, account, organization, department, employee, position, job-level, and role management.
@@ -105,19 +127,21 @@ These labels describe the current maintenance and validation scope only. They do
 - Online users, system monitoring, API rate limiting, JWT authentication, and SignalR communication.
 - Quartz job administration, a separate file service, and OpenAPI/Swagger documentation.
 - Common business modules for merchants, client users, payments, refunds, complaints, and message delivery records.
+- H5 and WeChat Mini Program administration, a mobile workbench, account security, role authorization, light/dark themes, and cross-client login redirects.
 
 Exact features, authorization boundaries, and third-party service availability depend on the current source, configuration, and deployment environment.
 
 ## Technology and compatibility
 
-| Area         | Current stack                                                                    |
-| ------------ | -------------------------------------------------------------------------------- |
-| Server       | .NET 10, ASP.NET Core, Fast.NET, SqlSugar, Redis, JWT, SignalR, Quartz           |
-| Web console  | Vue 3.5, TypeScript 6, Vite 8, Element Plus, Pinia, Axios, ECharts               |
-| App projects | uni-app, Vue 3.4, TypeScript 6, Vite 5, Wot UI 2 (`@wot-ui/ui`) (in development) |
-| Node.js      | `^24.18.0`                                                                       |
-| pnpm         | `^11.0.0`                                                                        |
-| License      | Apache-2.0                                                                       |
+| Area         | Current stack                                                          |
+| ------------ | ---------------------------------------------------------------------- |
+| Server       | .NET 10, ASP.NET Core, Fast.NET, SqlSugar, Redis, JWT, SignalR, Quartz |
+| Web console  | Vue 3.5, TypeScript 6, Vite 8, Element Plus, Pinia, Axios, ECharts     |
+| Mobile admin | uni-app, Vue 3.5, TypeScript 6, Vite 5, Wot UI 2, Pinia                |
+| User client  | uni-app, Vue 3.4, TypeScript 6, Vite 5, Wot UI 2 (in development)      |
+| Node.js      | `^24.18.0`                                                             |
+| pnpm         | `^11.0.0`                                                              |
+| License      | Apache-2.0                                                             |
 
 The server currently targets `net10.0`. Before deployment, make sure the installed SDK, Node.js, pnpm, database, and Redis environment match the project configuration.
 
@@ -129,7 +153,7 @@ flowchart TB
 
     subgraph clients["Clients"]
         web["Web.Admin · primary validated scope"]
-        adminApp["App.Admin · in development"]
+        adminApp["App.Admin · H5 / WeChat Mini Program"]
         clientApp["App.Client · in development"]
     end
 
@@ -145,10 +169,10 @@ flowchart TB
     storage["Databases / Redis / external services"]
 
     user --> web
-    user -. incomplete .-> adminApp
+    user --> adminApp
     user -. incomplete .-> clientApp
     web --> api
-    adminApp -.-> api
+    adminApp --> api
     clientApp -.-> api
     api --> services
     file --> foundation
@@ -170,7 +194,7 @@ Fast.Admin/
 │  ├─ src/*.Domain/            # Domain models
 │  └─ src/Core, src/Shared/    # Core and shared infrastructure
 ├─ Web.Admin/                  # Vue 3 Web console, default port 2001
-├─ App.Admin/                  # uni-app administrator app, in development
+├─ App.Admin/                  # uni-app mobile admin, H5 default port 2010
 ├─ App.Client/                 # uni-app mobile client app, in development
 ├─ Sql/                        # Database scripts
 ├─ README.zh.md / README.md    # Chinese and English project documentation
@@ -222,7 +246,24 @@ pnpm dev
 
 The development server is available at `http://127.0.0.1:2001` by default and proxies `/api` to the main API. Make sure the proxy in `Web.Admin/.env.development` matches the server address.
 
-> `App.Admin` and `App.Client` are incomplete and are intentionally excluded from the official quick-start flow for now.
+### 5. Start the mobile administration console
+
+```bash
+cd App.Admin
+pnpm install --frozen-lockfile
+pnpm dev:h5
+```
+
+H5 is available at `http://127.0.0.1:2010` by default. Set `VITE_API_REQUEST_URL` in `App.Admin/.env.development` to the actual API address, using the same server as the Web console.
+
+For WeChat Mini Program development:
+
+```bash
+cd App.Admin
+pnpm dev:mp-weixin
+```
+
+Import `App.Admin/dist/dev/mp-weixin` into WeChat DevTools and confirm the project AppID, base-library version, and local API access settings before running it. `App.Client` is a separate user-facing client project and is not part of this administration-console startup flow.
 
 ## Local build
 
@@ -241,6 +282,17 @@ cd Web.Admin
 pnpm install --frozen-lockfile
 pnpm build
 ```
+
+Mobile administration console:
+
+```bash
+cd App.Admin
+pnpm install --frozen-lockfile
+pnpm build:h5
+pnpm build:mp-weixin
+```
+
+The outputs are `App.Admin/dist/build/h5` and `App.Admin/dist/build/mp-weixin`. Use `pnpm build:app` for native app resources; package signing, packaging, and device validation must be completed for the target platform.
 
 A successful build only confirms the current project build workflow. It does not mean that a production environment, database, cache, SMS, email, payment, or other third-party integration has been validated.
 

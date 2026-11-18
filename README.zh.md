@@ -18,9 +18,9 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue.svg" alt="Apache-2.0 License" /></a>
 </p>
 
-Fast.Admin 是一个面向企业管理场景的前后端分离开源项目，以 [Fast.NET](https://gitee.com/FastDotnet/Fast.NET) 为服务端基础设施，提供组织权限、系统配置、运行监控、任务调度及常用业务管理能力。项目采用模块化目录，可根据实际场景选择 Web 管理端、服务端和后续多端应用。
+Fast.Admin 是一个面向企业管理场景的前后端分离开源项目，以 [Fast.NET](https://gitee.com/FastDotnet/Fast.NET) 为服务端基础设施，提供组织权限、系统配置、运行监控、任务调度及常用业务管理能力。项目采用模块化目录，包含 Web 管理端、移动管理端、服务端和独立的用户客户端工程。
 
-> **当前完成度：** 目前重点校验范围为 `Web.Admin` 和 `Api.Server`。`App.Admin`（管理端 APP）与 `App.Client`（移动端 APP）仍在开发完善中，不应视为已完成产品，也不建议直接用于生产环境。
+> **当前完成度：** `Web.Admin`、`Api.Server` 与 `App.Admin` 的主要管理功能已完成。`App.Admin` 提供 H5 和微信小程序管理界面，消息通知页面待完善；`App.Client` 用户客户端仍在开发中。原生 App 的打包和真机适配需按目标平台单独验证。
 >
 > **重要免责声明：** 本项目只能用于合法、合规并已获得授权的场景。严禁利用本项目从事任何违法犯罪活动；使用者应对部署、配置、数据处理、二次开发及实际运营承担全部合规责任。使用前请务必阅读[免责声明与合规要求](#免责声明与合规要求)。
 
@@ -30,23 +30,23 @@ Fast.Admin 是一个面向企业管理场景的前后端分离开源项目，以
 - **基于 Fast.NET**：复用缓存、依赖注入、JWT、日志、动态 API、OpenAPI、序列化、SqlSugar、Swagger 和统一响应等基础能力。
 - **管理能力完整**：覆盖租户、组织、部门、员工、职位、角色、应用、菜单、接口、配置、字典和数据库管理等常见后台模块。
 - **运行治理**：提供接口限流、访问与操作日志、异常与 SQL 日志、在线用户、系统监控、SignalR 和 Quartz 调度管理等能力。
-- **多端规划**：仓库已包含 Web 管理端、管理端 APP 和移动端 APP 的独立工程，未完成端会明确标注状态。
+- **多端管理**：Web 与移动管理端复用业务接口和权限体系，移动端提供工作台、查询筛选、详情表单、角色授权及深浅色主题。
 - **工程化约束**：集中管理 .NET 依赖，并为前端配置类型检查、ESLint、Prettier 和生产构建流程。
 
 ## 项目状态
 
-| 目录                       | 定位        | 当前状态    | 说明                                       |
-| -------------------------- | ----------- | ----------- | ------------------------------------------ |
-| [`Web.Admin`](Web.Admin)   | Web 管理端  | ✅ 重点校验 | 当前主要可用的管理界面                     |
-| [`Api.Server`](Api.Server) | .NET 服务端 | ✅ 重点校验 | 包含 API、文件、调度入口以及领域与业务服务 |
-| [`App.Admin`](App.Admin)   | 管理端 APP  | 🚧 开发中   | 基于 uni-app，功能与适配尚未完善           |
-| [`App.Client`](App.Client) | 移动端 APP  | 🚧 开发中   | 基于 uni-app，功能与适配尚未完善           |
+| 目录                       | 定位        | 当前状态        | 说明                                         |
+| -------------------------- | ----------- | --------------- | -------------------------------------------- |
+| [`Web.Admin`](Web.Admin)   | Web 管理端  | ✅ 重点校验     | 当前主要可用的管理界面                       |
+| [`Api.Server`](Api.Server) | .NET 服务端 | ✅ 重点校验     | 包含 API、文件、调度入口以及领域与业务服务   |
+| [`App.Admin`](App.Admin)   | 移动管理端  | ✅ 主要功能完成 | uni-app，提供 H5、微信小程序；消息通知待完善 |
+| [`App.Client`](App.Client) | 移动端 APP  | 🚧 开发中       | 基于 uni-app，功能与适配尚未完善             |
 
 上述状态只说明当前仓库的维护与校验范围，不代表已经覆盖所有操作系统、数据库、浏览器、设备和生产部署组合。
 
 ## 开发计划
 
-> “已完成”表示当前仓库中已经存在对应的主要服务端代码和 Web 管理页面，不代表所有生产环境、第三方服务和边界场景均已完成验证。规划内容不承诺具体版本或完成时间，优先级和实现范围可能根据实际需求调整。
+> “已完成”表示对应功能已纳入当前管理端能力，不代表所有平台、生产环境、第三方服务和边界场景均已完成验证。规划内容不承诺具体版本或完成时间，优先级和实现范围可能根据实际需求调整。
 
 ### 已完成
 
@@ -60,14 +60,17 @@ Fast.Admin 是一个面向企业管理场景的前后端分离开源项目，以
 - [x] 独立文件服务和文件记录管理。
 - [x] OpenAPI、Swagger、Knife4j 和接口元数据管理。
 - [x] 商户、客户端用户、支付记录、退款记录、投诉处理及消息发送记录等通用业务模块。
+- [x] 基于 uni-app 的移动管理端，包含 H5、微信小程序、首页、工作台、个人中心和深浅色主题。
+- [x] 移动端列表查询、筛选分页、详情、表单、角色授权和应用版本包地址展示与复制。
+- [x] 移动端忘记密码、修改密码（含微信授权入口）和 WebSocket 会话连接。
+- [x] Web 与 H5 按访问设备和菜单映射切换，并保留登录及租户选择后的目标页面。
 
 ### 未完成 / 规划中
 
 - [ ] **Quartz 4 升级**：完成依赖升级、数据库表结构、持久化、序列化及现有调度任务的兼容验证。
-- [ ] **消息中心**：在现有短信、邮件和发送记录能力上，补充站内信、消息模板、收件箱、未读状态、回执、推送及渠道管理。
+- [ ] **消息通知与消息中心**：补齐 `App.Admin` 消息通知页面；在现有短信、邮件、消息模板和发送记录能力上，完善站内信、收件箱、未读状态、回执、推送及渠道管理。
 - [ ] **在线聊天**：基于 SignalR 补充单聊、群聊、会话列表、消息持久化、已读回执和离线消息。
 - [ ] **流程引擎**：提供流程设计、定义与版本、流程实例、待办、审批、会签、转办、抄送、催办及审计记录。
-- [ ] **管理端 APP**：继续完善 `App.Admin` 的功能、权限、交互和多平台适配。
 - [ ] **客户端 APP**：继续完善 `App.Client` 的用户端业务能力和多平台适配。
 - [ ] **单点登录与第三方身份源**：评估并接入 OIDC、OAuth 2.0、企业微信、钉钉等认证方式。
 - [ ] **代码生成与低代码配置**：逐步补充模型、接口、表单、列表和基础业务代码的生成能力。
@@ -77,6 +80,8 @@ Fast.Admin 是一个面向企业管理场景的前后端分离开源项目，以
 - [ ] **兼容性与文档**：持续完善数据库兼容矩阵、部署文档、开发示例和公开演示环境。
 
 ## 界面预览
+
+### Web 管理端
 
 > 点击缩略图可查看原图。部分截图可能来自基于本项目二次开发并已实际投入生产的系统，仅用于展示界面效果；公开前应对业务数据和敏感信息完成脱敏，界面与开源版本可能存在差异。
 
@@ -97,6 +102,23 @@ Fast.Admin 是一个面向企业管理场景的前后端分离开源项目，以
   </tr>
 </table>
 
+### 移动管理端（微信小程序）
+
+以下截图来自 `App.Admin`，使用微信开发者工具的 iPhone 15 Pro Max 模拟器（430 × 932），统一采用深色主题，展示登录、工作台、系统监控、调度程序、角色管理和部门管理。点击图片可查看原图。
+
+<table>
+  <tr>
+    <td align="center"><a href="docs/images/app-admin-mini-login.jpg"><img src="docs/images/app-admin-mini-login.jpg" width="200" alt="微信小程序登录，深色主题，iPhone 15 Pro Max" /></a><br />登录</td>
+    <td align="center"><a href="docs/images/app-admin-mini-workbench.jpg"><img src="docs/images/app-admin-mini-workbench.jpg" width="200" alt="微信小程序工作台，深色主题，iPhone 15 Pro Max" /></a><br />工作台</td>
+    <td align="center"><a href="docs/images/app-admin-mini-system-monitor.jpg"><img src="docs/images/app-admin-mini-system-monitor.jpg" width="200" alt="微信小程序系统监控，深色主题，iPhone 15 Pro Max" /></a><br />系统监控</td>
+  </tr>
+  <tr>
+    <td align="center"><a href="docs/images/app-admin-mini-scheduler.jpg"><img src="docs/images/app-admin-mini-scheduler.jpg" width="200" alt="微信小程序调度程序，深色主题，iPhone 15 Pro Max" /></a><br />调度程序</td>
+    <td align="center"><a href="docs/images/app-admin-mini-roles.jpg"><img src="docs/images/app-admin-mini-roles.jpg" width="200" alt="微信小程序角色管理，深色主题，iPhone 15 Pro Max" /></a><br />角色管理</td>
+    <td align="center"><a href="docs/images/app-admin-mini-department.jpg"><img src="docs/images/app-admin-mini-department.jpg" width="200" alt="微信小程序部门管理，深色主题，iPhone 15 Pro Max" /></a><br />部门管理</td>
+  </tr>
+</table>
+
 ## 核心能力
 
 - 租户、账号、组织、部门、员工、职位、职级与角色权限。
@@ -105,19 +127,21 @@ Fast.Admin 是一个面向企业管理场景的前后端分离开源项目，以
 - 在线用户、系统监控、接口限流、JWT 认证和 SignalR 通信。
 - Quartz 任务调度、独立文件服务及 OpenAPI/Swagger 文档。
 - 商户、客户端用户、支付、退款、投诉、消息发送记录等通用业务模块。
+- H5 与微信小程序移动管理、工作台、账号安全、角色授权、深浅色主题及跨端登录回跳。
 
 具体功能、权限边界和第三方服务可用性以当前源码、配置与实际部署环境为准。
 
 ## 技术栈与兼容性
 
-| 范围       | 当前技术栈                                                               |
-| ---------- | ------------------------------------------------------------------------ |
-| 服务端     | .NET 10、ASP.NET Core、Fast.NET、SqlSugar、Redis、JWT、SignalR、Quartz   |
-| Web 管理端 | Vue 3.5、TypeScript 6、Vite 8、Element Plus、Pinia、Axios、ECharts       |
-| APP 工程   | uni-app、Vue 3.4、TypeScript 6、Vite 5、Wot UI 2（`@wot-ui/ui`，开发中） |
-| Node.js    | `^24.18.0`                                                               |
-| pnpm       | `^11.0.0`                                                                |
-| 许可证     | Apache-2.0                                                               |
+| 范围       | 当前技术栈                                                             |
+| ---------- | ---------------------------------------------------------------------- |
+| 服务端     | .NET 10、ASP.NET Core、Fast.NET、SqlSugar、Redis、JWT、SignalR、Quartz |
+| Web 管理端 | Vue 3.5、TypeScript 6、Vite 8、Element Plus、Pinia、Axios、ECharts     |
+| 移动管理端 | uni-app、Vue 3.5、TypeScript 6、Vite 5、Wot UI 2、Pinia                |
+| 用户客户端 | uni-app、Vue 3.4、TypeScript 6、Vite 5、Wot UI 2（开发中）             |
+| Node.js    | `^24.18.0`                                                             |
+| pnpm       | `^11.0.0`                                                              |
+| 许可证     | Apache-2.0                                                             |
 
 服务端当前目标框架为 `net10.0`。准备部署前，请确认本机 SDK、Node.js、pnpm、数据库和 Redis 环境与项目配置匹配。
 
@@ -129,7 +153,7 @@ flowchart TB
 
     subgraph clients["客户端"]
         web["Web.Admin · 当前重点校验"]
-        adminApp["App.Admin · 开发中"]
+        adminApp["App.Admin · H5 / 微信小程序管理端"]
         clientApp["App.Client · 开发中"]
     end
 
@@ -145,10 +169,10 @@ flowchart TB
     storage["数据库 / Redis / 外部服务"]
 
     user --> web
-    user -. 尚未完善 .-> adminApp
+    user --> adminApp
     user -. 尚未完善 .-> clientApp
     web --> api
-    adminApp -.-> api
+    adminApp --> api
     clientApp -.-> api
     api --> services
     file --> foundation
@@ -170,7 +194,7 @@ Fast.Admin/
 │  ├─ src/*.Domain/            # 领域模型
 │  └─ src/Core、src/Shared/    # 核心与共享基础设施
 ├─ Web.Admin/                  # Vue 3 Web 管理端，默认端口 2001
-├─ App.Admin/                  # uni-app 管理端 APP，开发中
+├─ App.Admin/                  # uni-app 移动管理端，H5 默认端口 2010
 ├─ App.Client/                 # uni-app 移动端 APP，开发中
 ├─ Sql/                        # 数据库脚本
 ├─ README.zh.md / README.md    # 中英文项目说明
@@ -222,7 +246,24 @@ pnpm dev
 
 开发服务器默认访问地址为 `http://127.0.0.1:2001`，并通过 `/api` 代理到主 API。请先确认 `Web.Admin/.env.development` 中的代理地址与服务端一致。
 
-> `App.Admin` 和 `App.Client` 尚未完善，本 README 暂不将其作为正式快速开始流程。
+### 5. 启动移动管理端
+
+```bash
+cd App.Admin
+pnpm install --frozen-lockfile
+pnpm dev:h5
+```
+
+H5 默认访问地址为 `http://127.0.0.1:2010`。将 `App.Admin/.env.development` 中的 `VITE_API_REQUEST_URL` 配置为实际 API 地址，并与 Web 端使用的服务端保持一致。
+
+微信小程序开发：
+
+```bash
+cd App.Admin
+pnpm dev:mp-weixin
+```
+
+在微信开发者工具中导入 `App.Admin/dist/dev/mp-weixin`，确认项目 AppID、基础库和本地接口访问配置后运行。`App.Client` 为独立的用户客户端工程，不属于上述管理端启动流程。
 
 ## 本地构建
 
@@ -241,6 +282,17 @@ cd Web.Admin
 pnpm install --frozen-lockfile
 pnpm build
 ```
+
+移动管理端：
+
+```bash
+cd App.Admin
+pnpm install --frozen-lockfile
+pnpm build:h5
+pnpm build:mp-weixin
+```
+
+产物分别位于 `App.Admin/dist/build/h5` 和 `App.Admin/dist/build/mp-weixin`。原生 App 资源构建使用 `pnpm build:app`，安装包签名、打包和真机验证需按对应平台完成。
 
 构建成功只说明对应工程通过了当前构建流程，不等同于生产环境、数据库、缓存、短信、邮件、支付或其他第三方服务已经完成集成验证。
 
