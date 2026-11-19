@@ -54,11 +54,11 @@
 	gap: 12rpx 16rpx;
 	padding: 20rpx 20rpx 16rpx;
 
-	.wd-button {
+	:deep(.wd-button) {
 		flex: 0 0 auto;
 	}
 
-	.wd-button + .wd-button {
+	:deep(.wd-button + .wd-button) {
 		margin-left: 0;
 	}
 
