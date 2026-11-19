@@ -46,38 +46,40 @@
 			@confirm="handleFilterClick"
 		>
 			<scroll-view class="fa-search-input__filters" scroll-y>
-				<template v-if="!props.hideSearchTime">
-					<FaCellPicker
-						title="时间"
-						:value="
-							state.searchTimeList?.length > 0
-								? `${dayjs(state.searchTimeList[0]).format('YYYY-MM-DD')} - ${dayjs(state.searchTimeList[1]).format('YYYY-MM-DD')}`
-								: ''
-						"
-						placeholder="请选择日期"
-					>
-						<template #default="{ visible }">
-							<wd-calendar
-								type="daterange"
-								v-model="state.searchTimeList"
-								v-model:visible="visible.value"
-								:show-confirm="false"
-								switch-mode="year-month"
-								:formatter="handleFormatCalendar"
-								:inner-display-format="formatCalendarRange"
-								@confirm="handleDateTimeConfirm"
-							/>
-							<wd-radio-group v-model="state.dataSearchRange" direction="horizontal" type="button" @change="handleDateRangeChange">
-								<wd-radio v-for="(item, index) in dataSearchRangeList" :key="index" :value="item.value">
-									{{ item.label }}
-								</wd-radio>
-								<wd-radio value="custom">自定义</wd-radio>
-							</wd-radio-group>
-						</template>
-					</FaCellPicker>
-				</template>
+				<view class="fa-search-input__filters-content">
+					<template v-if="!props.hideSearchTime">
+						<FaCellPicker
+							title="时间"
+							:value="
+								state.searchTimeList?.length > 0
+									? `${dayjs(state.searchTimeList[0]).format('YYYY-MM-DD')} - ${dayjs(state.searchTimeList[1]).format('YYYY-MM-DD')}`
+									: ''
+							"
+							placeholder="请选择日期"
+						>
+							<template #default="{ visible }">
+								<wd-calendar
+									type="daterange"
+									v-model="state.searchTimeList"
+									v-model:visible="visible.value"
+									:show-confirm="false"
+									switch-mode="year-month"
+									:formatter="handleFormatCalendar"
+									:inner-display-format="formatCalendarRange"
+									@confirm="handleDateTimeConfirm"
+								/>
+								<wd-radio-group v-model="state.dataSearchRange" direction="horizontal" type="button" @change="handleDateRangeChange">
+									<wd-radio v-for="(item, index) in dataSearchRangeList" :key="index" :value="item.value">
+										{{ item.label }}
+									</wd-radio>
+									<wd-radio value="custom">自定义</wd-radio>
+								</wd-radio-group>
+							</template>
+						</FaCellPicker>
+					</template>
 
-				<slot name="filter" :search-param="slotState.searchParam" />
+					<slot name="filter" :search-param="slotState.searchParam" />
+				</view>
 			</scroll-view>
 
 			<template #footer="{ loading }">

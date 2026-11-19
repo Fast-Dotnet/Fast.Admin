@@ -6,24 +6,18 @@
 					<FaCellPicker title="状态" v-model="searchParam.value.status" name="CommonStatusEnum" radio clearable />
 					<FaCellPicker title="版本" v-model="searchParam.value.edition" name="EditionEnum" radio clearable />
 					<FaCellPicker title="租户类型" v-model="searchParam.value.tenantType" name="TenantTypeEnum" radio clearable />
-					<wd-cell title="管理员手机" center>
+					<wd-cell title="管理员手机" borer>
 						<wd-input
-							custom-class="is-compact"
 							v-model="searchParam.value.adminMobile"
+							compact
 							clearable
 							type="tel"
 							:maxlength="11"
 							placeholder="请输入管理员手机"
 						/>
 					</wd-cell>
-					<wd-cell title="管理员邮箱" center>
-						<wd-input
-							custom-class="is-compact"
-							v-model="searchParam.value.adminEmail"
-							clearable
-							:maxlength="50"
-							placeholder="请输入管理员邮箱"
-						/>
+					<wd-cell title="管理员邮箱" borer>
+						<wd-input v-model="searchParam.value.adminEmail" compact clearable :maxlength="50" placeholder="请输入管理员邮箱" />
 					</wd-cell>
 				</template>
 				<template #footer>

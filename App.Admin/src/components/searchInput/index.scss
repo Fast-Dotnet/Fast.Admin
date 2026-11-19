@@ -61,12 +61,6 @@
 	--wot-cell-arrow-margin-left: 0;
 	--wot-cell-bg: transparent;
 
-	.uni-scroll-view-content {
-		display: flex;
-		flex-direction: column;
-		gap: 10rpx;
-	}
-
 	// 嵌套弹窗中的单元格使用自己的布局和主题色。
 	.wd-popup {
 		--fa-cell-left-flex: initial;
@@ -100,4 +94,12 @@
 		padding-left: 0;
 		border-bottom: 0;
 	}
+}
+
+.fa-search-input__filters-content {
+	display: flex;
+	flex-direction: column;
+	gap: 10rpx;
+	// 留白随内容滚动，确保最后一个筛选项不会紧贴底部操作栏。
+	padding-bottom: var(--fa-spacing-page, 24rpx);
 }
