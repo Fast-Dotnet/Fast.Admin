@@ -34,7 +34,6 @@
 					v-model="state.formData.emailVerificationCode"
 					maxlength="6"
 					placeholder="请输入 6 位邮箱验证码"
-					:show-word-limit="false"
 					autocomplete="one-time-code"
 					inputmode="numeric"
 				/>

@@ -50,7 +50,7 @@ import ItemTable from "./components/itemTable.vue";
 import type { FormRules } from "element-plus";
 import type { FaDialogInstance, FaFormInstance } from "fast-element-plus";
 import type { EditDictionaryInput } from "@/api/services/Center/dictionary/models/EditDictionaryInput";
-import type { QueryDictionaryDetailOutput } from "@/api/services/Center/dictionary/models/QueryDictionaryDetailOutput.ts";
+import type { QueryDictionaryDetailOutput } from "@/api/services/Center/dictionary/models/QueryDictionaryDetailOutput";
 
 defineOptions({
 	name: "DevDictionaryEdit",

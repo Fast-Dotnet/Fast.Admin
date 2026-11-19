@@ -85,7 +85,7 @@ import { onHide } from "@dcloudio/uni-app";
 import { computed, ref } from "vue";
 import { randomString, useProps } from "@fast-china/utils";
 import { cellProps } from "@wot-ui/ui/components/wd-cell/types";
-import { formItemProps } from "@wot-ui/ui/components/wd-form-item/types.ts";
+import { formItemProps } from "@wot-ui/ui/components/wd-form-item/types";
 import { useFormDisabled } from "@wot-ui/ui/composables";
 import { useApp } from "@/stores";
 import FaPopup from "../popup/index.vue";

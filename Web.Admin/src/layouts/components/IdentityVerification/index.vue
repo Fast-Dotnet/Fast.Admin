@@ -20,7 +20,6 @@
 					v-model="state.formData.mobile"
 					placeholder="请输入账号绑定的手机号"
 					maxlength="11"
-					:show-word-limit="false"
 					autocapitalize="off"
 					autocomplete="tel"
 					inputmode="tel"
@@ -46,7 +45,6 @@
 					v-model="state.formData.mobileVerificationCode"
 					placeholder="请输入 6 位短信验证码"
 					maxlength="6"
-					:show-word-limit="false"
 					autocomplete="one-time-code"
 					inputmode="numeric"
 				/>
@@ -58,7 +56,6 @@
 					v-model="state.formData.email"
 					placeholder="请输入邮箱"
 					maxlength="50"
-					:show-word-limit="false"
 					autocapitalize="off"
 					autocomplete="email"
 					inputmode="email"
@@ -84,7 +81,6 @@
 					v-model="state.formData.emailVerificationCode"
 					maxlength="6"
 					placeholder="请输入 6 位邮箱验证码"
-					:show-word-limit="false"
 					autocomplete="one-time-code"
 					inputmode="numeric"
 				/>

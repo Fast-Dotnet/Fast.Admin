@@ -43,7 +43,7 @@
 				/>
 			</wd-form-item>
 
-			<FaImageCaptcha ref="captchaRef" v-model="state.formData.captchaCode" v-model:captcha-key="state.formData.captchaKey" />
+			<FaImageCaptcha ref="captchaRef" v-model="state.formData.captchaCode" v-model:captcha-key="state.formData.captchaKey" border />
 
 			<view class="page__assist" @click="router.push(CommonRoute.PasswordReset)">
 				<wd-icon name="question-circle" size="28rpx" />
@@ -91,6 +91,7 @@ import { useDialog } from "@wot-ui/ui";
 import { LoginStatusEnum } from "@/api/enums/LoginStatusEnum";
 import { loginApi } from "@/api/services/Auth/login";
 import { CommonRoute } from "@/common";
+import { RegExps } from "@/constants";
 import { useFormSchema, useMessageBox, useToast } from "@/hooks";
 import weChatLogo from "@/static/images/wechat.png";
 import defaultLogo from "@/static/logo.png";
@@ -138,11 +139,7 @@ const state = reactive({
 				},
 			},
 		],
-		captchaCode: {
-			required: true,
-			pattern: /^[A-Za-z0-9]{4}$/,
-			message: "图形验证码必须为4位字母或数字",
-		},
+		captchaCode: { required: true, pattern: RegExps.ImageCaptchaCode, message: "图形验证码必须为4位字母或数字" },
 	}),
 });
 

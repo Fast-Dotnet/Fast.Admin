@@ -12,14 +12,17 @@
 			<!-- #endif -->
 
 			<wd-cell title="修改密码" clickable is-link to="/pages/setting/account/changePassword/index" />
+
+			<!-- #ifdef MP-WEIXIN -->
 			<wd-cell
 				v-if="userInfoStore.clientUserId"
-				title="修改密码"
+				title="微信验证修改密码"
 				label="通过已绑定的微信账号授权修改密码"
 				clickable
 				is-link
 				to="/pages/setting/account/changePasswordByWeChat/index"
 			/>
+			<!-- #endif -->
 		</wd-cell-group>
 
 		<wd-form ref="formRef" :model="state.formData" :schema="state.formSchema" center border>

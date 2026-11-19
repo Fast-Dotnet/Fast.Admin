@@ -171,14 +171,14 @@ import { reactive, ref } from "vue";
 import { logger, throttle, withDefineType } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import dayjs from "dayjs";
-import { SchedulerJobGroupEnum } from "@/api/enums/SchedulerJobGroupEnum.ts";
+import { SchedulerJobGroupEnum } from "@/api/enums/SchedulerJobGroupEnum";
 import { TriggerState } from "@/api/enums/TriggerState";
 import { schedulerApi } from "@/api/services/Scheduler";
 import { useMessageBox, useToast } from "@/hooks";
 import { useApp, useConfig, useUserInfo } from "@/stores";
 import type { Action } from "@wot-ui/ui/components/wd-action-sheet/types";
-import type { QuerySchedulerDetailOutput } from "@/api/services/Scheduler/models/QuerySchedulerDetailOutput.ts";
-import type { SchedulerJobInfoDto } from "@/api/services/Scheduler/models/SchedulerJobInfoDto.ts";
+import type { QuerySchedulerDetailOutput } from "@/api/services/Scheduler/models/QuerySchedulerDetailOutput";
+import type { SchedulerJobInfoDto } from "@/api/services/Scheduler/models/SchedulerJobInfoDto";
 import type { FaPopupInstance } from "@/components";
 
 definePage({

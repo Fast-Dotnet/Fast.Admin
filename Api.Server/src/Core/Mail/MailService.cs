@@ -15,6 +15,7 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MimeKit;
 using SqlSugar;
@@ -32,6 +33,11 @@ public class MailService : IMailService, ISingletonDependency
     private readonly ICache _cache;
 
     /// <summary>
+    /// 环境
+    /// </summary>
+    private readonly IHostEnvironment _hostEnvironment;
+
+    /// <summary>
     /// 日志
     /// </summary>
     private readonly ILogger _logger;
@@ -39,9 +45,10 @@ public class MailService : IMailService, ISingletonDependency
     /// <summary>
     /// 初始化邮件服务
     /// </summary>
-    public MailService(ICache cache, ILogger<IMailService> logger)
+    public MailService(ICache cache, IHostEnvironment hostEnvironment, ILogger<IMailService> logger)
     {
         _cache = cache;
+        _hostEnvironment = hostEnvironment;
         _logger = logger;
     }
 
@@ -272,7 +279,16 @@ public class MailService : IMailService, ISingletonDependency
                            <p style="color: #64748b;">验证码 5 分钟内有效，请勿向任何人泄露。如非本人操作，请忽略此邮件。</p>
                            """;
 
-        await SendEmail(title, await GetEmailTemplate(title, content), [email]);
+        // 开发环境跳过实际发送
+        if (!_hostEnvironment.IsDevelopment())
+        {
+            await SendEmail(title, await GetEmailTemplate(title, content), [email]);
+        }
+        else
+        {
+            _logger.LogInformation($"[邮件验证码] 邮箱：{email}，验证码：{dto.VerificationCode}，类型：{templateType}");
+        }
+
         await _cache.SetAsync(cacheKey, dto, TimeSpan.FromMinutes(5));
         await _cache.Client.SetAsync($"{cacheKey}:SendCooldown", "1", 60);
     }

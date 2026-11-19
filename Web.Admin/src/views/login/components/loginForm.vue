@@ -163,7 +163,7 @@ import { ArrowLeftBold, Close, Lock, Plus, Right, User } from "@element-plus/ico
 import { type FaButtonInstance, useOverlay } from "fast-element-plus";
 import ImageCaptcha from "@/components/ImageCaptcha/index.vue";
 import { useApp } from "@/stores";
-import { useLogin } from "../useLogin.ts";
+import { useLogin } from "../useLogin";
 import PasswordReset from "./passwordReset.vue";
 import type { FormInstance, FormRules } from "element-plus";
 import type { LoginTenantOutput } from "@/api/services/Auth/login/models/LoginTenantOutput";

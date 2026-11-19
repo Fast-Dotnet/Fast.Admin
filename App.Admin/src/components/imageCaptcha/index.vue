@@ -1,10 +1,17 @@
 <template>
-	<wd-form-item v-if="state.enabled" :custom-class="`fa-image-captcha ${props.customClass}`" :prop="props.prop" required>
-		<view class="fa-image-captcha__content">
+	<wd-form-item
+		v-if="state.enabled"
+		:custom-class="`fa-image-captcha ${props.customClass}`"
+		:title="props.title"
+		:prop="props.prop"
+		:layout="props.layout"
+		required
+	>
+		<view class="fa-image-captcha__content" :class="{ 'is-border': props.border }">
 			<wd-input
 				v-model="modelValue"
 				clearable
-				:compact="props.compact"
+				:compact="false"
 				prefix-icon="safe"
 				:maxlength="4"
 				placeholder="请输入图形验证码"
@@ -19,10 +26,11 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive } from "vue";
+import { type PropType, onMounted, reactive } from "vue";
 import { throttle } from "@fast-china/utils";
 import { baseProps } from "@wot-ui/ui/common/props";
 import { loginApi } from "@/api/services/Auth/login";
+import type { CellLayout } from "@wot-ui/ui/components/wd-cell/types";
 
 defineOptions({
 	name: "ImageCaptcha",
@@ -35,6 +43,8 @@ defineOptions({
 
 const props = defineProps({
 	...baseProps,
+	/** 图形验证码表单项标题 */
+	title: String,
 	/**
 	 * 表单校验字段名
 	 * @defaultValue "captchaCode"
@@ -43,15 +53,18 @@ const props = defineProps({
 		type: String,
 		default: "captchaCode",
 	},
+	/**
+	 * 表单项布局方式
+	 * - horizontal：标题与内容左右排列
+	 * - vertical：标题与内容上下排列
+	 */
+	layout: String as PropType<CellLayout>,
 	/** 是否强制启用；false 时由后端登录验证码开关决定 */
 	isForce: Boolean,
 	/** 业务请求期间禁用输入与手动刷新 */
 	disabled: Boolean,
-	/** 紧凑模式，移除内边距和背景色 */
-	compact: {
-		type: Boolean,
-		default: false,
-	},
+	/** 是否显示验证码区域的下边框 */
+	border: Boolean,
 });
 
 /** 用户输入的图形验证码 */

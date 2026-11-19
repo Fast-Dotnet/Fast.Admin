@@ -14,14 +14,14 @@
 				<template #label>
 					<FaFormItemTip label="找回方式" />
 				</template>
-				<el-radio-group v-model="state.formData.channel" @change="handleChannelChange">
+				<el-radio-group v-model="state.channel" @change="handleChannelChange">
 					<el-radio value="mobile">手机号</el-radio>
 					<el-radio value="email">邮箱</el-radio>
 				</el-radio-group>
 			</FaFormItem>
 
 			<FaFormItem
-				v-if="state.formData.channel === 'mobile'"
+				v-if="state.channel === 'mobile'"
 				label="绑定手机"
 				prop="account"
 				:rules="[
@@ -33,7 +33,6 @@
 					v-model="state.formData.account"
 					placeholder="请输入账号绑定的手机号"
 					maxlength="11"
-					:show-word-limit="false"
 					autocapitalize="off"
 					autocomplete="tel"
 					inputmode="tel"
@@ -60,7 +59,6 @@
 					v-model="state.formData.account"
 					placeholder="请输入账号绑定的邮箱"
 					maxlength="50"
-					:show-word-limit="false"
 					autocapitalize="off"
 					autocomplete="email"
 					inputmode="email"
@@ -84,27 +82,15 @@
 			/>
 
 			<el-divider content-position="left">验证码5分钟内有效；未收到或已失效时，请重新获取。</el-divider>
-			<FaFormItem v-if="state.formData.channel === 'mobile'" label="验证码" prop="verificationCode">
+			<FaFormItem label="验证码" prop="verificationCode">
 				<el-input
 					v-model="state.formData.verificationCode"
 					maxlength="6"
-					placeholder="请输入 6 位短信验证码"
-					:show-word-limit="false"
+					placeholder="请输入 6 位验证码"
 					autocomplete="one-time-code"
 					inputmode="numeric"
 				/>
 			</FaFormItem>
-			<FaFormItem v-else label="验证码" prop="verificationCode">
-				<el-input
-					v-model="state.formData.verificationCode"
-					maxlength="6"
-					placeholder="请输入 6 位邮箱验证码"
-					:show-word-limit="false"
-					autocomplete="one-time-code"
-					inputmode="numeric"
-				/>
-			</FaFormItem>
-
 			<FaFormItem label="新密码" prop="newPassword">
 				<el-input
 					type="password"
@@ -141,20 +127,12 @@ import { accountApi } from "@/api/services/Center/account";
 import ImageCaptcha from "@/components/ImageCaptcha/index.vue";
 import type { FormRules } from "element-plus";
 import type { FaDialogInstance, FaFormInstance } from "fast-element-plus";
+import type { PasswordResetInput } from "@/api/services/Center/account/models/PasswordResetInput";
+import type { SendPasswordResetCodeInput } from "@/api/services/Center/account/models/SendPasswordResetCodeInput";
 
 defineOptions({
 	name: "PasswordReset",
 });
-
-interface IPasswordResetForm {
-	channel: "email" | "mobile";
-	account?: string;
-	captchaKey?: string;
-	captchaCode?: string;
-	verificationCode?: string;
-	newPassword?: string;
-	confirmPassword?: string;
-}
 
 const faDialogRef = useTemplateRef<FaDialogInstance>("faDialogRef");
 const faFormRef = useTemplateRef<FaFormInstance>("faFormRef");
@@ -162,14 +140,12 @@ const captchaRef = useTemplateRef<InstanceType<typeof ImageCaptcha>>("captchaRef
 
 const state = reactive({
 	nextSendAt: 0,
-	verificationKey: "",
-	formData: withDefineType<IPasswordResetForm>({
-		channel: "email",
-	}),
-	formRules: withDefineType<FormRules<IPasswordResetForm>>({
+	channel: withDefineType<"email" | "mobile">("email"),
+	formData: withDefineType<SendPasswordResetCodeInput & PasswordResetInput>({}),
+	formRules: withDefineType<FormRules<SendPasswordResetCodeInput & PasswordResetInput>>({
 		verificationCode: [
 			{ required: true, message: "请输入验证码", trigger: "blur" },
-			{ pattern: RegExps.VerificationCode, message: "请输入正确的邮箱验证码", trigger: "blur" },
+			{ pattern: RegExps.VerificationCode, message: "请输入正确的验证码", trigger: "blur" },
 		],
 		newPassword: [
 			{ required: true, message: "请输入新密码", trigger: "blur" },
@@ -193,11 +169,8 @@ const countdown = computed(() => Math.min(60, Math.max(0, Math.ceil((state.nextS
 
 /** 切换找回方式 */
 const handleChannelChange = () => {
-	state.formData.account = "";
-	state.verificationKey = "";
-	state.formData.verificationCode = "";
-	state.formData.newPassword = "";
-	state.formData.confirmPassword = "";
+	state.formData.verificationKey = undefined;
+	faFormRef.value.resetFields();
 	captchaRef.value?.refresh();
 };
 
@@ -214,7 +187,7 @@ const handleSend = () => {
 					captchaKey,
 					captchaCode,
 				});
-				state.verificationKey = apiRes.verificationKey;
+				state.formData.verificationKey = apiRes.verificationKey;
 				state.formData.verificationCode = "";
 				state.nextSendAt = Date.now() + 60_000;
 				ElMessage.success(apiRes.message);
@@ -226,13 +199,13 @@ const handleSend = () => {
 };
 
 const handleConfirm = () => {
-	if (!state.verificationKey) return;
-	const { verificationCode, newPassword, confirmPassword } = state.formData;
+	const { verificationKey, verificationCode, newPassword, confirmPassword } = state.formData;
+	if (!verificationKey) return;
 	faFormRef.value.validateField(["verificationCode", "newPassword", "confirmPassword"], (isValid) => {
 		if (!isValid) return;
 		faDialogRef.value.close(async () => {
 			await accountApi.resetPasswordByVerificationCode({
-				verificationKey: state.verificationKey,
+				verificationKey,
 				verificationCode,
 				newPassword,
 				confirmPassword,

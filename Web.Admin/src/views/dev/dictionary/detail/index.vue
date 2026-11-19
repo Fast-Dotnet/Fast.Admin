@@ -69,7 +69,7 @@ import { FaDialog } from "fast-element-plus";
 import { withDefineType } from "@fast-china/utils";
 import { dictionaryApi } from "@/api/services/Center/dictionary";
 import type { FaDialogInstance } from "fast-element-plus";
-import type { QueryDictionaryDetailOutput } from "@/api/services/Center/dictionary/models/QueryDictionaryDetailOutput.ts";
+import type { QueryDictionaryDetailOutput } from "@/api/services/Center/dictionary/models/QueryDictionaryDetailOutput";
 
 defineOptions({
 	name: "DevDictionaryDetail",

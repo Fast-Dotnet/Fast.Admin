@@ -42,7 +42,6 @@
 					v-model="state.formData.mobileVerificationCode"
 					maxlength="6"
 					placeholder="请输入 6 位短信验证码"
-					:show-word-limit="false"
 					autocomplete="one-time-code"
 					inputmode="numeric"
 				/>

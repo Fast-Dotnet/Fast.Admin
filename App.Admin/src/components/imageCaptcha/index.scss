@@ -3,10 +3,13 @@
 	grid-template-columns: minmax(0, 1fr) 196rpx;
 	align-items: center;
 	gap: 16rpx;
-	border-bottom: var(--wot-stroke-main) solid var(--wot-divider-main);
 
 	.wd-input {
 		border: 0;
+	}
+
+	&.is-border {
+		border-bottom: var(--wot-stroke-main) solid var(--wot-divider-main);
 	}
 }
 

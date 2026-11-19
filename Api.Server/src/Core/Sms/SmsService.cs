@@ -12,6 +12,7 @@ using Fast.Center.Domain;
 using Fast.SqlSugar;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SqlSugar;
 
@@ -28,6 +29,11 @@ public class SmsService : ISmsService, ISingletonDependency
     private readonly ICache _cache;
 
     /// <summary>
+    /// 环境
+    /// </summary>
+    private readonly IHostEnvironment _hostEnvironment;
+
+    /// <summary>
     /// 日志
     /// </summary>
     private readonly ILogger _logger;
@@ -35,9 +41,10 @@ public class SmsService : ISmsService, ISingletonDependency
     /// <summary>
     /// 初始化短信服务
     /// </summary>
-    public SmsService(ICache cache, ILogger<ISmsService> logger)
+    public SmsService(ICache cache, IHostEnvironment hostEnvironment, ILogger<ISmsService> logger)
     {
         _cache = cache;
+        _hostEnvironment = hostEnvironment;
         _logger = logger;
     }
 
@@ -79,7 +86,9 @@ public class SmsService : ISmsService, ISingletonDependency
     public async Task SendVerificationCode(MessageTemplateTypeEnum templateType, string signName, string mobile,
         long? tenantId = null)
     {
-        if (string.IsNullOrWhiteSpace(signName))
+        bool isDevelopment = _hostEnvironment.IsDevelopment();
+
+        if (!isDevelopment && string.IsNullOrWhiteSpace(signName))
         {
             throw new UserFriendlyException("短信签名配置不完整，请联系管理员！");
         }
@@ -123,7 +132,17 @@ public class SmsService : ISmsService, ISingletonDependency
 
         // 获取模板Code
         MessageTemplateModel messageTemplateModel = await MessageTemplateContext.GetMessageTemplate(templateType, tenantId);
-        await SendSms(signName, mobile, messageTemplateModel.TemplateCode, new {code = dto.VerificationCode});
+
+        // 开发环境跳过实际发送
+        if (!isDevelopment)
+        {
+            await SendSms(signName, mobile, messageTemplateModel.TemplateCode, new {code = dto.VerificationCode});
+        }
+        else
+        {
+            _logger.LogInformation($"[短信验证码] 手机号：{mobile}，验证码：{dto.VerificationCode}，类型：{templateType}");
+        }
+
         await _cache.SetAsync(cacheKey, dto, TimeSpan.FromMinutes(5));
         await _cache.Client.SetAsync($"{cacheKey}:SendCooldown", "1", 60);
     }

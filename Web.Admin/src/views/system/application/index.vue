@@ -131,12 +131,12 @@ import { reactive, useTemplateRef } from "vue";
 import { Plus } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { applicationApi } from "@/api/services/Center/application";
-import { applicationClientApi } from "@/api/services/Center/applicationClient/index.ts";
+import { applicationClientApi } from "@/api/services/Center/applicationClient";
 import { useApp } from "@/stores";
 import ApplicationClientEdit from "./edit/clientEdit.vue";
 import ApplicationEdit from "./edit/index.vue";
 import type { FaTableColumnCtx, FaTableInstance } from "fast-element-plus";
-import type { QueryApplicationClientOutput } from "@/api/services/Center/application/models/QueryApplicationClientOutput.ts";
+import type { QueryApplicationClientOutput } from "@/api/services/Center/application/models/QueryApplicationClientOutput";
 import type { QueryApplicationPagedOutput } from "@/api/services/Center/application/models/QueryApplicationPagedOutput";
 
 defineOptions({
