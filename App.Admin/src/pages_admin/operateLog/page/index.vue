@@ -23,10 +23,10 @@
 					</view>
 				</template>
 
-				<FaField label="业务编码" :value="item.bizNo" />
+				<FaField label="业务编码" :value="item.bizNo" copyable />
 				<FaField label="部门" :value="item.departmentName" />
 				<FaField label="地区" :value="[item.province, item.city].filter(Boolean).join(' - ')" />
-				<FaField label="Ip" :value="item.ip" />
+				<FaField label="Ip" :value="item.ip" copyable />
 				<FaField label="操作人" :value="[item.createdUserName, item.employeeNo].filter(Boolean).join(' · ')" />
 				<FaField label="操作时间" :value="item.createdTime" />
 			</FaCard>

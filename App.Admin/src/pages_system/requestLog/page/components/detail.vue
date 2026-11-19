@@ -1,32 +1,32 @@
 <template>
 	<FaPopup ref="faPopupRef" title="请求日志详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
-			<FaField label="昵称" :value="state.formData.nickName" />
-			<FaField label="手机" :value="state.formData.mobile" />
+			<FaField label="昵称" :value="state.formData.nickName" selectable />
+			<FaField label="手机" :value="state.formData.mobile" copyable />
 			<FaField label="状态" center>
 				<wd-tag v-if="state.formData.isSuccess" type="success">成功</wd-tag>
 				<wd-tag v-else type="danger">失败</wd-tag>
 			</FaField>
-			<FaField label="操作名称" :value="state.formData.operationName" />
+			<FaField label="操作名称" :value="state.formData.operationName" selectable />
 			<FaField label="操作方式" center>
 				<FaTag name="HttpRequestActionEnum" :value="state.formData.operationAction" />
 			</FaField>
-			<FaField label="请求地址" :value="state.formData.location" />
+			<FaField label="请求地址" :value="state.formData.location" copyable />
 			<FaField label="请求方式" center>
 				<FaTag name="HttpRequestMethodEnum" :value="state.formData.requestMethod" />
 			</FaField>
-			<FaField label="耗时" :value="`${(Number(state.formData.elapsedTime ?? 0) / 1000).toFixed(4)}秒`" />
-			<FaField label="类名" :value="state.formData.className" />
-			<FaField label="方法名" :value="state.formData.methodName" />
-			<FaField label="部门" :value="state.formData.departmentName" />
-			<FaField label="省份" :value="state.formData.province" />
-			<FaField label="城市" :value="state.formData.city" />
-			<FaField label="Ip" :value="state.formData.ip" />
-			<FaField label="设备" :value="state.formData.device" />
-			<FaField label="操作系统" :value="state.formData.os" />
-			<FaField label="浏览器" :value="state.formData.browser" />
-			<FaField label="时间" :value="state.formData.createdTime" />
-			<FaField v-if="userInfoStore.isSystemTenant" label="租户" :value="state.formData.tenantName" />
+			<FaField label="耗时" :value="`${(Number(state.formData.elapsedTime ?? 0) / 1000).toFixed(4)}秒`" selectable />
+			<FaField label="类名" :value="state.formData.className" selectable />
+			<FaField label="方法名" :value="state.formData.methodName" selectable />
+			<FaField label="部门" :value="state.formData.departmentName" selectable />
+			<FaField label="省份" :value="state.formData.province" selectable />
+			<FaField label="城市" :value="state.formData.city" selectable />
+			<FaField label="Ip" :value="state.formData.ip" copyable />
+			<FaField label="设备" :value="state.formData.device" selectable />
+			<FaField label="操作系统" :value="state.formData.os" selectable />
+			<FaField label="浏览器" :value="state.formData.browser" selectable />
+			<FaField label="时间" :value="state.formData.createdTime" selectable />
+			<FaField v-if="userInfoStore.isSystemTenant" label="租户" :value="state.formData.tenantName" selectable />
 
 			<view v-if="userInfoStore.isSuperAdmin || userInfoStore.isAdmin" class="log-content">
 				<view class="log-content__section">
@@ -36,7 +36,10 @@
 							<wd-icon :name="state.isParamExpanded ? 'arrow-down' : 'arrow-right'" size="16px" color="var(--wot-icon-secondary)" />
 						</button>
 						<view v-if="state.paramText" class="log-content__copy">
-							<wd-button size="small" variant="text" @click="handleCopy(state.paramText)">复制</wd-button>
+							<button class="fa-field__copy" hover-class="none" @click.stop="handleCopy(state.paramText)">
+								<wd-icon name="copy" size="14px" />
+								<text>复制</text>
+							</button>
 						</view>
 					</view>
 					<view v-if="state.isParamExpanded" class="log-content__body">
@@ -52,7 +55,10 @@
 							<wd-icon :name="state.isResultExpanded ? 'arrow-down' : 'arrow-right'" size="16px" color="var(--wot-icon-secondary)" />
 						</button>
 						<view class="log-content__copy">
-							<wd-button size="small" variant="text" @click="handleCopy(state.resultText)">复制</wd-button>
+							<button class="fa-field__copy" hover-class="none" @click.stop="handleCopy(state.resultText)">
+								<wd-icon name="copy" size="14px" />
+								<text>复制</text>
+							</button>
 						</view>
 					</view>
 					<view v-if="state.isResultExpanded" class="log-content__body">

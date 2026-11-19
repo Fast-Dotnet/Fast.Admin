@@ -16,15 +16,15 @@
 					<FaTag name="ApplicationTokenTypeEnum" :value="item.tokenType" />
 				</template>
 
-				<FaField label="应用标识" :value="item.appKey" selectable />
+				<FaField label="应用标识" :value="item.appKey" copyable />
 				<FaField label="应用类型">
 					<FaTagFlag name="AppEnvironmentEnum" :value="item.appType" />
 				</FaField>
 				<FaField label="环境类型">
 					<FaText name="EnvironmentTypeEnum" :value="item.environmentType" />
 				</FaField>
-				<FaField label="刷新时间" :value="item.refreshTime" />
-				<FaField label="过期时间" :value="item.expireTime" />
+				<FaField label="刷新时间" :value="item.refreshTime" selectable />
+				<FaField label="过期时间" :value="item.expireTime" selectable />
 
 				<template #footer>
 					<FaAuth code="AppToken:Refresh">

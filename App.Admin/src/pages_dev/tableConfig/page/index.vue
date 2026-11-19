@@ -12,12 +12,12 @@
 
 		<template #default="{ pagedList }">
 			<FaCard v-for="item in pagedList" :key="item.tableId" :title="item.tableName">
-				<FaField label="表格Key" :value="item.tableKey" selectable />
-				<FaField label="备注" :value="item.remark" />
-				<FaField label="创建人" :value="item.createdUserName" />
-				<FaField label="创建时间" :value="item.createdTime" />
-				<FaField label="更新人" :value="item.updatedUserName" />
-				<FaField label="更新时间" :value="item.updatedTime" />
+				<FaField label="表格Key" :value="item.tableKey" copyable />
+				<FaField label="备注" :value="item.remark" selectable />
+				<FaField label="创建人" :value="item.createdUserName" selectable />
+				<FaField label="创建时间" :value="item.createdTime" selectable />
+				<FaField label="更新人" :value="item.updatedUserName" selectable />
+				<FaField label="更新时间" :value="item.updatedTime" selectable />
 
 				<template #footer>
 					<FaAuth code="Table:Edit">

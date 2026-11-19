@@ -1,10 +1,10 @@
 <template>
 	<FaPopup ref="faPopupRef" title="职员详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
-			<FaField label="姓名" :value="formData.employeeName" />
-			<FaField label="工号" :value="formData.employeeNo" />
-			<FaField label="手机" :value="formData.mobile" />
-			<FaField label="邮箱" :value="formData.email" />
+			<FaField label="姓名" :value="formData.employeeName" selectable />
+			<FaField label="工号" :value="formData.employeeNo" copyable />
+			<FaField label="手机" :value="formData.mobile" copyable />
+			<FaField label="邮箱" :value="formData.email" copyable />
 			<FaField label="性别" center>
 				<FaTag name="GenderEnum" :value="formData.sex" />
 			</FaField>
@@ -14,17 +14,17 @@
 			<FaField label="证件照">
 				<FaImage :src="formData.idPhoto" width="80px" height="80px" />
 			</FaField>
-			<FaField label="入职日期" :value="formData.entryDate?.slice(0, 10)" />
-			<FaField label="备注" :value="formData.remark" />
+			<FaField label="入职日期" :value="formData.entryDate?.slice(0, 10)" selectable />
+			<FaField label="备注" :value="formData.remark" selectable />
 
 			<wd-divider content-position="left">其他信息</wd-divider>
-			<FaField label="角色" :value="roleNames" />
-			<FaField label="离职日期" :value="formData.resignDate?.slice(0, 10)" />
-			<FaField label="离职原因" :value="formData.resignReason" />
-			<FaField label="创建人" :value="formData.createdUserName" />
-			<FaField label="创建时间" :value="formData.createdTime" />
-			<FaField label="更新人" :value="formData.updatedUserName" />
-			<FaField label="更新时间" :value="formData.updatedTime" />
+			<FaField label="角色" :value="roleNames" selectable />
+			<FaField label="离职日期" :value="formData.resignDate?.slice(0, 10)" selectable />
+			<FaField label="离职原因" :value="formData.resignReason" selectable />
+			<FaField label="创建人" :value="formData.createdUserName" selectable />
+			<FaField label="创建时间" :value="formData.createdTime" selectable />
+			<FaField label="更新人" :value="formData.updatedUserName" selectable />
+			<FaField label="更新时间" :value="formData.updatedTime" selectable />
 
 			<wd-divider content-position="left">组织架构</wd-divider>
 		</view>
@@ -36,9 +36,9 @@
 			<FaField label="主部门" center>
 				<FaTag name="BooleanEnum" :value="item.isPrimary" />
 			</FaField>
-			<FaField label="机构" :value="item.orgName" />
-			<FaField label="职位" :value="item.positionName" />
-			<FaField label="职级" :value="item.jobLevelName" />
+			<FaField label="机构" :value="item.orgName" selectable />
+			<FaField label="职位" :value="item.positionName" selectable />
+			<FaField label="职级" :value="item.jobLevelName" selectable />
 		</FaCard>
 	</FaPopup>
 </template>

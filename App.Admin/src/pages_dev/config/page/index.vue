@@ -19,7 +19,7 @@
 				code="Config:Detail"
 				@click="detailFormRef.detail(item.configId)"
 			>
-				<FaField label="配置编码" :value="item.configCode" />
+				<FaField label="配置编码" :value="item.configCode" copyable />
 				<FaField label="配置值">
 					<text class="config-value">{{ item.configValue }}</text>
 				</FaField>

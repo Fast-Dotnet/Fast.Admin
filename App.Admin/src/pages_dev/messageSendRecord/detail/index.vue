@@ -4,27 +4,81 @@
 		<wd-empty v-if="state.loading || state.loadFailed" icon="no-content" tip="暂无内容" />
 		<template v-else>
 			<wd-cell-group border>
-				<wd-cell title="收件人" :value="state.formData.receiver" />
+				<wd-cell title="收件人">
+					<text selectable user-select>{{ state.formData.receiver }}</text>
+					<template #suffix>
+						<button
+							v-if="state.formData.receiver != null && state.formData.receiver !== ''"
+							class="fa-field__copy"
+							hover-class="none"
+							@click.stop="handleCopy(state.formData.receiver)"
+						>
+							<wd-icon name="copy" size="14px" />
+							<text>复制</text>
+						</button>
+					</template>
+				</wd-cell>
 				<wd-cell title="渠道">
 					<FaText name="MessageSendChannelEnum" :value="state.formData.channel" />
 				</wd-cell>
-				<wd-cell title="标题" :value="state.formData.title" />
+				<wd-cell title="标题">
+					<text selectable user-select>{{ state.formData.title }}</text>
+				</wd-cell>
 				<wd-cell title="发送结果">
 					<FaTag name="BooleanEnum" :value="state.formData.isSuccess" />
 				</wd-cell>
-				<wd-cell title="发送人" :value="state.formData.createdUserName" />
-				<wd-cell title="发送时间" :value="state.formData.createdTime" />
-				<wd-cell title="省份" :value="state.formData.province" />
-				<wd-cell title="城市" :value="state.formData.city" />
-				<wd-cell title="Ip" :value="state.formData.ip" />
-				<wd-cell title="设备" :value="state.formData.device" />
-				<wd-cell title="操作系统" :value="state.formData.os" />
-				<wd-cell title="浏览器" :value="state.formData.browser" />
+				<wd-cell title="发送人">
+					<text selectable user-select>{{ state.formData.createdUserName }}</text>
+				</wd-cell>
+				<wd-cell title="发送时间">
+					<text selectable user-select>{{ state.formData.createdTime }}</text>
+				</wd-cell>
+				<wd-cell title="省份">
+					<text selectable user-select>{{ state.formData.province }}</text>
+				</wd-cell>
+				<wd-cell title="城市">
+					<text selectable user-select>{{ state.formData.city }}</text>
+				</wd-cell>
+				<wd-cell title="Ip">
+					<text selectable user-select>{{ state.formData.ip }}</text>
+					<template #suffix>
+						<button
+							v-if="state.formData.ip != null && state.formData.ip !== ''"
+							class="fa-field__copy"
+							hover-class="none"
+							@click.stop="handleCopy(state.formData.ip)"
+						>
+							<wd-icon name="copy" size="14px" />
+							<text>复制</text>
+						</button>
+					</template>
+				</wd-cell>
+				<wd-cell title="设备">
+					<text selectable user-select>{{ state.formData.device }}</text>
+				</wd-cell>
+				<wd-cell title="操作系统">
+					<text selectable user-select>{{ state.formData.os }}</text>
+				</wd-cell>
+				<wd-cell title="浏览器">
+					<text selectable user-select>{{ state.formData.browser }}</text>
+				</wd-cell>
 			</wd-cell-group>
 
-			<wd-divider content-position="left">消息内容</wd-divider>
+			<view class="message-content__header">
+				<text class="message-content__title">消息内容</text>
+				<button
+					v-if="state.formData.channel === MessageSendChannelEnum.Email ? mailContent : state.contentText"
+					class="fa-field__copy"
+					hover-class="none"
+					@click.stop="handleCopyMessage"
+				>
+					<wd-icon name="copy" size="14px" />
+					<text>复制</text>
+				</button>
+			</view>
 			<wd-rich-text
 				v-if="state.formData.channel === MessageSendChannelEnum.Email"
+				ref="mailContentRef"
 				:content="mailContent"
 				:tag-style="mailTagStyle"
 				:class-styles="mailClassStyles"
@@ -41,11 +95,12 @@
 
 <script setup lang="ts">
 import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app";
-import { computed, reactive } from "vue";
-import { withDefineType } from "@fast-china/utils";
+import { computed, reactive, ref } from "vue";
+import { copy, withDefineType } from "@fast-china/utils";
 import { MessageSendChannelEnum } from "@/api/enums/MessageSendChannelEnum";
 import { messageSendRecordApi } from "@/api/services/Center/messageSendRecord";
 import { useMessageBox } from "@/hooks";
+import type { RichTextInstance } from "@wot-ui/ui/components/wd-rich-text/types";
 import type { QueryMessageSendRecordDetailOutput } from "@/api/services/Center/messageSendRecord/models/QueryMessageSendRecordDetailOutput";
 
 definePage({
@@ -56,6 +111,8 @@ definePage({
 		enablePullDownRefresh: true,
 	},
 });
+
+const mailContentRef = ref<RichTextInstance>();
 
 const state = reactive({
 	loading: false,
@@ -110,12 +167,27 @@ const mailContent = computed(() => {
 	return (/<body\b[^>]*>([\s\S]*?)<\/body\s*>/i.exec(html)?.[1] ?? html).trim();
 });
 
+const handleCopy = async (content: string | number | undefined) => {
+	if (content == null || content === "") return;
+	try {
+		await copy(String(content));
+	} catch {
+		uni.showToast({ title: "复制失败", icon: "none" });
+	}
+};
+
+const handleCopyMessage = () => {
+	const content = state.formData.channel === MessageSendChannelEnum.Email ? mailContentRef.value?.getText() : state.contentText;
+	return handleCopy(content);
+};
+
 const handleLoad = async () => {
 	state.loading = true;
 	state.loadFailed = false;
 	try {
 		const apiRes = await messageSendRecordApi.queryMessageSendRecordDetail(state.recordId);
 		state.formData = apiRes;
+		state.contentText = "";
 		if (apiRes.channel !== MessageSendChannelEnum.Email && apiRes.recordValue) {
 			state.contentText = apiRes.recordValue;
 			try {
@@ -150,6 +222,17 @@ onPullDownRefresh(() =>
 </script>
 
 <style lang="scss" scoped>
+.message-content__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 12px;
+}
+
+.message-content__title {
+	font-weight: var(--wot-font-weight-semibold);
+}
+
 .log-content__text {
 	display: block;
 	padding: 12px;

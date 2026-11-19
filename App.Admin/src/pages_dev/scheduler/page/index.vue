@@ -70,11 +70,11 @@
 								</wd-button>
 								<wd-tag v-else variant="plain">无</wd-tag>
 							</FaField>
-							<FaField label="执行计划" :value="item.interval" />
-							<FaField label="上次执行" :value="item.previousFireTime" />
-							<FaField label="下次执行" :value="item.nextFireTime" color="var(--wot-primary-6)" />
-							<FaField label="触发次数" :value="item.runNumber" />
-							<FaField label="描述" :value="item.description" />
+							<FaField label="执行计划" :value="item.interval" selectable />
+							<FaField label="上次执行" :value="item.previousFireTime" selectable />
+							<FaField label="下次执行" :value="item.nextFireTime" color="var(--wot-primary-6)" selectable />
+							<FaField label="触发次数" :value="item.runNumber" selectable />
+							<FaField label="描述" :value="item.description" selectable />
 
 							<template #footer>
 								<FaAuth code="Scheduler:Edit">
@@ -104,26 +104,36 @@
 
 	<FaPopup ref="faPopupRef" :title="state.schedulerDetail.schedulerName" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
-			<FaField v-if="state.tenantName" label="租户" :value="state.tenantName" color="var(--wot-text-auxiliary)" />
-			<FaField label="版本" :value="`v${state.schedulerDetail.quartzVersion}`" bold color="var(--wot-danger-main)" />
-			<FaField label="实际状态" :value="state.schedulerDetail.actualStatus" bold />
-			<FaField label="期望状态" :value="state.schedulerDetail.desiredStatus" bold />
+			<FaField v-if="state.tenantName" label="租户" :value="state.tenantName" color="var(--wot-text-auxiliary)" selectable />
+			<FaField label="版本" :value="`v${state.schedulerDetail.quartzVersion}`" bold color="var(--wot-danger-main)" selectable />
+			<FaField label="实际状态" :value="state.schedulerDetail.actualStatus" bold selectable />
+			<FaField label="期望状态" :value="state.schedulerDetail.desiredStatus" bold selectable />
 			<FaField label="执行宿主" center>
 				<wd-tag v-if="state.schedulerDetail.executionOnline" type="success">在线</wd-tag>
 				<wd-tag v-else type="danger">离线</wd-tag>
 			</FaField>
-			<FaField label="集群" :value="state.schedulerDetail.clustered ? 'True' : 'False'" bold />
-			<FaField label="实例Id" :value="state.schedulerDetail.schedulerInstanceId" bold />
-			<FaField label="运行时间" :value="state.schedulerDetail.runTimes" color="var(--wot-text-auxiliary)" />
-			<FaField label="远程调度器" :value="state.schedulerDetail.schedulerRemote ? 'True' : 'False'" color="var(--wot-text-auxiliary)" />
-			<FaField label="存储字符串" :value="state.schedulerDetail.supportsPersistence ? 'True' : 'False'" color="var(--wot-text-auxiliary)" />
-			<FaField label="调度器类型" :value="state.schedulerDetail.schedulerType" color="var(--wot-text-auxiliary)" />
-			<FaField label="持久化类型" :value="state.schedulerDetail.jobStoreType" color="var(--wot-text-auxiliary)" />
-			<FaField label="线程池大小" :value="state.schedulerDetail.threadPoolSize" color="var(--wot-text-auxiliary)" />
-			<FaField label="线程池类型" :value="state.schedulerDetail.threadPoolType" color="var(--wot-text-auxiliary)" />
-			<FaField label="作业" :value="`${state.schedulerDetail.jobCountNumber}个`" color="var(--wot-text-placeholder)" />
-			<FaField label="触发器" :value="`${state.schedulerDetail.triggerCountNumber}个`" color="var(--wot-text-placeholder)" />
-			<FaField label="正在执行" :value="`${state.schedulerDetail.jobExecuteNumber}个`" bold color="var(--wot-warning-main)" />
+			<FaField label="集群" :value="state.schedulerDetail.clustered ? 'True' : 'False'" bold selectable />
+			<FaField label="实例Id" :value="state.schedulerDetail.schedulerInstanceId" bold copyable />
+			<FaField label="运行时间" :value="state.schedulerDetail.runTimes" color="var(--wot-text-auxiliary)" selectable />
+			<FaField
+				label="远程调度器"
+				:value="state.schedulerDetail.schedulerRemote ? 'True' : 'False'"
+				color="var(--wot-text-auxiliary)"
+				selectable
+			/>
+			<FaField
+				label="存储字符串"
+				:value="state.schedulerDetail.supportsPersistence ? 'True' : 'False'"
+				color="var(--wot-text-auxiliary)"
+				selectable
+			/>
+			<FaField label="调度器类型" :value="state.schedulerDetail.schedulerType" color="var(--wot-text-auxiliary)" selectable />
+			<FaField label="持久化类型" :value="state.schedulerDetail.jobStoreType" color="var(--wot-text-auxiliary)" selectable />
+			<FaField label="线程池大小" :value="state.schedulerDetail.threadPoolSize" color="var(--wot-text-auxiliary)" selectable />
+			<FaField label="线程池类型" :value="state.schedulerDetail.threadPoolType" color="var(--wot-text-auxiliary)" selectable />
+			<FaField label="作业" :value="`${state.schedulerDetail.jobCountNumber}个`" color="var(--wot-text-placeholder)" selectable />
+			<FaField label="触发器" :value="`${state.schedulerDetail.triggerCountNumber}个`" color="var(--wot-text-placeholder)" selectable />
+			<FaField label="正在执行" :value="`${state.schedulerDetail.jobExecuteNumber}个`" bold color="var(--wot-warning-main)" selectable />
 		</view>
 
 		<template #footer="{ loading }">
@@ -149,10 +159,18 @@
 		</template>
 
 		<view class="page-detail__popup">
+			<view class="scheduler-log__header">
+				<text>{{ state.popup.exp ? "异常信息" : "日志内容" }}</text>
+				<button v-if="state.popup.contents.length" class="fa-field__copy" hover-class="none" @click.stop="handleCopyLogs">
+					<wd-icon name="copy" size="14px" />
+					<text>复制</text>
+				</button>
+			</view>
 			<view class="scheduler-log">
 				<wd-rich-text
 					v-for="(item, index) in state.popup.contents"
 					:key="index"
+					ref="logContentRefs"
 					:content="item"
 					:class-styles="logClassStyles"
 					:tag-style="logTagStyle"
@@ -168,7 +186,7 @@
 <script setup lang="ts">
 import { onHide, onLoad, onShow, onUnload } from "@dcloudio/uni-app";
 import { reactive, ref } from "vue";
-import { logger, throttle, withDefineType } from "@fast-china/utils";
+import { copy, logger, throttle, withDefineType } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import dayjs from "dayjs";
 import { SchedulerJobGroupEnum } from "@/api/enums/SchedulerJobGroupEnum";
@@ -177,6 +195,7 @@ import { schedulerApi } from "@/api/services/Scheduler";
 import { useMessageBox, useToast } from "@/hooks";
 import { useApp, useConfig, useUserInfo } from "@/stores";
 import type { Action } from "@wot-ui/ui/components/wd-action-sheet/types";
+import type { RichTextInstance } from "@wot-ui/ui/components/wd-rich-text/types";
 import type { QuerySchedulerDetailOutput } from "@/api/services/Scheduler/models/QuerySchedulerDetailOutput";
 import type { SchedulerJobInfoDto } from "@/api/services/Scheduler/models/SchedulerJobInfoDto";
 import type { FaPopupInstance } from "@/components";
@@ -198,6 +217,7 @@ const userInfoStore = useUserInfo();
 
 const faPopupRef = ref<FaPopupInstance>();
 const logFaPopupRef = ref<FaPopupInstance>();
+const logContentRefs = ref<RichTextInstance[]>([]);
 
 const schedulerJobGroupEnum = appStore.getDictionary("SchedulerJobGroupEnum");
 
@@ -311,6 +331,18 @@ const handleStop = throttle(async () => {
 		},
 	});
 });
+
+const handleCopyLogs = async () => {
+	// v-for 模板 ref 不保证顺序，按原始内容恢复日志顺序。
+	const textByContent = new Map(logContentRefs.value.map((instance) => [instance.$props.content, instance.getText()]));
+	const content = state.popup.contents.map((item) => textByContent.get(item) ?? "").join("\n");
+	if (!content.trim()) return;
+	try {
+		await copy(content);
+	} catch {
+		uni.showToast({ title: "复制失败", icon: "none" });
+	}
+};
 
 /** 异常查看 */
 const handleShowException = throttle(async (item: SchedulerJobInfoDto) => {
@@ -563,6 +595,13 @@ onHide(deactivate);
 
 .scheduler-toolbar {
 	margin-bottom: var(--fa-spacing-section);
+}
+
+.scheduler-log__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	font-weight: var(--wot-font-weight-semibold);
 }
 
 .scheduler-log {

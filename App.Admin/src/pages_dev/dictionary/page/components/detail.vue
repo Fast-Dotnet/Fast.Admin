@@ -1,8 +1,8 @@
 <template>
 	<FaPopup ref="faPopupRef" title="字典详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
-			<FaField label="字典Key" :value="formData.dictionaryKey" />
-			<FaField label="字典名称" :value="formData.dictionaryName" />
+			<FaField label="字典Key" :value="formData.dictionaryKey" copyable />
+			<FaField label="字典名称" :value="formData.dictionaryName" selectable />
 			<FaField label="值类型">
 				<wd-tag v-if="formData.valueType === DictionaryValueTypeEnum.String" type="default" variant="plain">字符串</wd-tag>
 				<wd-tag v-if="formData.valueType === DictionaryValueTypeEnum.Int" type="success" variant="plain">数字（Int）</wd-tag>
@@ -15,16 +15,16 @@
 			<FaField label="状态" center>
 				<FaTag name="CommonStatusEnum" :value="formData.status" />
 			</FaField>
-			<FaField label="备注" :value="formData.remark" />
-			<FaField label="创建人" :value="formData.createdUserName" />
-			<FaField label="创建时间" :value="formData.createdTime" />
-			<FaField label="更新人" :value="formData.updatedUserName" />
-			<FaField label="更新时间" :value="formData.updatedTime" />
+			<FaField label="备注" :value="formData.remark" selectable />
+			<FaField label="创建人" :value="formData.createdUserName" selectable />
+			<FaField label="创建时间" :value="formData.createdTime" selectable />
+			<FaField label="更新人" :value="formData.updatedUserName" selectable />
+			<FaField label="更新时间" :value="formData.updatedTime" selectable />
 		</view>
 
 		<FaCard v-for="item in formData.dictionaryItemList" :key="item.dictionaryItemId">
-			<FaField label="项名称" :value="item.label" />
-			<FaField label="项值" :value="item.value" selectable />
+			<FaField label="项名称" :value="item.label" selectable />
+			<FaField label="项值" :value="item.value" copyable />
 			<FaField label="标签类型" center>
 				<wd-tag v-if="item.type === TagTypeEnum.Primary" type="primary">Primary</wd-tag>
 				<wd-tag v-if="item.type === TagTypeEnum.Success" type="success">Success</wd-tag>
@@ -32,14 +32,14 @@
 				<wd-tag v-if="item.type === TagTypeEnum.Warning" type="warning">Warning</wd-tag>
 				<wd-tag v-if="item.type === TagTypeEnum.Danger" type="danger">Danger</wd-tag>
 			</FaField>
-			<FaField label="排序" :value="item.order" />
+			<FaField label="排序" :value="item.order" selectable />
 			<FaField label="显示" center>
 				<FaTag name="BooleanEnum" :value="item.visible" />
 			</FaField>
 			<FaField label="状态" center>
 				<FaTag name="CommonStatusEnum" :value="item.status" />
 			</FaField>
-			<FaField label="提示" :value="item.tips" />
+			<FaField label="提示" :value="item.tips" selectable />
 		</FaCard>
 	</FaPopup>
 </template>

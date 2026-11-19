@@ -1,23 +1,27 @@
 <template>
 	<FaPopup ref="faPopupRef" title="Sql差异详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
-			<FaField label="昵称" :value="state.formData.nickName" />
-			<FaField label="手机" :value="state.formData.mobile" />
-			<FaField label="表名称" :value="state.formData.tableName" />
-			<FaField label="表描述" :value="state.formData.tableDescription" />
+			<FaField label="昵称" :value="state.formData.nickName" selectable />
+			<FaField label="手机" :value="state.formData.mobile" copyable />
+			<FaField label="表名称" :value="state.formData.tableName" selectable />
+			<FaField label="表描述" :value="state.formData.tableDescription" selectable />
 			<FaField label="差异类型" center>
 				<FaTag name="DiffLogTypeEnum" :value="state.formData.diffType" />
 			</FaField>
-			<FaField label="执行秒数" :value="state.formData.executeSeconds == null ? '--' : `${state.formData.executeSeconds.toFixed(4)}秒`" />
-			<FaField label="部门" :value="state.formData.departmentName" />
-			<FaField label="省份" :value="state.formData.province" />
-			<FaField label="城市" :value="state.formData.city" />
-			<FaField label="Ip" :value="state.formData.ip" />
-			<FaField label="时间" :value="state.formData.createdTime" />
-			<FaField label="设备" :value="state.formData.device" />
-			<FaField label="操作系统" :value="state.formData.os" />
-			<FaField label="浏览器" :value="state.formData.browser" />
-			<FaField label="租户" :value="state.formData.tenantName" />
+			<FaField
+				label="执行秒数"
+				:value="state.formData.executeSeconds == null ? '--' : `${state.formData.executeSeconds.toFixed(4)}秒`"
+				selectable
+			/>
+			<FaField label="部门" :value="state.formData.departmentName" selectable />
+			<FaField label="省份" :value="state.formData.province" selectable />
+			<FaField label="城市" :value="state.formData.city" selectable />
+			<FaField label="Ip" :value="state.formData.ip" copyable />
+			<FaField label="时间" :value="state.formData.createdTime" selectable />
+			<FaField label="设备" :value="state.formData.device" selectable />
+			<FaField label="操作系统" :value="state.formData.os" selectable />
+			<FaField label="浏览器" :value="state.formData.browser" selectable />
+			<FaField label="租户" :value="state.formData.tenantName" selectable />
 
 			<view class="log-content">
 				<view class="log-content__section">
@@ -27,7 +31,10 @@
 							<wd-icon :name="state.isPureSqlExpanded ? 'arrow-down' : 'arrow-right'" size="16px" color="var(--wot-icon-secondary)" />
 						</button>
 						<view v-if="state.formData.pureSql" class="log-content__copy">
-							<wd-button size="small" variant="text" @click="handleCopy(state.formData.pureSql)">复制</wd-button>
+							<button class="fa-field__copy" hover-class="none" @click.stop="handleCopy(state.formData.pureSql)">
+								<wd-icon name="copy" size="14px" />
+								<text>复制</text>
+							</button>
 						</view>
 					</view>
 					<view v-if="state.isPureSqlExpanded" class="log-content__body">
@@ -47,7 +54,10 @@
 							/>
 						</button>
 						<view v-if="state.beforeColumnText" class="log-content__copy">
-							<wd-button size="small" variant="text" @click="handleCopy(state.beforeColumnText)">复制</wd-button>
+							<button class="fa-field__copy" hover-class="none" @click.stop="handleCopy(state.beforeColumnText)">
+								<wd-icon name="copy" size="14px" />
+								<text>复制</text>
+							</button>
 						</view>
 					</view>
 					<view v-if="state.isBeforeColumnExpanded" class="log-content__body">
@@ -67,7 +77,10 @@
 							/>
 						</button>
 						<view v-if="state.afterColumnText" class="log-content__copy">
-							<wd-button size="small" variant="text" @click="handleCopy(state.afterColumnText)">复制</wd-button>
+							<button class="fa-field__copy" hover-class="none" @click.stop="handleCopy(state.afterColumnText)">
+								<wd-icon name="copy" size="14px" />
+								<text>复制</text>
+							</button>
 						</view>
 					</view>
 					<view v-if="state.isAfterColumnExpanded" class="log-content__body">

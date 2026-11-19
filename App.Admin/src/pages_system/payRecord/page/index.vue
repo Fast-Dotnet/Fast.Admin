@@ -18,8 +18,8 @@
 					</view>
 				</template>
 
-				<FaField label="手机" :value="item.mobile" />
-				<FaField label="收款商户号" :value="item.merchantNo" />
+				<FaField label="手机" :value="item.mobile" copyable />
+				<FaField label="收款商户号" :value="item.merchantNo" copyable />
 				<FaField label="订单金额" :value="`￥${(item.orderAmount ?? 0).toFixed(2)}`" color="var(--wot-text-auxiliary)" />
 				<FaField label="支付金额" :value="`￥${(item.paymentAmount ?? 0).toFixed(2)}`" color="var(--wot-warning-main)" />
 				<FaField label="已支付" center>

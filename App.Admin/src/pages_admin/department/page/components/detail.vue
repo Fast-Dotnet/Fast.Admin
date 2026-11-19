@@ -1,22 +1,22 @@
 <template>
 	<FaPopup ref="faPopupRef" title="部门详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
-			<FaField label="机构" :value="formData.orgName" />
-			<FaField label="父级" :value="formData.parentName" />
-			<FaField label="部门名称" :value="formData.departmentName" />
-			<FaField label="部门编码" :value="formData.departmentCode" selectable />
-			<FaField label="排序" :value="formData.sort" />
+			<FaField label="机构" :value="formData.orgName" selectable />
+			<FaField label="父级" :value="formData.parentName" selectable />
+			<FaField label="部门名称" :value="formData.departmentName" selectable />
+			<FaField label="部门编码" :value="formData.departmentCode" copyable />
+			<FaField label="排序" :value="formData.sort" selectable />
 			<FaField label="数据公开" center>
 				<FaTag name="BooleanEnum" :value="formData.dataPublic" />
 			</FaField>
-			<FaField label="联系人" :value="formData.contacts" />
-			<FaField label="电话" :value="formData.phone" />
-			<FaField label="邮箱" :value="formData.email" />
-			<FaField label="备注" :value="formData.remark" />
-			<FaField label="创建人" :value="formData.createdUserName" />
-			<FaField label="创建时间" :value="formData.createdTime" />
-			<FaField label="更新人" :value="formData.updatedUserName" />
-			<FaField label="更新时间" :value="formData.updatedTime" />
+			<FaField label="联系人" :value="formData.contacts" selectable />
+			<FaField label="电话" :value="formData.phone" copyable />
+			<FaField label="邮箱" :value="formData.email" copyable />
+			<FaField label="备注" :value="formData.remark" selectable />
+			<FaField label="创建人" :value="formData.createdUserName" selectable />
+			<FaField label="创建时间" :value="formData.createdTime" selectable />
+			<FaField label="更新人" :value="formData.updatedUserName" selectable />
+			<FaField label="更新时间" :value="formData.updatedTime" selectable />
 		</view>
 	</FaPopup>
 </template>

@@ -1,22 +1,25 @@
 <template>
 	<FaPopup ref="faPopupRef" title="Sql执行详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
-			<FaField label="昵称" :value="formData.nickName" />
-			<FaField label="手机" :value="formData.mobile" />
-			<FaField label="执行秒数" :value="formData.executeSeconds == null ? '--' : `${formData.executeSeconds.toFixed(4)}秒`" />
-			<FaField label="部门" :value="formData.departmentName" />
-			<FaField label="省份" :value="formData.province" />
-			<FaField label="城市" :value="formData.city" />
-			<FaField label="Ip" :value="formData.ip" />
-			<FaField label="时间" :value="formData.createdTime" />
-			<FaField label="设备" :value="formData.device" />
-			<FaField label="操作系统" :value="formData.os" />
-			<FaField label="浏览器" :value="formData.browser" />
-			<FaField label="租户" :value="formData.tenantName" />
+			<FaField label="昵称" :value="formData.nickName" selectable />
+			<FaField label="手机" :value="formData.mobile" copyable />
+			<FaField label="执行秒数" :value="formData.executeSeconds == null ? '--' : `${formData.executeSeconds.toFixed(4)}秒`" selectable />
+			<FaField label="部门" :value="formData.departmentName" selectable />
+			<FaField label="省份" :value="formData.province" selectable />
+			<FaField label="城市" :value="formData.city" selectable />
+			<FaField label="Ip" :value="formData.ip" copyable />
+			<FaField label="时间" :value="formData.createdTime" selectable />
+			<FaField label="设备" :value="formData.device" selectable />
+			<FaField label="操作系统" :value="formData.os" selectable />
+			<FaField label="浏览器" :value="formData.browser" selectable />
+			<FaField label="租户" :value="formData.tenantName" selectable />
 
 			<view class="log-content__header">
 				<text class="log-content__title">纯Sql</text>
-				<wd-button v-if="formData.pureSql" size="small" variant="text" @click="copy(formData.pureSql)">复制</wd-button>
+				<button v-if="formData.pureSql" class="fa-field__copy" hover-class="none" @click.stop="handleCopy(formData.pureSql)">
+					<wd-icon name="copy" size="14px" />
+					<text>复制</text>
+				</button>
 			</view>
 			<text v-if="formData.pureSql" class="log-content__text" selectable user-select>{{ formData.pureSql }}</text>
 			<text v-else class="log-content__empty">暂无内容</text>
@@ -37,6 +40,14 @@ defineOptions({
 const faPopupRef = ref<FaPopupInstance>();
 
 const formData = shallowRef<SqlExecutionLogModel>({});
+
+const handleCopy = async (content: string) => {
+	try {
+		await copy(content);
+	} catch {
+		uni.showToast({ title: "复制失败", icon: "none" });
+	}
+};
 
 const detail = throttle(
 	async (data: SqlExecutionLogModel) =>

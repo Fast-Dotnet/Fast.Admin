@@ -1,7 +1,7 @@
 <template>
 	<FaPopup ref="faPopupRef" title="接口详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
-			<FaField label="接口名称" :value="formData.apiName" />
+			<FaField label="接口名称" :value="formData.apiName" selectable />
 			<FaField label="接口地址" :value="formData.apiUrl" copyable />
 			<FaField label="请求方式" center>
 				<FaTag name="HttpRequestMethodEnum" :value="formData.method" />
@@ -9,20 +9,20 @@
 			<FaField label="操作方式" center>
 				<FaTag name="HttpRequestActionEnum" :value="formData.action" />
 			</FaField>
-			<FaField label="模块名称" :value="formData.moduleName" />
-			<FaField label="服务名称" :value="formData.serviceName" />
-			<FaField label="分组名称" :value="formData.groupName" />
-			<FaField label="分组标题" :value="formData.groupTitle" />
+			<FaField label="模块名称" :value="formData.moduleName" selectable />
+			<FaField label="服务名称" :value="formData.serviceName" selectable />
+			<FaField label="分组名称" :value="formData.groupName" selectable />
+			<FaField label="分组标题" :value="formData.groupTitle" selectable />
 			<FaField label="授权检测" center>
 				<FaTag name="BooleanEnum" :value="formData.hasAuth" />
 			</FaField>
 			<FaField label="权限检测" center>
 				<FaTag name="BooleanEnum" :value="formData.hasPermission" />
 			</FaField>
-			<FaField label="版本" :value="formData.version" />
-			<FaField label="排序" :value="formData.sort" />
-			<FaField label="创建时间" :value="formData.createdTime" />
-			<FaField label="更新时间" :value="formData.updatedTime" />
+			<FaField label="版本" :value="formData.version" selectable />
+			<FaField label="排序" :value="formData.sort" selectable />
+			<FaField label="创建时间" :value="formData.createdTime" selectable />
+			<FaField label="更新时间" :value="formData.updatedTime" selectable />
 
 			<template v-if="formData.tags?.length">
 				<wd-divider content-position="left">按钮权限</wd-divider>

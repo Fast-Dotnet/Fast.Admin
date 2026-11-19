@@ -16,12 +16,35 @@
 						</view>
 					</view>
 
-					<wd-cell title="当前时间" :value="state.machineDetail.currentTime" />
-					<wd-cell title="主机名称" :value="state.machineDetail.hostName" />
-					<wd-cell title="操作系统" :value="state.machineDetail.osName" />
-					<wd-cell title="系统架构" :value="state.machineDetail.osArchitecture" />
-					<wd-cell title="CPU核数" :value="state.machineDetail.cpuCount" />
-					<wd-cell title="运行时长" :value="state.machineDetail.runTimes" />
+					<wd-cell title="当前时间">
+						<text selectable user-select>{{ state.machineDetail.currentTime }}</text>
+					</wd-cell>
+					<wd-cell title="主机名称">
+						<text selectable user-select>{{ state.machineDetail.hostName }}</text>
+						<template #suffix>
+							<button
+								v-if="state.machineDetail.hostName != null && state.machineDetail.hostName !== ''"
+								class="fa-field__copy"
+								hover-class="none"
+								@click.stop="handleCopy(state.machineDetail.hostName)"
+							>
+								<wd-icon name="copy" size="14px" />
+								<text>复制</text>
+							</button>
+						</template>
+					</wd-cell>
+					<wd-cell title="操作系统">
+						<text selectable user-select>{{ state.machineDetail.osName }}</text>
+					</wd-cell>
+					<wd-cell title="系统架构">
+						<text selectable user-select>{{ state.machineDetail.osArchitecture }}</text>
+					</wd-cell>
+					<wd-cell title="CPU核数">
+						<text selectable user-select>{{ state.machineDetail.cpuCount }}</text>
+					</wd-cell>
+					<wd-cell title="运行时长">
+						<text selectable user-select>{{ state.machineDetail.runTimes }}</text>
+					</wd-cell>
 				</wd-cell-group>
 
 				<wd-cell-group title="应用信息">
@@ -45,12 +68,24 @@
 						</view>
 					</view>
 
-					<wd-cell title="启动时间" :value="state.programDetail.startTime" />
-					<wd-cell title="应用名称" :value="state.programDetail.programName" />
-					<wd-cell title="应用版本" :value="state.programDetail.programVersion" />
-					<wd-cell title="框架版本" :value="state.programDetail.frameworkVersion" />
-					<wd-cell title="运行版本" :value="state.programDetail.runtimeVersion" />
-					<wd-cell title="运行时长" :value="state.programDetail.runTimes" />
+					<wd-cell title="启动时间">
+						<text selectable user-select>{{ state.programDetail.startTime }}</text>
+					</wd-cell>
+					<wd-cell title="应用名称">
+						<text selectable user-select>{{ state.programDetail.programName }}</text>
+					</wd-cell>
+					<wd-cell title="应用版本">
+						<text selectable user-select>{{ state.programDetail.programVersion }}</text>
+					</wd-cell>
+					<wd-cell title="框架版本">
+						<text selectable user-select>{{ state.programDetail.frameworkVersion }}</text>
+					</wd-cell>
+					<wd-cell title="运行版本">
+						<text selectable user-select>{{ state.programDetail.runtimeVersion }}</text>
+					</wd-cell>
+					<wd-cell title="运行时长">
+						<text selectable user-select>{{ state.programDetail.runTimes }}</text>
+					</wd-cell>
 				</wd-cell-group>
 
 				<wd-cell-group title="CPU信息">
@@ -92,7 +127,7 @@
 import { onHide, onLoad, onShow, onUnload } from "@dcloudio/uni-app";
 import { reactive } from "vue";
 import { axiosUtil } from "@fast-china/axios";
-import { logger, withDefineType } from "@fast-china/utils";
+import { copy, logger, withDefineType } from "@fast-china/utils";
 
 definePage({
 	name: "SystemSystemMonitor",
@@ -266,6 +301,15 @@ const startInterval = () => {
 		}, 10 * 1000);
 	};
 	schedule();
+};
+
+const handleCopy = async (content: string | number | undefined) => {
+	if (content == null || content === "") return;
+	try {
+		await copy(String(content));
+	} catch {
+		uni.showToast({ title: "复制失败", icon: "none" });
+	}
 };
 
 /** 激活页面并在首次请求完成后启动轮询 */

@@ -1,8 +1,8 @@
 <template>
 	<FaPopup ref="faPopupRef" title="角色详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
-			<FaField label="角色名称" :value="state.formData.roleName" />
-			<FaField label="角色编码" :value="state.formData.roleCode" selectable />
+			<FaField label="角色名称" :value="state.formData.roleName" selectable />
+			<FaField label="角色编码" :value="state.formData.roleCode" copyable />
 			<FaField label="角色类型" center>
 				<FaTag name="RoleTypeEnum" :value="state.formData.roleType" />
 			</FaField>
@@ -12,14 +12,19 @@
 			<FaField label="系统菜单" center>
 				<FaTag name="BooleanEnum" :value="state.formData.isSystemMenu" />
 			</FaField>
-			<FaField v-if="state.formData.dataScopeType === DataScopeTypeEnum.CustomDept" label="自定义部门" :value="dataScopeDepartmentNames" />
-			<FaField label="可分配角色" :value="roleNames" />
-			<FaField label="排序" :value="state.formData.sort" />
-			<FaField label="备注" :value="state.formData.remark" />
-			<FaField label="创建人" :value="state.formData.createdUserName" />
-			<FaField label="创建时间" :value="state.formData.createdTime" />
-			<FaField label="更新人" :value="state.formData.updatedUserName" />
-			<FaField label="更新时间" :value="state.formData.updatedTime" />
+			<FaField
+				v-if="state.formData.dataScopeType === DataScopeTypeEnum.CustomDept"
+				label="自定义部门"
+				:value="dataScopeDepartmentNames"
+				selectable
+			/>
+			<FaField label="可分配角色" :value="roleNames" selectable />
+			<FaField label="排序" :value="state.formData.sort" selectable />
+			<FaField label="备注" :value="state.formData.remark" selectable />
+			<FaField label="创建人" :value="state.formData.createdUserName" selectable />
+			<FaField label="创建时间" :value="state.formData.createdTime" selectable />
+			<FaField label="更新人" :value="state.formData.updatedUserName" selectable />
+			<FaField label="更新时间" :value="state.formData.updatedTime" selectable />
 		</view>
 	</FaPopup>
 </template>

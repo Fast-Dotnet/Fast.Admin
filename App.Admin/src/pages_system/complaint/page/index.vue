@@ -20,7 +20,7 @@
 					<FaTag name="ComplaintTypeEnum" :value="item.complaintType" />
 				</FaField>
 				<FaField label="昵称" :value="item.nickName" />
-				<FaField label="手机" :value="item.mobile" />
+				<FaField label="手机" :value="item.mobile" copyable />
 				<FaField label="租户名称" :value="item.tenantName" />
 				<FaField label="投诉描述" :value="item.description" />
 				<FaField label="创建时间" :value="item.createdTime" />

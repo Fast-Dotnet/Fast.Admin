@@ -1,21 +1,21 @@
 <template>
 	<FaPopup ref="faPopupRef" title="异常日志详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
-			<FaField label="昵称" :value="state.formData.nickName" />
-			<FaField label="手机" :value="state.formData.mobile" />
-			<FaField label="异常信息" :value="state.formData.message" color="var(--wot-danger-main)" />
-			<FaField label="类名" :value="state.formData.className" />
-			<FaField label="方法名" :value="state.formData.methodName" />
-			<FaField label="异常源" :value="state.formData.source" />
-			<FaField label="部门" :value="state.formData.departmentName" />
-			<FaField label="省份" :value="state.formData.province" />
-			<FaField label="城市" :value="state.formData.city" />
-			<FaField label="Ip" :value="state.formData.ip" />
-			<FaField label="时间" :value="state.formData.createdTime" />
-			<FaField label="设备" :value="state.formData.device" />
-			<FaField label="操作系统" :value="state.formData.os" />
-			<FaField label="浏览器" :value="state.formData.browser" />
-			<FaField label="租户" :value="state.formData.tenantName" />
+			<FaField label="昵称" :value="state.formData.nickName" selectable />
+			<FaField label="手机" :value="state.formData.mobile" copyable />
+			<FaField label="异常信息" :value="state.formData.message" color="var(--wot-danger-main)" selectable />
+			<FaField label="类名" :value="state.formData.className" selectable />
+			<FaField label="方法名" :value="state.formData.methodName" selectable />
+			<FaField label="异常源" :value="state.formData.source" selectable />
+			<FaField label="部门" :value="state.formData.departmentName" selectable />
+			<FaField label="省份" :value="state.formData.province" selectable />
+			<FaField label="城市" :value="state.formData.city" selectable />
+			<FaField label="Ip" :value="state.formData.ip" copyable />
+			<FaField label="时间" :value="state.formData.createdTime" selectable />
+			<FaField label="设备" :value="state.formData.device" selectable />
+			<FaField label="操作系统" :value="state.formData.os" selectable />
+			<FaField label="浏览器" :value="state.formData.browser" selectable />
+			<FaField label="租户" :value="state.formData.tenantName" selectable />
 
 			<view class="log-content">
 				<view class="log-content__section">
@@ -29,7 +29,10 @@
 							/>
 						</button>
 						<view v-if="state.formData.stackTrace" class="log-content__copy">
-							<wd-button size="small" variant="text" @click="handleCopy(state.formData.stackTrace)">复制</wd-button>
+							<button class="fa-field__copy" hover-class="none" @click.stop="handleCopy(state.formData.stackTrace)">
+								<wd-icon name="copy" size="14px" />
+								<text>复制</text>
+							</button>
 						</view>
 					</view>
 					<view v-if="state.isStackTraceExpanded" class="log-content__body">
@@ -45,7 +48,10 @@
 							<wd-icon :name="state.isParamsExpanded ? 'arrow-down' : 'arrow-right'" size="16px" color="var(--wot-icon-secondary)" />
 						</button>
 						<view v-if="state.paramsText" class="log-content__copy">
-							<wd-button size="small" variant="text" @click="handleCopy(state.paramsText)">复制</wd-button>
+							<button class="fa-field__copy" hover-class="none" @click.stop="handleCopy(state.paramsText)">
+								<wd-icon name="copy" size="14px" />
+								<text>复制</text>
+							</button>
 						</view>
 					</view>
 					<view v-if="state.isParamsExpanded" class="log-content__body">

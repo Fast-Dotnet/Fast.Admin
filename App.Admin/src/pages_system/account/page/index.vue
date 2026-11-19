@@ -23,7 +23,7 @@
 					<FaTag name="CommonStatusEnum" :value="item.status" />
 				</view>
 
-				<FaField label="邮箱" :value="item.email" />
+				<FaField label="邮箱" :value="item.email" copyable />
 				<FaField label="登录租户" :value="item.lastLoginTenantName" />
 				<FaField label="登录地区" :value="[item.lastLoginProvince, item.lastLoginCity].filter(Boolean).join(' - ')" />
 				<FaField label="登录Ip" :value="item.lastLoginIp" />

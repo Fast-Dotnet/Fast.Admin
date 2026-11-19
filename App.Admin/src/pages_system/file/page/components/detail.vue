@@ -13,23 +13,23 @@
 		</template>
 
 		<view class="page-detail__popup">
-			<FaField label="标识" :value="state.formData.fileObjectName" selectable />
-			<FaField label="后缀" :value="state.formData.fileSuffix" />
-			<FaField label="类型" :value="state.formData.fileMimeType" />
-			<FaField label="大小" :value="formatFileSize(state.formData.fileSizeKb)" />
-			<FaField label="存储路径" :value="state.formData.filePath" selectable />
+			<FaField label="标识" :value="state.formData.fileObjectName" copyable />
+			<FaField label="后缀" :value="state.formData.fileSuffix" selectable />
+			<FaField label="类型" :value="state.formData.fileMimeType" selectable />
+			<FaField label="大小" :value="formatFileSize(state.formData.fileSizeKb)" selectable />
+			<FaField label="存储路径" :value="state.formData.filePath" copyable />
 			<FaField label="访问地址" :value="state.formData.fileLocation" copyable />
-			<FaField label="哈希" :value="state.formData.fileHash" selectable />
-			<FaField label="名称" :value="state.formData.fileOriginName" />
-			<FaField label="省份" :value="state.formData.uploadProvince" />
-			<FaField label="城市" :value="state.formData.uploadCity" />
-			<FaField label="Ip" :value="state.formData.uploadIp" />
-			<FaField label="设备" :value="state.formData.uploadDevice" />
-			<FaField label="操作系统" :value="state.formData.uploadOS" />
-			<FaField label="浏览器" :value="state.formData.uploadBrowser" />
-			<FaField label="创建人" :value="state.formData.createdUserName" />
-			<FaField label="创建时间" :value="state.formData.createdTime" />
-			<FaField v-if="userInfoStore.isSystemTenant" label="租户" :value="state.formData.tenantName" />
+			<FaField label="哈希" :value="state.formData.fileHash" copyable />
+			<FaField label="名称" :value="state.formData.fileOriginName" selectable />
+			<FaField label="省份" :value="state.formData.uploadProvince" selectable />
+			<FaField label="城市" :value="state.formData.uploadCity" selectable />
+			<FaField label="Ip" :value="state.formData.uploadIp" selectable />
+			<FaField label="设备" :value="state.formData.uploadDevice" selectable />
+			<FaField label="操作系统" :value="state.formData.uploadOS" selectable />
+			<FaField label="浏览器" :value="state.formData.uploadBrowser" selectable />
+			<FaField label="创建人" :value="state.formData.createdUserName" selectable />
+			<FaField label="创建时间" :value="state.formData.createdTime" selectable />
+			<FaField v-if="userInfoStore.isSystemTenant" label="租户" :value="state.formData.tenantName" selectable />
 		</view>
 	</FaPopup>
 </template>

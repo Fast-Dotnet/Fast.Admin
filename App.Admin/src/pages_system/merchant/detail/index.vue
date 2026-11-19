@@ -4,23 +4,69 @@
 		<wd-empty v-if="state.loading || state.loadFailed" icon="no-content" tip="暂无内容" />
 		<template v-else>
 			<wd-cell-group border>
-				<wd-cell title="商户名称" :value="state.formData.merchantName" />
-				<wd-cell title="商户号" :value="state.formData.merchantNo" />
+				<wd-cell title="商户名称">
+					<text selectable user-select>{{ state.formData.merchantName }}</text>
+				</wd-cell>
+				<wd-cell title="商户号">
+					<text selectable user-select>{{ state.formData.merchantNo }}</text>
+					<template #suffix>
+						<button
+							v-if="state.formData.merchantNo != null && state.formData.merchantNo !== ''"
+							class="fa-field__copy"
+							hover-class="none"
+							@click.stop="handleCopy(state.formData.merchantNo)"
+						>
+							<wd-icon name="copy" size="14px" />
+							<text>复制</text>
+						</button>
+					</template>
+				</wd-cell>
 				<wd-cell title="商户密钥" :value="state.formData.merchantSecret ? '已配置' : '未配置'" />
 				<wd-cell title="商户类型">
 					<FaTag name="PaymentChannelEnum" :value="state.formData.merchantType" />
 				</wd-cell>
-				<wd-cell title="备注" :value="state.formData.remark" />
-				<wd-cell title="创建人" :value="state.formData.createdUserName" />
-				<wd-cell title="创建时间" :value="state.formData.createdTime" />
-				<wd-cell title="更新人" :value="state.formData.updatedUserName" />
-				<wd-cell title="更新时间" :value="state.formData.updatedTime" />
+				<wd-cell title="备注">
+					<text selectable user-select>{{ state.formData.remark }}</text>
+				</wd-cell>
+				<wd-cell title="创建人">
+					<text selectable user-select>{{ state.formData.createdUserName }}</text>
+				</wd-cell>
+				<wd-cell title="创建时间">
+					<text selectable user-select>{{ state.formData.createdTime }}</text>
+				</wd-cell>
+				<wd-cell title="更新人">
+					<text selectable user-select>{{ state.formData.updatedUserName }}</text>
+				</wd-cell>
+				<wd-cell title="更新时间">
+					<text selectable user-select>{{ state.formData.updatedTime }}</text>
+				</wd-cell>
 			</wd-cell-group>
 
 			<wd-cell-group title="公钥信息" border>
-				<wd-cell title="公钥序号" :value="state.formData.publicSerialNum" />
+				<wd-cell title="公钥序号">
+					<text selectable user-select>{{ state.formData.publicSerialNum }}</text>
+					<template #suffix>
+						<button
+							v-if="state.formData.publicSerialNum != null && state.formData.publicSerialNum !== ''"
+							class="fa-field__copy"
+							hover-class="none"
+							@click.stop="handleCopy(state.formData.publicSerialNum)"
+						>
+							<wd-icon name="copy" size="14px" />
+							<text>复制</text>
+						</button>
+					</template>
+				</wd-cell>
 				<template v-if="state.formData.publicKey">
-					<wd-cell title="公钥" is-link @click="state.isPublicKeyExpanded = !state.isPublicKeyExpanded" />
+					<wd-cell title="公钥" clickable @click="state.isPublicKeyExpanded = !state.isPublicKeyExpanded">
+						<template #suffix>
+							<button class="fa-field__copy" hover-class="none" @click.stop="handleCopy(state.formData.publicKey)">
+								<wd-icon name="copy" size="14px" />
+								<text>复制</text>
+							</button>
+							<wd-icon :name="state.isPublicKeyExpanded ? 'arrow-down' : 'arrow-right'" />
+						</template>
+					</wd-cell>
 					<view v-if="state.isPublicKeyExpanded" class="merchant-pem__body">
 						<text class="merchant-pem__text" selectable user-select>{{ state.formData.publicKey }}</text>
 					</view>
@@ -28,9 +74,30 @@
 			</wd-cell-group>
 
 			<wd-cell-group title="证书信息" border>
-				<wd-cell title="证书序号" :value="state.formData.certSerialNum" />
+				<wd-cell title="证书序号">
+					<text selectable user-select>{{ state.formData.certSerialNum }}</text>
+					<template #suffix>
+						<button
+							v-if="state.formData.certSerialNum != null && state.formData.certSerialNum !== ''"
+							class="fa-field__copy"
+							hover-class="none"
+							@click.stop="handleCopy(state.formData.certSerialNum)"
+						>
+							<wd-icon name="copy" size="14px" />
+							<text>复制</text>
+						</button>
+					</template>
+				</wd-cell>
 				<template v-if="state.formData.cert">
-					<wd-cell title="证书" is-link @click="state.isCertExpanded = !state.isCertExpanded" />
+					<wd-cell title="证书" clickable @click="state.isCertExpanded = !state.isCertExpanded">
+						<template #suffix>
+							<button class="fa-field__copy" hover-class="none" @click.stop="handleCopy(state.formData.cert)">
+								<wd-icon name="copy" size="14px" />
+								<text>复制</text>
+							</button>
+							<wd-icon :name="state.isCertExpanded ? 'arrow-down' : 'arrow-right'" />
+						</template>
+					</wd-cell>
 					<view v-if="state.isCertExpanded" class="merchant-pem__body">
 						<text class="merchant-pem__text" selectable user-select>{{ state.formData.cert }}</text>
 					</view>
@@ -44,7 +111,7 @@
 <script setup lang="ts">
 import { onLoad, onPullDownRefresh } from "@dcloudio/uni-app";
 import { reactive } from "vue";
-import { withDefineType } from "@fast-china/utils";
+import { copy, withDefineType } from "@fast-china/utils";
 import { merchantApi } from "@/api/services/Center/merchant";
 import { useMessageBox } from "@/hooks";
 import type { QueryMerchantDetailOutput } from "@/api/services/Center/merchant/models/QueryMerchantDetailOutput";
@@ -66,6 +133,15 @@ const state = reactive({
 	isPublicKeyExpanded: false,
 	isCertExpanded: false,
 });
+
+const handleCopy = async (content: string | number | undefined) => {
+	if (content == null || content === "") return;
+	try {
+		await copy(String(content));
+	} catch {
+		uni.showToast({ title: "复制失败", icon: "none" });
+	}
+};
 
 const handleLoad = async () => {
 	state.loading = true;

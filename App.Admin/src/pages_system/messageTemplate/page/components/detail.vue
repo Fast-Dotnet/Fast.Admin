@@ -6,24 +6,24 @@
 			</FaField>
 			<FaField label="模板Code" :value="formData.templateCode" copyable />
 			<FaField label="租户">
-				<text v-if="formData.tenantName">{{ formData.tenantName }}</text>
+				<text v-if="formData.tenantName" selectable user-select>{{ formData.tenantName }}</text>
 				<text v-else style="color: var(--wot-text-placeholder)">未指定租户</text>
 			</FaField>
-			<FaField label="应用标识">
-				<text v-if="formData.appKey">{{ formData.appKey }}</text>
+			<FaField label="应用标识" :value="formData.appKey" copyable>
+				<text v-if="formData.appKey" selectable user-select>{{ formData.appKey }}</text>
 				<text v-else style="color: var(--wot-text-placeholder)">{{ formData.tenantName ? "不区分应用" : "全局模板" }}</text>
 			</FaField>
-			<FaField label="应用名称" :value="formData.appName" />
+			<FaField label="应用名称" :value="formData.appName" selectable />
 			<FaField label="应用类型">
 				<FaTagFlag name="AppEnvironmentEnum" :value="formData.appType" />
 			</FaField>
 			<FaField label="环境类型" center>
 				<FaTag name="EnvironmentTypeEnum" :value="formData.environmentType" />
 			</FaField>
-			<FaField label="创建人" :value="formData.createdUserName" />
-			<FaField label="创建时间" :value="formData.createdTime" />
-			<FaField label="更新人" :value="formData.updatedUserName" />
-			<FaField label="更新时间" :value="formData.updatedTime" />
+			<FaField label="创建人" :value="formData.createdUserName" selectable />
+			<FaField label="创建时间" :value="formData.createdTime" selectable />
+			<FaField label="更新人" :value="formData.updatedUserName" selectable />
+			<FaField label="更新时间" :value="formData.updatedTime" selectable />
 		</view>
 	</FaPopup>
 </template>

@@ -37,8 +37,8 @@
 						<text>{{ item.mobile }}</text>
 					</view>
 				</view>
-				<FaField label="账号Key" :value="item.accountKey" />
-				<FaField label="邮箱" :value="item.email" />
+				<FaField label="账号Key" :value="item.accountKey" copyable />
+				<FaField label="邮箱" :value="item.email" copyable />
 				<FaField label="密码类型" center>
 					<FaTag name="PasswordTypeEnum" :value="item.type" />
 				</FaField>
