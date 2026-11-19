@@ -102,4 +102,13 @@
 	gap: 10rpx;
 	// 留白随内容滚动，确保最后一个筛选项不会紧贴底部操作栏。
 	padding-bottom: var(--fa-spacing-page, 24rpx);
+
+	// 将单元格原有的顶部分隔线统一替换为底部分隔线。
+	.wd-cell.is-border {
+		border-bottom: var(--wot-stroke-main) solid var(--wot-border-main);
+
+		&::after {
+			content: none;
+		}
+	}
 }

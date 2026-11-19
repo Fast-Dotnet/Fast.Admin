@@ -6,7 +6,7 @@
 					<FaCellPicker title="状态" v-model="searchParam.value.status" name="CommonStatusEnum" radio clearable />
 					<FaCellPicker title="版本" v-model="searchParam.value.edition" name="EditionEnum" radio clearable />
 					<FaCellPicker title="租户类型" v-model="searchParam.value.tenantType" name="TenantTypeEnum" radio clearable />
-					<wd-cell title="管理员手机">
+					<wd-cell title="管理员手机" border>
 						<wd-input
 							v-model="searchParam.value.adminMobile"
 							compact
