@@ -51,15 +51,13 @@
 	flex-wrap: wrap;
 	align-items: center;
 	justify-content: flex-end;
-	gap: 12rpx 16rpx;
-	padding: 20rpx 20rpx 16rpx;
+	text-align: right;
+	padding: 14rpx 12rpx 10rpx;
 
-	:deep(.wd-button) {
+	.wd-button {
 		flex: 0 0 auto;
-	}
-
-	:deep(.wd-button + .wd-button) {
-		margin-left: 0;
+		margin: 6rpx 8rpx;
+		vertical-align: middle;
 	}
 
 	&::after {
