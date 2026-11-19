@@ -1,7 +1,7 @@
 import { createFastAxios } from "@fast-china/axios";
 import { AESDecrypt, AESEncrypt, Local, installationIdentity, logger } from "@fast-china/utils";
 import { isAxiosError } from "axios";
-import { useLoading, useMessageBox, useToast } from "@/hooks";
+import { useLoading, useToast } from "@/hooks";
 import { appid } from "@/manifest.json";
 import { useUserInfo } from "@/stores";
 import type { ApiResponse } from "@fast-china/axios";
@@ -18,12 +18,17 @@ const handleReloadLogin = (response?: AxiosResponse) => {
 	if (code !== 401) return false;
 	if (!loginCallBack) {
 		loginCallBack = true;
-		useMessageBox
-			.alert({
-				msg: "登录已失效，请重新登录！",
-				confirmButtonText: "重新登录",
+		uni.showModal({
+			title: "温馨提示",
+			content: "登录已失效，请重新登录！",
+			showCancel: false,
+			confirmText: "重新登录",
+		})
+			.then(async ({ confirm }) => {
+				if (confirm) {
+					await useUserInfo().logout();
+				}
 			})
-			.then(() => useUserInfo().logout())
 			.finally(() => {
 				loginCallBack = false;
 			});

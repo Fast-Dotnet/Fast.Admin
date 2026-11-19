@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onLaunch } from "@dcloudio/uni-app";
+import { onLaunch, onShow } from "@dcloudio/uni-app";
 import { watch } from "vue";
 import { axiosUtil } from "@fast-china/axios";
 import { configureInstallationIdentity, getOrCreateInstallationId, logger } from "@fast-china/utils";
@@ -9,12 +9,18 @@ import { CommonRoute, CommonUniApp } from "@/common";
 import { RegExps } from "@/constants";
 import { usePrivacy, useUpdate } from "@/hooks";
 import { loadFastAxios } from "@/plugins/axios";
-import { useApp, useConfig } from "@/stores";
+import { tryConnectWebSocket } from "@/signalR";
+import { useApp, useConfig, useUserInfo } from "@/stores";
 import type { LaunchOutput } from "@/api/services/Center/app/models/LaunchOutput";
 
 const appStore = useApp();
 const configStore = useConfig();
+const userInfoStore = useUserInfo();
 const router = useRouter();
+
+onShow(() => {
+	tryConnectWebSocket(userInfoStore);
+});
 
 onLaunch((options) => {
 	// #ifdef MP

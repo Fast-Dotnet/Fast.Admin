@@ -7,7 +7,8 @@
 <script setup lang="ts">
 import { onMounted, reactive, watch } from "vue";
 import { RouterView } from "vue-router";
-import { useWindowSize } from "@fast-china/utils";
+import { useEventListener, useWindowSize } from "@fast-china/utils";
+import { tryConnectWebSocket } from "@/signalR";
 import { useConfig } from "@/stores";
 import type { ConfigProviderProps } from "element-plus";
 
@@ -105,4 +106,13 @@ onMounted(async () => {
 		elConfigProviderProps.locale = ElementPlusLocaleZhCn;
 	}
 });
+
+/** 页面重新可见或窗口重新获得焦点时检查实时连接。 */
+const handleWebSocketShow = () => {
+	if (document.visibilityState !== "visible") return;
+	tryConnectWebSocket();
+};
+useEventListener(document, "visibilitychange", handleWebSocketShow);
+useEventListener(window, "pageshow", handleWebSocketShow);
+useEventListener(window, "focus", handleWebSocketShow);
 </script>

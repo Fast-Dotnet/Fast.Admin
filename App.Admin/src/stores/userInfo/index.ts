@@ -6,7 +6,7 @@ import { LoginStatusEnum } from "@/api/enums/LoginStatusEnum";
 import { authApi } from "@/api/services/Auth/auth";
 import { loginApi } from "@/api/services/Auth/login";
 import { CommonRoute } from "@/common";
-import { useMessageBox, useToast } from "@/hooks";
+import { useToast } from "@/hooks";
 import { closeWebSocket } from "@/signalR";
 import type { AxiosResponse } from "axios";
 import type { GetLoginUserInfoOutput } from "@/api/services/Auth/auth/models/GetLoginUserInfoOutput";
@@ -83,6 +83,7 @@ export const useUserInfo = defineStore(
 		const removeToken = () => {
 			state.token = "";
 			state.refreshToken = "";
+			hasUserInfo.value = false;
 			// 删除Token后，不用校验账号
 			state.identityVerification = false;
 		};
@@ -191,10 +192,14 @@ export const useUserInfo = defineStore(
 			} = null
 		) => {
 			if (data?.type === 2) {
-				useMessageBox.alert(data?.message);
+				uni.showModal({
+					title: "温馨提示",
+					content: data?.message,
+					showCancel: false,
+				});
 				try {
 					// 关闭 WebSocket 连接
-					closeWebSocket();
+					await closeWebSocket();
 				} catch (error) {
 					logger.error("Logout", error);
 				}
@@ -202,7 +207,7 @@ export const useUserInfo = defineStore(
 			} else {
 				try {
 					// 关闭 WebSocket 连接
-					closeWebSocket();
+					await closeWebSocket();
 				} catch (error) {
 					logger.error("Logout", error);
 				}
@@ -213,7 +218,11 @@ export const useUserInfo = defineStore(
 				} finally {
 					logoutClear();
 					if (data !== null) {
-						useMessageBox.alert(data?.message);
+						uni.showModal({
+							title: "温馨提示",
+							content: data?.message,
+							showCancel: false,
+						});
 					}
 				}
 			}

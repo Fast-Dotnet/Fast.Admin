@@ -6,19 +6,31 @@ import { useUserInfo } from "@/stores";
 import type { HubConnection } from "@microsoft/signalr";
 import type { TenantOnlineUserModel } from "@/api/services/Center/tenantOnlineUser/models/TenantOnlineUserModel";
 
-/**
- * SignalR 对象
- */
+/** SignalR 对象 */
 let connection: HubConnection = null;
+/** 是否保持实时连接，主动退出后不再自动恢复 */
+let shouldConnect = false;
 
 let loadingInstance = withDefineType<ReturnType<typeof ElLoading.service>>(null);
 let reLoadingInstance = withDefineType<ReturnType<typeof ElLoading.service>>(null);
 
-/**
- * 首次创建 SignalR 连接、注册服务端事件并启动连接；失败时记录日志。
- */
+/** 首次创建 SignalR 连接、注册服务端事件并启动连接；失败时记录日志 */
 const initWebSocket = async (): Promise<void> => {
+	shouldConnect = true;
 	try {
+		if (connection) {
+			if (connection.state === HubConnectionState.Disconnected) {
+				loadingInstance = ElLoading.service({
+					fullscreen: true,
+					lock: true,
+					text: "服务连接中...",
+					background: "rgba(0, 0, 0, 0.7)",
+				});
+				await connection.start();
+			}
+			return;
+		}
+
 		const fastAxios = useFastAxios();
 		const userInfoStore = useUserInfo();
 		const url = `${fastAxios.baseUrl}/hubs/chatHub`;
@@ -27,161 +39,161 @@ const initWebSocket = async (): Promise<void> => {
 			"Fast-Device-Type": String(fastAxios.headers["Fast-Device-Type"]),
 			"Fast-Device-Id": installationIdentity.deviceId,
 		};
-		// 判断是否存在对象
-		if (!connection) {
-			connection = new HubConnectionBuilder()
-				.withUrl(`${url}?${toQueryString(params)}`, {
-					// 跳过协商阶段
-					skipNegotiation: true,
-					// 传输方式
-					transport: HttpTransportType.WebSockets,
-					// 日志级别
-					logger: import.meta.env.DEV ? LogLevel.Information : LogLevel.Error,
-					// 记录消息内容
-					logMessageContent: true,
-					accessTokenFactory: () => {
-						return userInfoStore.getToken().token;
-					},
-				})
+		connection = new HubConnectionBuilder()
+			.withUrl(`${url}?${toQueryString(params)}`, {
+				// 跳过协商阶段
+				skipNegotiation: true,
+				// 传输方式
+				transport: HttpTransportType.WebSockets,
 				// 日志级别
-				.configureLogging(import.meta.env.DEV ? LogLevel.Information : LogLevel.Error)
-				.withAutomaticReconnect({
-					nextRetryDelayInMilliseconds: () => {
-						// 每5秒重连一次
-						return 5000;
-					},
-				})
-				.build();
+				logger: import.meta.env.DEV ? LogLevel.Information : LogLevel.Error,
+				// 记录消息内容
+				logMessageContent: true,
+				accessTokenFactory: () => userInfoStore.getToken().token,
+			})
+			// 日志级别
+			.configureLogging(import.meta.env.DEV ? LogLevel.Information : LogLevel.Error)
+			.withAutomaticReconnect({
+				// 每5秒重连一次
+				nextRetryDelayInMilliseconds: () => 5000,
+			})
+			.build();
 
-			// 心跳检测 15s
-			connection.keepAliveIntervalInMilliseconds = 15 * 1000;
-			// 超时时间1m
-			connection.serverTimeoutInMilliseconds = 60 * 1000;
+		// 心跳检测 15s
+		connection.keepAliveIntervalInMilliseconds = 15 * 1000;
+		// 超时时间1m
+		connection.serverTimeoutInMilliseconds = 60 * 1000;
 
-			// 判断 WebSocket 是否已经连接
-			if (connection.state !== HubConnectionState.Connected && connection.state !== HubConnectionState.Connecting) {
-				// 重连期间显示遮罩，阻止继续操作。
-				connection.onreconnecting(() => {
-					ElNotification({
-						title: "温馨提示",
-						message: "服务器已断线...",
-						type: "error",
-						position: "top-right",
-					});
-					logger.warn("WebSocket", "服务器已断线...");
-					reLoadingInstance ||= ElLoading.service({
-						fullscreen: true,
-						lock: true,
-						text: "断线重连中...",
-						background: "rgba(0, 0, 0, 0.7)",
-					});
+		// 判断 WebSocket 是否已经连接
+		if (connection.state !== HubConnectionState.Connected && connection.state !== HubConnectionState.Connecting) {
+			// 重连期间显示遮罩，阻止继续操作。
+			connection.onreconnecting(() => {
+				ElNotification({
+					title: "温馨提示",
+					message: "服务器已断线...",
+					type: "error",
+					position: "top-right",
 				});
-
-				// 重连成功后关闭遮罩并提示用户。
-				connection.onreconnected(() => {
-					reLoadingInstance?.close();
-					ElMessage.success("服务重连成功");
-					logger.debug("WebSocket", "服务重连成功...");
+				logger.warn("WebSocket", "服务器已断线...");
+				reLoadingInstance ||= ElLoading.service({
+					fullscreen: true,
+					lock: true,
+					text: "断线重连中...",
+					background: "rgba(0, 0, 0, 0.7)",
 				});
-			}
-
-			loadingInstance = ElLoading.service({
-				fullscreen: true,
-				lock: true,
-				text: "服务连接中...",
-				background: "rgba(0, 0, 0, 0.7)",
 			});
 
-			// 连接成功监听
-			connection.on("ConnectSuccess", async () => {
-				loadingInstance?.close();
+			// 重连成功后关闭遮罩并提示用户。
+			connection.onreconnected(() => {
+				reLoadingInstance?.close();
+				ElMessage.success("服务重连成功");
+				logger.debug("WebSocket", "服务重连成功...");
+			});
+		}
+
+		// 连接成功监听
+		connection.on("ConnectSuccess", async () => {
+			loadingInstance?.close();
+			ElNotification({
+				message: `服务连接成功`,
+				type: "success",
+				duration: 1000,
+			});
+			logger.debug("WebSocket", "服务连接成功...", userInfoStore.employeeName);
+
+			try {
+				loadingInstance = ElLoading.service({
+					fullscreen: true,
+					lock: true,
+					text: "系统连接中...",
+					background: "rgba(0, 0, 0, 0.7)",
+				});
+				// WebSocket 登录
+				await connection.invoke("Login");
 				ElNotification({
-					message: `服务连接成功`,
+					message: `系统连接成功`,
 					type: "success",
 					duration: 1000,
 				});
-				logger.debug("WebSocket", "服务连接成功...", userInfoStore.employeeName);
+				logger.debug("WebSocket", "系统连接成功...");
+			} finally {
+				loadingInstance?.close();
+			}
+		});
 
-				try {
-					loadingInstance = ElLoading.service({
-						fullscreen: true,
-						lock: true,
-						text: "系统连接中...",
-						background: "rgba(0, 0, 0, 0.7)",
-					});
-					// WebSocket 登录
-					await connection.invoke("Login");
-					ElNotification({
-						message: `系统连接成功`,
-						type: "success",
-						duration: 1000,
-					});
-					logger.debug("WebSocket", "系统连接成功...");
-				} finally {
-					loadingInstance?.close();
-				}
-			});
-
-			// 登录失败监听
-			connection.on("LoginFail", (message: string) => {
+		// 登录失败监听
+		connection.on("LoginFail", async (message: string) => {
+			shouldConnect = false;
+			try {
+				// 认证失败时直接停止连接及自动重连，无需再调用 Hub Logout。
+				await connection.stop();
+			} catch (error) {
+				logger.error("WebSocket", error);
+			} finally {
 				userInfoStore.logoutClear();
 				ElMessageBox.alert(message, { type: "warning" });
+			}
+		});
+
+		// 其他地方登录监听
+		connection.on("ElsewhereLogin", async (data: TenantOnlineUserModel) => {
+			logger.warn("WebSocket", "其他地方登录", data);
+
+			const message = `账号于【${data.lastLoginTime}】在【${data.lastLoginOS} ${data.lastLoginBrowser}(${
+				data.lastLoginIp
+			})】设备登录，如非本人操作，请及时修改密码！`;
+
+			// 退出登录
+			await userInfoStore.logout({
+				type: 2,
+				message,
 			});
+		});
 
-			// 其他地方登录监听
-			connection.on("ElsewhereLogin", async (data: TenantOnlineUserModel) => {
-				logger.warn("WebSocket", "其他地方登录", data);
+		// 强制下线监听
+		connection.on(
+			"ForceOffline",
+			async (data: { isAdmin: boolean; nickName: string; employeeNo: string; offlineTime: string; message: string }) => {
+				logger.warn("WebSocket", "强制下线", data);
 
-				const message = `账号于【${data.lastLoginTime}】在【${data.lastLoginOS} ${data.lastLoginBrowser}(${
-					data.lastLoginIp
-				})】设备登录，如非本人操作，请及时修改密码！`;
+				let message = "您已被";
+
+				if (data.isAdmin) {
+					message += `管理员【${data.nickName}（${data.employeeNo}）】`;
+				} else {
+					message += `用户【${data.nickName}（${data.employeeNo}）】`;
+				}
+
+				message += `于【${data.offlineTime}】被强制下线！`;
+
+				if (data.message) {
+					message += `\r\n原因：${data.message}`;
+				}
 
 				// 退出登录
 				await userInfoStore.logout({
-					type: 2,
+					type: 1,
 					message,
 				});
-			});
+			}
+		);
 
-			// 强制下线监听
-			connection.on(
-				"ForceOffline",
-				async (data: { isAdmin: boolean; nickName: string; employeeNo: string; offlineTime: string; message: string }) => {
-					logger.warn("WebSocket", "强制下线", data);
-
-					let message = "您已被";
-
-					if (data.isAdmin) {
-						message += `管理员【${data.nickName}（${data.employeeNo}）】`;
-					} else {
-						message += `用户【${data.nickName}（${data.employeeNo}）】`;
-					}
-
-					message += `于【${data.offlineTime}】被强制下线！`;
-
-					if (data.message) {
-						message += `\r\n原因：${data.message}`;
-					}
-
-					await userInfoStore.logout({
-						type: 1,
-						message,
-					});
-				}
-			);
-
-			// 完成事件注册后再启动连接。
-			await connection.start();
-		}
+		loadingInstance = ElLoading.service({
+			fullscreen: true,
+			lock: true,
+			text: "服务连接中...",
+			background: "rgba(0, 0, 0, 0.7)",
+		});
+		// 完成事件注册后再启动连接。
+		await connection.start();
 	} catch (error) {
 		logger.error("WebSocket", error);
 	}
 };
 
-/**
- * 尝试通知服务端退出登录后停止连接；停止失败时向调用方抛出异常。
- */
+/** 尝试通知服务端退出登录后停止连接；停止失败时向调用方抛出异常 */
 const closeWebSocket = async (): Promise<void> => {
+	shouldConnect = false;
 	if (connection) {
 		try {
 			// WebSocket 退出登录
@@ -193,4 +205,13 @@ const closeWebSocket = async (): Promise<void> => {
 	}
 };
 
-export { connection as signalR, initWebSocket, closeWebSocket };
+/** 页面恢复前台时尝试连接，不重复启动正在连接或自动重连的实例 */
+const tryConnectWebSocket = async (): Promise<void> => {
+	const userInfoStore = useUserInfo();
+	if (!shouldConnect || !userInfoStore.token || !userInfoStore.asyncRouterGen) return;
+	// Connected 状态是否已经失效，继续由现有心跳和超时机制判断。
+	if (connection && connection.state !== HubConnectionState.Disconnected) return;
+	await initWebSocket();
+};
+
+export { connection as signalR, initWebSocket, closeWebSocket, tryConnectWebSocket };

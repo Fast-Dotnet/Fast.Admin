@@ -4,7 +4,6 @@ import { type RouteRecordRaw, createRouter } from "@wot-ui/router";
 import { pages, subPackages } from "virtual:uni-pages";
 import { tryBrowserRedirect } from "@/browser";
 import { CommonRoute, TabBarRoute } from "@/common";
-import { useToast } from "@/hooks";
 import { initWebSocket } from "@/signalR";
 import { useUserInfo } from "@/stores";
 
@@ -40,7 +39,7 @@ router.beforeEach(async (to, from, next) => {
 	if (!userInfoStore.token) {
 		// 判断当前页面是否需要登录
 		if (!to.noLogin) {
-			useToast.warning("请登录");
+			uni.showToast({ title: "请登录", icon: "none" });
 			// 如果去的路由和来的路由一致，则携带来的路由的参数
 			if (from.path === to.path) {
 				next({ path: CommonRoute.Login, navType: "replaceAll", query: from.query });
@@ -65,14 +64,11 @@ router.beforeEach(async (to, from, next) => {
 				userInfoStore.hasUserInfo = true;
 
 				// 初始化 WebSocket
-				initWebSocket();
+				initWebSocket(userInfoStore);
 
 				// 延迟 0.5 秒显示欢迎信息
 				setTimeout(() => {
-					useToast.show({
-						msg: `${getLocalTimeGreeting()}${userInfoStore.employeeName}`,
-						duration: 1500,
-					});
+					uni.showToast({ title: `${getLocalTimeGreeting()}${userInfoStore.employeeName}`, icon: "none", position: "top", duration: 1500 });
 				}, 500);
 			} catch (error) {
 				logger.error("InitRoute", error);
@@ -93,7 +89,7 @@ router.beforeEach(async (to, from, next) => {
 			targetRoute?.authCode &&
 			!userInfoStore.hasButtonPermission(Array.isArray(targetRoute.authCode) ? targetRoute.authCode : [targetRoute.authCode])
 		) {
-			useToast.warning("暂无访问权限");
+			uni.showToast({ title: "暂无访问权限", icon: "none" });
 			// 工作台是 TabBar 页面，切换过去，避免停留在无权限业务页。
 			next({
 				path: CommonRoute.Workbench,

@@ -56,9 +56,6 @@ export const useUserInfo = defineStore(
 		// 动态生成路由
 		const asyncRouterGen = ref(false);
 
-		// WebSocket 是否连接
-		const hasWebSocket = ref(false);
-
 		/** 合并服务端返回的用户信息。 */
 		const setUserInfo = (uInfo: GetLoginUserInfoOutput) => {
 			Object.assign(state, uInfo);
@@ -209,7 +206,6 @@ export const useUserInfo = defineStore(
 		return {
 			...toRefs(state),
 			asyncRouterGen,
-			hasWebSocket,
 			setUserInfo,
 			hasButtonPermission,
 			removeToken,
