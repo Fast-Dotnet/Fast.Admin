@@ -143,7 +143,7 @@
 
 		<wd-divider content-position="left" custom-style="--wot-divider-padding: 0">按钮信息</wd-divider>
 
-		<FaCard v-for="(item, index) in state.formData.buttonList" :key="index">
+		<FaCard v-for="(item, index) in state.formData.buttonList" :key="index" custom-style="margin-left: 20rpx; margin-right: 20rpx;">
 			<FaField label="按钮名称" :value="item.buttonName" />
 			<FaField label="按钮编码" :value="item.buttonCode" selectable />
 			<FaField label="版本" center>

@@ -1,6 +1,11 @@
 @use "./light.scss";
 @use "./dark.scss";
 
+/* 根传送弹层使用自身主题的正文颜色。 */
+.wd-root-portal {
+	color: var(--wot-text-main);
+}
+
 /* 全局设计变量，随主题变化的别名在当前主题节点解析 */
 :root,
 page,

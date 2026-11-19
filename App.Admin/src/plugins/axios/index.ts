@@ -39,6 +39,12 @@ const handleReloadLogin = (response?: AxiosResponse) => {
 /** 创建请求实例并注册加载提示、缓存、加解密及认证拦截器。 */
 export function loadFastAxios(): void {
 	let baseUrl = `${import.meta.env.VITE_API_REQUEST_URL.replace(/\/$/, "")}${import.meta.env.VITE_API_BASE_URL}`;
+	// #ifdef H5
+	// H5 开发请求发往当前 Vite 服务，由 /api 代理到后端。
+	if (import.meta.env.DEV) {
+		baseUrl = "/api";
+	}
+	// #endif
 	if (baseUrl?.endsWith("/")) {
 		baseUrl = baseUrl.slice(0, -1);
 	}

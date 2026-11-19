@@ -37,32 +37,34 @@
 			</wd-form-item>
 		</wd-form>
 
-		<wd-divider content-position="left" custom-style="--wot-divider-padding: 0">字典项</wd-divider>
+		<template v-if="state.pageMode === 'edit'">
+			<wd-divider content-position="left" custom-style="--wot-divider-padding: 0">字典项</wd-divider>
 
-		<FaCard v-for="(item, index) in state.formData.dictionaryItemList" :key="index">
-			<FaField label="项名称" :value="item.label" />
-			<FaField label="项值" :value="item.value" selectable />
-			<FaField label="标签类型" center>
-				<wd-tag v-if="item.type === TagTypeEnum.Primary" type="primary">Primary</wd-tag>
-				<wd-tag v-if="item.type === TagTypeEnum.Success" type="success">Success</wd-tag>
-				<wd-tag v-if="item.type === TagTypeEnum.Info" type="default">Info</wd-tag>
-				<wd-tag v-if="item.type === TagTypeEnum.Warning" type="warning">Warning</wd-tag>
-				<wd-tag v-if="item.type === TagTypeEnum.Danger" type="danger">Danger</wd-tag>
-			</FaField>
-			<FaField label="排序" :value="item.order" />
-			<FaField label="显示" center>
-				<FaTag name="BooleanEnum" :value="item.visible" />
-			</FaField>
-			<FaField label="状态" center>
-				<FaTag name="CommonStatusEnum" :value="item.status" />
-			</FaField>
-			<FaField label="提示" :value="item.tips" />
+			<FaCard v-for="(item, index) in state.formData.dictionaryItemList" :key="index" custom-style="margin-left: 20rpx; margin-right: 20rpx;">
+				<FaField label="项名称" :value="item.label" />
+				<FaField label="项值" :value="item.value" selectable />
+				<FaField label="标签类型" center>
+					<wd-tag v-if="item.type === TagTypeEnum.Primary" type="primary">Primary</wd-tag>
+					<wd-tag v-if="item.type === TagTypeEnum.Success" type="success">Success</wd-tag>
+					<wd-tag v-if="item.type === TagTypeEnum.Info" type="default">Info</wd-tag>
+					<wd-tag v-if="item.type === TagTypeEnum.Warning" type="warning">Warning</wd-tag>
+					<wd-tag v-if="item.type === TagTypeEnum.Danger" type="danger">Danger</wd-tag>
+				</FaField>
+				<FaField label="排序" :value="item.order" />
+				<FaField label="显示" center>
+					<FaTag name="BooleanEnum" :value="item.visible" />
+				</FaField>
+				<FaField label="状态" center>
+					<FaTag name="CommonStatusEnum" :value="item.status" />
+				</FaField>
+				<FaField label="提示" :value="item.tips" />
 
-			<template #footer>
-				<wd-button size="mini" type="primary" variant="plain" @click="handleItemEdit(item, index)">编辑</wd-button>
-				<wd-button size="mini" type="danger" variant="plain" @click="handleItemDelete(index)">删除</wd-button>
-			</template>
-		</FaCard>
+				<template #footer>
+					<wd-button size="mini" type="primary" variant="plain" @click="handleItemEdit(item, index)">编辑</wd-button>
+					<wd-button size="mini" type="danger" variant="plain" @click="handleItemDelete(index)">删除</wd-button>
+				</template>
+			</FaCard>
+		</template>
 
 		<wd-button v-if="state.pageMode === 'edit'" custom-class="fa-form-submit" type="primary" variant="plain" icon="plus" @click="handleItemAdd">
 			新增字典项

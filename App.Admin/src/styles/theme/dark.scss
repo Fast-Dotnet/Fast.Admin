@@ -30,6 +30,13 @@
 	--wot-card-bg: var(--wot-filled-oppo);
 	--wot-card-border-color: var(--wot-border-main);
 
+	/* 滚轮渐变遮罩与深色组件表面保持一致，避免上下出现纯黑色块。 */
+	--wot-picker-view-mask-start-color: rgba(31, 31, 31, 0.85);
+	--wot-picker-view-mask-end-color: rgba(31, 31, 31, 0.2);
+
+	/* 提高手柄与深色面板之间的明度差，增强滑块的辨识度。 */
+	--wot-slider-dot-bg: var(--wot-filled-extra-strong);
+
 	/* 深色模式以填充色和边框区分层级，避免高不透明度阴影。 */
 	/* 遮罩下的内容需要明显弱化时使用的表面色 */
 	--fa-color-overlay: rgba(0, 0, 0, 0.8);

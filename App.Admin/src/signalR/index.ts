@@ -30,7 +30,11 @@ const initWebSocket = async (userInfoStore: ReturnType<typeof useUserInfo>): Pro
 		}
 
 		const fastAxios = useFastAxios();
-		const url = `${fastAxios.baseUrl}/hubs/chatHub`;
+		let baseUrl = fastAxios.baseUrl;
+		// #ifdef H5
+		baseUrl = new URL(baseUrl || "/", window.location.origin).href;
+		// #endif
+		const url = `${baseUrl.replace(/\/$/, "")}/hubs/chatHub`;
 		const params = {
 			"Fast-Origin": String(fastAxios.headers["Fast-Origin"]),
 			"Fast-Device-Type": String(fastAxios.headers["Fast-Device-Type"]),

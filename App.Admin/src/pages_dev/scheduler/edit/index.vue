@@ -168,7 +168,7 @@
 
 		<template v-if="state.formData.jobType == SchedulerJobTypeEnum.IntranetUrl || state.formData.jobType == SchedulerJobTypeEnum.OuterNetUrl">
 			<wd-divider content-position="left" custom-style="--wot-divider-padding: 0">请求头</wd-divider>
-			<FaCard v-for="(item, index) in state.requestHeaderObj" :key="index">
+			<FaCard v-for="(item, index) in state.requestHeaderObj" :key="index" custom-style="margin-left: 20rpx; margin-right: 20rpx;">
 				<FaField label="Key" :value="item.key" />
 				<FaField label="Value" :value="item.value" />
 
@@ -182,7 +182,7 @@
 			</wd-button>
 
 			<wd-divider content-position="left" custom-style="--wot-divider-padding: 0">请求参数</wd-divider>
-			<FaCard v-for="(item, index) in state.requestParamsObj" :key="index">
+			<FaCard v-for="(item, index) in state.requestParamsObj" :key="index" custom-style="margin-left: 20rpx; margin-right: 20rpx;">
 				<FaField label="Key" :value="item.key" />
 				<FaField label="Value" :value="item.value" />
 
