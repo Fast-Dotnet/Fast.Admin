@@ -26,7 +26,7 @@
 				<FaField label="耗时" :value="`${(Number(item.elapsedTime ?? 0) / 1000).toFixed(4)}秒`" color="var(--wot-text-auxiliary)" />
 				<FaField label="部门" :value="item.departmentName" />
 				<FaField label="地区" :value="[item.province, item.city].filter(Boolean).join(' - ')" />
-				<FaField label="Ip" :value="item.ip" copyable />
+				<FaField label="Ip" :value="item.ip" selectable />
 				<FaField label="设备" :value="[item.device, item.os].filter(Boolean).join(' · ')" />
 				<FaField label="浏览器" :value="item.browser" />
 				<FaField label="时间" :value="item.createdTime" />

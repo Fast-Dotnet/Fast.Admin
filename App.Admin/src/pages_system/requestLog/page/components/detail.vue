@@ -21,7 +21,7 @@
 			<FaField label="部门" :value="state.formData.departmentName" selectable />
 			<FaField label="省份" :value="state.formData.province" selectable />
 			<FaField label="城市" :value="state.formData.city" selectable />
-			<FaField label="Ip" :value="state.formData.ip" copyable />
+			<FaField label="Ip" :value="state.formData.ip" selectable />
 			<FaField label="设备" :value="state.formData.device" selectable />
 			<FaField label="操作系统" :value="state.formData.os" selectable />
 			<FaField label="浏览器" :value="state.formData.browser" selectable />

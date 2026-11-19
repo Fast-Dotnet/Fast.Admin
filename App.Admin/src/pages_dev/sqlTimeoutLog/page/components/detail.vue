@@ -10,7 +10,7 @@
 			<FaField label="部门" :value="formData.departmentName" selectable />
 			<FaField label="省份" :value="formData.province" selectable />
 			<FaField label="城市" :value="formData.city" selectable />
-			<FaField label="Ip" :value="formData.ip" copyable />
+			<FaField label="Ip" :value="formData.ip" selectable />
 			<FaField label="时间" :value="formData.createdTime" selectable />
 			<FaField label="设备" :value="formData.device" selectable />
 			<FaField label="操作系统" :value="formData.os" selectable />

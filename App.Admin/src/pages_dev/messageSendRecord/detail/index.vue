@@ -41,17 +41,6 @@
 				</wd-cell>
 				<wd-cell title="Ip">
 					<text selectable user-select>{{ state.formData.ip }}</text>
-					<template #suffix>
-						<button
-							v-if="state.formData.ip != null && state.formData.ip !== ''"
-							class="fa-field__copy"
-							hover-class="none"
-							@click.stop="handleCopy(state.formData.ip)"
-						>
-							<wd-icon name="copy" size="14px" />
-							<text>复制</text>
-						</button>
-					</template>
 				</wd-cell>
 				<wd-cell title="设备">
 					<text selectable user-select>{{ state.formData.device }}</text>

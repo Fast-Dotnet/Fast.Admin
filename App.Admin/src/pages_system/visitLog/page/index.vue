@@ -27,7 +27,7 @@
 				<FaField label="账号" :value="[item.nickName, item.mobile].filter(Boolean).join(' · ')" />
 				<FaField label="部门" :value="item.departmentName" />
 				<FaField label="地区" :value="[item.province, item.city].filter(Boolean).join(' - ')" />
-				<FaField label="Ip" :value="item.ip" copyable />
+				<FaField label="Ip" :value="item.ip" selectable />
 				<FaField label="设备" :value="[item.device, item.os].filter(Boolean).join(' · ')" />
 				<FaField label="浏览器" :value="item.browser" />
 				<FaField v-if="userInfoStore.isSuperAdmin" label="租户" :value="item.tenantName" />

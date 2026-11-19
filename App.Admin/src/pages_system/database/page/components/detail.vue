@@ -6,8 +6,8 @@
 			<FaField label="数据库类型" center>
 				<FaTag name="DatabaseTypeEnum" :value="formData.databaseType" />
 			</FaField>
-			<FaField label="公网IP" :value="formData.publicIp" copyable />
-			<FaField label="内网IP" :value="formData.intranetIp" copyable />
+			<FaField label="公网IP" :value="formData.publicIp" selectable />
+			<FaField label="内网IP" :value="formData.intranetIp" selectable />
 			<FaField label="端口号" :value="formData.port" selectable />
 			<FaField label="Db类型" center>
 				<FaTag name="SugarDbType" :value="formData.dbType" />
