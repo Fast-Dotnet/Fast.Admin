@@ -65,7 +65,7 @@ export const useApp = defineStore(
 			themeColor: defaultThemeColor,
 			appType: AppEnvironmentEnum.WeChatMiniProgram,
 			environmentType: EnvironmentTypeEnum.Development,
-			loginComponent: "ClassicLogin",
+			loginComponent: "",
 			requestTimeout: 6000,
 			requestEncipher: true,
 			tenantName: "",
