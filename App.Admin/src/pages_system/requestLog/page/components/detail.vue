@@ -11,7 +11,7 @@
 			<FaField label="操作方式" center>
 				<FaTag name="HttpRequestActionEnum" :value="state.formData.operationAction" />
 			</FaField>
-			<FaField label="请求地址" :value="state.formData.location" copyable />
+			<FaField label="请求地址" :value="state.formData.location" />
 			<FaField label="请求方式" center>
 				<FaTag name="HttpRequestMethodEnum" :value="state.formData.requestMethod" />
 			</FaField>

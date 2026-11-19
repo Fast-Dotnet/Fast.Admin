@@ -5,8 +5,8 @@
 			<FaField label="手机" :value="formData.mobile" copyable />
 			<FaField label="OpenId" :value="formData.openId" copyable />
 			<FaField label="UnionId" :value="formData.unionId" copyable />
-			<FaField label="退款商户号" :value="formData.merchantNo" copyable />
-			<FaField label="应用标识" :value="formData.appKey" copyable />
+			<FaField label="退款商户号" :value="formData.merchantNo" selectable />
+			<FaField label="应用标识" :value="formData.appKey" selectable />
 			<FaField label="支付渠道">
 				<FaText name="PaymentChannelEnum" :value="formData.paymentChannel" />
 			</FaField>
@@ -18,7 +18,7 @@
 			</FaField>
 			<FaField label="退款时间" :value="formData.refundTime" selectable />
 			<FaField label="退款状态" :value="formData.refundStatus" selectable />
-			<FaField label="回调地址" :value="formData.notifyUrl" copyable />
+			<FaField label="回调地址" :value="formData.notifyUrl" selectable />
 			<FaField label="省份" :value="formData.province" selectable />
 			<FaField label="城市" :value="formData.city" selectable />
 			<FaField label="Ip" :value="formData.ip" selectable />

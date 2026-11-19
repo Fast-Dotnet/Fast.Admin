@@ -17,9 +17,9 @@
 			<FaField label="后缀" :value="state.formData.fileSuffix" selectable />
 			<FaField label="类型" :value="state.formData.fileMimeType" selectable />
 			<FaField label="大小" :value="formatFileSize(state.formData.fileSizeKb)" selectable />
-			<FaField label="存储路径" :value="state.formData.filePath" copyable />
+			<FaField label="存储路径" :value="state.formData.filePath" selectable />
 			<FaField label="访问地址" :value="state.formData.fileLocation" copyable />
-			<FaField label="哈希" :value="state.formData.fileHash" copyable />
+			<FaField label="哈希" :value="state.formData.fileHash" selectable />
 			<FaField label="名称" :value="state.formData.fileOriginName" selectable />
 			<FaField label="省份" :value="state.formData.uploadProvince" selectable />
 			<FaField label="城市" :value="state.formData.uploadCity" selectable />

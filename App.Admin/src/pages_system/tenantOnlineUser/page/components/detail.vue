@@ -11,7 +11,7 @@
 			<FaField label="工号" :value="formData.employeeNo" copyable />
 			<FaField label="部门" :value="formData.departmentName" selectable />
 			<FaField label="应用名称" :value="formData.appName" selectable />
-			<FaField label="应用编号" :value="formData.appNo" copyable />
+			<FaField label="应用编号" :value="formData.appNo" selectable />
 			<FaField label="设备类型" center>
 				<FaTag name="AppEnvironmentEnum" :value="formData.deviceType" />
 			</FaField>

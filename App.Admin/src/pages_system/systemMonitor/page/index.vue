@@ -21,17 +21,6 @@
 					</wd-cell>
 					<wd-cell title="主机名称">
 						<text selectable user-select>{{ state.machineDetail.hostName }}</text>
-						<template #suffix>
-							<button
-								v-if="state.machineDetail.hostName != null && state.machineDetail.hostName !== ''"
-								class="fa-field__copy"
-								hover-class="none"
-								@click.stop="handleCopy(state.machineDetail.hostName)"
-							>
-								<wd-icon name="copy" size="14px" />
-								<text>复制</text>
-							</button>
-						</template>
 					</wd-cell>
 					<wd-cell title="操作系统">
 						<text selectable user-select>{{ state.machineDetail.osName }}</text>
@@ -127,7 +116,7 @@
 import { onHide, onLoad, onShow, onUnload } from "@dcloudio/uni-app";
 import { reactive } from "vue";
 import { axiosUtil } from "@fast-china/axios";
-import { copy, logger, withDefineType } from "@fast-china/utils";
+import { logger, withDefineType } from "@fast-china/utils";
 
 definePage({
 	name: "SystemSystemMonitor",
@@ -301,15 +290,6 @@ const startInterval = () => {
 		}, 10 * 1000);
 	};
 	schedule();
-};
-
-const handleCopy = async (content: string | number | undefined) => {
-	if (content == null || content === "") return;
-	try {
-		await copy(String(content));
-	} catch {
-		uni.showToast({ title: "复制失败", icon: "none" });
-	}
 };
 
 /** 激活页面并在首次请求完成后启动轮询 */

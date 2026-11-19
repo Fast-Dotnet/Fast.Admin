@@ -22,7 +22,7 @@
 					</view>
 				</template>
 				<FaField label="账号" :value="[item.nickName, item.mobile].filter(Boolean).join(' · ')" />
-				<FaField label="请求地址" :value="item.location" copyable />
+				<FaField label="请求地址" :value="item.location" />
 				<FaField label="耗时" :value="`${(Number(item.elapsedTime ?? 0) / 1000).toFixed(4)}秒`" color="var(--wot-text-auxiliary)" />
 				<FaField label="部门" :value="item.departmentName" />
 				<FaField label="地区" :value="[item.province, item.city].filter(Boolean).join(' - ')" />

@@ -24,7 +24,7 @@
 
 		<FaCard v-for="item in formData.dictionaryItemList" :key="item.dictionaryItemId">
 			<FaField label="项名称" :value="item.label" selectable />
-			<FaField label="项值" :value="item.value" copyable />
+			<FaField label="项值" :value="item.value" selectable />
 			<FaField label="标签类型" center>
 				<wd-tag v-if="item.type === TagTypeEnum.Primary" type="primary">Primary</wd-tag>
 				<wd-tag v-if="item.type === TagTypeEnum.Success" type="success">Success</wd-tag>

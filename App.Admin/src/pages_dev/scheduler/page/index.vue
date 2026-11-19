@@ -113,7 +113,7 @@
 				<wd-tag v-else type="danger">离线</wd-tag>
 			</FaField>
 			<FaField label="集群" :value="state.schedulerDetail.clustered ? 'True' : 'False'" bold selectable />
-			<FaField label="实例Id" :value="state.schedulerDetail.schedulerInstanceId" bold copyable />
+			<FaField label="实例Id" :value="state.schedulerDetail.schedulerInstanceId" bold selectable />
 			<FaField label="运行时间" :value="state.schedulerDetail.runTimes" color="var(--wot-text-auxiliary)" selectable />
 			<FaField
 				label="远程调度器"
@@ -159,18 +159,10 @@
 		</template>
 
 		<view class="page-detail__popup">
-			<view class="scheduler-log__header">
-				<text>{{ state.popup.exp ? "异常信息" : "日志内容" }}</text>
-				<button v-if="state.popup.contents.length" class="fa-field__copy" hover-class="none" @click.stop="handleCopyLogs">
-					<wd-icon name="copy" size="14px" />
-					<text>复制</text>
-				</button>
-			</view>
 			<view class="scheduler-log">
 				<wd-rich-text
 					v-for="(item, index) in state.popup.contents"
 					:key="index"
-					ref="logContentRefs"
 					:content="item"
 					:class-styles="logClassStyles"
 					:tag-style="logTagStyle"
@@ -186,7 +178,7 @@
 <script setup lang="ts">
 import { onHide, onLoad, onShow, onUnload } from "@dcloudio/uni-app";
 import { reactive, ref } from "vue";
-import { copy, logger, throttle, withDefineType } from "@fast-china/utils";
+import { logger, throttle, withDefineType } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import dayjs from "dayjs";
 import { SchedulerJobGroupEnum } from "@/api/enums/SchedulerJobGroupEnum";
@@ -195,7 +187,6 @@ import { schedulerApi } from "@/api/services/Scheduler";
 import { useMessageBox, useToast } from "@/hooks";
 import { useApp, useConfig, useUserInfo } from "@/stores";
 import type { Action } from "@wot-ui/ui/components/wd-action-sheet/types";
-import type { RichTextInstance } from "@wot-ui/ui/components/wd-rich-text/types";
 import type { QuerySchedulerDetailOutput } from "@/api/services/Scheduler/models/QuerySchedulerDetailOutput";
 import type { SchedulerJobInfoDto } from "@/api/services/Scheduler/models/SchedulerJobInfoDto";
 import type { FaPopupInstance } from "@/components";
@@ -217,7 +208,6 @@ const userInfoStore = useUserInfo();
 
 const faPopupRef = ref<FaPopupInstance>();
 const logFaPopupRef = ref<FaPopupInstance>();
-const logContentRefs = ref<RichTextInstance[]>([]);
 
 const schedulerJobGroupEnum = appStore.getDictionary("SchedulerJobGroupEnum");
 
@@ -331,18 +321,6 @@ const handleStop = throttle(async () => {
 		},
 	});
 });
-
-const handleCopyLogs = async () => {
-	// v-for 模板 ref 不保证顺序，按原始内容恢复日志顺序。
-	const textByContent = new Map(logContentRefs.value.map((instance) => [instance.$props.content, instance.getText()]));
-	const content = state.popup.contents.map((item) => textByContent.get(item) ?? "").join("\n");
-	if (!content.trim()) return;
-	try {
-		await copy(content);
-	} catch {
-		uni.showToast({ title: "复制失败", icon: "none" });
-	}
-};
 
 /** 异常查看 */
 const handleShowException = throttle(async (item: SchedulerJobInfoDto) => {
@@ -595,13 +573,6 @@ onHide(deactivate);
 
 .scheduler-toolbar {
 	margin-bottom: var(--fa-spacing-section);
-}
-
-.scheduler-log__header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	font-weight: var(--wot-font-weight-semibold);
 }
 
 .scheduler-log {

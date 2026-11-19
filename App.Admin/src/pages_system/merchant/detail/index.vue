@@ -134,10 +134,9 @@ const state = reactive({
 	isCertExpanded: false,
 });
 
-const handleCopy = async (content: string | number | undefined) => {
-	if (content == null || content === "") return;
+const handleCopy = async (content: string) => {
 	try {
-		await copy(String(content));
+		await copy(content);
 	} catch {
 		uni.showToast({ title: "复制失败", icon: "none" });
 	}

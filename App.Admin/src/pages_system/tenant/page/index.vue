@@ -56,7 +56,7 @@
 				<FaField label="租户类型">
 					<FaText name="TenantTypeEnum" :value="item.tenantType" />
 				</FaField>
-				<FaField label="租户编码" :value="item.tenantCode" copyable />
+				<FaField label="租户编码" :value="item.tenantCode" />
 				<FaField label="状态" center>
 					<FaTag name="CommonStatusEnum" :value="item.status" />
 				</FaField>

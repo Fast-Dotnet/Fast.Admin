@@ -2,7 +2,7 @@
 	<FaPopup ref="faPopupRef" title="配置详情" height="70%" position="bottom" closable>
 		<view class="page-detail__popup">
 			<FaField label="配置名称" :value="formData.configName" selectable />
-			<FaField label="配置编码" :value="formData.configCode" copyable />
+			<FaField label="配置编码" :value="formData.configCode" selectable />
 			<FaField label="配置值" :value="formData.configValue" color="var(--wot-primary-6)" selectable />
 			<FaField label="备注" :value="formData.remark" selectable />
 			<FaField label="创建人" :value="formData.createdUserName" selectable />
