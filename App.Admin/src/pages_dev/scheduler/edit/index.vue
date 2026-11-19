@@ -248,7 +248,7 @@ import { SchedulerJobTypeEnum } from "@/api/enums/SchedulerJobTypeEnum";
 import { TriggerTypeEnum } from "@/api/enums/TriggerTypeEnum";
 import { WeekEnum } from "@/api/enums/WeekEnum";
 import { schedulerApi } from "@/api/services/Scheduler";
-import { CommonRoute } from "@/common/router";
+import { CommonRoute } from "@/common";
 import { useFormSchema, useMessageBox, useToast } from "@/hooks";
 import { usePaging } from "@/stores";
 import type { FormInstance } from "@wot-ui/ui/components/wd-form/types";

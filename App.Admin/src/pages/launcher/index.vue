@@ -63,8 +63,7 @@ import { LoginStatusEnum } from "@/api/enums/LoginStatusEnum";
 import { loginApi } from "@/api/services/Auth/login";
 import { tryBrowserRedirect } from "@/browser";
 import { CommonRoute } from "@/common";
-import { useToast, useUpdate } from "@/hooks";
-import { usePrivacy } from "@/hooks/use-privacy";
+import { usePrivacy, useToast, useUpdate } from "@/hooks";
 import defaultLogo from "@/static/logo.png";
 import { useApp, useUserInfo } from "@/stores";
 

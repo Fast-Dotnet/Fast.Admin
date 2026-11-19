@@ -124,7 +124,7 @@ import { ElMessage } from "element-plus";
 import { RegExps } from "fast-element-plus";
 import { useNow, withDefineType } from "@fast-china/utils";
 import { accountApi } from "@/api/services/Center/account";
-import ImageCaptcha from "@/components/ImageCaptcha/index.vue";
+import { ImageCaptcha } from "@/components";
 import type { FormRules } from "element-plus";
 import type { FaDialogInstance, FaFormInstance } from "fast-element-plus";
 import type { PasswordResetInput } from "@/api/services/Center/account/models/PasswordResetInput";

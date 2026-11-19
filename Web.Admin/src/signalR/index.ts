@@ -23,8 +23,8 @@ const initWebSocket = async (): Promise<void> => {
 		const userInfoStore = useUserInfo();
 		const url = `${fastAxios.baseUrl}/hubs/chatHub`;
 		const params = {
-			"Fast-Origin": import.meta.env.DEV ? import.meta.env.VITE_APP_ORIGIN || window.location.host : window.location.host,
-			"Fast-Device-Type": "Web",
+			"Fast-Origin": String(fastAxios.headers["Fast-Origin"]),
+			"Fast-Device-Type": String(fastAxios.headers["Fast-Device-Type"]),
 			"Fast-Device-Id": installationIdentity.deviceId,
 		};
 		// 判断是否存在对象

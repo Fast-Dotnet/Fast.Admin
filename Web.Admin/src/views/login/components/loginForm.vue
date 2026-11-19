@@ -161,7 +161,7 @@
 import { computed, useTemplateRef } from "vue";
 import { ArrowLeftBold, Close, Lock, Plus, Right, User } from "@element-plus/icons-vue";
 import { type FaButtonInstance, useOverlay } from "fast-element-plus";
-import ImageCaptcha from "@/components/ImageCaptcha/index.vue";
+import { ImageCaptcha } from "@/components";
 import { useApp } from "@/stores";
 import { useLogin } from "../useLogin";
 import PasswordReset from "./passwordReset.vue";

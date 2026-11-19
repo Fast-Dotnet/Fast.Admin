@@ -103,7 +103,7 @@ import { useUserInfo } from "@/stores";
 import type { FormRules } from "element-plus";
 import type { FaDialogInstance, FaFormInstance } from "fast-element-plus";
 import type { AccountVerificationInput } from "@/api/services/Center/account/models/AccountVerificationInput";
-import type ImageCaptcha from "@/components/ImageCaptcha/index.vue";
+import type { ImageCaptcha } from "@/components";
 
 defineOptions({
 	name: "IdentityVerification",
