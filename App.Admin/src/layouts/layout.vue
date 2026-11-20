@@ -17,7 +17,7 @@
 		<view :class="['fa-main', { 'fa-main__tabBar': state.isTabBar, 'fa-main__page-scroll': state.pageScroll === false }]" :style="mainStyle">
 			<slot v-if="state.rendered" />
 			<!-- 页脚 -->
-			<FaFooter v-if="showFooter" />
+			<FaFooter v-if="showFooter" @resize="footerHeight = $event" />
 			<!-- 底部导航栏 -->
 			<wd-tabbar
 				v-if="state.isTabBar"
@@ -183,11 +183,14 @@ const theme = computed(() => (configStore.layout.isDark ? "dark" : "light"));
 /** 显示页脚 */
 const showFooter = computed(() => configStore.layout.footer && state.footer !== false);
 
+/** H5 使用实际页脚高度，其他平台沿用主题配置的固定高度 */
+const footerHeight = ref<number>();
+
 /** 主页面样式 */
 const mainStyle = computed(() => {
 	const style: Record<string, string> = {};
 	let height = "var(--fa-window-height, 100vh)";
-	if (showFooter.value) height += " - var(--fa-footer-height, 40px)";
+	if (showFooter.value) height += footerHeight.value === undefined ? " - var(--fa-footer-height, 40px)" : ` - ${footerHeight.value}px`;
 	if (state.isTabBar) height += " - var(--wot-tabbar-height, 55px) - max(calc(12px - var(--fa-area-inset-bottom, 0px)), 0px)";
 	style["--main-height"] = `calc(${height})`;
 	if (state.backgroundColor) {

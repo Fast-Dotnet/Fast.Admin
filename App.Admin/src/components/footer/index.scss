@@ -24,9 +24,11 @@
 
 .fa-footer__filing {
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
+	flex-wrap: wrap;
 	align-items: center;
-	gap: 4px;
+	justify-content: center;
+	gap: 2px 8px;
 	width: 100%;
 }
 

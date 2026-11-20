@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, getCurrentInstance, onBeforeUnmount, onMounted, watch } from "vue";
 // #ifdef H5
 import gonganImage from "@/static/images/gongan.png";
 // #endif
@@ -41,7 +41,48 @@ defineOptions({
 
 const appStore = useApp();
 
-const hasFiling = computed(() => process.env.UNI_PLATFORM === "h5" && !!(appStore.icpText || appStore.publicSecurityCode));
+const emit = defineEmits<{
+	/** H5 页脚实际高度变化时触发，供页面布局扣除占用空间 */
+	resize: [height: number];
+}>();
+
+const hasFiling = computed(() => process.env.UNI_PLATFORM === "h5" && !!(appStore.icpSecurityCode || appStore.publicSecurityCode));
+
+// #ifdef H5
+const instance = getCurrentInstance();
+let footerElement: HTMLElement | undefined;
+let resizeObserver: ResizeObserver | undefined;
+let previousHeight = 0;
+
+/** 只通知有效且发生变化的高度，避免布局更新反复触发相同通知。 */
+function updateHeight(): void {
+	const height = footerElement?.getBoundingClientRect().height;
+	if (height === undefined || height <= 0 || height === previousHeight) return;
+	previousHeight = height;
+	emit("resize", height);
+}
+
+onMounted(() => {
+	const element: unknown = instance?.proxy?.$el;
+	if (!(element instanceof HTMLElement)) return;
+	footerElement = element;
+	updateHeight();
+	// 同时覆盖备案加载、换行、字体变化和页面重新显示，避免只按配置行数推算高度。
+	if (typeof ResizeObserver === "function") {
+		resizeObserver = new ResizeObserver(updateHeight);
+		resizeObserver.observe(element);
+	}
+	uni.onWindowResize(updateHeight);
+});
+
+// 兼容没有 ResizeObserver 的 H5 环境，配置变化后也重新读取布局。
+watch([() => appStore.icpSecurityCode, () => appStore.publicSecurityCode], updateHeight, { flush: "post" });
+onBeforeUnmount(() => {
+	resizeObserver?.disconnect();
+	uni.offWindowResize(updateHeight);
+	footerElement = undefined;
+});
+// #endif
 
 let domain = "";
 const host = import.meta.env.VITE_API_REQUEST_URL.replace(/^https?:\/\//, "").split(/[/:]/)[0];
