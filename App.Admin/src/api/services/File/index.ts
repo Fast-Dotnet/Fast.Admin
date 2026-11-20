@@ -31,6 +31,7 @@ export const fileApi = {
 			autoDownloadFile,
 			onDownloadProgress,
 			requestType: "download",
+			timeout: 5 * 60 * 1000,
 		});
 	},
 	/**
@@ -91,6 +92,7 @@ export const fileApi = {
 			onUploadProgress,
 			cancelDuplicateRequest: false,
 			requestType: "upload",
+			timeout: 5 * 60 * 1000,
 		});
 	},
 	/**
