@@ -42,6 +42,7 @@
 		@inner-cell-click="(item, index?: number) => emit('innerCellClick', item, index)"
 		@virtual-top-height-change="emit('virtualTopHeightChange', $event)"
 	>
+		<view class="fa-paging__total">共 {{ totalRows }} 条</view>
 		<slot :paged-list="pagedList" :total-rows="totalRows" :search-param="slotState.searchParam" :refresh="handleReload" />
 		<template v-if="slots.top" #top>
 			<slot name="top" :paged-list="pagedList" :total-rows="totalRows" :search-param="slotState.searchParam" :refresh="handleReload" />

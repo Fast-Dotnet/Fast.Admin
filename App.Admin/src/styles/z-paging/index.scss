@@ -19,6 +19,14 @@
 	.zp-loading-fixed {
 		z-index: 100 !important;
 	}
+
+	.fa-paging__total {
+		margin-bottom: 8px;
+		color: var(--wot-text-secondary);
+		font-size: 12px;
+		line-height: 1.5;
+		text-align: right;
+	}
 }
 
 .z-paging-content-page {
