@@ -1,10 +1,30 @@
 .fa-card {
+	position: relative;
+	box-sizing: border-box;
 	background-color: var(--wot-card-bg);
 	border-radius: var(--wot-radius-large);
 	box-shadow: var(--fa-shadow-subtle);
 	overflow: hidden;
 	transition: box-shadow var(--fa-motion-duration-normal) var(--fa-motion-easing-standard);
 	margin-bottom: var(--wot-spacing-extra-loose);
+}
+
+.fa-card--selectable {
+	padding-left: 64rpx;
+}
+
+.fa-card--selected {
+	// 使用内阴影标识选中，避免边框导致内容尺寸变化。
+	box-shadow:
+		inset 0 0 0 2rpx var(--wot-color-theme),
+		var(--fa-shadow-subtle);
+}
+
+.fa-card__selection {
+	position: absolute;
+	top: 24rpx;
+	left: 20rpx;
+	z-index: 1;
 }
 
 .fa-card__title {

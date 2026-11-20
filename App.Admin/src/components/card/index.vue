@@ -1,5 +1,19 @@
 <template>
-	<view :class="`fa-card ${props.customClass}`" :style="props.customStyle">
+	<view
+		:class="[
+			'fa-card',
+			props.customClass,
+			{
+				'fa-card--selectable': props.selectable,
+				'fa-card--selected': props.selectable && props.selected,
+			},
+		]"
+		:style="props.customStyle"
+	>
+		<view v-if="props.selectable" class="fa-card__selection" @click.stop>
+			<wd-checkbox :model-value="props.selected" :disabled="props.disabled" type="square" @update:model-value="handleSelectionChange" />
+		</view>
+
 		<view v-if="props.title || $slots.title || $slots.titleExtra" class="fa-card__title">
 			<slot name="title">
 				<text v-if="props.title" class="fa-card__title-text">{{ props.title }}</text>
@@ -40,14 +54,31 @@ const props = defineProps({
 	code: {
 		type: definePropType<string | string[]>([String, Array]),
 	},
+	/** 是否开启选择模式 */
+	selectable: Boolean,
+	/** 是否选中，配合 v-model:selected 使用 */
+	selected: Boolean,
+	/** 是否禁止用户修改选中状态，仅影响选择操作 */
+	disabled: Boolean,
 });
 
 const emit = defineEmits<{
 	/** 正文区域点击并通过 code 权限校验时触发；未设置 code 时直接触发 */
 	click: [event: BaseEvent];
+	/** 请求更新选中状态 */
+	"update:selected": [selected: boolean];
+	/** 用户通过复选框或正文修改选中状态时触发 */
+	change: [selected: boolean];
 }>();
 
 const userInfoStore = useUserInfo();
+
+/** 统一处理复选框和正文选择，选中状态由父组件维护。 */
+const handleSelectionChange = (value: boolean) => {
+	if (!props.selectable || props.disabled || value === props.selected) return;
+	emit("update:selected", value);
+	emit("change", value);
+};
 
 const handleClick = (event: BaseEvent) => {
 	if (props.code === undefined || userInfoStore.hasButtonPermission(Array.isArray(props.code) ? props.code : [props.code])) {
