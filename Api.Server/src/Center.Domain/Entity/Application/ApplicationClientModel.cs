@@ -1,4 +1,4 @@
-﻿// Copyright © 2018-Present 小方
+// Copyright © 2018-Present 小方
 // SPDX-License-Identifier: Apache-2.0
 // 
 // 本文件依据 Apache License 2.0 授权，完整条款见仓库根目录 LICENSE。
@@ -69,6 +69,12 @@ public class ApplicationClientModel : BaseEntity, IUpdateVersion
     /// </summary>
     [SugarColumn(ColumnDescription = "请求加密")]
     public bool RequestEncipher { get; set; }
+
+    /// <summary>
+    /// App Store 应用Id
+    /// </summary>
+    [SugarColumn(ColumnDescription = "App Store 应用Id", Length = 30)]
+    public string AppStoreId { get; set; }
 
     /// <summary>
     /// 微信商户号Id

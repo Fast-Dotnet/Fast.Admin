@@ -153,8 +153,6 @@ public class AppService : IDynamicApplication
     /// <summary>
     /// 检查应用更新
     /// </summary>
-    /// <param name="input"></param>
-    /// <returns></returns>
     [HttpPost]
     [ApiInfo("检查应用更新", HttpRequestActionEnum.Query)]
     [AllowAnonymous]
@@ -234,5 +232,18 @@ public class AppService : IDynamicApplication
                     $"{applicationVersionModel.FileUrl}?recordId={applicationVersionModel.RecordId}&appKey={Uri.EscapeDataString(applicationVersionModel.AppKey)}"
             }
         };
+    }
+
+    /// <summary>
+    /// 下载应用
+    /// </summary>
+    [HttpGet("/app/download/{appId:long}")]
+    [ApiInfo("下载应用", HttpRequestActionEnum.Other)]
+    [AllowAnonymous]
+    [DisabledRequestLog]
+    [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+    [ApiDescriptionSettings(false)]
+    public async Task DownloadApp([Range(1, long.MaxValue)] long appId)
+    {
     }
 }

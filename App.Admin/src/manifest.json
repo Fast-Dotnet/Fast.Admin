@@ -16,8 +16,8 @@
 		"darkmode": true,
 		"themeLocation": "theme.json",
 		"safearea": {
-			"background": "#ffffff",
-			"backgroundDark": "#07111c",
+			"background": "#f7f8fa",
+			"backgroundDark": "#141414",
 			"bottom": {
 				"offset": "auto"
 			}
@@ -150,8 +150,8 @@
 		"darkmode": true,
 		"themeLocation": "theme.json",
 		"safearea": {
-			"background": "#ffffff",
-			"backgroundDark": "#07111c",
+			"background": "#f7f8fa",
+			"backgroundDark": "#141414",
 			"bottom": {
 				"offset": "none"
 			}
