@@ -31,6 +31,10 @@ onLaunch((options) => {
 	loadFastAxios();
 	appStore.setFastAxios();
 
+	// #ifdef H5
+	appStore.loadAppSettings().catch(() => logger.warn("App", "前端备案配置加载失败"));
+	// #endif
+
 	axiosUtil
 		.request<LaunchOutput>({
 			url: "/launch",

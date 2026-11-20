@@ -55,26 +55,28 @@ export const useApp = defineStore(
 		/** 加载运行配置和启动数据，并更新字典；启动接口失败时允许沿用已有启动缓存。 */
 		const launch = async () => {
 			try {
+				// 清除持久化的旧值，避免配置移除或加载失败后仍显示旧备案号。
+				state.icpSecurityCode = "";
+				state.publicSecurityCode = "";
 				const publicPath = import.meta.env.VITE_PUBLIC_PATH.endsWith("/")
 					? import.meta.env.VITE_PUBLIC_PATH
 					: `${import.meta.env.VITE_PUBLIC_PATH}/`;
-				const appSettingsResponse = await fetch(`${publicPath}appsetting.json`, {
+				const response = await fetch(`${publicPath}appsetting.json`, {
 					cache: "no-store",
 				});
-				if (!appSettingsResponse.ok) {
-					throw new Error(`加载 appsetting.json 失败：HTTP ${appSettingsResponse.status}`);
+				if (!response.ok) {
+					throw new Error(`加载 appsetting.json 失败：HTTP ${response.status}`);
+				}
+				const appSettings: unknown = await response.json();
+				if (typeof appSettings !== "object" || appSettings === null) {
+					throw new Error("appsetting.json 必须是 JSON 对象");
 				} else {
-					const appSettings: unknown = await appSettingsResponse.json();
-					if (typeof appSettings !== "object" || appSettings === null) {
-						throw new Error("appsetting.json 必须是 JSON 对象");
-					} else {
-						const { icpSecurityCode, publicSecurityCode } = appSettings as Record<string, unknown>;
-						if (typeof icpSecurityCode === "string" && icpSecurityCode.trim()) {
-							state.icpSecurityCode = icpSecurityCode.trim();
-						}
-						if (typeof publicSecurityCode === "string" && publicSecurityCode.trim()) {
-							state.publicSecurityCode = publicSecurityCode.trim();
-						}
+					const { icpSecurityCode, publicSecurityCode } = appSettings as Record<string, unknown>;
+					if (typeof icpSecurityCode === "string" && icpSecurityCode.trim()) {
+						state.icpSecurityCode = icpSecurityCode.trim();
+					}
+					if (typeof publicSecurityCode === "string" && publicSecurityCode.trim()) {
+						state.publicSecurityCode = publicSecurityCode.trim();
 					}
 				}
 			} catch (error) {

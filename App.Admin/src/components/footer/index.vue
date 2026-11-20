@@ -1,11 +1,32 @@
 <template>
-	<view class="fa-footer">
+	<view :class="['fa-footer', { 'fa-footer--filing': hasFiling }]">
 		<text>FastDotnet 提供计算服务</text>
 		<text>© {{ new Date().getFullYear() }} {{ domain }} v{{ appStore.appVersion }}</text>
+		<!-- #ifdef H5 -->
+		<view v-if="hasFiling" class="fa-footer__filing">
+			<a
+				v-if="appStore.publicSecurityCode"
+				class="fa-footer__link"
+				:href="`https://beian.mps.gov.cn/#/query/webSearch?code=${appStore.publicSecurityCode.replace(/\D+/g, '')}`"
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				<image class="fa-footer__filing-icon" :src="gonganImage" mode="aspectFit" />
+				<text>{{ appStore.publicSecurityCode }}</text>
+			</a>
+			<a v-if="appStore.icpSecurityCode" class="fa-footer__link" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">
+				{{ appStore.icpSecurityCode }}
+			</a>
+		</view>
+		<!-- #endif -->
 	</view>
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
+// #ifdef H5
+import gonganImage from "@/static/images/gongan.png";
+// #endif
 import { useApp } from "@/stores";
 
 defineOptions({
@@ -19,6 +40,8 @@ defineOptions({
 });
 
 const appStore = useApp();
+
+const hasFiling = computed(() => process.env.UNI_PLATFORM === "h5" && !!(appStore.icpText || appStore.publicSecurityCode));
 
 let domain = "";
 const host = import.meta.env.VITE_API_REQUEST_URL.replace(/^https?:\/\//, "").split(/[/:]/)[0];

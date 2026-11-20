@@ -88,6 +88,33 @@ export const useApp = defineStore(
 		/** 字典 */
 		const dictionary = shallowRef<Map<string, FaTableEnumColumnCtx[]>>(new Map());
 
+		/** 从部署静态目录读取 H5 运行配置；读取失败交由启动入口记录，不阻断启动接口 */
+		const loadAppSettings = async (): Promise<void> => {
+			// #ifdef H5
+			// 清除持久化的旧值，避免配置移除或加载失败后仍显示旧备案号。
+			state.icpSecurityCode = "";
+			state.publicSecurityCode = "";
+			const publicPath = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+			const url = new URL(`${publicPath}static/appsetting.json`, window.location.origin);
+			const response = await fetch(url.href, { cache: "no-store" });
+			if (!response.ok) {
+				throw new Error(`加载 appsetting.json 失败：HTTP ${response.status}`);
+			}
+			const appSettings: unknown = await response.json();
+			if (typeof appSettings !== "object" || appSettings === null) {
+				throw new Error("appsetting.json 必须是 JSON 对象");
+			} else {
+				const { icpSecurityCode, publicSecurityCode } = appSettings as Record<string, unknown>;
+				if (typeof icpSecurityCode === "string" && icpSecurityCode.trim()) {
+					state.icpSecurityCode = icpSecurityCode.trim();
+				}
+				if (typeof publicSecurityCode === "string" && publicSecurityCode.trim()) {
+					state.publicSecurityCode = publicSecurityCode.trim();
+				}
+			}
+			// #endif
+		};
+
 		/** 设置非空应用名称。 */
 		const setAppName = (appName: string) => {
 			if (!appName) return;
@@ -149,6 +176,7 @@ export const useApp = defineStore(
 
 		return {
 			...toRefs(state),
+			loadAppSettings,
 			setAppName,
 			setDictionary,
 			setFastAxios,

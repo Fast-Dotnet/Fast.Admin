@@ -15,8 +15,8 @@ importers:
         specifier: ^2.3.2
         version: 2.3.2(vue@3.5.45(typescript@6.0.3))
       '@fast-china/axios':
-        specifier: ^2.0.9
-        version: 2.0.9(axios@1.21.1(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0))(rolldown@1.2.19)(vite@8.3.8(@types/node@24.19.2)(sass@1.97.3))
+        specifier: ^2.0.10
+        version: 2.0.10(axios@1.21.1(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0))(rolldown@1.2.19)(vite@8.3.8(@types/node@24.19.2)(sass@1.97.3))
       '@fast-china/utils':
         specifier: ^2.1.12
         version: 2.1.12(vue@3.5.45(typescript@6.0.3))
@@ -462,8 +462,8 @@ packages:
     resolution: {integrity: sha512-IkO+/KEUvwbVpiURZg+P7zF74z5Jxe0UgJxVni+RtoHQ6IZieXaO02kmadomap/q+l6bc/jdPGGqTjhuZnuz1Q==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
-  '@fast-china/axios@2.0.9':
-    resolution: {integrity: sha512-iIKkwFskTodLQweNgAk72NmxUWJogcWMUbneFWOqyV3uFBM7YbQPWeMQC7l2Cf1x2u55E94lpOaRiQ/RKUfdGw==}
+  '@fast-china/axios@2.0.10':
+    resolution: {integrity: sha512-CMtADfhoYB/dBjh4QmVLVKSHSJYvt9BO1TCO/5eh1nLc5wobjq+WFJIi0N2YsoSlQUPX7WdxxGK/1uRUCS+L/g==}
     engines: {node: ^22.18.0 || ^24.18.0, pnpm: ^11.0.0}
     peerDependencies:
       axios: ^1.8.1
@@ -2780,42 +2780,6 @@ packages:
     resolution: {integrity: sha512-xVToRh2CTmLk2HnEG7ac4rl1MJTT3RFkpS8B++/SnB0kXvuaavD+n3m/vrzyWQOdJNSZQACnbz01pnppbwV5BA==}
     engines: {node: '>=20.19.0'}
 
-  unplugin@3.4.0:
-    resolution: {integrity: sha512-9skdIFlCsPdFV7wUfZxNsFInlW+7nJmGu2gkTu0OUhF56aXGsHab9x52/QhdJ4lC7ZDPWTxbiC4ANqVlsuaW3w==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-    peerDependencies:
-      '@farmfe/core': '*'
-      '@rsbuild/core': '*'
-      '@rspack/core': '*'
-      bun-types-no-globals: '*'
-      esbuild: '*'
-      rolldown: '*'
-      rollup: '*'
-      unloader: '*'
-      vite: '*'
-      webpack: '*'
-    peerDependenciesMeta:
-      '@farmfe/core':
-        optional: true
-      '@rsbuild/core':
-        optional: true
-      '@rspack/core':
-        optional: true
-      bun-types-no-globals:
-        optional: true
-      esbuild:
-        optional: true
-      rolldown:
-        optional: true
-      rollup:
-        optional: true
-      unloader:
-        optional: true
-      vite:
-        optional: true
-      webpack:
-        optional: true
-
   unplugin@3.7.0:
     resolution: {integrity: sha512-GrM2uq3DQo3hvLU2FjeYhooJ8BY9N6j1Fbzgx7Pta3VVJevsD3VP4dPjZkZOS0mLvN8w9zzr9OlP+31bSMyuLw==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -3547,10 +3511,10 @@ snapshots:
       '@eslint/core': 1.2.1
       levn: 0.4.1
 
-  '@fast-china/axios@2.0.9(axios@1.21.1(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0))(rolldown@1.2.19)(vite@8.3.8(@types/node@24.19.2)(sass@1.97.3))':
+  '@fast-china/axios@2.0.10(axios@1.21.1(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0))(rolldown@1.2.19)(vite@8.3.8(@types/node@24.19.2)(sass@1.97.3))':
     dependencies:
       axios: 1.21.1(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0)
-      unplugin: 3.4.0(rolldown@1.2.19)(vite@8.3.8(@types/node@24.19.2)(sass@1.97.3))
+      unplugin: 3.7.0(rolldown@1.2.19)(vite@8.3.8(@types/node@24.19.2)(sass@1.97.3))
     transitivePeerDependencies:
       - '@farmfe/core'
       - '@rsbuild/core'
@@ -6081,15 +6045,6 @@ snapshots:
     dependencies:
       pathe: 2.0.3
       picomatch: 4.0.7
-
-  unplugin@3.4.0(rolldown@1.2.19)(vite@8.3.8(@types/node@24.19.2)(sass@1.97.3)):
-    dependencies:
-      '@jridgewell/remapping': 2.3.5
-      picomatch: 4.0.7
-      webpack-virtual-modules: 0.6.2
-    optionalDependencies:
-      rolldown: 1.2.19
-      vite: 8.3.8(@types/node@24.19.2)(sass@1.97.3)
 
   unplugin@3.7.0(rolldown@1.2.19)(vite@8.3.8(@types/node@24.19.2)(sass@1.97.3)):
     dependencies:

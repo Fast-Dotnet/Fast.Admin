@@ -5,18 +5,20 @@
 				<a href="https://fastdotnet.com" target="_blank" rel="noopener noreferrer">
 					Copyright © 2018~{{ new Date().getFullYear() }} Fast All rights reserved.
 				</a>
-				<el-text>v{{ state.appVersion }}</el-text>
+				<el-text>v{{ import.meta.env.VITE_APP_VERSION }}</el-text>
 			</div>
-			<div v-if="state.publicSecurityCode" class="footer-row">
+			<div v-if="appStore.publicSecurityCode" class="footer-row">
 				<a
-					:href="`https://beian.mps.gov.cn/#/query/webSearch?code=${state.publicSecurityCode?.replace(/\D+/g, '')}`"
+					:href="`https://beian.mps.gov.cn/#/query/webSearch?code=${appStore.publicSecurityCode?.replace(/\D+/g, '')}`"
 					target="_blank"
 					rel="noopener noreferrer"
 				>
 					<img :src="gonganImage" alt="" width="16" height="16" />
-					{{ state.publicSecurityCode }}
+					{{ appStore.publicSecurityCode }}
 				</a>
-				<a v-if="state.icpText" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">{{ state.icpText }}</a>
+				<a v-if="appStore.icpSecurityCode" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">
+					{{ appStore.icpSecurityCode }}
+				</a>
 			</div>
 		</div>
 	</template>
@@ -25,21 +27,22 @@
 			Copyright © 2018~{{ new Date().getFullYear() }} Fast All rights reserved.
 		</a>
 		<a
-			v-if="state.publicSecurityCode"
-			:href="`https://beian.mps.gov.cn/#/query/webSearch?code=${state.publicSecurityCode?.replace(/\D+/g, '')}`"
+			v-if="appStore.publicSecurityCode"
+			:href="`https://beian.mps.gov.cn/#/query/webSearch?code=${appStore.publicSecurityCode?.replace(/\D+/g, '')}`"
 			target="_blank"
 			rel="noopener noreferrer"
 		>
 			<img :src="gonganImage" alt="" width="16" height="16" />
-			{{ state.publicSecurityCode }}
+			{{ appStore.publicSecurityCode }}
 		</a>
-		<a v-if="state.icpText" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">{{ state.icpText }}</a>
-		<el-text>v{{ state.appVersion }}</el-text>
+		<a v-if="appStore.icpSecurityCode" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">
+			{{ appStore.icpSecurityCode }}
+		</a>
+		<el-text>v{{ import.meta.env.VITE_APP_VERSION }}</el-text>
 	</template>
 </template>
 
 <script setup lang="ts">
-import { reactive } from "vue";
 import { useGlobalSize } from "element-plus";
 import gonganImage from "@/assets/images/gongan.png";
 import { useApp } from "@/stores";
@@ -51,15 +54,6 @@ defineOptions({
 
 const globalSize = useGlobalSize();
 const appStore = useApp();
-
-const state = reactive({
-	/** 当前应用版本 */
-	appVersion: import.meta.env.VITE_APP_VERSION,
-	/** 公安联网备案号 */
-	publicSecurityCode: appStore.publicSecurityCode,
-	/** ICP 备案号 */
-	icpText: appStore.icpSecurityCode,
-});
 </script>
 
 <style lang="scss" scoped>
