@@ -68,7 +68,7 @@ router.beforeEach(async (to, from, next) => {
 
 				// 延迟 0.5 秒显示欢迎信息
 				setTimeout(() => {
-					uni.showToast({ title: `${getLocalTimeGreeting()}${userInfoStore.employeeName}`, icon: "none", position: "top", duration: 1500 });
+					uni.showToast({ title: `${getLocalTimeGreeting()}${userInfoStore.employeeName}`, icon: "none", duration: 1500 });
 				}, 500);
 			} catch (error) {
 				logger.error("InitRoute", error);
