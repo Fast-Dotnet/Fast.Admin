@@ -5,7 +5,7 @@
 				<a href="https://fastdotnet.com" target="_blank" rel="noopener noreferrer">
 					Copyright © 2018~{{ new Date().getFullYear() }} Fast All rights reserved.
 				</a>
-				<el-text>v{{ import.meta.env.VITE_APP_VERSION }}</el-text>
+				<el-text>v{{ appVersion }}</el-text>
 			</div>
 			<div v-if="appStore.publicSecurityCode" class="footer-row">
 				<a
@@ -38,7 +38,7 @@
 		<a v-if="appStore.icpSecurityCode" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">
 			{{ appStore.icpSecurityCode }}
 		</a>
-		<el-text>v{{ import.meta.env.VITE_APP_VERSION }}</el-text>
+		<el-text>v{{ appVersion }}</el-text>
 	</template>
 </template>
 
@@ -54,6 +54,8 @@ defineOptions({
 
 const globalSize = useGlobalSize();
 const appStore = useApp();
+
+const appVersion = import.meta.env.VITE_APP_VERSION;
 </script>
 
 <style lang="scss" scoped>
