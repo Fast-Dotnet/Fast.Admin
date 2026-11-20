@@ -40,7 +40,7 @@
 		<template #default="{ pagedList }">
 			<FaCard v-for="item in pagedList" :key="item.departmentId" code="Department:Detail" @click="detailFormRef.detail(item.departmentId)">
 				<FaField label="部门名称" :value="item.departmentName" />
-				<FaField label="部门编码" :value="item.departmentCode" copyable />
+				<FaField label="部门编码" :value="item.departmentCode" />
 				<FaField label="父级" :value="item.parentName" />
 				<FaField label="排序" :value="item.sort" />
 				<FaField label="数据公开" center>

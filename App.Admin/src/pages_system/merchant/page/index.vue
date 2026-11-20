@@ -28,7 +28,7 @@
 					</view>
 				</template>
 
-				<FaField label="商户号" :value="item.merchantNo" copyable />
+				<FaField label="商户号" :value="item.merchantNo" />
 				<FaField label="备注" :value="item.remark" />
 
 				<template #footer>

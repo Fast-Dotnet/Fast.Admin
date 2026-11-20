@@ -17,7 +17,7 @@
 		<template #default="{ pagedList }">
 			<FaCard v-for="item in pagedList" :key="item.roleId" code="Role:Detail" @click="detailFormRef.detail(item.roleId)">
 				<FaField label="角色名称" :value="item.roleName" />
-				<FaField label="角色编码" :value="item.roleCode" copyable />
+				<FaField label="角色编码" :value="item.roleCode" />
 				<FaField label="角色类型" center>
 					<FaTag name="RoleTypeEnum" :value="item.roleType" />
 				</FaField>

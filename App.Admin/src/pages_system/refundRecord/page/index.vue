@@ -18,8 +18,8 @@
 					</view>
 				</template>
 
-				<FaField label="手机" :value="item.mobile" copyable />
-				<FaField label="退款商户号" :value="item.merchantNo" copyable />
+				<FaField label="手机" :value="item.mobile" />
+				<FaField label="退款商户号" :value="item.merchantNo" />
 				<FaField label="订单金额" :value="`￥${(item.orderAmount ?? 0).toFixed(2)}`" color="var(--wot-text-auxiliary)" />
 				<FaField label="退款金额" :value="`￥${(item.refundAmount ?? 0).toFixed(2)}`" color="var(--wot-danger-main)" />
 				<FaField label="已退款" center>

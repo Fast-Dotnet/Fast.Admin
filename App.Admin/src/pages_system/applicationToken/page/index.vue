@@ -16,7 +16,7 @@
 					<FaTag name="ApplicationTokenTypeEnum" :value="item.tokenType" />
 				</template>
 
-				<FaField label="应用标识" :value="item.appKey" copyable />
+				<FaField label="应用标识" :value="item.appKey" />
 				<FaField label="应用类型">
 					<FaTagFlag name="AppEnvironmentEnum" :value="item.appType" />
 				</FaField>

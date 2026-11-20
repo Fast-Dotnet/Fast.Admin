@@ -23,7 +23,7 @@
 					</view>
 				</template>
 
-				<FaField label="业务编码" :value="item.bizNo" copyable />
+				<FaField label="业务编码" :value="item.bizNo" />
 				<FaField label="部门" :value="item.departmentName" />
 				<FaField label="地区" :value="[item.province, item.city].filter(Boolean).join(' - ')" />
 				<FaField label="Ip" :value="item.ip" selectable />

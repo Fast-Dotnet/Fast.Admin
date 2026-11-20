@@ -22,7 +22,7 @@
 					</view>
 				</template>
 
-				<FaField label="菜单编码" :value="item.menuCode" copyable />
+				<FaField label="菜单编码" :value="item.menuCode" />
 				<FaField label="菜单标题" :value="item.menuTitle" />
 				<FaField label="应用" :value="item.appName" />
 				<FaField label="显示" center>

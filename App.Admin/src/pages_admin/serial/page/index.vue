@@ -23,7 +23,7 @@
 					<FaText name="SerialSpacerEnum" :value="item.spacer" />
 				</FaField>
 				<FaField label="长度" :value="item.length" />
-				<FaField label="最后编号" :value="item.lastSerialNo" copyable />
+				<FaField label="最后编号" :value="item.lastSerialNo" />
 
 				<template #footer>
 					<FaAuth code="Serial:Edit">

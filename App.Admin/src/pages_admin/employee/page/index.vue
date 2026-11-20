@@ -34,9 +34,9 @@
 					<FaTag name="EmployeeStatusEnum" :value="item.status" />
 				</view>
 
-				<FaField label="手机" :value="item.mobile" copyable />
-				<FaField label="邮箱" :value="item.email" copyable />
-				<FaField label="登录手机" :value="item.accountMobile" copyable />
+				<FaField label="手机" :value="item.mobile" />
+				<FaField label="邮箱" :value="item.email" />
+				<FaField label="登录手机" :value="item.accountMobile" />
 				<FaField label="部门" :value="item.departmentName" />
 				<FaField label="入职日期" :value="item.entryDate?.slice(0, 10)" />
 				<FaField v-if="item.status === EmployeeStatusEnum.Resigned" label="离职日期" :value="item.resignDate?.slice(0, 10)" />
