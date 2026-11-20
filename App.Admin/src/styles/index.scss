@@ -59,6 +59,14 @@ uni-page-head > .uni-page-head {
 uni-page-refresh > .uni-page-refresh {
 	z-index: 100;
 }
+
+// iOS 聚焦小字号输入框时会自动放大页面，实际输入节点至少使用 16px。
+@supports (-webkit-touch-callout: none) {
+	uni-input .uni-input-input,
+	uni-textarea .uni-textarea-textarea {
+		font-size: max(16px, 1em);
+	}
+}
 /* #endif */
 
 view,
