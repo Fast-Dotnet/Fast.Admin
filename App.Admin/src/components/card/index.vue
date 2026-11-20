@@ -4,17 +4,16 @@
 			'fa-card',
 			props.customClass,
 			{
-				'fa-card--selectable': props.selectable,
 				'fa-card--selected': props.selectable && props.selected,
 			},
 		]"
 		:style="props.customStyle"
 	>
-		<view v-if="props.selectable" class="fa-card__selection" @click.stop>
-			<wd-checkbox :model-value="props.selected" :disabled="props.disabled" type="square" @update:model-value="handleSelectionChange" />
-		</view>
+		<view v-if="props.selectable || props.title || $slots.title || $slots.titleExtra" class="fa-card__title">
+			<view v-if="props.selectable" class="fa-card__selection" @click.stop>
+				<wd-checkbox :model-value="props.selected" :disabled="props.disabled" type="square" @update:model-value="handleSelectionChange" />
+			</view>
 
-		<view v-if="props.title || $slots.title || $slots.titleExtra" class="fa-card__title">
 			<slot name="title">
 				<text v-if="props.title" class="fa-card__title-text">{{ props.title }}</text>
 				<slot v-if="$slots.titleExtra" name="titleExtra" />

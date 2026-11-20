@@ -1,16 +1,10 @@
 .fa-card {
-	position: relative;
-	box-sizing: border-box;
 	background-color: var(--wot-card-bg);
 	border-radius: var(--wot-radius-large);
 	box-shadow: var(--fa-shadow-subtle);
 	overflow: hidden;
 	transition: box-shadow var(--fa-motion-duration-normal) var(--fa-motion-easing-standard);
 	margin-bottom: var(--wot-spacing-extra-loose);
-}
-
-.fa-card--selectable {
-	padding-left: 64rpx;
 }
 
 .fa-card--selected {
@@ -21,10 +15,9 @@
 }
 
 .fa-card__selection {
-	position: absolute;
-	top: 24rpx;
-	left: 20rpx;
-	z-index: 1;
+	display: flex;
+	align-items: center;
+	flex-shrink: 0;
 }
 
 .fa-card__title {
