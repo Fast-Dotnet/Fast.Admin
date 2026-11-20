@@ -19,7 +19,7 @@
 			<FaIcon custom-class="fa-image__loading" name="loadingImage" />
 		</template>
 		<template #error>
-			<image class="fa-image__error" :src="notImage" mode="scaleToFill" />
+			<image class="fa-image__error" :src="notImage" mode="aspectFit" />
 		</template>
 	</wd-img>
 </template>
