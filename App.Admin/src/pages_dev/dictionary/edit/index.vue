@@ -89,7 +89,7 @@
 					</wd-radio-group>
 				</wd-form-item>
 				<wd-form-item title="排序" prop="order">
-					<wd-input v-model="state.itemFormData.order" type="number" placeholder="请输入排序" />
+					<wd-input v-model.number="state.itemFormData.order" type="number" placeholder="请输入排序" />
 				</wd-form-item>
 				<wd-form-item title="显示" prop="visible">
 					<FaRadioGroup name="BooleanEnum" v-model="state.itemFormData.visible" direction="horizontal" />

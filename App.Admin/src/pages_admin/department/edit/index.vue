@@ -44,7 +44,7 @@
 				<wd-input v-model="state.formData.departmentCode" clearable :maxlength="30" placeholder="请输入部门编码" />
 			</wd-form-item>
 			<wd-form-item title="排序" prop="sort">
-				<wd-input v-model="state.formData.sort" type="number" placeholder="请输入排序" />
+				<wd-input v-model.number="state.formData.sort" type="number" placeholder="请输入排序" />
 			</wd-form-item>
 			<wd-form-item title="数据公开" prop="dataPublic">
 				<FaRadioGroup name="BooleanEnum" v-model="state.formData.dataPublic" direction="horizontal" />

@@ -37,7 +37,7 @@
 				<FaRadioGroup name="BooleanEnum" v-model="state.formData.requestEncipher" direction="horizontal" />
 			</wd-form-item>
 			<wd-form-item title="请求超时" prop="requestTimeout">
-				<wd-input v-model="state.formData.requestTimeout" type="number" placeholder="请输入请求超时时间">
+				<wd-input v-model.number="state.formData.requestTimeout" type="number" placeholder="请输入请求超时时间">
 					<template #suffix>毫秒</template>
 				</wd-input>
 			</wd-form-item>

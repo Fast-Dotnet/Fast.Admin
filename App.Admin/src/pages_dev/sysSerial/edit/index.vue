@@ -15,7 +15,7 @@
 				<FaRadioGroup name="SerialSpacerEnum" v-model="state.formData.spacer" />
 			</wd-form-item>
 			<wd-form-item title="长度" prop="length">
-				<wd-input v-model="state.formData.length" type="number" placeholder="请输入长度" />
+				<wd-input v-model.number="state.formData.length" type="number" placeholder="请输入长度" />
 			</wd-form-item>
 		</wd-form>
 

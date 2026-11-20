@@ -32,17 +32,17 @@
 				</FaCheckboxGroup>
 			</wd-form-item>
 			<wd-form-item title="警告秒数" prop="warnTime">
-				<wd-input v-model="state.formData.warnTime" type="number" placeholder="请输入警告秒数">
+				<wd-input v-model.number="state.formData.warnTime" type="number" placeholder="请输入警告秒数">
 					<template #suffix>秒</template>
 				</wd-input>
 			</wd-form-item>
 			<wd-form-item title="重试次数" prop="retryTimes">
-				<wd-input v-model="state.formData.retryTimes" type="number" placeholder="请输入重试次数">
+				<wd-input v-model.number="state.formData.retryTimes" type="number" placeholder="请输入重试次数">
 					<template #suffix>次</template>
 				</wd-input>
 			</wd-form-item>
 			<wd-form-item title="重试间隔" prop="retryMillisecond">
-				<wd-input v-model="state.formData.retryMillisecond" type="number" placeholder="请输入重试间隔">
+				<wd-input v-model.number="state.formData.retryMillisecond" type="number" placeholder="请输入重试间隔">
 					<template #suffix>毫秒</template>
 				</wd-input>
 			</wd-form-item>
@@ -120,12 +120,12 @@
 
 				<template v-if="state.formData.triggerType == TriggerTypeEnum.Daily || state.formData.triggerType == TriggerTypeEnum.Simple">
 					<wd-form-item title="执行间隔" prop="intervalSecond">
-						<wd-input v-model="state.formData.intervalSecond" type="number" placeholder="请输入执行间隔时间">
+						<wd-input v-model.number="state.formData.intervalSecond" type="number" placeholder="请输入执行间隔时间">
 							<template #suffix>秒</template>
 						</wd-input>
 					</wd-form-item>
 					<wd-form-item title="执行次数" prop="runTimes">
-						<wd-input v-model="state.formData.runTimes" type="number" placeholder="留空为无限循环">
+						<wd-input v-model.number="state.formData.runTimes" type="number" placeholder="留空为无限循环">
 							<template #suffix>次</template>
 						</wd-input>
 					</wd-form-item>
@@ -149,7 +149,7 @@
 						</wd-radio-group>
 					</wd-form-item>
 					<wd-form-item title="请求超时" prop="requestTimeout">
-						<wd-input v-model="state.formData.requestTimeout" type="number" placeholder="留空为不超时">
+						<wd-input v-model.number="state.formData.requestTimeout" type="number" placeholder="留空为不超时">
 							<template #suffix>秒</template>
 						</wd-input>
 					</wd-form-item>

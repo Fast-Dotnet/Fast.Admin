@@ -19,7 +19,7 @@
 				<wd-input v-model="state.formData.intranetIp" clearable :maxlength="15" placeholder="请输入内网IP地址" />
 			</wd-form-item>
 			<wd-form-item title="端口号" prop="port">
-				<wd-input v-model="state.formData.port" type="number" placeholder="请输入端口号" />
+				<wd-input v-model.number="state.formData.port" type="number" placeholder="请输入端口号" />
 			</wd-form-item>
 			<wd-form-item title="Db类型" prop="dbType">
 				<FaRadioGroup name="SugarDbType" v-model="state.formData.dbType" direction="horizontal" />
@@ -40,12 +40,12 @@
 				/>
 			</wd-form-item>
 			<wd-form-item title="超时时间" prop="commandTimeOut">
-				<wd-input v-model="state.formData.commandTimeOut" type="number" placeholder="请输入超时时间">
+				<wd-input v-model.number="state.formData.commandTimeOut" type="number" placeholder="请输入超时时间">
 					<template #suffix>秒</template>
 				</wd-input>
 			</wd-form-item>
 			<wd-form-item title="警告时间" prop="sugarSqlExecMaxSeconds">
-				<wd-input v-model="state.formData.sugarSqlExecMaxSeconds" type="number" placeholder="请输入警告时间">
+				<wd-input v-model.number="state.formData.sugarSqlExecMaxSeconds" type="number" placeholder="请输入警告时间">
 					<template #suffix>秒</template>
 				</wd-input>
 			</wd-form-item>

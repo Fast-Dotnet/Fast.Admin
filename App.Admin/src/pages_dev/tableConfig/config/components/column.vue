@@ -21,16 +21,16 @@
 				<wd-input v-model="state.formData.label" clearable :maxlength="50" placeholder="请输入字段名称" />
 			</wd-form-item>
 			<wd-form-item title="顺序" prop="order">
-				<wd-input v-model="state.formData.order" type="number" placeholder="请输入顺序" />
+				<wd-input v-model.number="state.formData.order" type="number" placeholder="请输入顺序" />
 			</wd-form-item>
 			<wd-form-item title="自动宽度" prop="autoWidth">
 				<FaRadioGroup name="BooleanEnum" v-model="state.formData.autoWidth" direction="horizontal" />
 			</wd-form-item>
 			<wd-form-item title="宽度" prop="width">
-				<wd-input v-model="state.formData.width" type="number" placeholder="请输入宽度" />
+				<wd-input v-model.number="state.formData.width" type="number" placeholder="请输入宽度" />
 			</wd-form-item>
 			<wd-form-item title="最小宽度" prop="smallWidth">
-				<wd-input v-model="state.formData.smallWidth" type="number" placeholder="请输入最小宽度" />
+				<wd-input v-model.number="state.formData.smallWidth" type="number" placeholder="请输入最小宽度" />
 			</wd-form-item>
 			<wd-form-item title="固定" prop="fixed">
 				<wd-radio-group v-model="state.formData.fixed" direction="horizontal">
@@ -126,7 +126,7 @@
 					<wd-input v-model="state.formData.searchLabel" clearable :maxlength="50" placeholder="请输入搜索项名称" />
 				</wd-form-item>
 				<wd-form-item title="搜索项排序" prop="searchOrder">
-					<wd-input v-model="state.formData.searchOrder" type="number" placeholder="请输入搜索项排序" />
+					<wd-input v-model.number="state.formData.searchOrder" type="number" placeholder="请输入搜索项排序" />
 				</wd-form-item>
 				<wd-form-item title="搜索项插槽" prop="searchSlot">
 					<wd-input v-model="state.formData.searchSlot" clearable :maxlength="50" placeholder="请输入搜索项插槽" />

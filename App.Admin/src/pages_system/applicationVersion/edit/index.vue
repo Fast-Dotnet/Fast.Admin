@@ -29,14 +29,14 @@
 				<wd-input v-model="state.formData.versionName" clearable :maxlength="30" placeholder="请输入版本名称" />
 			</wd-form-item>
 			<wd-form-item title="版本号" prop="versionCode">
-				<wd-input v-model="state.formData.versionCode" type="number" placeholder="请输入版本号" />
+				<wd-input v-model.number="state.formData.versionCode" type="number" placeholder="请输入版本号" />
 			</wd-form-item>
 			<template v-if="state.formData.packageType === ApplicationPackageTypeEnum.Wgt">
 				<wd-form-item title="最低版本" prop="minNativeVersionCode">
-					<wd-input v-model="state.formData.minNativeVersionCode" type="number" placeholder="请输入最低兼容原生版本号" />
+					<wd-input v-model.number="state.formData.minNativeVersionCode" type="number" placeholder="请输入最低兼容原生版本号" />
 				</wd-form-item>
 				<wd-form-item title="最高版本" prop="maxNativeVersionCode">
-					<wd-input v-model="state.formData.maxNativeVersionCode" type="number" placeholder="请输入最高兼容原生版本号" />
+					<wd-input v-model.number="state.formData.maxNativeVersionCode" type="number" placeholder="请输入最高兼容原生版本号" />
 				</wd-form-item>
 			</template>
 			<wd-form-item title="强制更新" prop="isForceUpdate">

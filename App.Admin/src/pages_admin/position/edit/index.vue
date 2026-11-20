@@ -6,7 +6,7 @@
 				<wd-input v-model="state.formData.positionName" clearable :maxlength="20" placeholder="请输入职位名称" />
 			</wd-form-item>
 			<wd-form-item title="排序" prop="sort">
-				<wd-input v-model="state.formData.sort" type="number" placeholder="请输入排序" />
+				<wd-input v-model.number="state.formData.sort" type="number" placeholder="请输入排序" />
 			</wd-form-item>
 			<wd-form-item title="备注" prop="remark">
 				<wd-textarea

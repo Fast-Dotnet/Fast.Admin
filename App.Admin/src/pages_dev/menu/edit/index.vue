@@ -37,7 +37,7 @@
 					<wd-input v-model="state.formData.menuTitle" clearable :maxlength="20" placeholder="请输入菜单标题" />
 				</wd-form-item>
 				<wd-form-item title="排序" prop="sort">
-					<wd-input v-model="state.formData.sort" type="number" placeholder="请输入排序" />
+					<wd-input v-model.number="state.formData.sort" type="number" placeholder="请输入排序" />
 				</wd-form-item>
 				<wd-form-item title="显示" prop="visible">
 					<FaRadioGroup name="BooleanEnum" v-model="state.formData.visible" direction="horizontal" />
@@ -199,7 +199,7 @@
 					<FaRadioGroup name="BooleanEnum" v-model="state.buttonFormData.hasDesktop" direction="horizontal" />
 				</wd-form-item>
 				<wd-form-item title="排序" prop="sort">
-					<wd-input v-model="state.buttonFormData.sort" type="number" placeholder="请输入排序" />
+					<wd-input v-model.number="state.buttonFormData.sort" type="number" placeholder="请输入排序" />
 				</wd-form-item>
 				<wd-form-item title="状态" prop="status">
 					<FaRadioGroup name="CommonStatusEnum" v-model="state.buttonFormData.status" direction="horizontal" />

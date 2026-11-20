@@ -15,7 +15,7 @@
 				<wd-input v-model="state.formData.roleCode" clearable :maxlength="30" placeholder="请输入角色编码" />
 			</wd-form-item>
 			<wd-form-item title="排序" prop="sort">
-				<wd-input v-model="state.formData.sort" type="number" placeholder="请输入排序" />
+				<wd-input v-model.number="state.formData.sort" type="number" placeholder="请输入排序" />
 			</wd-form-item>
 			<wd-form-item title="数据范围" prop="dataScopeType">
 				<FaRadioGroup name="DataScopeTypeEnum" v-model="state.formData.dataScopeType" />
