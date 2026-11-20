@@ -31,6 +31,16 @@ public class AuthService : IDynamicApplication
     }
 
     /// <summary>
+    /// 刷新Token
+    /// </summary>
+    [HttpGet("/refreshToken")]
+    [ApiInfo("刷新Token", HttpRequestActionEnum.Auth)]
+    [AllowForbidden]
+    [DisabledRequestLog]
+    [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+    public void RefreshToken() { }
+
+    /// <summary>
     /// 获取登录用户信息
     /// </summary>
     [HttpGet("/getLoginUserInfo")]

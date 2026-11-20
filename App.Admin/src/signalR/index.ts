@@ -1,5 +1,6 @@
 import { useFastAxios } from "@fast-china/axios";
 import { installationIdentity, logger, toQueryString } from "@fast-china/utils";
+import { authApi } from "@/api/services/Auth/auth";
 import { SignalRSocketState, createSignalRSocket } from "./uniSignalR";
 import type { SignalRSocket } from "./uniSignalR";
 import type { TenantOnlineUserModel } from "@/api/services/Center/tenantOnlineUser/models/TenantOnlineUserModel";
@@ -41,7 +42,10 @@ const initWebSocket = async (userInfoStore: ReturnType<typeof useUserInfo>): Pro
 			"Fast-Device-Id": installationIdentity.deviceId,
 		};
 		connection = createSignalRSocket(`${url}?${toQueryString(params)}`, {
-			accessTokenFactory: () => userInfoStore.getToken().token,
+			accessTokenFactory: async () => {
+				await authApi.refreshToken();
+				return userInfoStore.getToken().token;
+			},
 			automaticReconnect: {
 				// 每5秒重连一次
 				nextRetryDelayInMilliseconds: () => 5000,

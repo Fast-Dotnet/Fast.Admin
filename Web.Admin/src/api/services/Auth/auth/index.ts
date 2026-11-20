@@ -6,6 +6,16 @@ import type { GetLoginUserInfoOutput } from "./models/GetLoginUserInfoOutput";
  */
 export const authApi = {
 	/**
+	 * 刷新Token
+	 */
+	refreshToken(): Promise<void> {
+		return axiosUtil.request<void>({
+			url: "/refreshToken",
+			method: "get",
+			requestType: "auth",
+		});
+	},
+	/**
 	 * 获取登录用户信息
 	 */
 	getLoginUserInfo(): Promise<GetLoginUserInfoOutput> {

@@ -2,6 +2,7 @@ import { ElLoading, ElMessage, ElMessageBox, ElNotification } from "element-plus
 import { useFastAxios } from "@fast-china/axios";
 import { installationIdentity, logger, toQueryString, withDefineType } from "@fast-china/utils";
 import { HttpTransportType, HubConnectionBuilder, HubConnectionState, LogLevel } from "@microsoft/signalr";
+import { authApi } from "@/api/services/Auth/auth";
 import { useUserInfo } from "@/stores";
 import type { HubConnection } from "@microsoft/signalr";
 import type { TenantOnlineUserModel } from "@/api/services/Center/tenantOnlineUser/models/TenantOnlineUserModel";
@@ -49,7 +50,10 @@ const initWebSocket = async (): Promise<void> => {
 				logger: import.meta.env.DEV ? LogLevel.Information : LogLevel.Error,
 				// 记录消息内容
 				logMessageContent: true,
-				accessTokenFactory: () => userInfoStore.getToken().token,
+				accessTokenFactory: async () => {
+					await authApi.refreshToken();
+					return userInfoStore.getToken().token;
+				},
 			})
 			// 日志级别
 			.configureLogging(import.meta.env.DEV ? LogLevel.Information : LogLevel.Error)
