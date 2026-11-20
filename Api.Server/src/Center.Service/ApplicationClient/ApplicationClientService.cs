@@ -216,6 +216,21 @@ public class ApplicationClientService : IDynamicApplication
             throw new UserFriendlyException("数据不存在！");
         }
 
+        if (await _repository.Queryable<ApplicationVersionModel>().AnyAsync(a => a.AppKey == applicationClientModel.AppKey))
+        {
+            throw new UserFriendlyException("应用标识存在版本信息，无法删除！");
+        }
+
+        if (await _repository.Queryable<ApplicationTokenModel>().AnyAsync(a => a.AppKey == applicationClientModel.AppKey))
+        {
+            throw new UserFriendlyException("应用标识存在 Token 信息，无法删除！");
+        }
+
+        if (await _repository.Queryable<MessageTemplateModel>().AnyAsync(a => a.AppKey == applicationClientModel.AppKey))
+        {
+            throw new UserFriendlyException("应用标识存在消息模板，无法删除！");
+        }
+
         await _repository.DeleteAsync(applicationClientModel);
         // 删除缓存
         await ApplicationContext.DeleteApplication(applicationClientModel.AppKey);
