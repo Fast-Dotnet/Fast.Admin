@@ -196,6 +196,7 @@
 		},
 		"requiredPrivateInfos": ["getLocation", "chooseLocation"],
 		"requiredBackgroundModes": ["audio"],
+		"lazyCodeLoading": "requiredComponents",
 		"optimization": {
 			"subPackages": true
 		}
