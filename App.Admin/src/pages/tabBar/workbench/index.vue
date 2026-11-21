@@ -121,6 +121,14 @@ const headerStyle = computed(() => {
 		style["padding-top"] = "calc(var(--fa-status-bar-height, 0px) + var(--wot-navbar-height, 44px))";
 	}
 	// #endif
+	// #ifdef H5
+	// 微信 H5 隐藏了 uni-app 导航栏，部分 iOS WebView 上报的安全区为 0。
+	if (/MicroMessenger/i.test(navigator.userAgent)) {
+		const minStatusBarHeight = appStore.isIphone ? "44px" : "24px";
+		style["padding-top"] =
+			`calc(max(var(--fa-status-bar-height, 0px), env(safe-area-inset-top, 0px), ${minStatusBarHeight}) + var(--fa-spacing-page))`;
+	}
+	// #endif
 	return style;
 });
 

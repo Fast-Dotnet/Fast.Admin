@@ -56,11 +56,13 @@ export const usePaging = <TResult, TInput extends PagedInput = PagedInput>(
 
 	/** 查询接口并回填列表、总条数与加载状态。 */
 	const pagingQuery = async (pageNo: number, pageSize: number, _: ZPagingEnums.QueryFrom): Promise<void> => {
-		if (!zPagingRef.value) return;
+		const currentPaging = zPagingRef.value;
+		if (!currentPaging) return;
 
 		try {
 			// 查询条件由普通对象创建，按请求类型展开，避免泛型 Reactive 的集合分支被误判为 Map。
 			const apiRes = await requestApi({ ...(searchParam as TInput), pageIndex: pageNo, pageSize });
+			if (zPagingRef.value !== currentPaging) return;
 
 			let pageData: TResult[];
 			let totalRows: number;
@@ -76,9 +78,9 @@ export const usePaging = <TResult, TInput extends PagedInput = PagedInput>(
 				pageData = apiRes as TResult[];
 				totalRows = pageData.length;
 			}
-			await zPagingRef.value.completeByTotal(pageData, totalRows);
+			await currentPaging.completeByTotal(pageData, totalRows);
 		} catch {
-			await zPagingRef.value.complete(false);
+			if (zPagingRef.value === currentPaging) await currentPaging.complete(false);
 		}
 	};
 

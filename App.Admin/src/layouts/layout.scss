@@ -39,10 +39,10 @@
 	}
 }
 
-// 微信 H5 使用独立的工作台入口，不与默认导航栏重叠。
+// 微信 H5 使用独立的工作台入口，位于左下角，避让右侧 z-paging 返回顶部按钮。
 .fa-layout__wechat-workbench {
 	position: fixed;
-	right: max(16px, calc((100vw - var(--fa-layout-max-width, 440px)) / 2 + 16px));
+	left: max(16px, calc((100vw - var(--fa-layout-max-width, 440px)) / 2 + 16px));
 	bottom: calc(84px + env(safe-area-inset-bottom, 0px));
 	z-index: 90;
 	display: flex;

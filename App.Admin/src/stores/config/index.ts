@@ -119,12 +119,15 @@ export const useConfig = defineStore(
 			}
 
 			layout.themeColor = color;
+			const { navbarBgColor, navbarFrontColor, pageBackgroundColor } = pageTheme.value;
 			// #ifdef H5
 			const root = document.documentElement;
 			root.dataset.faTheme = layout.isDark ? "dark" : "light";
-			root.style.setProperty("--fa-page-background", pageTheme.value.pageBackgroundColor);
+			root.style.setProperty("--fa-page-background", pageBackgroundColor);
+			root.style.setProperty("--fa-navbar-background", navbarBgColor);
+			root.style.setProperty("--fa-navbar-foreground", navbarFrontColor);
+			document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.setAttribute("content", navbarBgColor);
 			// #endif
-			const { navbarBgColor, navbarFrontColor } = pageTheme.value;
 
 			applyPageTheme();
 

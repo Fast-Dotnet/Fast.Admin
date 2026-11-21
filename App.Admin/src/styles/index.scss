@@ -68,6 +68,16 @@ page {
 	color-scheme: dark;
 }
 
+// H5 标题栏由 uni-app 渲染，主题切换时同步样式，避免等待下一次页面 onShow。
+:root[data-fa-theme] uni-page-head > .uni-page-head {
+	background-color: var(--fa-navbar-background, #ffffff) !important;
+	color: var(--fa-navbar-foreground, #000000) !important;
+}
+
+:root[data-fa-theme] uni-page-head .uni-page-head__title {
+	color: var(--fa-navbar-foreground, #000000) !important;
+}
+
 // 滚动回弹和浏览器工具栏收起时，避免暴露与应用主题不一致的外层底色。
 :root,
 body,

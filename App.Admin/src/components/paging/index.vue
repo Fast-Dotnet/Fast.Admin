@@ -450,6 +450,8 @@ const hasLoaded = shallowRef(false);
 
 /** 查询接口并回填列表、总条数与加载状态。 */
 const handleQuery = async (pageNo: number, pageSize: number, from: ZPagingEnums.QueryFrom) => {
+	const currentPaging = paging.value;
+	if (!currentPaging) return;
 	const _pagingVersion = props.pageKey ? usePaging().getPageVersion(props.pageKey) : undefined;
 	try {
 		if (props.requestApi) {
@@ -459,6 +461,7 @@ const handleQuery = async (pageNo: number, pageSize: number, from: ZPagingEnums.
 					? props.initParam
 					: Object.assign(requestParam, props.initParam, searchParam.value, props.pagination ? { pageIndex: pageNo, pageSize } : {});
 			const apiRes = await props.requestApi(params);
+			if (paging.value !== currentPaging) return;
 
 			let _pageData = [] as TResult[];
 			let _totalRows = 0;
@@ -470,11 +473,11 @@ const handleQuery = async (pageNo: number, pageSize: number, from: ZPagingEnums.
 					_pageData = apiRes.rows ?? [];
 					_totalRows = apiRes.totalRows ?? _pageData.length;
 				}
-				await paging.value.completeByTotal(_pageData, _totalRows);
+				await currentPaging.completeByTotal(_pageData, _totalRows);
 			} else {
 				_pageData = (apiRes ?? []) as TResult[];
 				_totalRows = _pageData.length;
-				await paging.value.completeByNoMore(_pageData, true);
+				await currentPaging.completeByNoMore(_pageData, true);
 			}
 			totalRows.value = _totalRows;
 			emit("query", _pageData, pageNo, pageSize, _totalRows, from);
@@ -483,7 +486,7 @@ const handleQuery = async (pageNo: number, pageSize: number, from: ZPagingEnums.
 			let _totalRows = 0;
 			if (props.pagination) {
 				const allData = props.data?.slice() ?? [];
-				await paging.value.setLocalPaging(allData);
+				await currentPaging.setLocalPaging(allData);
 
 				const size = Math.max(1, pageSize);
 				const start = (Math.max(1, pageNo) - 1) * size;
@@ -492,7 +495,7 @@ const handleQuery = async (pageNo: number, pageSize: number, from: ZPagingEnums.
 			} else {
 				_pageData = props.data?.slice() ?? [];
 				_totalRows = _pageData.length;
-				await paging.value.completeByNoMore(_pageData, true);
+				await currentPaging.completeByNoMore(_pageData, true);
 			}
 			totalRows.value = _totalRows;
 			emit("query", _pageData, pageNo, pageSize, _totalRows, from);
@@ -503,7 +506,8 @@ const handleQuery = async (pageNo: number, pageSize: number, from: ZPagingEnums.
 			pagingVersion.value = _pagingVersion;
 		}
 	} catch (error) {
-		await paging.value.complete(false);
+		if (paging.value !== currentPaging) return;
+		await currentPaging.complete(false);
 		throw error;
 	}
 };
@@ -520,18 +524,22 @@ const handleVirtualListChange = (list: TResult[]) => {
  */
 const handleReload = async (animate?: boolean) => {
 	await nextTick();
+	const currentPaging = paging.value;
+	if (!currentPaging) return;
 	// 先触发视图更新，避免小程序中带动画的重载卡在 z-paging 内部的 $nextTick。
-	paging.value.$forceUpdate();
-	return await paging.value.reload(animate);
+	currentPaging.$forceUpdate();
+	return await currentPaging.reload(animate);
 };
 
 /** 刷新已加载页的数据；传入页数时刷新至该页，省略时保留当前分页进度。 */
 const handleRefresh = async (pageIndex?: number): Promise<void> => {
 	await nextTick();
+	const currentPaging = paging.value;
+	if (!currentPaging) return;
 	if (pageIndex) {
-		await paging.value.refreshToPage(pageIndex);
+		await currentPaging.refreshToPage(pageIndex);
 	} else {
-		await paging.value.refresh();
+		await currentPaging.refresh();
 	}
 };
 
