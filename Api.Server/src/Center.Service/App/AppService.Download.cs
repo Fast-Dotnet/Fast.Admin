@@ -8,6 +8,7 @@
 using System.Net;
 using System.Text;
 using Fast.Center.Domain;
+using Fast.UnifyResult;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +23,7 @@ public partial class AppService
     /// </summary>
     [HttpGet("/app/download/{appId:long}")]
     [ApiInfo("下载应用", HttpRequestActionEnum.Other)]
+    [NonUnify]
     [AllowAnonymous]
     [DisabledRequestLog]
     [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
@@ -155,13 +157,20 @@ public partial class AppService
     internal static string PageHtmlRender(string appName, string logoUrl, List<AppDownloadOption> options, string qrCode)
     {
         var channels = new StringBuilder();
-        foreach (AppDownloadOption option in options)
+        var platformButtons = new StringBuilder();
+        var updates = new StringBuilder();
+        int availableCount = 0;
+        foreach (AppDownloadOption option in options.Where(option => IsHttpUrl(option.Url)))
         {
+            availableCount++;
             string platform = WebUtility.HtmlEncode(option.Platform);
-            string description = option.Version == null ? "通过 App Store 获取最新版本" : $"版本 {option.Version}";
+            string description = option.Version == null ? "通过 App Store 获取最新版本" :
+                option.Version.StartsWith("v", StringComparison.OrdinalIgnoreCase) ? option.Version : $"v{option.Version}";
             if (option.FileSizeKb.HasValue)
             {
-                description += $" · {option.FileSizeKb.Value / 1024d:0.#} MB";
+                description += option.FileSizeKb.Value < 1024
+                    ? $" · {option.FileSizeKb.Value} KB"
+                    : $" · {option.FileSizeKb.Value / 1024d:0.#} MB";
             }
 
             if (option.PublishedAt.HasValue)
@@ -169,17 +178,37 @@ public partial class AppService
                 description += $" · {option.PublishedAt.Value:yyyy-MM-dd}";
             }
 
+            string installHint = option.Platform switch
+            {
+                "iOS" => "将在 App Store 中查看并下载应用",
+                "HarmonyOS" => "原生鸿蒙包请使用设备支持的安装方式",
+                "Windows" => "下载后运行安装程序，按提示完成安装",
+                _ => "下载后，请按照系统提示完成安装"
+            };
+            string actionText = option.Platform == "iOS" ? "前往 App Store" : $"下载 {platform} 版";
             channels.Append($"""
-                             <section class="channel" data-platform="{platform}">
-                                 <h2>{platform}</h2>
-                                 <p class="muted">{WebUtility.HtmlEncode(description)}</p>
-                                 <a class="download" href="{WebUtility.HtmlEncode(option.Url)}" rel="noopener noreferrer">{(option.Platform == "iOS" ? "前往 App Store" : $"下载 {platform} 版")}</a>
-                                 {(option.Platform == "HarmonyOS" ? "<p class=\"muted\">鸿蒙原生包需使用对应设备支持的安装方式。</p>" : "")}
-                                 {(string.IsNullOrWhiteSpace(option.UpdateContent) ? "" : $"<details><summary>更新说明</summary><p class=\"notes\">{WebUtility.HtmlEncode(option.UpdateContent)}</p></details>")}
+                             <section class="download-option" data-platform="{platform}">
+                                 <div class="platform-row"><h2>{platform} 版</h2><span class="platform-badge">适用于当前设备</span></div>
+                                 <p class="version">{WebUtility.HtmlEncode(description)}</p>
+                                 <a class="download" href="{WebUtility.HtmlEncode(option.Url)}" rel="noopener noreferrer"><span aria-hidden="true">{(option.Platform == "iOS" ? "↗" : "↓")}</span>{actionText}</a>
+                                 <p class="install-hint">{installHint}</p>
                              </section>
                              """);
+            platformButtons.Append($"""
+                                    <button class="platform-choice" type="button" data-platform="{platform}" aria-pressed="false"><span>{platform}{(option.Platform == "iOS" ? " · App Store" : "")}</span><span aria-hidden="true">↗</span></button>
+                                    """);
+            if (!string.IsNullOrWhiteSpace(option.UpdateContent))
+            {
+                updates.Append($"""
+                                <section class="update-option" data-platform="{platform}">
+                                    <h2>更新说明<span>{WebUtility.HtmlEncode(option.Version)}</span></h2>
+                                    <p class="update-content">{WebUtility.HtmlEncode(option.UpdateContent)}</p>
+                                </section>
+                                """);
+            }
         }
 
+        string safeName = WebUtility.HtmlEncode(appName);
         string logo = IsHttpUrl(logoUrl)
             ? $"<img class=\"logo\" src=\"{WebUtility.HtmlEncode(logoUrl)}\" alt=\"应用图标\" referrerpolicy=\"no-referrer\">"
             : "";
@@ -191,76 +220,181 @@ public partial class AppService
                      <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
                      <meta name="color-scheme" content="light dark">
                      <meta name="referrer" content="no-referrer">
-                     <title>{{WebUtility.HtmlEncode(appName)}} · 应用下载</title>
+                     <title>{{safeName}} · 应用下载</title>
                      <style>
-                         * { box-sizing: border-box; }
-                         body { margin: 0; padding: 32px 20px; background: #f5f7fa; color: #1f2937; font: 14px/1.6 system-ui, sans-serif; }
-                         main { max-width: 440px; margin: auto; text-align: center; }
-                         h1 { margin: 16px 0 8px; font-size: 24px; }
-                         h2 { margin: 0 0 6px; font-size: 18px; }
-                         .logo { width: 80px; height: 80px; border-radius: 18px; object-fit: contain; }
-                         .muted { color: #667085; }
-                         .channel { margin-top: 16px; padding: 20px; border: 1px solid #e5e7eb; border-radius: 16px; background: #fff; }
-                         .channel.recommended { border-color: #409eff; }
-                         .channel.recommended h2::after { content: " · 推荐"; color: #409eff; font-size: 12px; }
-                         .download, button { display: block; width: 100%; padding: 12px; border: 0; border-radius: 10px; font: inherit; cursor: pointer; }
-                         .download { background: #1677ff; color: #fff; text-decoration: none; }
-                         button { margin-top: 20px; background: #e8edf5; color: inherit; }
-                         .notes { text-align: left; white-space: pre-wrap; overflow-wrap: anywhere; }
-                         details { margin-top: 16px; }
-                         summary { cursor: pointer; }
-                         .qr { width: 220px; height: 220px; margin-top: 12px; padding: 12px; background: #fff; }
-                         .hint { padding: 12px; border-radius: 10px; background: #fff2d6; color: #7a4b00; }
-                         #address { width: 100%; margin-top: 10px; padding: 8px; border: 1px solid #d0d5dd; border-radius: 6px; background: transparent; color: inherit; font: inherit; }
-                         [hidden] { display: none !important; }
-                         @media (prefers-color-scheme: dark) {
-                             body { background: #151515; color: #ededed; }
-                             .channel { background: #202020; border-color: #414141; }
-                             .muted { color: #b6b6b6; }
-                             button { background: #303030; }
+                         :root { --bg:#f6f7fa; --surface:#fff; --text:#20252c; --secondary:#737b88; --border:#e9edf2; --accent:#409eff; --tint:#edf6ff; }
+                         * { box-sizing:border-box; }
+                         body { margin:0; background:var(--bg); color:var(--text); font:14px/1.6 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif; }
+                         body.guide-open { overflow:hidden; }
+                         button,input { font:inherit; }
+                         button { cursor:pointer; }
+                         button:focus-visible,a:focus-visible,summary:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+                         p,h1,h2 { margin:0; }
+                         [hidden] { display:none !important; }
+                         .brand { background:var(--surface); border-bottom:1px solid var(--border); }
+                         .brand-inner { display:flex; align-items:center; gap:7px; max-width:440px; margin:auto; padding:17px 22px; font-size:12px; color:var(--secondary); }
+                         .brand-dot { width:7px; height:7px; border-radius:50%; background:var(--accent); flex-shrink:0; }
+                         .brand-name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+                         .brand-label { margin-left:auto; white-space:nowrap; }
+                         main { max-width:440px; margin:auto; padding:30px 22px calc(22px + env(safe-area-inset-bottom,0px)); }
+                         .hero { text-align:center; padding-bottom:27px; }
+                         .logo { display:block; width:74px; height:74px; object-fit:contain; border-radius:18px; margin:0 auto 14px; background:var(--surface); box-shadow:0 3px 16px #00000009; }
+                         h1 { font-size:25px; font-weight:650; letter-spacing:1px; overflow-wrap:anywhere; }
+                         .subtitle { margin-top:5px; color:var(--secondary); font-size:12px; }
+                         .download-option,.qr-panel,.empty { padding:20px; border:1px solid var(--border); border-radius:18px; background:var(--surface); }
+                         .download-option:not([hidden]) + .download-option:not([hidden]) { margin-top:12px; }
+                         .platform-row { display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+                         .platform-row h2 { font-size:14px; font-weight:600; }
+                         .platform-badge { padding:2px 7px; border-radius:5px; background:var(--tint); color:var(--accent); font-size:11px; }
+                         .version { margin:11px 0 18px; color:var(--secondary); font-size:11px; overflow-wrap:anywhere; }
+                         .download { display:flex; align-items:center; justify-content:center; gap:9px; width:100%; min-height:46px; padding:10px; border-radius:10px; background:var(--accent); color:#fff; text-decoration:none; font-weight:500; }
+                         .download>span { font-size:20px; line-height:1; }
+                         .install-hint { margin-top:11px; color:var(--secondary); font-size:11px; text-align:center; }
+                         .empty { text-align:center; }
+                         .empty h2 { font-size:16px; font-weight:500; }
+                         .empty p { margin-top:9px; color:var(--secondary); font-size:12px; }
+                         .qr-panel { text-align:center; }
+                         .download-option:not([hidden]) ~ .qr-panel { margin-top:16px; }
+                         .qr-paper { width:192px; max-width:100%; padding:12px; border-radius:10px; background:#fff; margin:0 auto 16px; }
+                         .qr-paper img { display:block; width:100%; height:auto; }
+                         .qr-panel h2 { font-size:16px; font-weight:600; }
+                         .qr-panel p { margin-top:7px; color:var(--secondary); font-size:11px; }
+                         .other-platforms { margin-top:12px; }
+                         .other-platforms summary { display:flex; align-items:center; justify-content:center; gap:6px; min-height:42px; color:var(--secondary); font-size:12px; list-style:none; cursor:pointer; }
+                         .other-platforms summary::-webkit-details-marker { display:none; }
+                         .other-platforms[open] summary>span { transform:rotate(180deg); }
+                         .platform-list { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding-bottom:12px; }
+                         .platform-choice { display:flex; align-items:center; justify-content:space-between; gap:6px; min-width:0; min-height:44px; padding:8px 12px; border:1px solid var(--border); border-radius:9px; background:var(--surface); color:var(--text); font-size:12px; }
+                         .platform-choice[aria-pressed="true"] { border-color:var(--accent); color:var(--accent); }
+                         .update-option { margin-top:20px; padding-top:21px; border-top:1px solid var(--border); }
+                         .update-option h2 { display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:13px; font-weight:600; }
+                         .update-option h2 span { font-size:11px; font-weight:400; color:var(--secondary); }
+                         .update-content { margin-top:12px; white-space:pre-wrap; overflow-wrap:anywhere; color:var(--secondary); font-size:12px; line-height:1.9; }
+                         .footer { padding-top:26px; text-align:center; }
+                         .copy { min-height:38px; padding:6px 12px; border:0; background:transparent; color:var(--accent); font-size:12px; }
+                         .footer p { margin-top:4px; color:var(--secondary); font-size:11px; }
+                         .copy-address { display:block; width:100%; margin:8px 0; padding:8px; border:1px solid var(--border); border-radius:6px; background:var(--surface); color:var(--text); }
+                         .copy-status { min-height:18px; }
+                         .guide { position:fixed; inset:0; z-index:1000; overflow-y:auto; overscroll-behavior:contain; background:rgba(12,16,22,.91); color:#fff; }
+                         .guide-sheet { position:relative; width:100%; max-width:390px; margin:0 auto; padding:28px 26px calc(24px + env(safe-area-inset-bottom,0px)); }
+                         .guide-close { position:absolute; top:14px; left:12px; width:40px; height:40px; padding:0; border:0; border-radius:50%; background:transparent; color:#ffffff99; font-size:26px; }
+                         .guide-direction { display:flex; align-items:flex-end; flex-direction:column; gap:2px; margin-top:4px; padding-bottom:16px; }
+                         .guide-arrow { width:58px; height:72px; margin-right:1px; }
+                         .guide-direction p { color:#ffffffd9; font-size:13px; }
+                         .guide-direction p span { display:inline-block; padding:0 7px; font-size:21px; line-height:1; letter-spacing:1px; }
+                         .guide-content { padding-top:9px; text-align:center; }
+                         .guide-eyebrow { color:#9bcaff; font-size:11px; letter-spacing:2px; }
+                         .guide-content h2 { margin-top:11px; font-size:23px; font-weight:600; letter-spacing:.5px; }
+                         .guide-description { margin:13px 0 26px; color:#ffffff9c; font-size:12px; line-height:1.9; }
+                         .guide-step { display:flex; align-items:center; gap:11px; margin:13px 0; font-size:13px; text-align:left; }
+                         .guide-number { display:flex; align-items:center; justify-content:center; flex:0 0 23px; height:23px; border:1px solid #ffffff50; border-radius:50%; color:#ffffffb8; font-size:11px; }
+                         .guide-dots { display:inline-block; padding:0 8px; margin:0 3px; border-radius:5px; background:#ffffff18; font-size:18px; line-height:21px; }
+                         .guide-menu { display:flex; align-items:center; gap:10px; margin:14px 0 0 34px; padding:15px 14px; border-radius:12px; background:#fff; color:#253042; box-shadow:0 8px 28px #0003; font-size:13px; text-align:left; }
+                         .guide-menu>span:first-child { color:var(--accent); font-size:21px; }
+                         .guide-menu>span:last-child { margin-left:auto; color:#9ba1ab; }
+                         .guide-after { margin:12px 0 26px; padding-right:10px; color:#ffffff7a; font-size:11px; text-align:right; }
+                         .guide-dismiss { width:100%; min-height:44px; border:1px solid #ffffff50; border-radius:11px; background:#ffffff0d; color:#fff; font-size:13px; }
+                         .guide-copy { display:inline-flex; align-items:center; justify-content:center; min-height:38px; margin-top:12px; padding:4px 8px; border:0; background:transparent; color:#9bcaff; font-size:12px; }
+                         .guide-feedback { min-height:18px; color:#ffffffb3; font-size:11px; }
+                         @media(prefers-color-scheme:dark) {
+                             :root { --bg:#141414; --surface:#202020; --text:#f2f3f5; --secondary:#a8acb4; --border:#343434; --tint:#14293d; }
+                         }
+                         @media(max-width:360px) {
+                             main { padding-left:16px; padding-right:16px; }
+                             .download-option { padding:16px; }
                          }
                      </style>
                  </head>
                  <body>
+                     <header class="brand"><div class="brand-inner"><span class="brand-dot" aria-hidden="true"></span><span class="brand-name">{{safeName}}</span><span class="brand-label">应用下载</span></div></header>
                      <main>
-                         {{logo}}
-                         <h1>{{WebUtility.HtmlEncode(appName)}}</h1>
-                         <p class="muted">请选择适合设备的下载方式</p>
-                         <p id="wechat" class="hint" hidden>如无法下载或跳转，请点击右上角菜单，选择在浏览器中打开，再继续操作。</p>
-                         <p id="unavailable" class="muted" hidden>当前设备暂无对应下载渠道，可以查看下方其他平台。</p>
+                         <div class="hero">{{logo}}<h1>{{safeName}}</h1><p class="subtitle">官方应用下载</p></div>
                          {{channels}}
-                         {{(options.Count == 0 ? "<p class=\"hint\">暂未提供可用下载，请联系应用管理员。</p>" : "")}}
-                         {{(qrCode == null ? "" : $"<div id=\"qr\"><img class=\"qr\" src=\"{WebUtility.HtmlEncode(qrCode)}\" alt=\"下载页面二维码\"><p class=\"muted\">使用手机扫描二维码下载</p></div>")}}
-                         <button id="copy" type="button">复制下载地址</button>
-                         <input id="address" readonly aria-label="下载地址" hidden>
-                         <p id="status" class="muted" role="status"></p>
-                         <p class="muted">下载安装包后，请按照系统提示完成安装。</p>
+                         <section id="unavailable" class="empty" hidden><h2>当前设备暂无对应版本</h2><p>可以查看其他平台，或联系应用管理员。</p></section>
+                         {{(availableCount == 0 ? "<section class=\"empty\"><h2>暂未提供下载</h2><p>应用安装包准备中，请稍后再试或联系管理员。</p></section>" : "")}}
+                         {{(qrCode == null || availableCount == 0 ? "" : $"<section id=\"qr\" class=\"qr-panel\" hidden><div class=\"qr-paper\"><img src=\"{WebUtility.HtmlEncode(qrCode)}\" alt=\"下载页面二维码\"></div><h2>手机扫码下载</h2><p>使用手机扫描二维码，选择对应平台下载</p></section>")}}
+                         {{(availableCount == 0 ? "" : $"<details id=\"other-platforms\" class=\"other-platforms\"><summary>其他平台下载<span aria-hidden=\"true\">⌄</span></summary><div class=\"platform-list\">{platformButtons}</div></details>")}}
+                         {{updates}}
+                         <footer class="footer">
+                             <button id="copy" class="copy" type="button">复制下载地址</button>
+                             <input id="address" class="copy-address" readonly aria-label="下载地址" hidden>
+                             <p id="status" class="copy-status" role="status" aria-live="polite"></p>
+                             <p>将此页面分享给其他设备，即可下载安装</p>
+                         </footer>
                      </main>
+                     <div id="wechat-guide" class="guide" role="dialog" aria-modal="true" aria-labelledby="guide-title" hidden>
+                         <div class="guide-sheet">
+                             <button id="guide-close" class="guide-close" type="button" aria-label="关闭打开方式引导">×</button>
+                             <div class="guide-direction"><svg class="guide-arrow" viewBox="0 0 58 72" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 64h12c14 0 24-10 24-24V8M32 22 46 8l10 14"/></svg><p>点击微信右上角 <span>···</span></p></div>
+                             <div class="guide-content">
+                                 <p class="guide-eyebrow">还差一步，即可下载</p>
+                                 <h2 id="guide-title">请在浏览器中打开</h2>
+                                 <p class="guide-description">微信内暂不支持直接下载安装包<br>按下面两步继续就好</p>
+                                 <div class="guide-step"><span class="guide-number">1</span><p>点击右上角的 <span class="guide-dots">···</span> 菜单</p></div>
+                                 <div class="guide-step"><span class="guide-number">2</span><p>选择「在浏览器中打开」</p></div>
+                                 <div class="guide-menu" aria-label="菜单选项示意"><span aria-hidden="true">↗</span><span>在浏览器中打开</span><span aria-hidden="true">›</span></div>
+                                 <p class="guide-after">打开后，再点击下载按钮</p>
+                                 <button id="guide-dismiss" class="guide-dismiss" type="button">我知道了</button>
+                                 <button id="guide-copy" class="guide-copy" type="button">复制链接，手动打开</button>
+                                 <input id="guide-address" class="copy-address" readonly aria-label="下载地址" hidden>
+                                 <p id="guide-status" class="guide-feedback" role="status" aria-live="polite"></p>
+                             </div>
+                         </div>
+                     </div>
                      <script>
                          const ua = navigator.userAgent;
                          const ios = /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1);
                          const harmony = /HarmonyOS|OpenHarmony/i.test(ua);
                          const android = !harmony && /Android/i.test(ua);
-                         const platform = ios ? "iOS" : harmony ? "HarmonyOS" : android ? "Android" : /Windows/i.test(ua) ? "Windows" : "";
-                         const recommended = Array.from(document.querySelectorAll(".channel")).find(item => item.dataset.platform === platform);
-                         if (recommended) {
-                             recommended.classList.add("recommended");
-                             document.querySelector(".channel").before(recommended);
-                         } else if (platform) {
-                             document.getElementById("unavailable").hidden = false;
+                         const mobile = ios || harmony || android;
+                         const wechat = /MicroMessenger/i.test(ua);
+                         const detectedPlatform = ios ? "iOS" : harmony ? "HarmonyOS" : android ? "Android" : /Windows/i.test(ua) ? "Windows" : "";
+                         const options = Array.from(document.querySelectorAll(".download-option"));
+                         const updates = Array.from(document.querySelectorAll(".update-option"));
+                         const choices = Array.from(document.querySelectorAll(".platform-choice"));
+                         const guide = document.getElementById("wechat-guide");
+                         const main = document.querySelector("main");
+                         const header = document.querySelector("header");
+                         const dismiss = document.getElementById("guide-dismiss");
+                         let previousFocus;
+
+                         function selectPlatform(platform) {
+                             const selected = options.find(option => option.dataset.platform === platform);
+                             options.forEach(option => {
+                                 option.hidden = option !== selected;
+                                 option.querySelector(".platform-badge").textContent = platform === detectedPlatform ? "适用于当前设备" : "已选择平台";
+                             });
+                             updates.forEach(update => { update.hidden = !selected || update.dataset.platform !== platform; });
+                             choices.forEach(choice => choice.setAttribute("aria-pressed", String(choice.dataset.platform === platform)));
+                             document.getElementById("unavailable").hidden = Boolean(selected) || options.length === 0 || !mobile;
                          }
-                         document.getElementById("wechat").hidden = !/MicroMessenger/i.test(ua);
-                         const qr = document.getElementById("qr");
-                         if (qr) qr.hidden = ios || harmony || android;
-                         document.getElementById("copy").addEventListener("click", async () => {
+
+                         function showGuide() {
+                             previousFocus = document.activeElement;
+                             guide.hidden = false;
+                             document.body.classList.add("guide-open");
+                             main.inert = true;
+                             header.inert = true;
+                             dismiss.focus({ preventScroll:true });
+                         }
+
+                         function hideGuide() {
+                             guide.hidden = true;
+                             document.body.classList.remove("guide-open");
+                             main.inert = false;
+                             header.inert = false;
+                             if (previousFocus && previousFocus.isConnected) previousFocus.focus({ preventScroll:true });
+                         }
+
+                         async function copyAddress(status, input) {
                              const address = location.href.split("?")[0].split("#")[0];
-                             const status = document.getElementById("status");
                              try {
-                                 if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(address);
-                                 else {
-                                     const input = document.getElementById("address");
+                                 if (navigator.clipboard && window.isSecureContext) {
+                                     await navigator.clipboard.writeText(address);
+                                 } else {
                                      input.hidden = false;
                                      input.value = address;
+                                     input.focus();
                                      input.select();
                                      input.setSelectionRange(0, address.length);
                                      if (!document.execCommand("copy")) throw new Error("copy failed");
@@ -268,12 +402,50 @@ public partial class AppService
                                  }
                                  status.textContent = "下载地址已复制";
                              } catch {
-                                 const input = document.getElementById("address");
                                  input.hidden = false;
                                  input.value = address;
                                  status.textContent = "请长按或选中上方地址进行复制";
                              }
+                         }
+
+                         // UA 只用于推荐，始终保留手动选择平台的入口。
+                         selectPlatform(mobile ? detectedPlatform : "");
+                         const qr = document.getElementById("qr");
+                         if (qr) qr.hidden = mobile;
+                         if (!mobile && !qr && options.length) {
+                             selectPlatform(options.some(option => option.dataset.platform === detectedPlatform)
+                                 ? detectedPlatform : options[0].dataset.platform);
+                         }
+                         choices.forEach(choice => choice.addEventListener("click", () => {
+                             selectPlatform(choice.dataset.platform);
+                             document.getElementById("other-platforms").open = false;
+                             const selected = options.find(option => !option.hidden);
+                             selected.querySelector(".download").focus({ preventScroll:true });
+                         }));
+                         document.querySelectorAll(".download").forEach(link => link.addEventListener("click", event => {
+                             if (!wechat) return;
+                             event.preventDefault();
+                             showGuide();
+                         }));
+                         document.getElementById("guide-close").addEventListener("click", hideGuide);
+                         dismiss.addEventListener("click", hideGuide);
+                         guide.addEventListener("click", event => { if (event.target === guide) hideGuide(); });
+                         guide.addEventListener("keydown", event => {
+                             if (event.key === "Escape") hideGuide();
+                             if (event.key !== "Tab") return;
+                             const controls = Array.from(guide.querySelectorAll("button,input")).filter(control => !control.hidden);
+                             const first = controls[0];
+                             const last = controls[controls.length - 1];
+                             if (event.shiftKey && document.activeElement === first) {
+                                 event.preventDefault();
+                                 last.focus();
+                             } else if (!event.shiftKey && document.activeElement === last) {
+                                 event.preventDefault();
+                                 first.focus();
+                             }
                          });
+                         document.getElementById("copy").addEventListener("click", () => copyAddress(document.getElementById("status"), document.getElementById("address")));
+                         document.getElementById("guide-copy").addEventListener("click", () => copyAddress(document.getElementById("guide-status"), document.getElementById("guide-address")));
                      </script>
                  </body>
                  </html>
