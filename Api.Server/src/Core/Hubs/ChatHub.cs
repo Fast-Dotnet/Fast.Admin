@@ -188,12 +188,12 @@ public class ChatHub : Hub<IChatClient>
 
         // 更新连接Id
         authUserInfo.ConnectionId = Context.ConnectionId;
-        authUserInfo.LastLoginDevice = userAgentInfo.Device;
-        authUserInfo.LastLoginOS = userAgentInfo.OS;
-        authUserInfo.LastLoginBrowser = userAgentInfo.Browser;
-        authUserInfo.LastLoginProvince = wanNetIpInfo.Province;
-        authUserInfo.LastLoginCity = wanNetIpInfo.City;
-        authUserInfo.LastLoginIp = wanNetIpInfo.Ip;
+        authUserInfo.LastLoginDevice = userAgentInfo?.Device;
+        authUserInfo.LastLoginOS = userAgentInfo?.OS;
+        authUserInfo.LastLoginBrowser = userAgentInfo?.Browser;
+        authUserInfo.LastLoginProvince = wanNetIpInfo?.Province;
+        authUserInfo.LastLoginCity = wanNetIpInfo?.City;
+        authUserInfo.LastLoginIp = wanNetIpInfo?.Ip;
         authUserInfo.LastLoginTime = dateTime;
         // 获取缓存Key
         string cacheKey = CacheConst.GetCacheKey(CacheConst.AuthUser, authUserInfo.AppNo, authUserInfo.TenantNo,

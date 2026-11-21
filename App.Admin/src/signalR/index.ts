@@ -70,7 +70,21 @@ const initWebSocket = async (userInfoStore: ReturnType<typeof useUserInfo>): Pro
 			"Fast-Device-Type": String(fastAxios.headers["Fast-Device-Type"]),
 			"Fast-Device-Id": installationIdentity.deviceId,
 		};
+		const headers: Record<string, string> = {};
+		// #ifdef APP-PLUS
+		// 原生 Socket 不一定携带 WebView 的 UA，Android、iOS 均显式补传。
+		const userAgent = plus.navigator.getUserAgent();
+		if (userAgent) headers["User-Agent"] = userAgent;
+		// #endif
+		// #ifdef APP-HARMONY
+		const systemInfo = uni.getSystemInfoSync();
+		if ("ua" in systemInfo && typeof systemInfo.ua === "string" && systemInfo.ua) {
+			headers["User-Agent"] = systemInfo.ua;
+		}
+		// #endif
+		// H5 不支持自定义 WebSocket 请求头；小程序未提供统一的真实 UA 获取接口，保留宿主默认值。
 		connection = createSignalRSocket(`${url}?${toQueryString(params)}`, {
+			headers,
 			accessTokenFactory: async () => {
 				await authApi.refreshToken();
 				return userInfoStore.getToken().token;
