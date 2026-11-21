@@ -43,7 +43,13 @@
 				/>
 			</wd-form-item>
 
-			<FaImageCaptcha ref="captchaRef" v-model="state.formData.captchaCode" v-model:captcha-key="state.formData.captchaKey" border />
+			<FaImageCaptcha
+				ref="captchaRef"
+				v-model="state.formData.captchaCode"
+				v-model:captcha-key="state.formData.captchaKey"
+				border
+				@confirm="handleLogin"
+			/>
 
 			<view class="page__assist" @click="router.push(CommonRoute.PasswordReset)">
 				<wd-icon name="question-circle" size="28rpx" />

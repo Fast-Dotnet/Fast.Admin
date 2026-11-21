@@ -16,12 +16,14 @@ public enum ApplicationPackageTypeEnum
     /// <summary>
     /// 整包
     /// </summary>
+    [TagType(TagTypeEnum.Info)]
     [Description("整包")]
     FullPackage = 1,
 
     /// <summary>
     /// WGT 热更新包
     /// </summary>
+    [TagType(TagTypeEnum.Warning)]
     [Description("热更新")]
     Wgt = 2
 }

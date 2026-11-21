@@ -3,7 +3,7 @@
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput v-model:search-param="searchParam.value" hide-search-time @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #filter>
-					<FaCellPicker title="设备类型" v-model="searchParam.value.deviceType" name="AppEnvironmentEnum" radio clearable />
+					<FaCellPicker title="设备类型" v-model="searchParam.value.deviceType" name="AppEnvironmentEnum" clearable />
 					<FaAccountSelect v-model="searchParam.value.accountId" />
 					<FaEmployeeSelect v-model="searchParam.value.employeeId" />
 				</template>

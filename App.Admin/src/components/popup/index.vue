@@ -52,7 +52,8 @@
 			<slot name="footer" :loading="state.loading" :close="handleCloseClick" />
 			<wd-button
 				v-if="props.showCloseButton"
-				custom-style="flex: 1;"
+				style="flex: 1; min-width: 0"
+				custom-style="width: 100%;"
 				type="info"
 				variant="plain"
 				block
@@ -63,7 +64,8 @@
 			</wd-button>
 			<wd-button
 				v-if="props.showConfirmButton"
-				custom-style="flex: 1;"
+				style="flex: 1; min-width: 0"
+				custom-style="width: 100%;"
 				type="primary"
 				block
 				:loading="state.loading"
@@ -113,7 +115,7 @@ const props = defineProps({
 	afterOpen: {
 		type: definePropType<() => void | Promise<void>>(Function),
 	},
-	/** 弹窗标题，仅底部和居中弹窗显示 */
+	/** 弹窗标题，仅底部、居中和右侧弹窗显示 */
 	title: String,
 	/** 是否显示确认按钮 */
 	showConfirmButton: Boolean,
@@ -161,7 +163,7 @@ const emit = defineEmits<{
 const slots = defineSlots<{
 	/** 正文插槽，初始化成功后才渲染，提供当前 loading 状态 */
 	default?: (props: { loading: boolean }) => VNode[];
-	/** 标题左侧插槽，仅底部和居中弹窗显示，提供 loading 状态 */
+	/** 标题左侧插槽，仅底部、居中和右侧弹窗显示，提供 loading 状态 */
 	titlePrefix?: (props: { loading: boolean }) => VNode[];
 	/** 自定义底部内容，提供 loading 和受加载状态保护的 close 方法 */
 	footer?: (props: { loading: boolean; close: () => void }) => VNode[];
@@ -184,7 +186,7 @@ const state = reactive({
 	}),
 });
 
-const supportsHeader = computed(() => props.position === "bottom" || props.position === "center");
+const supportsHeader = computed(() => props.position === "bottom" || props.position === "center" || props.position === "right");
 const hasHeaderContent = () => supportsHeader.value && Boolean(props.title || slots.titlePrefix);
 const hasCloseIcon = computed(() => supportsHeader.value && props.closable);
 

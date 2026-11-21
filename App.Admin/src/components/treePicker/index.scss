@@ -9,6 +9,15 @@
 	}
 }
 
+.fa-tree-picker__content {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	min-height: 0;
+	// 小程序插槽中的 Flex 伸展不能单独保证高度，显式填满弹窗正文。
+	height: 100%;
+}
+
 .fa-tree-picker__list {
 	flex: 1;
 	min-height: 0;

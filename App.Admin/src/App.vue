@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { onLaunch, onShow } from "@dcloudio/uni-app";
-import { watch } from "vue";
+import { computed, watch } from "vue";
 import { axiosUtil } from "@fast-china/axios";
 import { configureInstallationIdentity, getOrCreateInstallationId, logger } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
+import { useConfigProvider } from "@wot-ui/ui/composables";
 import { AppEnvironmentEnum } from "@/api/enums/AppEnvironmentEnum";
 import { CommonRoute, CommonUniApp } from "@/common";
 import { RegExps } from "@/constants";
@@ -17,6 +18,12 @@ const appStore = useApp();
 const configStore = useConfig();
 const userInfoStore = useUserInfo();
 const router = useRouter();
+
+// 在页面和插槽之外提供响应式主题，供传送到根节点的各类弹层继承
+useConfigProvider({
+	theme: computed(() => (configStore.layout.isDark ? "dark" : "light")),
+	themeVars: computed(() => configStore.layout.themeVars),
+});
 
 onShow(() => {
 	tryConnectWebSocket(userInfoStore);

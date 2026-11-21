@@ -38,8 +38,9 @@
 			custom-style="--fa-popup-body-padding: 0;"
 			body-scroll="none"
 			title="高级筛选"
-			height="60%"
-			position="bottom"
+			width="85%"
+			height="100%"
+			position="right"
 			closable
 			show-confirm-button
 			confirm-button-text="筛选"
@@ -60,6 +61,7 @@
 							<template #default="{ visible }">
 								<wd-calendar
 									type="daterange"
+									allow-same-day
 									v-model="state.searchTimeList"
 									v-model:visible="visible.value"
 									:show-confirm="false"
@@ -82,8 +84,18 @@
 				</view>
 			</scroll-view>
 
-			<template #footer="{ loading }">
-				<wd-button custom-style="flex: 1;" type="info" variant="plain" block :disabled="loading" @click="handleFilterReset">重置</wd-button>
+			<template #footer>
+				<wd-button
+					style="flex: 1; min-width: 0"
+					custom-style="width: 100%;"
+					type="info"
+					variant="plain"
+					block
+					:disabled="filterPopupRef?.loading"
+					@click="handleFilterReset"
+				>
+					重置
+				</wd-button>
 			</template>
 		</FaPopup>
 	</view>

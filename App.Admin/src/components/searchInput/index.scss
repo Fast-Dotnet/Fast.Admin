@@ -108,7 +108,7 @@
 		border-bottom: var(--wot-stroke-main) solid var(--wot-border-main);
 
 		&::after {
-			content: none;
+			content: none !important;
 		}
 	}
 }

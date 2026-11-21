@@ -104,15 +104,16 @@ const showUpdatePrompt = (): void => {
 // #endif
 
 // #ifdef APP-PLUS
-const downloadPackage = (update: CheckAppUpdatePackageOutput): Promise<string> => {
+const downloadPackage = async (update: CheckAppUpdatePackageOutput): Promise<string> => {
 	if (!update.downloadUrl || !/^https?:\/\//i.test(update.downloadUrl) || !(Number(update.fileSizeKb) > 0)) {
 		return Promise.reject(new Error("更新包下载信息不完整"));
 	}
-	return new Promise<string>((resolve, reject) => {
-		const suffix = update.packageType === ApplicationPackageTypeEnum.Wgt ? "wgt" : "apk";
-		// 显式保留扩展名，避免匿名下载地址和临时文件名导致运行时无法识别安装包。
-		plus.downloader
-			.createDownload(
+	const waiting = plus.nativeUI.showWaiting("正在连接下载…", { back: "none", modal: true });
+	try {
+		return await new Promise<string>((resolve, reject) => {
+			const suffix = update.packageType === ApplicationPackageTypeEnum.Wgt ? "wgt" : "apk";
+			// 显式保留扩展名，避免匿名下载地址和临时文件名导致运行时无法识别安装包。
+			const download = plus.downloader.createDownload(
 				update.downloadUrl,
 				{ filename: `_doc/update/${update.versionCode}.${suffix}`, timeout: 60, retry: 1 },
 				(task, status) => {
@@ -127,9 +128,27 @@ const downloadPackage = (update: CheckAppUpdatePackageOutput): Promise<string> =
 					}
 					resolve(task.filename);
 				}
-			)
-			.start();
-	});
+			);
+			let lastProgress = -1;
+			download.addEventListener("statechanged", (task) => {
+				if (task.state !== 2 && task.state !== 3) return;
+				// 未收到 Content-Length 时使用接口大小估算，完成校验前不显示 100%。
+				const downloadedSize = task.downloadedSize ?? 0;
+				const reportedTotalSize = task.totalSize ?? 0;
+				const totalSize = reportedTotalSize > 0 ? reportedTotalSize : Number(update.fileSizeKb) * 1024;
+				const progress = Math.min(99, Math.floor((downloadedSize / totalSize) * 100));
+				if (progress === lastProgress) return;
+				lastProgress = progress;
+				waiting.setTitle(
+					`正在下载更新包 ${progress}%\n${(downloadedSize / 1024 / 1024).toFixed(1)} / ${(totalSize / 1024 / 1024).toFixed(1)} MB`
+				);
+			});
+			download.start();
+		});
+	} finally {
+		// 只关闭当前下载的提示，失败和同步异常也必须释放。
+		waiting.close();
+	}
 };
 // #endif
 

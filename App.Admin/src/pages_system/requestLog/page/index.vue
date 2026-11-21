@@ -6,8 +6,8 @@
 					<FaAccountSelect v-model="searchParam.value.accountId" />
 					<FaTenantSelect v-if="userInfoStore.isSystemTenant" v-model="searchParam.value.tenantId" />
 					<FaCellPicker title="成功" v-model="searchParam.value.isSuccess" name="BooleanEnum" radio clearable />
-					<FaCellPicker title="操作方式" v-model="searchParam.value.operationAction" name="HttpRequestActionEnum" radio clearable />
-					<FaCellPicker title="请求方式" v-model="searchParam.value.requestMethod" name="HttpRequestMethodEnum" radio clearable />
+					<FaCellPicker title="操作方式" v-model="searchParam.value.operationAction" name="HttpRequestActionEnum" clearable />
+					<FaCellPicker title="请求方式" v-model="searchParam.value.requestMethod" name="HttpRequestMethodEnum" clearable />
 				</template>
 			</FaSearchInput>
 		</template>

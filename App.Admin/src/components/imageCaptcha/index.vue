@@ -16,6 +16,7 @@
 				:maxlength="4"
 				placeholder="请输入图形验证码"
 				:disabled="props.disabled || state.loading || state.loadFailed"
+				@confirm="emit('confirm')"
 			/>
 			<button class="fa-image-captcha__image" :disabled="props.disabled || state.loading" @click="refresh">
 				<image v-if="state.captchaImage" class="fa-image-captcha__picture" :src="state.captchaImage" mode="scaleToFill" />
@@ -66,6 +67,11 @@ const props = defineProps({
 	/** 是否显示验证码区域的下边框 */
 	border: Boolean,
 });
+
+const emit = defineEmits<{
+	/** 点击键盘确认键时触发 */
+	confirm: [];
+}>();
 
 /** 用户输入的图形验证码 */
 const modelValue = defineModel<string>();

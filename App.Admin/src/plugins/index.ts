@@ -7,6 +7,15 @@ import type { App, ComponentPublicInstance } from "vue";
 
 /** 注册存储与 UI 默认配置；运行信息由 App.vue 在隐私同意后初始化。 */
 export function loadPlugins(app: App): void {
+	// #ifdef MP-WEIXIN
+	app.mixin({
+		onPageScroll() {
+			// 显式启用小程序页面滚动事件，由 FaPaging 的 useZPaging 转发给分页组件。
+			// 仅在子组件注册 hook 不会生成页面的原生 onPageScroll 监听。
+		},
+	});
+	// #endif
+
 	// 全局异常捕获
 	app.config.errorHandler = (err, _instance: ComponentPublicInstance, _info: string) => {
 		if (isAxiosError(err)) return;

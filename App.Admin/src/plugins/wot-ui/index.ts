@@ -70,8 +70,7 @@ export function loadWotUi(): void {
 	videoPreviewProps.zIndex.default = 1000;
 	videoPreviewDefaultOptions.zIndex = 1000;
 
-	// #ifdef H5
-	/** 弹层默认传送到 body，避开页面内的层叠上下文和裁剪 */
+	// 弹层默认传送到 body，避开页面内的层叠上下文和裁剪
 	actionSheetProps.rootPortal.default = true;
 	calendarProps.rootPortal.default = true;
 	cascaderProps.rootPortal.default = true;
@@ -84,5 +83,4 @@ export function loadWotUi(): void {
 	popupProps.rootPortal.default = true;
 	selectPickerProps.rootPortal.default = true;
 	setNotifyDefaultOptions({ rootPortal: true });
-	// #endif
 }

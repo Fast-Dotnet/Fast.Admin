@@ -32,11 +32,12 @@
 .z-paging-content-page {
 	display: flex;
 
-	.zp-view-super {
+	// 只调整当前分页，避免影响筛选弹窗内使用独立滚动的嵌套分页。
+	> .zp-view-super {
 		flex: 1;
 	}
 
-	.zp-scroll-view-container {
+	> .zp-view-super > .zp-scroll-view-container {
 		height: auto !important;
 	}
 }

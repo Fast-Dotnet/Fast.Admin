@@ -2,11 +2,14 @@
 	<z-paging
 		v-bind="zPagingProps"
 		ref="paging"
+		:style="props.usePageScroll ? undefined : { flex: 1, minHeight: 0 }"
 		:paging-class="normalizeClass(['z-paging__page', props.pagingClass])"
 		:paging-style="{ ...(props.usePageScroll ? { minHeight: 'var(--fa-paging-min-height, 0px)' } : {}), ...props.pagingStyle }"
 		:paging-content-style="{ minHeight: '120rpx', ...props.pagingContentStyle }"
 		:auto="props.auto ?? false"
 		:loading-more-enabled="props.pagination && props.loadingMoreEnabled"
+		:show-refresher-when-reload="hasLoaded && props.showRefresherWhenReload"
+		:show-loading-more-when-reload="props.showLoadingMoreWhenReload && (!hasLoaded || !props.showRefresherWhenReload)"
 		v-model="modelValue"
 		@query="handleQuery"
 		@virtual-list-change="handleVirtualListChange"
@@ -42,7 +45,7 @@
 		@inner-cell-click="(item, index?: number) => emit('innerCellClick', item, index)"
 		@virtual-top-height-change="emit('virtualTopHeightChange', $event)"
 	>
-		<view class="fa-paging__total">共 {{ totalRows }} 条</view>
+		<view v-if="hasLoaded" class="fa-paging__total">共 {{ totalRows }} 条</view>
 		<slot :paged-list="pagedList" :total-rows="totalRows" :search-param="slotState.searchParam" :refresh="handleReload" />
 		<template v-if="slots.top" #top>
 			<slot name="top" :paged-list="pagedList" :total-rows="totalRows" :search-param="slotState.searchParam" :refresh="handleReload" />
@@ -442,6 +445,8 @@ const virtualList = shallowRef<TResult[]>([]);
 const pagedList = computed(() => (props.useVirtualList && !props.usePageScroll ? virtualList.value : modelValue.value));
 /** 数据总数 */
 const totalRows = shallowRef(0);
+// 空列表也算完成加载；首次失败不显示未经确认的总数。
+const hasLoaded = shallowRef(false);
 
 /** 查询接口并回填列表、总条数与加载状态。 */
 const handleQuery = async (pageNo: number, pageSize: number, from: ZPagingEnums.QueryFrom) => {
@@ -493,6 +498,7 @@ const handleQuery = async (pageNo: number, pageSize: number, from: ZPagingEnums.
 			emit("query", _pageData, pageNo, pageSize, _totalRows, from);
 		}
 
+		hasLoaded.value = true;
 		if (props.pageKey && pageNo === props.defaultPageNo) {
 			pagingVersion.value = _pagingVersion;
 		}

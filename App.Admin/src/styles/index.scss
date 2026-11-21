@@ -28,10 +28,10 @@ page {
 	background-color: var(--wot-filled-bottom);
 }
 
-// 根节点负责水平溢出，H5 的 page 不能额外形成滚动容器，否则会破坏吸顶。
+// App 保持窗口滚动，根节点设置 overflow-x 会形成独立滚动容器，导致页面滚动及触底事件失效。
 :root {
 	min-height: 100vh;
-	/* #ifndef H5 */
+	/* #ifndef H5 || APP-PLUS */
 	overflow-x: hidden;
 	/* #endif */
 }
@@ -41,7 +41,7 @@ page {
 	/* #ifdef H5 */
 	min-height: calc(100vh - var(--window-top, 0px) - var(--window-bottom, 0px));
 	/* #endif */
-	/* #ifndef H5 */
+	/* #ifndef H5 || APP-PLUS */
 	overflow-x: hidden;
 	/* #endif */
 }

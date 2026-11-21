@@ -19,7 +19,7 @@
 			<slot name="titlePrefix" :loading="loading" />
 		</template>
 
-		<template #default="{ loading }">
+		<view class="fa-tree-picker__content">
 			<FaSearchInput
 				v-model:search-param="searchParam"
 				:filter="false"
@@ -29,7 +29,7 @@
 				@search="handleSearch"
 			>
 				<template #suffix>
-					<wd-button v-if="props.clearable" size="mini" type="primary" variant="plain" :disabled="loading" @click="handleClear">
+					<wd-button v-if="props.clearable" size="mini" type="primary" variant="plain" :disabled="isLoading" @click="handleClear">
 						清空
 					</wd-button>
 				</template>
@@ -77,8 +77,8 @@
 				</scroll-view>
 			</template>
 
-			<wd-empty v-else-if="!loading" icon="no-content" tip="暂无数据~" />
-		</template>
+			<wd-empty v-else-if="!isLoading" icon="no-content" tip="暂无数据~" />
+		</view>
 
 		<template v-if="$slots.footer" #footer="{ loading, close }">
 			<slot name="footer" :loading="loading" :close="close" />
@@ -194,6 +194,7 @@ const selectedLabel = defineModel<string>("label");
 const searchParam: Ref<Partial<TInput extends PagedInput ? TInput : PagedInput>> = ref({});
 
 const faPopupRef = ref<InstanceType<typeof FaPopup>>();
+const isLoading = computed(() => faPopupRef.value?.loading ?? false);
 const tabsRef = ref<TabsInstance>();
 
 /** 激活的 Tab */

@@ -3,7 +3,7 @@
 		<template #top="{ searchParam, refresh }">
 			<FaSearchInput v-model:search-param="searchParam.value" hide-search-time @confirm="refresh()" @clear="refresh()" @search="refresh()">
 				<template #filter>
-					<FaCellPicker title="投诉类型" v-model="searchParam.value.complaintType" name="ComplaintTypeEnum" radio clearable />
+					<FaCellPicker title="投诉类型" v-model="searchParam.value.complaintType" name="ComplaintTypeEnum" clearable />
 				</template>
 			</FaSearchInput>
 		</template>
