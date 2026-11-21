@@ -30,7 +30,7 @@
 						<p>数据、协作与决策在同一空间自然流动，让组织始终保持敏捷。</p>
 					</div>
 
-					<div class="insight-window" aria-hidden="true">
+					<div class="insight-window">
 						<div class="insight-window__bar">
 							<span></span>
 							<span></span>

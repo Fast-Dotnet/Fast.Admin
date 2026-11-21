@@ -2,7 +2,7 @@
 	<div class="split-login" :style="{ '--login-bg': props.background }">
 		<slot name="help" />
 		<section class="split-login__panel">
-			<div aria-hidden="true" class="panel__decoration">
+			<div class="panel__decoration">
 				<div class="deco-grid"></div>
 				<div class="deco-glow deco-glow--top"></div>
 				<div class="deco-glow deco-glow--bottom"></div>
@@ -49,7 +49,7 @@
 		<section class="split-login__form-wrap">
 			<div class="form-stage">
 				<div class="form-card">
-					<div aria-hidden="true" class="form-card__accent"></div>
+					<div class="form-card__accent"></div>
 					<LoginForm :form-rules="props.formRules" variant="split" />
 				</div>
 			</div>

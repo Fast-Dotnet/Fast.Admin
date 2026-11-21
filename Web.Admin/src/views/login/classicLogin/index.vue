@@ -28,7 +28,7 @@
 						<p>统一连接组织、流程与数据，为每一次管理决策提供可靠支撑。</p>
 					</div>
 
-					<div class="classic-visual" aria-hidden="true">
+					<div class="classic-visual">
 						<div class="classic-visual__halo"></div>
 						<div class="classic-console">
 							<header class="classic-console__header">

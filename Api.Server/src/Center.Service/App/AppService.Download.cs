@@ -167,20 +167,20 @@ public partial class AppService
     internal static string PageHtmlRender(string appName, string logoUrl, List<AppDownloadOption> options, string qrCode)
     {
         const string downloadIcon =
-            """<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 16v5h14v-5"/></svg>""";
+            """<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-5-5 5 5 5-5M5 16v5h14v-5"/></svg>""";
         const string arrowIcon =
-            """<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>""";
+            """<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>""";
         const string phoneIcon =
-            """<svg class="icon icon--harmony" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>""";
+            """<svg class="icon icon--harmony" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>""";
         const string androidIcon =
-            """<svg class="icon icon--android platform-android" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m6.4 6.4-2-3 .8-.6 2.1 3.1a10 10 0 0 1 9.4 0l2.1-3.1.8.6-2 3A9 9 0 0 1 21 13H3a9 9 0 0 1 3.4-6.6ZM3 14h18v6H3Z"/><circle cx="8" cy="10" r="1" fill="var(--icon-cutout, var(--surface))"/><circle cx="16" cy="10" r="1" fill="var(--icon-cutout, var(--surface))"/></svg>""";
+            """<svg class="icon icon--android platform-android" viewBox="0 0 24 24" fill="currentColor"><path d="m6.4 6.4-2-3 .8-.6 2.1 3.1a10 10 0 0 1 9.4 0l2.1-3.1.8.6-2 3A9 9 0 0 1 21 13H3a9 9 0 0 1 3.4-6.6ZM3 14h18v6H3Z"/><circle cx="8" cy="10" r="1" fill="var(--icon-cutout, var(--surface))"/><circle cx="16" cy="10" r="1" fill="var(--icon-cutout, var(--surface))"/></svg>""";
         // Apple 轮廓来自 Simple Icons（CC0），内嵌以避免额外请求。
         const string appleIcon =
-            """<svg class="icon icon--apple" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>""";
+            """<svg class="icon icon--apple" viewBox="0 0 24 24" fill="currentColor"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>""";
         const string desktopIcon =
-            """<svg class="icon icon--windows" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 3h9v8H2Zm11 0h9v8h-9ZM2 13h9v8H2Zm11 0h9v8h-9Z"/></svg>""";
+            """<svg class="icon icon--windows" viewBox="0 0 24 24" fill="currentColor"><path d="M2 3h9v8H2Zm11 0h9v8h-9ZM2 13h9v8H2Zm11 0h9v8h-9Z"/></svg>""";
         const string linkIcon =
-            """<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10 13 4-4m-5 7-1 1a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0m0 10a4 4 0 0 0 6 0l4-4a4 4 0 0 0-6-6l-1 1"/></svg>""";
+            """<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m10 13 4-4m-5 7-1 1a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0m0 10a4 4 0 0 0 6 0l4-4a4 4 0 0 0-6-6l-1 1"/></svg>""";
         var channels = new StringBuilder();
         var platformButtons = new StringBuilder();
         var updates = new StringBuilder();
@@ -360,14 +360,14 @@ public partial class AppService
                             </style>
                         </head>
                         <body>
-                            <header class="brand"><div class="brand-inner"><span class="brand-dot" aria-hidden="true"></span><span class="brand-name">{{safeName}}</span><span class="brand-label">应用下载</span></div></header>
+                            <header class="brand"><div class="brand-inner"><span class="brand-dot"></span><span class="brand-name">{{safeName}}</span><span class="brand-label">应用下载</span></div></header>
                             <main>
                                 <div class="hero">{{logo}}<h1>{{safeName}}</h1><p class="subtitle">官方应用下载</p></div>
                                 {{channels}}
                                 <section id="unavailable" class="empty" hidden><h2>当前设备暂无对应版本</h2><p>可以查看其他平台，或联系应用管理员。</p></section>
                                 {{(availableCount == 0 ? "<section class=\"empty\"><h2>暂未提供下载</h2><p>应用安装包准备中，请稍后再试或联系管理员。</p></section>" : "")}}
                                 {{(qrCode == null || availableCount == 0 ? "" : $"<section id=\"qr\" class=\"qr-panel\" hidden><div class=\"qr-paper\"><img src=\"{WebUtility.HtmlEncode(qrCode)}\" alt=\"下载页面二维码\"></div><h2>手机扫码下载</h2><p>使用手机扫描二维码，选择对应平台下载</p></section>")}}
-                                {{(availableCount == 0 ? "" : $"<details id=\"other-platforms\" class=\"other-platforms\"><summary>其他平台下载<svg class=\"platform-chevron\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m6 9 6 6 6-6\"/></svg></summary><div class=\"platform-list\">{platformButtons}</div></details>")}}
+                                {{(availableCount == 0 ? "" : $"<details id=\"other-platforms\" class=\"other-platforms\"><summary>其他平台下载<svg class=\"platform-chevron\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m6 9 6 6 6-6\"/></svg></summary><div class=\"platform-list\">{platformButtons}</div></details>")}}
                                 {{updates}}
                                 <footer class="footer">
                                     <button id="copy" class="copy" type="button">{{linkIcon}}复制下载地址</button>
@@ -379,14 +379,14 @@ public partial class AppService
                             <div id="wechat-guide" class="guide" role="dialog" aria-modal="true" aria-labelledby="guide-title" hidden>
                                 <div class="guide-sheet">
                                     <button id="guide-close" class="guide-close" type="button" aria-label="关闭打开方式引导">×</button>
-                                    <div class="guide-direction"><svg class="guide-arrow" viewBox="0 0 58 72" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 64h12c14 0 24-10 24-24V8M32 22 46 8l10 14"/></svg><p>点击微信右上角 <span>···</span></p></div>
+                                    <div class="guide-direction"><svg class="guide-arrow" viewBox="0 0 58 72" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 64h12c14 0 24-10 24-24V8M32 22 46 8l10 14"/></svg><p>点击微信右上角 <span>···</span></p></div>
                                     <div class="guide-content">
                                         <p class="guide-eyebrow">还差一步，即可下载</p>
                                         <h2 id="guide-title">请在浏览器中打开</h2>
                                         <p class="guide-description">微信内暂不支持直接下载安装包<br>按下面两步继续就好</p>
                                         <div class="guide-step"><span class="guide-number">1</span><p>点击右上角的 <span class="guide-dots">···</span> 菜单</p></div>
                                         <div class="guide-step"><span class="guide-number">2</span><p>选择「在浏览器中打开」</p></div>
-                                        <div class="guide-menu" aria-label="菜单选项示意"><span aria-hidden="true">↗</span><span>在浏览器中打开</span><span aria-hidden="true">›</span></div>
+                                        <div class="guide-menu" aria-label="菜单选项示意"><span>↗</span><span>在浏览器中打开</span><span>›</span></div>
                                         <p class="guide-after">打开后，再点击下载按钮</p>
                                         <button id="guide-dismiss" class="guide-dismiss" type="button">我知道了</button>
                                         <button id="guide-copy" class="guide-copy" type="button">复制链接，手动打开</button>
