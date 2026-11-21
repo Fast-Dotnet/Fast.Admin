@@ -116,8 +116,8 @@ public class ApplicationClientService : IDynamicApplication
     [Permission(PermissionConst.App.ClientAdd)]
     public async Task AddApplicationClient(AddApplicationClientInput input)
     {
-        if (await _repository.AnyAsync(a => a.AppId == input.AppId && a.EnvironmentType == input.EnvironmentType
-                                            && (a.AppType & input.AppType) != 0))
+        if (await _repository.AnyAsync(a =>
+                a.AppId == input.AppId && a.EnvironmentType == input.EnvironmentType && (a.AppType & input.AppType) != 0))
         {
             throw new UserFriendlyException("同一应用、同一环境下的应用类型不能重复！");
         }
@@ -165,8 +165,11 @@ public class ApplicationClientService : IDynamicApplication
     [Permission(PermissionConst.App.ClientEdit)]
     public async Task EditApplicationClient(EditApplicationClientInput input)
     {
-        if (await _repository.AnyAsync(a => a.AppId == input.AppId && a.EnvironmentType == input.EnvironmentType
-                                            && a.RecordId != input.RecordId && (a.AppType & input.AppType) != 0))
+        if (await _repository.AnyAsync(a =>
+                a.AppId == input.AppId
+                && a.EnvironmentType == input.EnvironmentType
+                && a.RecordId != input.RecordId
+                && (a.AppType & input.AppType) != 0))
         {
             throw new UserFriendlyException("同一应用、同一环境下的应用类型不能重复！");
         }

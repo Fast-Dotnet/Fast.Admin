@@ -10,7 +10,6 @@ using Fast.SqlSugar;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SqlSugar;
 
@@ -29,6 +28,11 @@ public class ChatHub : Hub<IChatClient>
     private readonly ICache<AuthCCL> _authCache;
 
     /// <summary>
+    /// ChatHub 连接存活租约
+    /// </summary>
+    private readonly ChatConnectionLease _chatConnectionLease;
+
+    /// <summary>
     /// 仓储
     /// </summary>
     private readonly ISqlSugarClient _repository;
@@ -41,9 +45,11 @@ public class ChatHub : Hub<IChatClient>
     /// <summary>
     /// 集线器客户端
     /// </summary>
-    public ChatHub(ICache<AuthCCL> authCache, ISqlSugarClient repository, ILogger<ChatHub> logger)
+    public ChatHub(ICache<AuthCCL> authCache, ChatConnectionLease chatConnectionLease, ISqlSugarClient repository,
+        ILogger<ChatHub> logger)
     {
         _authCache = authCache;
+        _chatConnectionLease = chatConnectionLease;
         _repository = repository;
         _logger = logger;
     }
@@ -99,14 +105,23 @@ public class ChatHub : Hub<IChatClient>
             return;
         }
 
-        // 这里如果是连接，则直接连接
-        await base.OnConnectedAsync();
+        try
+        {
+            await _chatConnectionLease.RegisterAsync(Context.ConnectionId, Context.ConnectionAborted);
 
-        // 由于 WebSocket 并不会阻塞连接，所以这里连接成功之后回调
-        IHubContext<ChatHub, IChatClient> _hubContext = Context
-            .GetHttpContext()
-            ?.RequestServices.GetService<IHubContext<ChatHub, IChatClient>>();
-        await _hubContext?.Clients?.Client(Context.ConnectionId).ConnectSuccess();
+            // 这里如果是连接，则直接连接
+            await base.OnConnectedAsync();
+
+            // 由于 WebSocket 并不会阻塞连接，所以这里连接成功之后回调
+            await Clients.Caller.ConnectSuccess();
+        }
+        catch
+        {
+            _chatConnectionLease.Unregister(Context.ConnectionId);
+            // 关闭连接
+            Context.Abort();
+            throw;
+        }
     }
 
     /// <inheritdoc />
@@ -117,30 +132,20 @@ public class ChatHub : Hub<IChatClient>
             return;
         }
 
-        AuthUserInfo authUserInfo = await GetAuthUserInfo();
-
-        if (authUserInfo == null)
+        try
         {
-            // 关闭链接
-            Context.Abort();
-            return;
+            _chatConnectionLease.Unregister(Context.ConnectionId);
+
+            // ConnectionId 来自服务端连接上下文，下线处理不依赖可能已失效的登录缓存。
+            await _repository.Updateable<TenantOnlineUserModel>()
+                .SetColumns(_ => new TenantOnlineUserModel {IsOnline = false, OfflineTime = DateTime.Now})
+                .Where(wh => wh.ConnectionId == Context.ConnectionId && wh.IsOnline)
+                .ExecuteCommandAsync();
         }
-
-        // 获取在线用户信息
-        TenantOnlineUserModel tenantOnlineUserModel = await _repository.Queryable<TenantOnlineUserModel>()
-            .ClearFilter<IBaseTEntity>()
-            .Where(wh => wh.ConnectionId == Context.ConnectionId)
-            .SingleAsync();
-
-        if (tenantOnlineUserModel != null)
+        finally
         {
-            // 断开连接，修改在线状态
-            tenantOnlineUserModel.IsOnline = false;
-            tenantOnlineUserModel.OfflineTime = DateTime.Now;
-            await _repository.Updateable(tenantOnlineUserModel).ExecuteCommandAsync();
+            await base.OnDisconnectedAsync(exception);
         }
-
-        await base.OnDisconnectedAsync(exception);
     }
 
     /// <summary>
@@ -160,19 +165,16 @@ public class ChatHub : Hub<IChatClient>
 
         HttpContext httpContext = Context.GetHttpContext();
 
-        IHubContext<ChatHub, IChatClient> _hubContext =
-            httpContext?.RequestServices.GetService<IHubContext<ChatHub, IChatClient>>();
-
         if (authUserInfo == null)
         {
-            await _hubContext?.Clients?.Client(Context.ConnectionId).LoginFail("连接失败，登录信息过期，请重新登录！");
+            await Clients.Caller.LoginFail("连接失败，登录信息过期，请重新登录！");
             return;
         }
 
         // 判断设备信息是否和缓存中的一致
         if (GlobalContext.DeviceId != authUserInfo.DeviceId || GlobalContext.DeviceType != authUserInfo.DeviceType)
         {
-            await _hubContext?.Clients?.Client(Context.ConnectionId).LoginFail("连接失败，登录信息异常，请重新登录！");
+            await Clients.Caller.LoginFail("连接失败，登录信息异常，请重新登录！");
             return;
         }
 
@@ -274,7 +276,7 @@ public class ChatHub : Hub<IChatClient>
             if (connectionIdList.Any())
             {
                 // 踢下线
-                await _hubContext?.Clients?.Clients(connectionIdList).ElsewhereLogin(tenantOnlineUserModel);
+                await Clients.Clients(connectionIdList).ElsewhereLogin(tenantOnlineUserModel);
 
                 // 删除所有的死连接
                 await _repository.Deleteable<TenantOnlineUserModel>()

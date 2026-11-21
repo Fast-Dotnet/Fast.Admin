@@ -84,6 +84,9 @@ builder.Services.AddApiRateLimit();
 // 添加 JwtBearer 授权
 builder.Services.AddJwtBearer(builder.Configuration);
 
+// 连接登记必须由 Hub 和续租托管服务共享
+builder.Services.AddSingleton<ChatConnectionLease>();
+
 // 添加即时通讯
 builder.Services.AddSignalR()
     .AddNewtonsoftJsonProtocol(options => options.PayloadSerializerSettings = JsonContext.SerializerOptions);
