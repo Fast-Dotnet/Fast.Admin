@@ -13,6 +13,7 @@
 			:list="state.swiperList"
 			autoplay
 			v-model:current="state.swiperCurrent"
+			:indicator="{ type: 'dots-bar' }"
 		/>
 
 		<view class="workspace">
