@@ -283,9 +283,10 @@ public partial class AppService
                                 .qr-panel h2 { font-size:16px; font-weight:600; }
                                 .qr-panel p { margin-top:7px; color:var(--secondary); font-size:11px; }
                                 .other-platforms { margin-top:12px; }
-                                .other-platforms summary { display:flex; align-items:center; justify-content:center; gap:6px; min-height:42px; color:var(--secondary); font-size:12px; list-style:none; cursor:pointer; }
+                                .other-platforms summary { display:flex; align-items:center; justify-content:center; gap:6px; min-height:42px; background:transparent; color:var(--secondary); font-size:12px; list-style:none; cursor:pointer; -webkit-tap-highlight-color:transparent; -webkit-user-select:none; user-select:none; }
                                 .other-platforms summary::-webkit-details-marker { display:none; }
-                                .other-platforms[open] summary>span { transform:rotate(180deg); }
+                                .platform-chevron { width:14px; height:14px; flex-shrink:0; transition:transform .2s; }
+                                .other-platforms[open] .platform-chevron { transform:rotate(180deg); }
                                 .platform-list { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding-bottom:12px; }
                                 .platform-choice { display:flex; align-items:center; justify-content:space-between; gap:6px; min-width:0; min-height:44px; padding:8px 12px; border:1px solid var(--border); border-radius:9px; background:var(--surface); color:var(--text); font-size:12px; }
                                 .platform-choice[aria-pressed="true"] { border-color:var(--accent); color:var(--accent); }
@@ -338,7 +339,7 @@ public partial class AppService
                                 <section id="unavailable" class="empty" hidden><h2>当前设备暂无对应版本</h2><p>可以查看其他平台，或联系应用管理员。</p></section>
                                 {{(availableCount == 0 ? "<section class=\"empty\"><h2>暂未提供下载</h2><p>应用安装包准备中，请稍后再试或联系管理员。</p></section>" : "")}}
                                 {{(qrCode == null || availableCount == 0 ? "" : $"<section id=\"qr\" class=\"qr-panel\" hidden><div class=\"qr-paper\"><img src=\"{WebUtility.HtmlEncode(qrCode)}\" alt=\"下载页面二维码\"></div><h2>手机扫码下载</h2><p>使用手机扫描二维码，选择对应平台下载</p></section>")}}
-                                {{(availableCount == 0 ? "" : $"<details id=\"other-platforms\" class=\"other-platforms\"><summary>其他平台下载<span aria-hidden=\"true\">⌄</span></summary><div class=\"platform-list\">{platformButtons}</div></details>")}}
+                                {{(availableCount == 0 ? "" : $"<details id=\"other-platforms\" class=\"other-platforms\"><summary>其他平台下载<svg class=\"platform-chevron\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m6 9 6 6 6-6\"/></svg></summary><div class=\"platform-list\">{platformButtons}</div></details>")}}
                                 {{updates}}
                                 <footer class="footer">
                                     <button id="copy" class="copy" type="button">{{linkIcon}}复制下载地址</button>
