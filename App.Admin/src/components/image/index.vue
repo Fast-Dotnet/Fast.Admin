@@ -43,6 +43,11 @@ defineOptions({
 
 const props = defineProps({
 	...imgProps,
+	/** 是否开启图片懒加载，默认开启 */
+	lazyLoad: {
+		type: Boolean,
+		default: true,
+	},
 	/** 是否允许预览已提供的原图 */
 	enablePreview: {
 		type: Boolean,
