@@ -7,7 +7,7 @@
 	>
 		<template #help>
 			<el-dropdown ref="helpDropdownRef" class="help_dropdown" size="default" trigger="click" @command="handleDropdownClick">
-				<el-button class="help-trigger" text circle aria-label="打开显示设置">
+				<el-button class="help-trigger" text circle>
 					<el-icon :size="18">
 						<Moon v-if="configStore.layout.isDark" />
 						<Sunny v-else />

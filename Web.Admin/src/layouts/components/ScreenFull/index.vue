@@ -1,10 +1,8 @@
 <template>
 	<el-icon
 		class="screen-full fa__hover__twinkle"
-		role="button"
 		tabindex="0"
 		:title="isFullscreen ? '退出全屏' : '全屏'"
-		:aria-label="isFullscreen ? '退出全屏' : '全屏'"
 		@keydown.enter.prevent="handleScreenFullClick"
 		@keydown.space.prevent="handleScreenFullClick"
 		@click="handleScreenFullClick"

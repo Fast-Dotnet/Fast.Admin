@@ -229,7 +229,7 @@ public partial class AppService
                              </section>
                              """);
             platformButtons.Append($"""
-                                    <button class="platform-choice" type="button" data-platform="{platform}" aria-pressed="false"><span class="platform-name">{platformIcon}<span>{platform}{(option.Platform == "iOS" ? " · App Store" : "")}</span></span>{arrowIcon}</button>
+                                    <button class="platform-choice" type="button" data-platform="{platform}" data-selected="false"><span class="platform-name">{platformIcon}<span>{platform}{(option.Platform == "iOS" ? " · App Store" : "")}</span></span>{arrowIcon}</button>
                                     """);
             if (!string.IsNullOrWhiteSpace(option.UpdateContent))
             {
@@ -317,7 +317,7 @@ public partial class AppService
                                 .other-platforms[open] .platform-chevron { transform:rotate(180deg); }
                                 .platform-list { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding-bottom:12px; }
                                 .platform-choice { display:flex; align-items:center; justify-content:space-between; gap:6px; min-width:0; min-height:44px; padding:8px 12px; border:1px solid var(--border); border-radius:9px; background:var(--surface); color:var(--text); font-size:12px; }
-                                .platform-choice[aria-pressed="true"] { border-color:var(--accent); color:var(--accent); }
+                                .platform-choice[data-selected="true"] { border-color:var(--accent); color:var(--accent); }
                                 .update-option { margin-top:20px; padding-top:21px; border-top:1px solid var(--border); }
                                 .update-option h2 { display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:13px; font-weight:600; }
                                 .update-option h2 span { font-size:11px; font-weight:400; color:var(--secondary); }
@@ -371,14 +371,14 @@ public partial class AppService
                                 {{updates}}
                                 <footer class="footer">
                                     <button id="copy" class="copy" type="button">{{linkIcon}}复制下载地址</button>
-                                    <input id="address" class="copy-address" readonly aria-label="下载地址" hidden>
-                                    <p id="status" class="copy-status" role="status" aria-live="polite"></p>
+                                    <input id="address" class="copy-address" readonly hidden>
+                                    <p id="status" class="copy-status"></p>
                                     <p>将此页面分享给其他设备，即可下载安装</p>
                                 </footer>
                             </main>
-                            <div id="wechat-guide" class="guide" role="dialog" aria-modal="true" aria-labelledby="guide-title" hidden>
+                            <div id="wechat-guide" class="guide" hidden>
                                 <div class="guide-sheet">
-                                    <button id="guide-close" class="guide-close" type="button" aria-label="关闭打开方式引导">×</button>
+                                    <button id="guide-close" class="guide-close" type="button">×</button>
                                     <div class="guide-direction"><svg class="guide-arrow" viewBox="0 0 58 72" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 64h12c14 0 24-10 24-24V8M32 22 46 8l10 14"/></svg><p>点击微信右上角 <span>···</span></p></div>
                                     <div class="guide-content">
                                         <p class="guide-eyebrow">还差一步，即可下载</p>
@@ -386,12 +386,12 @@ public partial class AppService
                                         <p class="guide-description">微信内暂不支持直接下载安装包<br>按下面两步继续就好</p>
                                         <div class="guide-step"><span class="guide-number">1</span><p>点击右上角的 <span class="guide-dots">···</span> 菜单</p></div>
                                         <div class="guide-step"><span class="guide-number">2</span><p>选择「在浏览器中打开」</p></div>
-                                        <div class="guide-menu" aria-label="菜单选项示意"><span>↗</span><span>在浏览器中打开</span><span>›</span></div>
+                                        <div class="guide-menu"><span>↗</span><span>在浏览器中打开</span><span>›</span></div>
                                         <p class="guide-after">打开后，再点击下载按钮</p>
                                         <button id="guide-dismiss" class="guide-dismiss" type="button">我知道了</button>
                                         <button id="guide-copy" class="guide-copy" type="button">复制链接，手动打开</button>
-                                        <input id="guide-address" class="copy-address" readonly aria-label="下载地址" hidden>
-                                        <p id="guide-status" class="guide-feedback" role="status" aria-live="polite"></p>
+                                        <input id="guide-address" class="copy-address" readonly hidden>
+                                        <p id="guide-status" class="guide-feedback"></p>
                                     </div>
                                 </div>
                             </div>
@@ -419,7 +419,7 @@ public partial class AppService
                                         option.querySelector(".platform-badge").textContent = platform === detectedPlatform ? "适用于当前设备" : "已选择平台";
                                     });
                                     updates.forEach(update => { update.hidden = !selected || update.dataset.platform !== platform; });
-                                    choices.forEach(choice => choice.setAttribute("aria-pressed", String(choice.dataset.platform === platform)));
+                                    choices.forEach(choice => choice.setAttribute("data-selected", String(choice.dataset.platform === platform)));
                                     document.getElementById("unavailable").hidden = Boolean(selected) || options.length === 0 || !mobile;
                                 }
 

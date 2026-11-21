@@ -111,13 +111,13 @@ public class MailService : IMailService, ISingletonDependency
                  	<div style="display: none; max-height: 0; overflow: hidden; opacity: 0; color: transparent">
                  		{{encodedTitle}} · {{encodedDisplayName}}
                  	</div>
-                 	<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width: 100%; margin: 0 auto; background-color: #f1f5f9">
+                 	<table width="100%" cellpadding="0" cellspacing="0" style="width: 100%; margin: 0 auto; background-color: #f1f5f9">
                  		<tr>
                  			<td class="mail-shell" align="center" style="padding: 40px 16px">
-                 				<table role="presentation" align="center" width="640" cellpadding="0" cellspacing="0" style="width: 100%; max-width: 640px; margin: 0 auto">
+                 				<table align="center" width="640" cellpadding="0" cellspacing="0" style="width: 100%; max-width: 640px; margin: 0 auto">
                  					<tr>
                  						<td align="center" style="padding: 0 4px 20px">
-                 							<table role="presentation" align="center" cellpadding="0" cellspacing="0" style="margin: 0 auto">
+                 							<table align="center" cellpadding="0" cellspacing="0" style="margin: 0 auto">
                  								<tr>
                  									<td width="58" height="58" align="center" style="width: 58px; height: 58px">
                  										<img src="https://cdn.fastdotnet.com/logo/fast/logo.png" alt="{{encodedDisplayName}}" width="58" height="58" style="display: block; width: 58px; height: 58px; border: 0; outline: none; text-decoration: none" />
@@ -131,7 +131,7 @@ public class MailService : IMailService, ISingletonDependency
                  					</tr>
                  					<tr>
                  						<td style="border: 1px solid #e2e8f0; border-radius: 16px;background-color: #ffffff; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);overflow: hidden;">
-                 							<table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                 							<table width="100%" cellpadding="0" cellspacing="0">
                  								<tr>
                  									<td height="5" style="height: 5px; background-color:{{accentColor}}; font-size:0; line-height:0;">
                  										&nbsp;
@@ -139,7 +139,7 @@ public class MailService : IMailService, ISingletonDependency
                  								</tr>
                  								<tr>
                  									<td class="mail-card-content" style="padding: 36px 42px 32px">
-                 										<table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                 										<table width="100%" cellpadding="0" cellspacing="0">
                  											<tr>
                  												<td>
                  													<span style="display: inline-block; padding: 5px 10px; border-radius: 999px; color: {{accentColor}}; background-color: {{badgeBackgroundColor}}; font-size: 12px; font-weight: 700; line-height: 18px;">
@@ -269,7 +269,7 @@ public class MailService : IMailService, ISingletonDependency
         string content = $$"""
                            <p>您好：</p>
                            <p>您正在进行<strong>{{templateTypeDescription}}</strong>操作，请使用以下验证码完成身份校验。</p>
-                           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin: 24px 0;">
+                           <table width="100%" cellpadding="0" cellspacing="0" style="margin: 24px 0;">
                              <tr>
                                <td align="center" style="padding: 22px 16px; border: 1px solid #bfdbfe; border-radius: 10px; color: #1d4ed8; background-color: #eff6ff; font-size: 32px; font-weight: 700; letter-spacing: 10px; line-height: 1;">
                                  {{WebUtility.HtmlEncode(dto.VerificationCode)}}

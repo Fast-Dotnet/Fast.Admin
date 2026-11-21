@@ -53,7 +53,6 @@
 										text
 										circle
 										:icon="Close"
-										aria-label="移除已保存账号"
 										@click.stop="handleTenantRemove(index, item)"
 									/>
 								</div>

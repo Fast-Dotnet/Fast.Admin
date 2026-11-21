@@ -96,7 +96,7 @@
 					</el-checkbox-group>
 					<p v-else class="empty-message">此页面没有可配置的操作</p>
 				</section>
-				<p v-else-if="!loading" class="empty-message menu-empty" role="status">
+				<p v-else-if="!loading" class="empty-message menu-empty">
 					{{ state.searchKeyword ? "未找到匹配的页面" : "暂无可授权页面" }}
 				</p>
 			</div>

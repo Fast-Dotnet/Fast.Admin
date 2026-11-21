@@ -23,7 +23,6 @@
 			<button
 				class="image-captcha__image"
 				type="button"
-				aria-label="刷新验证码"
 				:disabled="props.disabled || state.loading"
 				title="点击刷新验证码"
 				@click="refresh"
