@@ -39,8 +39,6 @@ const showNextNotification = () => {
 
 /** 接收并排队展示通知，避免高频推送相互覆盖。 */
 export const enqueueNotification = (data: { type: "info" | "warning" | "error"; messages: string[] }): void => {
-	if (!data.messages.length) return;
-
 	// 上限只约束待展示队列，不影响当前可见的通知。
 	if (pendingNotifications.length >= 50) pendingNotifications.shift();
 

@@ -223,7 +223,9 @@ const initWebSocket = async (userInfoStore: ReturnType<typeof useUserInfo>): Pro
 
 		// 实时通知
 		connection.on("ReceiveNotification", (data: { type: "info" | "warning" | "error"; messages: string[] }) => {
-			logger.warn("WebSocket", "实时通知", data);
+			if (!shouldConnect || connection.state !== SignalRSocketState.Connected) return;
+
+			logger.log("WebSocket", "实时通知", data);
 			enqueueNotification(data);
 		});
 

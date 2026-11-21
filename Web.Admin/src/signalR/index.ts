@@ -231,7 +231,9 @@ const initWebSocket = async (): Promise<void> => {
 
 		// 实时通知
 		connection.on("ReceiveNotification", (data: { type: "info" | "warning" | "error"; messages: string[] }) => {
-			logger.warn("WebSocket", "实时通知", data);
+			if (!shouldConnect || connection.state !== HubConnectionState.Connected) return;
+
+			logger.log("WebSocket", "实时通知", data);
 			for (const message of data.messages) {
 				ElNotification({
 					title: "消息通知",
