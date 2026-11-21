@@ -169,6 +169,8 @@ declare module "@qiun/ucharts" {
 
 	/** X 轴相关配置。 */
 	export interface UChartsXAxis {
+		/** 类目轴最多显示的标签数量 */
+		labelCount?: number;
 		/** 是否隐藏 X 轴，默认 false。 */
 		disabled?: boolean;
 		/** 不绘制 X 轴网格，默认 false。 */
