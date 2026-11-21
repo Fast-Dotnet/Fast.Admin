@@ -4,6 +4,7 @@ import { installationIdentity, logger, toQueryString, withDefineType } from "@fa
 import { HttpTransportType, HubConnectionBuilder, HubConnectionState, LogLevel } from "@microsoft/signalr";
 import { authApi } from "@/api/services/Auth/auth";
 import { useUserInfo } from "@/stores";
+import { playNotificationSound, stopNotificationSound } from "./notificationSound";
 import type { HubConnection } from "@microsoft/signalr";
 import type { TenantOnlineUserModel } from "@/api/services/Center/tenantOnlineUser/models/TenantOnlineUserModel";
 
@@ -234,6 +235,7 @@ const initWebSocket = async (): Promise<void> => {
 			if (!shouldConnect || connection.state !== HubConnectionState.Connected) return;
 
 			logger.log("WebSocket", "实时通知", data);
+			playNotificationSound();
 			for (const message of data.messages) {
 				ElNotification({
 					title: "消息通知",
@@ -279,6 +281,7 @@ const initWebSocket = async (): Promise<void> => {
 
 /** 尝试通知服务端退出登录后停止连接；停止失败时向调用方抛出异常 */
 const closeWebSocket = async (): Promise<void> => {
+	stopNotificationSound();
 	shouldConnect = false;
 	if (connection) {
 		try {

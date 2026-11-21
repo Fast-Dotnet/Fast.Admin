@@ -21,6 +21,12 @@
 			</wd-cell>
 		</wd-cell-group>
 
+		<wd-cell-group center border>
+			<wd-cell title="通知声音" label="前台收到消息通知时播放提示音">
+				<wd-switch v-model="configStore.layout.notificationSound" />
+			</wd-cell>
+		</wd-cell-group>
+
 		<wd-button custom-class="fa-form-submit" type="danger" @click="configStore.reset">重置</wd-button>
 	</view>
 </template>

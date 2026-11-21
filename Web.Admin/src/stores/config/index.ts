@@ -94,6 +94,8 @@ export const useConfig = defineStore(
 			menuSearch: true,
 			/** 是否显示全屏入口 */
 			screenFull: true,
+			/** 是否播放通知提示音 */
+			notificationSound: true,
 			/** 是否显示页脚 */
 			footer: true,
 			/** 是否显示水印 */
@@ -218,6 +220,7 @@ export const useConfig = defineStore(
 			layout.breadcrumb = true;
 			layout.menuSearch = true;
 			layout.screenFull = true;
+			layout.notificationSound = true;
 			layout.footer = true;
 			layout.watermark = true;
 			setDefaultLayoutSize();

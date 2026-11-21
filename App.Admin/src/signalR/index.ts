@@ -2,6 +2,7 @@ import { useFastAxios } from "@fast-china/axios";
 import { installationIdentity, logger, toQueryString } from "@fast-china/utils";
 import { authApi } from "@/api/services/Auth/auth";
 import { clearNotifications, enqueueNotification } from "./notification";
+import { playNotificationSound, stopNotificationSound } from "./notificationSound";
 import { SignalRSocketState, createSignalRSocket } from "./uniSignalR";
 import type { SignalRSocket } from "./uniSignalR";
 import type { TenantOnlineUserModel } from "@/api/services/Center/tenantOnlineUser/models/TenantOnlineUserModel";
@@ -226,6 +227,7 @@ const initWebSocket = async (userInfoStore: ReturnType<typeof useUserInfo>): Pro
 			if (!shouldConnect || connection.state !== SignalRSocketState.Connected) return;
 
 			logger.log("WebSocket", "实时通知", data);
+			playNotificationSound();
 			enqueueNotification(data);
 		});
 
@@ -258,6 +260,7 @@ const initWebSocket = async (userInfoStore: ReturnType<typeof useUserInfo>): Pro
 
 /** 尝试通知服务端退出登录后停止连接；停止失败时向调用方抛出异常 */
 const closeWebSocket = async (): Promise<void> => {
+	stopNotificationSound();
 	shouldConnect = false;
 	clearNotifications();
 	if (connection) {

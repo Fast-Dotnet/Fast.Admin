@@ -43,6 +43,8 @@ export const useConfig = defineStore(
 			isGrey: false,
 			/** 是否色弱模式 */
 			isWeak: false,
+			/** 是否播放前台通知提示音 */
+			notificationSound: true,
 			/** 是否显示页脚 */
 			footer: true,
 			/** 是否显示水印 */
@@ -251,6 +253,7 @@ export const useConfig = defineStore(
 			layout.isDark = false;
 			layout.isGrey = false;
 			layout.isWeak = false;
+			layout.notificationSound = true;
 			layout.footer = true;
 			layout.watermark = true;
 			initTheme();

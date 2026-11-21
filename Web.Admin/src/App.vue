@@ -9,6 +9,7 @@ import { onMounted, reactive, watch } from "vue";
 import { RouterView } from "vue-router";
 import { useEventListener, useWindowSize } from "@fast-china/utils";
 import { tryConnectWebSocket } from "@/signalR";
+import { stopNotificationSound } from "@/signalR/notificationSound";
 import { useConfig } from "@/stores";
 import type { ConfigProviderProps } from "element-plus";
 
@@ -96,6 +97,14 @@ watch(
 		}
 	},
 	{ immediate: true }
+);
+
+/** 监听是否停用通知声音 */
+watch(
+	() => configStore.layout.notificationSound,
+	(enabled) => {
+		if (!enabled) stopNotificationSound();
+	}
 );
 
 onMounted(async () => {

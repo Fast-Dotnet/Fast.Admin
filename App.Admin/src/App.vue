@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { onLaunch, onShow } from "@dcloudio/uni-app";
+import { onHide, onLaunch, onShow } from "@dcloudio/uni-app";
 import { computed, watch } from "vue";
 import { axiosUtil } from "@fast-china/axios";
-import { configureInstallationIdentity, getOrCreateInstallationId, logger } from "@fast-china/utils";
+import { configureInstallationIdentity, getOrCreateInstallationId, logger, useEventListener } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
 import { useConfigProvider } from "@wot-ui/ui/composables";
 import { AppEnvironmentEnum } from "@/api/enums/AppEnvironmentEnum";
@@ -11,6 +11,7 @@ import { RegExps } from "@/constants";
 import { usePrivacy, useUpdate } from "@/hooks";
 import { loadFastAxios } from "@/plugins/axios";
 import { tryConnectWebSocket } from "@/signalR";
+import { setNotificationSoundForeground, stopNotificationSound } from "@/signalR/notificationSound";
 import { useApp, useConfig, useUserInfo } from "@/stores";
 import type { LaunchOutput } from "@/api/services/Center/app/models/LaunchOutput";
 
@@ -19,6 +20,14 @@ const configStore = useConfig();
 const userInfoStore = useUserInfo();
 const router = useRouter();
 
+/** 监听是否停用通知声音 */
+watch(
+	() => configStore.layout.notificationSound,
+	(enabled) => {
+		if (!enabled) stopNotificationSound();
+	}
+);
+
 // 在页面和插槽之外提供响应式主题，供传送到根节点的各类弹层继承
 useConfigProvider({
 	theme: computed(() => (configStore.layout.isDark ? "dark" : "light")),
@@ -26,8 +35,18 @@ useConfigProvider({
 });
 
 onShow(() => {
+	setNotificationSoundForeground(true);
 	tryConnectWebSocket(userInfoStore);
 });
+
+onHide(() => setNotificationSoundForeground(false));
+
+// #ifdef H5
+useEventListener(document, "visibilitychange", () => {
+	if (document.visibilityState !== "visible") stopNotificationSound();
+});
+useEventListener(window, "blur", stopNotificationSound);
+// #endif
 
 onLaunch((options) => {
 	// #ifdef MP
