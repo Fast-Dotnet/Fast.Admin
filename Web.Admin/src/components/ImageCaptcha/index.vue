@@ -20,13 +20,7 @@
 				:show-word-limit="false"
 				spellcheck="false"
 			/>
-			<button
-				class="image-captcha__image"
-				type="button"
-				:disabled="props.disabled || state.loading"
-				title="点击刷新验证码"
-				@click="refresh"
-			>
+			<button class="image-captcha__image" type="button" :disabled="props.disabled || state.loading" title="点击刷新验证码" @click="refresh">
 				<img v-if="state.captchaImage" :src="state.captchaImage" alt="图形验证码" />
 				<span v-else>{{ state.loading ? "加载中…" : state.loadFailed ? "加载失败" : "点击重试" }}</span>
 			</button>
