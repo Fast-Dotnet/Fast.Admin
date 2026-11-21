@@ -52,9 +52,9 @@
 							<wd-checkbox v-for="button in menu.children" :key="button.value" :name="button.value">
 								<text>{{ button.label }}</text>
 								<view class="role-auth__platforms">
-									<wd-icon v-if="button.data?.hasDesktop" name="desktop" aria-label="Windows" size="12px" />
-									<wd-icon v-if="button.data?.hasWeb" name="compass" aria-label="Web" size="12px" />
-									<wd-icon v-if="button.data?.hasMobile" name="mobile" aria-label="移动端" size="12px" />
+									<wd-icon v-if="button.data?.hasDesktop" name="desktop" size="12px" />
+									<wd-icon v-if="button.data?.hasWeb" name="compass" size="12px" />
+									<wd-icon v-if="button.data?.hasMobile" name="mobile" size="12px" />
 								</view>
 							</wd-checkbox>
 						</wd-checkbox-group>

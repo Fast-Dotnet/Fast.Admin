@@ -8,8 +8,12 @@
 		<FaWatermark v-if="state.watermark" />
 
 		<!-- #ifdef H5 -->
-		<button v-if="showH5NavbarWorkbench" class="fa-layout__navbar-workbench" @click="handleNavbarWorkbench">
+		<button v-if="showH5NavbarWorkbench && !isWeChatH5" class="fa-layout__navbar-workbench" @click="handleNavbarWorkbench">
 			<FaIcon name="workbench" size="16px" />
+			<text>工作台</text>
+		</button>
+		<button v-if="showWeChatWorkbench" class="fa-layout__wechat-workbench" @click="handleNavbarWorkbench">
+			<FaIcon name="workbench" size="20px" />
 			<text>工作台</text>
 		</button>
 		<!-- #endif -->
@@ -189,7 +193,22 @@ const state = reactive({
 });
 
 // #ifdef H5
+const isWeChatH5 = /MicroMessenger/i.test(navigator.userAgent);
 const showH5NavbarWorkbench = ref(false);
+/** 微信 H5 的业务页使用悬浮入口，避免隐藏默认导航栏后无法前往工作台。 */
+const showWeChatWorkbench = computed(() => {
+	const route = router.currentRoute.value;
+	return (
+		isWeChatH5 &&
+		state.pageVisible &&
+		!!userInfoStore.token &&
+		userInfoStore.hasUserInfo &&
+		!state.isTabBar &&
+		!route.isTabBar &&
+		!route.noLogin &&
+		!route.authForbidView
+	);
+});
 const handleNavbarWorkbench = () => router.pushTab(CommonRoute.Workbench);
 // #endif
 
