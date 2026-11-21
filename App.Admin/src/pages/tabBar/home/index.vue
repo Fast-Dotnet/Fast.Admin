@@ -13,32 +13,25 @@
 			:list="state.swiperList"
 			autoplay
 			v-model:current="state.swiperCurrent"
-			:indicator="{ type: 'dots-bar' }"
 		/>
 
 		<view class="workspace">
-			<view class="workspace__header">
-				<text class="workspace__title">当前工作空间</text>
-				<wd-button type="primary" variant="text" size="small" @click="router.pushTab(CommonRoute.My)">管理</wd-button>
-			</view>
 			<view class="workspace__body">
 				<view class="workspace__icon">
-					<FaImage v-if="userInfoStore.logoUrl" width="80rpx" height="80rpx" :src="userInfoStore.logoUrl" />
+					<FaImage v-if="userInfoStore.logoUrl" width="72rpx" height="72rpx" :src="userInfoStore.logoUrl" />
 					<FaIcon v-else name="organization" size="44rpx" />
 				</view>
 				<view class="workspace__info">
+					<view class="workspace__label">当前工作空间</view>
 					<view class="workspace__name">{{ userInfoStore.tenantName }}</view>
 					<view class="workspace__description">
 						{{ userInfoStore.employeeName }} · {{ userInfoStore.departmentName || "当前工作空间" }}
 					</view>
 				</view>
 			</view>
-			<wd-button custom-class="workspace__action" type="primary" @click="router.pushTab(CommonRoute.Workbench)">
-				<view class="workspace__action-content">
-					<FaIcon name="menu" size="32rpx" />
-					<text>进入工作台</text>
-					<wd-icon name="arrow-right" />
-				</view>
+			<wd-button type="primary" variant="text" size="small" @click="router.pushTab(CommonRoute.Workbench)">
+				工作台
+				<wd-icon name="arrow-right" />
 			</wd-button>
 		</view>
 
@@ -88,10 +81,10 @@ const userInfoStore = useUserInfo();
 const router = useRouter();
 
 const state = reactive({
+	/** 首页轮播图片 */
 	swiperList: [bannerAdmin, bannerInsights, bannerTogether, bannerAnywhere, bannerSecure],
+	/** 当前轮播索引 */
 	swiperCurrent: 0,
-	/** 搜素值 */
-	searchValue: "",
 });
 
 watch(

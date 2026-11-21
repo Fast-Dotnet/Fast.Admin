@@ -3,6 +3,7 @@
 	flex-direction: column;
 	gap: var(--fa-spacing-section);
 	padding: var(--fa-spacing-page);
+	padding-bottom: 12rpx;
 }
 
 .greeting {
@@ -31,35 +32,28 @@
 }
 
 .workspace {
-	padding: var(--fa-spacing-panel);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12rpx;
+	padding: 20rpx;
 	background-color: var(--wot-card-bg, var(--wot-filled-oppo));
 	border: var(--fa-border-panel);
 	border-radius: var(--wot-radius-extra-large);
 	box-shadow: var(--fa-shadow-panel);
 }
 
-.workspace__header {
+.workspace__body {
+	flex: 1;
+	min-width: 0;
 	display: flex;
-	justify-content: space-between;
 	align-items: center;
 	gap: 16rpx;
-	margin-bottom: var(--fa-spacing-section);
-}
-
-.workspace__title {
-	font-size: var(--wot-typography-body-size-large);
-	font-weight: var(--wot-font-weight-semibold);
-}
-
-.workspace__body {
-	display: flex;
-	align-items: center;
-	gap: 24rpx;
 }
 
 .workspace__icon {
-	width: 86rpx;
-	height: 86rpx;
+	width: 72rpx;
+	height: 72rpx;
 	flex-shrink: 0;
 	display: flex;
 	align-items: center;
@@ -70,7 +64,14 @@
 	overflow: hidden;
 }
 
+.workspace__label {
+	margin-bottom: 4rpx;
+	font-size: 22rpx;
+	color: var(--wot-text-secondary);
+}
+
 .workspace__info {
+	flex: 1;
 	min-width: 0;
 }
 
@@ -81,22 +82,10 @@
 }
 
 .workspace__description {
-	margin-top: 10rpx;
+	margin-top: 6rpx;
 	font-size: var(--wot-typography-label-size-main);
 	color: var(--wot-text-secondary);
 	overflow-wrap: anywhere;
-}
-
-.workspace__action {
-	display: block;
-	margin-top: 32rpx;
-}
-
-.workspace__action-content {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 18rpx;
 }
 
 .help {
@@ -106,11 +95,12 @@
 }
 
 .help__item {
-	min-height: 44px;
+	box-sizing: border-box;
+	min-height: 88rpx;
 	display: flex;
 	align-items: center;
-	gap: 18rpx;
-	padding: 32rpx 24rpx;
+	gap: 12rpx;
+	padding: 20rpx;
 	background: var(--wot-card-bg, var(--wot-filled-oppo));
 	border: var(--fa-border-panel);
 	border-radius: var(--wot-radius-extra-large);
@@ -119,6 +109,7 @@
 
 .help__item > text {
 	flex: 1;
+	min-width: 0;
 }
 
 .help__item > .wd-icon {
@@ -126,9 +117,10 @@
 }
 
 .footer {
-	padding: 8rpx 0 32rpx;
+	padding: 4rpx 0;
 	text-align: center;
 	font-size: var(--wot-typography-label-size-main);
+	line-height: 1.5;
 	color: var(--wot-text-auxiliary);
 	letter-spacing: 1rpx;
 }
