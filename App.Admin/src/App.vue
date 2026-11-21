@@ -37,11 +37,17 @@ useConfigProvider({
 onShow(() => {
 	setNotificationSoundForeground(true);
 	tryConnectWebSocket(userInfoStore);
+	if (usePrivacy.hasAgreed() && appStore.windowInfo && configStore.layout.autoThemMode) {
+		configStore.switchAutoThemMode();
+	}
 });
 
 onHide(() => setNotificationSoundForeground(false));
 
 // #ifdef H5
+// 微信内置浏览器自带标题栏，对所有默认导航页面统一使用原生标题。
+document.documentElement.classList.toggle("fa-wechat-h5", /MicroMessenger/i.test(navigator.userAgent));
+
 useEventListener(document, "visibilitychange", () => {
 	if (document.visibilityState !== "visible") stopNotificationSound();
 });

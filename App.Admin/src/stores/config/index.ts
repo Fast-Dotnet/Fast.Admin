@@ -119,6 +119,11 @@ export const useConfig = defineStore(
 			}
 
 			layout.themeColor = color;
+			// #ifdef H5
+			const root = document.documentElement;
+			root.dataset.faTheme = layout.isDark ? "dark" : "light";
+			root.style.setProperty("--fa-page-background", pageTheme.value.pageBackgroundColor);
+			// #endif
 			const { navbarBgColor, navbarFrontColor } = pageTheme.value;
 
 			applyPageTheme();
@@ -163,7 +168,7 @@ export const useConfig = defineStore(
 			// #ifdef H5
 			// H5 的 100vh 包含导航栏和原生 TabBar 占位，内容高度需扣除它们。
 			styles["--fa-window-height"] =
-				`calc(100vh - var(--window-top, 0px) - var(--window-bottom, 0px) - ${appStore.windowInfo.safeAreaInsets.bottom}px)`;
+				`calc(var(--fa-viewport-height, 100vh) - var(--window-top, 0px) - var(--window-bottom, 0px) - ${appStore.windowInfo.safeAreaInsets.bottom}px)`;
 			// #endif
 
 			const themeVars: ConfigProviderThemeVars = {
@@ -191,35 +196,42 @@ export const useConfig = defineStore(
 			layout.themeStyle = serializeStyle(styles);
 		};
 
-		/** 按当前 isDark 配置应用主题，不在此方法中反转配置值。 */
-		const switchDark = () => {
-			if (layout.isDark) {
-				// #ifdef APP-PLUS
-				plus.nativeUI.setUIStyle("dark");
-				// #endif
-			} else {
-				// #ifdef APP-PLUS
-				plus.nativeUI.setUIStyle("light");
-				// #endif
-			}
-			setTheme(layout.themeColor);
-		};
-
-		/** 开启跟随系统时读取系统主题并应用。 */
-		const switchAutoThemMode = () => {
-			if (!layout.autoThemMode) return;
-			// #ifdef APP-PLUS
-			plus.nativeUI.setUIStyle("auto");
+		/** 读取当前系统主题，H5 使用浏览器媒体查询而非小程序专属的 appBaseInfo.theme。 */
+		const getSystemDark = () => {
+			// eslint-disable-next-line no-useless-assignment -- H5 平台会覆盖初始值，其他平台仍需使用系统主题
+			let theme = uni.getSystemInfoSync().theme;
+			// #ifdef H5
+			theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 			// #endif
+			return theme === "dark";
+		};
 
-			// 判断是否启用深色模式
-			if (uni.getAppBaseInfo().theme === "dark") {
-				layout.isDark = true;
-			} else {
-				layout.isDark = false;
-			}
+		/** 当前主题变化时同步 Wot UI、原生导航栏和 H5 根背景。 */
+		const applySystemDark = (isDark: boolean) => {
+			if (!layout.autoThemMode || layout.isDark === isDark) return;
+			layout.isDark = isDark;
 			setTheme(layout.themeColor);
 		};
+
+		/** 手动主题与系统跟随均交由当前配置控制原生外观。 */
+		const switchDark = () => {
+			// #ifdef APP-PLUS
+			plus.nativeUI.setUIStyle(layout.autoThemMode ? "auto" : layout.isDark ? "dark" : "light");
+			// #endif
+			setTheme(layout.themeColor);
+		};
+
+		/** 切换跟随系统时同步当前系统外观，关闭时恢复手动选择。 */
+		const switchAutoThemMode = () => {
+			// #ifdef APP-PLUS
+			plus.nativeUI.setUIStyle(layout.autoThemMode ? "auto" : layout.isDark ? "dark" : "light");
+			// #endif
+			if (layout.autoThemMode) layout.isDark = getSystemDark();
+			setTheme(layout.themeColor);
+		};
+
+		let themeListenerRegistered = false;
+		const handleThemeChange = ({ theme }: { theme: string }) => applySystemDark(theme === "dark");
 
 		/** 应用置灰或色弱显示配置。 */
 		const switchGreyOrWeak = (type: "grey" | "weak", value: boolean) => {
@@ -236,9 +248,14 @@ export const useConfig = defineStore(
 			} else {
 				layout.navBarHeight = CommonUniApp.androidNavBarHeight;
 			}
+			if (!themeListenerRegistered) {
+				uni.onThemeChange(handleThemeChange);
+				// #ifdef H5
+				window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event) => applySystemDark(event.matches));
+				// #endif
+				themeListenerRegistered = true;
+			}
 			switchAutoThemMode();
-			uni.onThemeChange(switchAutoThemMode);
-			switchDark();
 			if (layout.isGrey) switchGreyOrWeak("grey", true);
 			if (layout.isWeak) switchGreyOrWeak("weak", true);
 		};

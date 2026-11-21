@@ -31,6 +31,9 @@ page {
 // App 保持窗口滚动，根节点设置 overflow-x 会形成独立滚动容器，导致页面滚动及触底事件失效。
 :root {
 	min-height: 100vh;
+	/* #ifdef H5 */
+	min-height: var(--fa-viewport-height, 100vh);
+	/* #endif */
 	/* #ifndef H5 || APP-PLUS */
 	overflow-x: hidden;
 	/* #endif */
@@ -39,7 +42,7 @@ page {
 page {
 	min-height: 100vh;
 	/* #ifdef H5 */
-	min-height: calc(100vh - var(--window-top, 0px) - var(--window-bottom, 0px));
+	min-height: calc(var(--fa-viewport-height, 100vh) - var(--window-top, 0px) - var(--window-bottom, 0px));
 	/* #endif */
 	/* #ifndef H5 || APP-PLUS */
 	overflow-x: hidden;
@@ -47,6 +50,52 @@ page {
 }
 
 /* #ifdef H5 */
+:root {
+	--fa-viewport-height: 100vh;
+}
+
+@supports (height: 100dvh) {
+	:root {
+		--fa-viewport-height: 100dvh;
+	}
+}
+
+:root[data-fa-theme="light"] {
+	color-scheme: light;
+}
+
+:root[data-fa-theme="dark"] {
+	color-scheme: dark;
+}
+
+// 滚动回弹和浏览器工具栏收起时，避免暴露与应用主题不一致的外层底色。
+:root,
+body,
+uni-app,
+uni-page,
+uni-page-body {
+	background-color: var(--fa-page-background, #f7f8fa);
+}
+
+// 微信内置浏览器自带导航栏，统一隐藏 H5 默认标题栏及其占位。
+:root.fa-wechat-h5,
+:root.fa-wechat-h5 uni-page {
+	--window-top: 0px;
+}
+
+:root.fa-wechat-h5 uni-page-head {
+	display: none !important;
+}
+
+:root.fa-wechat-h5 uni-page-wrapper {
+	top: 0 !important;
+}
+
+// 工作台快捷入口原本叠加于 H5 导航栏，微信原生导航下不再显示。
+:root.fa-wechat-h5 .fa-layout__navbar-workbench {
+	display: none !important;
+}
+
 /* H5 首帧也由公共布局的 Wot TabBar 负责显示。 */
 uni-app > uni-tabbar {
 	display: none;
