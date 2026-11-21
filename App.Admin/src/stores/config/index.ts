@@ -249,10 +249,8 @@ export const useConfig = defineStore(
 				layout.navBarHeight = CommonUniApp.androidNavBarHeight;
 			}
 			if (!themeListenerRegistered) {
+				// 使用 uni-app 的跨端事件，避免 H5 额外注册不兼容旧版 Safari 的媒体查询监听。
 				uni.onThemeChange(handleThemeChange);
-				// #ifdef H5
-				window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event) => applySystemDark(event.matches));
-				// #endif
 				themeListenerRegistered = true;
 			}
 			switchAutoThemMode();

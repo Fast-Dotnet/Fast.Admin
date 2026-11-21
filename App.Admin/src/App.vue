@@ -34,12 +34,54 @@ useConfigProvider({
 	themeVars: computed(() => configStore.layout.themeVars),
 });
 
+// #ifdef MP-WEIXIN || H5 || APP-PLUS
+/** 窗口尺寸或安全区变化后，更新全局尺寸和布局主题变量。 */
+const syncWindowInfo = () => {
+	const previous = appStore.windowInfo;
+	if (!previous) return;
+
+	const current = uni.getWindowInfo();
+	const oldInsets = previous.safeAreaInsets;
+	const newInsets = current.safeAreaInsets;
+	if (
+		previous.windowWidth === current.windowWidth &&
+		previous.windowHeight === current.windowHeight &&
+		previous.statusBarHeight === current.statusBarHeight &&
+		oldInsets?.top === newInsets?.top &&
+		oldInsets?.right === newInsets?.right &&
+		oldInsets?.bottom === newInsets?.bottom &&
+		oldInsets?.left === newInsets?.left
+	) {
+		return;
+	}
+
+	appStore.windowInfo = current;
+	configStore.setTheme(configStore.layout.themeColor);
+};
+
+let windowResizeRegistered = false;
+let windowResizeTimer: ReturnType<typeof setTimeout> | undefined;
+
+/** 合并频繁的视口变化事件，避免重复刷新页面主题变量。 */
+const handleWindowResize = () => {
+	if (windowResizeTimer !== undefined) clearTimeout(windowResizeTimer);
+	windowResizeTimer = setTimeout(() => {
+		windowResizeTimer = undefined;
+		syncWindowInfo();
+	}, 100);
+};
+// #endif
+
 onShow(() => {
 	setNotificationSoundForeground(true);
 	tryConnectWebSocket(userInfoStore);
-	if (usePrivacy.hasAgreed() && appStore.windowInfo && configStore.layout.autoThemMode) {
-		configStore.switchAutoThemMode();
-	}
+	if (!usePrivacy.hasAgreed() || !appStore.windowInfo) return;
+
+	// #ifdef MP-WEIXIN || H5 || APP-PLUS
+	// 返回前台时补偿可能未收到的窗口变化。
+	syncWindowInfo();
+	// #endif
+	if (configStore.layout.autoThemMode) configStore.switchAutoThemMode();
 });
 
 onHide(() => setNotificationSoundForeground(false));
@@ -275,16 +317,19 @@ onLaunch((options) => {
 			logger.debug("App", "IsIphone", isIphone);
 			logger.debug("App", "IsClient", isClient);
 
-			// #ifdef APP-PLUS
-			// App 需要设置原生 UI 外观，主题才能跟随系统。
-			plus.nativeUI.setUIStyle("auto");
-			// #endif
-
 			// 未取得启动配置时使用本地应用名称，保留先于隐私同意返回的服务端名称。
 			if (!appStore.hasLaunch) appStore.setAppName(appStore.appBaseInfo.appName);
 
 			// 初始化主题
 			configStore.initTheme();
+
+			// #ifdef MP-WEIXIN || H5 || APP-PLUS
+			// 等待应用窗口与主题完成初始化后再监听尺寸变化。
+			if (!windowResizeRegistered) {
+				uni.onWindowResize(handleWindowResize);
+				windowResizeRegistered = true;
+			}
+			// #endif
 
 			logger.debug("App", `成功加载【${appStore.appBaseInfo.appName}】`, new Date());
 
