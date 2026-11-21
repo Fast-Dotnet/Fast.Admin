@@ -29,6 +29,9 @@ importers:
       '@fast-china/utils':
         specifier: ^2.1.12
         version: 2.1.12(vue@3.5.45(typescript@6.0.3))
+      '@qiun/ucharts':
+        specifier: 2.5.0-20230101
+        version: 2.5.0-20230101
       '@wot-ui/router':
         specifier: ^1.2.0
         version: 1.2.0(vue@3.5.45(typescript@6.0.3))
@@ -1933,6 +1936,9 @@ packages:
   '@pkgr/core@0.3.6':
     resolution: {integrity: sha512-SEeaJLb3qBNF/OaXnaR1NmmBbFYk1zC0ZH/52fATcRPLFg/p791YrcyFFy44Bo9sLaGuSuLp5Q6axbb/O+v/RA==}
     engines: {node: ^14.18.0 || >=16.0.0}
+
+  '@qiun/ucharts@2.5.0-20230101':
+    resolution: {integrity: sha512-C7ccBgfPuGF6dxTRuMW0NPPMSCf1k/kh3I9zkRVBc5PaivudX/rPL+jd2Wty6gn5ya5L3Ob+YmYe09V5xw66Cw==}
 
   '@quansync/fs@1.1.0':
     resolution: {integrity: sha512-qAPG/t3HqML1TlN7sY/pTbEjzFVAKsMjNNMGheyDosro+kT4iw2KCUoHcVdmliwWjorm4elZbgNQyU2eD97eDg==}
@@ -7443,6 +7449,8 @@ snapshots:
     optional: true
 
   '@pkgr/core@0.3.6': {}
+
+  '@qiun/ucharts@2.5.0-20230101': {}
 
   '@quansync/fs@1.1.0':
     dependencies:

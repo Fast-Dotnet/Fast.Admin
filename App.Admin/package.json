@@ -37,6 +37,7 @@
 		"@dcloudio/uni-mp-weixin": "3.0.0-5030420261029002",
 		"@fast-china/axios": "^2.0.10",
 		"@fast-china/utils": "^2.1.12",
+		"@qiun/ucharts": "2.5.0-20230101",
 		"@wot-ui/router": "^1.2.0",
 		"@wot-ui/ui": "^2.4.0",
 		"axios": "^1.21.1",
