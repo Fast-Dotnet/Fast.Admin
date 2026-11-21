@@ -171,9 +171,14 @@ public partial class AppService
         const string arrowIcon =
             """<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>""";
         const string phoneIcon =
-            """<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>""";
+            """<svg class="icon icon--harmony" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>""";
+        const string androidIcon =
+            """<svg class="icon icon--android platform-android" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m6.4 6.4-2-3 .8-.6 2.1 3.1a10 10 0 0 1 9.4 0l2.1-3.1.8.6-2 3A9 9 0 0 1 21 13H3a9 9 0 0 1 3.4-6.6ZM3 14h18v6H3Z"/><circle cx="8" cy="10" r="1" fill="var(--icon-cutout, var(--surface))"/><circle cx="16" cy="10" r="1" fill="var(--icon-cutout, var(--surface))"/></svg>""";
+        // Apple 轮廓来自 Simple Icons（CC0），内嵌以避免额外请求。
+        const string appleIcon =
+            """<svg class="icon icon--apple" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>""";
         const string desktopIcon =
-            """<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>""";
+            """<svg class="icon icon--windows" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 3h9v8H2Zm11 0h9v8h-9ZM2 13h9v8H2Zm11 0h9v8h-9Z"/></svg>""";
         const string linkIcon =
             """<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10 13 4-4m-5 7-1 1a4 4 0 0 1-6-6l4-4a4 4 0 0 1 6 0m0 10a4 4 0 0 0 6 0l4-4a4 4 0 0 0-6-6l-1 1"/></svg>""";
         var channels = new StringBuilder();
@@ -184,6 +189,15 @@ public partial class AppService
         {
             availableCount++;
             string platform = WebUtility.HtmlEncode(option.Platform);
+            string platformGlyph = option.Platform switch
+            {
+                "Android" => androidIcon,
+                "iOS" => appleIcon,
+                "Windows" => desktopIcon,
+                _ => phoneIcon
+            };
+            // 四种平台图标统一使用固定尺寸容器，避免 SVG 的画布留白影响文字对齐。
+            string platformIcon = $"<span class=\"platform-icon\">{platformGlyph}</span>";
             string description = option.Version == null ? "通过 App Store 获取最新版本" :
                 option.Version.StartsWith("v", StringComparison.OrdinalIgnoreCase) ? option.Version : $"v{option.Version}";
             if (option.FileSizeKb.HasValue)
@@ -208,14 +222,14 @@ public partial class AppService
             string actionText = option.Platform == "iOS" ? "前往 App Store" : $"下载 {platform} 版";
             channels.Append($"""
                              <section class="download-option" data-platform="{platform}">
-                                 <div class="platform-row"><h2>{(option.Platform == "Windows" ? desktopIcon : phoneIcon)}{platform} 版</h2><span class="platform-badge">适用于当前设备</span></div>
+                                 <div class="platform-row"><h2>{platformIcon}<span class="platform-title">{platform} 版</span></h2><span class="platform-badge">适用于当前设备</span></div>
                                  <p class="version">{WebUtility.HtmlEncode(description)}</p>
-                                 <a class="download" href="{WebUtility.HtmlEncode(option.Url)}">{(option.Platform == "iOS" ? arrowIcon : downloadIcon)}{actionText}</a>
+                                 <a class="download" href="{WebUtility.HtmlEncode(option.Url)}"><span class="download-platform">{platformIcon}</span><span class="download-text">{actionText}</span><span class="action-icon">{(option.Platform == "iOS" ? arrowIcon : downloadIcon)}</span></a>
                                  <p class="install-hint">{installHint}</p>
                              </section>
                              """);
             platformButtons.Append($"""
-                                    <button class="platform-choice" type="button" data-platform="{platform}" aria-pressed="false"><span>{platform}{(option.Platform == "iOS" ? " · App Store" : "")}</span>{arrowIcon}</button>
+                                    <button class="platform-choice" type="button" data-platform="{platform}" aria-pressed="false"><span class="platform-name">{platformIcon}<span>{platform}{(option.Platform == "iOS" ? " · App Store" : "")}</span></span>{arrowIcon}</button>
                                     """);
             if (!string.IsNullOrWhiteSpace(option.UpdateContent))
             {
@@ -251,6 +265,8 @@ public partial class AppService
                                 body.guide-open { overflow:hidden; }
                                 button,input { font:inherit; }
                                 button { cursor:pointer; }
+                                button,a,summary { -webkit-tap-highlight-color:transparent; -webkit-user-select:none; user-select:none; transition:opacity .15s; }
+                                button:active,a:active,summary:active { opacity:.8; }
                                 button:focus-visible,a:focus-visible,summary:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
                                 p,h1,h2 { margin:0; }
                                 [hidden] { display:none !important; }
@@ -260,7 +276,14 @@ public partial class AppService
                                 .brand-name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
                                 .brand-label { margin-left:auto; white-space:nowrap; }
                                 main { max-width:390px; margin:auto; padding:30px 22px calc(22px + env(safe-area-inset-bottom,0px)); }
-                                .icon { width:18px; height:18px; flex-shrink:0; vertical-align:middle; }
+                                .icon { display:block; width:20px; height:20px; flex-shrink:0; }
+                                .platform-android { color:#3ddc84; }
+                                .platform-icon { display:inline-flex; align-items:center; justify-content:center; flex:0 0 24px; width:24px; height:24px; line-height:0; }
+                                .platform-icon .icon--android { transform:scale(1.12); }
+                                .platform-icon .icon--apple { transform:scale(.86); }
+                                .platform-icon .icon--windows { transform:scale(1.08); }
+                                .platform-name { display:flex; align-items:center; gap:8px; min-width:0; line-height:24px; }
+                                .platform-name > span:last-child { min-width:0; overflow-wrap:anywhere; }
                                 .hero { text-align:center; padding-bottom:27px; }
                                 .logo { display:block; width:74px; height:74px; object-fit:contain; border-radius:18px; margin:0 auto 14px; background:var(--surface); box-shadow:0 3px 16px #00000009; }
                                 h1 { font-size:25px; font-weight:650; letter-spacing:1px; overflow-wrap:anywhere; }
@@ -268,10 +291,15 @@ public partial class AppService
                                 .download-option,.qr-panel,.empty { padding:20px; border:1px solid var(--border); border-radius:18px; background:var(--surface); }
                                 .download-option:not([hidden]) + .download-option:not([hidden]) { margin-top:12px; }
                                 .platform-row { display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; }
-                                .platform-row h2 { display:flex; align-items:center; gap:7px; font-size:14px; font-weight:600; }
+                                .platform-row h2 { display:flex; align-items:center; gap:8px; min-height:24px; line-height:24px; font-size:14px; font-weight:600; }
+                                .platform-title { display:block; line-height:24px; }
                                 .platform-badge { padding:2px 7px; border-radius:5px; background:var(--tint); color:var(--accent); font-size:11px; }
                                 .version { margin:11px 0 18px; color:var(--secondary); font-size:11px; overflow-wrap:anywhere; }
-                                .download { display:flex; align-items:center; justify-content:center; gap:9px; width:100%; min-height:46px; padding:10px; border-radius:10px; background:var(--accent); color:#fff; text-decoration:none; font-weight:500; }
+                                .download { display:grid; grid-template-columns:32px minmax(0,1fr) 32px; align-items:center; gap:8px; width:100%; min-height:46px; padding:7px 12px; border-radius:10px; background:var(--accent); color:#fff; text-decoration:none; font-weight:500; --icon-cutout:var(--accent); }
+                                .download-platform,.action-icon { display:flex; align-items:center; justify-content:center; width:32px; height:32px; line-height:0; }
+                                .download-platform .platform-android { color:#fff; }
+                                .download-text { min-width:0; text-align:center; line-height:1.5; overflow-wrap:anywhere; }
+                                .action-icon { border:1px solid #ffffff50; border-radius:8px; background:#ffffff18; }
                                 .install-hint { margin-top:11px; color:var(--secondary); font-size:11px; text-align:center; }
                                 .empty { text-align:center; }
                                 .empty h2 { font-size:16px; font-weight:500; }
@@ -283,7 +311,7 @@ public partial class AppService
                                 .qr-panel h2 { font-size:16px; font-weight:600; }
                                 .qr-panel p { margin-top:7px; color:var(--secondary); font-size:11px; }
                                 .other-platforms { margin-top:12px; }
-                                .other-platforms summary { display:flex; align-items:center; justify-content:center; gap:6px; min-height:42px; background:transparent; color:var(--secondary); font-size:12px; list-style:none; cursor:pointer; -webkit-tap-highlight-color:transparent; -webkit-user-select:none; user-select:none; }
+                                .other-platforms summary { display:flex; align-items:center; justify-content:center; gap:6px; min-height:42px; background:transparent; color:var(--secondary); font-size:12px; list-style:none; cursor:pointer; }
                                 .other-platforms summary::-webkit-details-marker { display:none; }
                                 .platform-chevron { width:14px; height:14px; flex-shrink:0; transition:transform .2s; }
                                 .other-platforms[open] .platform-chevron { transform:rotate(180deg); }
