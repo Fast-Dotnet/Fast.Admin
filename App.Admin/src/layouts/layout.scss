@@ -71,6 +71,15 @@
 	padding-bottom: max(calc(12px - var(--fa-area-inset-bottom, 0px)), 0px);
 }
 
+.fa-layout__realtime-notice {
+	position: fixed;
+	z-index: 105;
+	top: var(--fa-area-inset-top, 0px);
+	left: 50%;
+	width: min(100%, var(--fa-layout-max-width, 440px));
+	transform: translateX(-50%);
+}
+
 // 悬浮导航与内容同宽，底部间距在无安全区的 H5 上也保留。
 :deep(.fa-tabbar.wd-tabbar--round.is-fixed) {
 	left: 50%;

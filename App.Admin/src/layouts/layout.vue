@@ -14,6 +14,19 @@
 		</button>
 		<!-- #endif -->
 
+		<!-- 在线职员实时通知 -->
+		<view v-if="state.pageVisible && activeNotification" class="fa-layout__realtime-notice">
+			<wd-notice-bar
+				:key="activeNotification.id"
+				:text="activeNotification.messages"
+				:type="activeNotification.type"
+				:prefix="activeNotification.prefix"
+				closable
+				@next="handleNoticeNext"
+				@close="dismissNotification"
+			/>
+		</view>
+
 		<view :class="['fa-main', { 'fa-main__tabBar': state.isTabBar, 'fa-main__page-scroll': state.pageScroll === false }]" :style="mainStyle">
 			<slot v-if="state.rendered" />
 			<!-- 页脚 -->
@@ -126,6 +139,7 @@ import { LoginStatusEnum } from "@/api/enums/LoginStatusEnum";
 import { loginApi } from "@/api/services/Auth/login";
 import { CommonRoute } from "@/common";
 import { useMessageBox, wdHookState } from "@/hooks";
+import { activeNotification, clearNotifications, dismissNotification } from "@/signalR/notification";
 import defaultLogo from "@/static/logo.png";
 import { useApp, useConfig, useUserInfo } from "@/stores";
 import type { ButtonProps } from "@wot-ui/ui/components/wd-button/types";
@@ -170,6 +184,8 @@ const state = reactive({
 	backgroundColor: "var(--wot-filled-bottom)",
 	/** 渲染结束 */
 	rendered: false,
+	/** 页面显示 */
+	pageVisible: false,
 });
 
 // #ifdef H5
@@ -200,6 +216,11 @@ const mainStyle = computed(() => {
 	}
 	return style;
 });
+
+/** 当前通知滚动完成一轮后展示下一组通知 */
+const handleNoticeNext = (index: number) => {
+	if (index === 0) dismissNotification();
+};
 
 // 请求消费后会清空，单独保留当前弹窗配置。
 const dialogOptions = shallowRef<DialogOptions>({});
@@ -383,6 +404,7 @@ onLoad(() => {
 	});
 });
 onShow(() => {
+	state.pageVisible = true;
 	handleWatch();
 	configStore.applyPageTheme();
 
@@ -392,6 +414,8 @@ onShow(() => {
 	// #endif
 });
 onHide(() => {
+	state.pageVisible = false;
+	clearNotifications();
 	// 隐藏页面停止消费，避免多个页面布局同时响应同一提示请求。
 	wdNotifyWatch && wdNotifyWatch();
 	wdNotifyWatch = undefined;

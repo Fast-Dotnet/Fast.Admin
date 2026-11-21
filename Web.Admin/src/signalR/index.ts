@@ -229,6 +229,19 @@ const initWebSocket = async (): Promise<void> => {
 			}
 		);
 
+		// 实时通知
+		connection.on("ReceiveNotification", (data: { type: "info" | "warning" | "error"; messages: string[] }) => {
+			logger.warn("WebSocket", "实时通知", data);
+			for (const message of data.messages) {
+				ElNotification({
+					title: "消息通知",
+					message,
+					type: data.type,
+					position: "top-right",
+				});
+			}
+		});
+
 		// 连接结束时使旧回调失效；主动退出清理遮罩，异常断开保留遮罩并提示重连。
 		connection.onclose((error) => {
 			connectionVersion++;

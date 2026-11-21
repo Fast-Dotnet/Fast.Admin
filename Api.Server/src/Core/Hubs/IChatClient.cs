@@ -33,4 +33,9 @@ public interface IChatClient
     /// 强制下线
     /// </summary>
     Task ForceOffline(ForceOfflineOutput input);
+
+    /// <summary>
+    /// 接收服务端实时消息通知
+    /// </summary>
+    Task ReceiveNotification(RealtimeNotificationInput input);
 }

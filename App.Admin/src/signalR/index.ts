@@ -1,6 +1,7 @@
 import { useFastAxios } from "@fast-china/axios";
 import { installationIdentity, logger, toQueryString } from "@fast-china/utils";
 import { authApi } from "@/api/services/Auth/auth";
+import { clearNotifications, enqueueNotification } from "./notification";
 import { SignalRSocketState, createSignalRSocket } from "./uniSignalR";
 import type { SignalRSocket } from "./uniSignalR";
 import type { TenantOnlineUserModel } from "@/api/services/Center/tenantOnlineUser/models/TenantOnlineUserModel";
@@ -159,6 +160,7 @@ const initWebSocket = async (userInfoStore: ReturnType<typeof useUserInfo>): Pro
 		// 登录失败监听
 		connection.on("LoginFail", async (message: string) => {
 			shouldConnect = false;
+			clearNotifications();
 			try {
 				// 认证失败时直接停止连接及自动重连，无需再调用 Hub Logout。
 				await connection.stop();
@@ -177,6 +179,7 @@ const initWebSocket = async (userInfoStore: ReturnType<typeof useUserInfo>): Pro
 		// 其他地方登录监听
 		connection.on("ElsewhereLogin", async (data: TenantOnlineUserModel) => {
 			logger.warn("WebSocket", "其他地方登录", data);
+			clearNotifications();
 
 			const message = `账号于【${data.lastLoginTime}】在【${data.lastLoginOS} ${data.lastLoginBrowser}(${
 				data.lastLoginIp
@@ -194,6 +197,7 @@ const initWebSocket = async (userInfoStore: ReturnType<typeof useUserInfo>): Pro
 			"ForceOffline",
 			async (data: { isAdmin: boolean; nickName: string; employeeNo: string; offlineTime: string; message: string }) => {
 				logger.warn("WebSocket", "强制下线", data);
+				clearNotifications();
 
 				let message = "您已被";
 
@@ -216,6 +220,12 @@ const initWebSocket = async (userInfoStore: ReturnType<typeof useUserInfo>): Pro
 				});
 			}
 		);
+
+		// 实时通知
+		connection.on("ReceiveNotification", (data: { type: "info" | "warning" | "error"; messages: string[] }) => {
+			logger.warn("WebSocket", "实时通知", data);
+			enqueueNotification(data);
+		});
 
 		// 主动退出时清理遮罩，非主动关闭时保留遮罩并提示重连。
 		connection.onclose((error) => {
@@ -247,6 +257,7 @@ const initWebSocket = async (userInfoStore: ReturnType<typeof useUserInfo>): Pro
 /** 尝试通知服务端退出登录后停止连接；停止失败时向调用方抛出异常 */
 const closeWebSocket = async (): Promise<void> => {
 	shouldConnect = false;
+	clearNotifications();
 	if (connection) {
 		try {
 			// WebSocket 退出登录
