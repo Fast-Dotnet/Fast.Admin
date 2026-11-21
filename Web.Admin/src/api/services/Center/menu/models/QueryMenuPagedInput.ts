@@ -1,4 +1,3 @@
-import type { PagedInput } from "fast-element-plus";
 import type { CommonStatusEnum } from "@/api/enums/CommonStatusEnum";
 import type { EditionEnum } from "@/api/enums/EditionEnum";
 import type { MenuTypeEnum } from "@/api/enums/MenuTypeEnum";
@@ -6,7 +5,11 @@ import type { MenuTypeEnum } from "@/api/enums/MenuTypeEnum";
 /**
  * 获取菜单列表输入
  */
-export interface QueryMenuPagedInput extends PagedInput  {
+export interface QueryMenuPagedInput {
+	/**
+	 * 搜索值
+	 */
+	searchValue?: string;
 	/**
 	 * 
 	 */

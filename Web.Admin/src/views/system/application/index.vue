@@ -59,6 +59,7 @@
 						:enum="appStore.getDictionary('BooleanEnum')"
 					/>
 					<FaTableColumn prop="weChatMerchantNo" label="微信商户号" width="180" small-width="160" copy />
+					<FaTableColumn prop="appStoreId" label="App Store ID" width="160" small-width="140" copy />
 					<FaTableColumn prop="alipayMerchantNo" label="支付宝商户号" width="180" small-width="160" copy />
 					<FaTableColumn prop="remark" label="备注" width="200" small-width="180" />
 					<FaTableColumn prop="createdTime" label="创建时间" width="240" small-width="220" type="timeInfo" />
@@ -117,11 +118,13 @@
 
 			<!-- 表格操作 -->
 			<template #operation="{ row }: { row: QueryApplicationPagedOutput }">
+				<el-button size="small" plain type="info" @click="downloadRef.open(row.appId, row.appName)">下载</el-button>
 				<el-button v-auth="'App:Edit'" size="small" plain type="primary" @click="editFormRef.edit(row.appId)">编辑</el-button>
 				<el-button v-auth="'App:Delete'" size="small" plain type="danger" @click="handleDelete(row)">删除</el-button>
 			</template>
 		</FaTable>
 		<ApplicationEdit ref="editFormRef" @ok="faTableRef.refresh()" />
+		<ApplicationDownload ref="downloadRef" />
 		<ApplicationClientEdit ref="clientEditFormRef" :app-id="state.appId" :app-name="state.appName" @ok="faTableRef.refresh()" />
 	</div>
 </template>
@@ -133,6 +136,7 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import { applicationApi } from "@/api/services/Center/application";
 import { applicationClientApi } from "@/api/services/Center/applicationClient";
 import { useApp } from "@/stores";
+import ApplicationDownload from "./download/index.vue";
 import ApplicationClientEdit from "./edit/clientEdit.vue";
 import ApplicationEdit from "./edit/index.vue";
 import type { FaTableColumnCtx, FaTableInstance } from "fast-element-plus";
@@ -148,6 +152,7 @@ const editionEnum = appStore.getDictionary("EditionEnum");
 
 const faTableRef = useTemplateRef<FaTableInstance>("faTableRef");
 const editFormRef = useTemplateRef<InstanceType<typeof ApplicationEdit>>("editFormRef");
+const downloadRef = useTemplateRef<InstanceType<typeof ApplicationDownload>>("downloadRef");
 const clientEditFormRef = useTemplateRef<InstanceType<typeof ApplicationClientEdit>>("clientEditFormRef");
 
 const state = reactive({

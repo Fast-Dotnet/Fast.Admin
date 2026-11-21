@@ -15,10 +15,11 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { Local } from "@fast-china/utils";
+import { Local, throttle } from "@fast-china/utils";
 import { LoginStatusEnum } from "@/api/enums/LoginStatusEnum";
 import { loginApi } from "@/api/services/Auth/login";
 import { useToast } from "@/hooks";
+import { closeWebSocket, initWebSocket } from "@/signalR";
 import { useUserInfo } from "@/stores";
 import FaPopup from "../popup/index.vue";
 import type { LoginTenantOutput } from "@/api/services/Auth/login/models/LoginTenantOutput";
@@ -43,27 +44,41 @@ const faPopupRef = ref<InstanceType<typeof FaPopup>>();
 const tenantList = ref<LoginTenantOutput[]>([]);
 
 // 当前空间不重复登录；新空间在登录及用户信息刷新后才通知调用方。
-const handleTenantLogin = (data: LoginTenantOutput) => {
+const handleTenantLogin = throttle(async (data: LoginTenantOutput) => {
 	const { userKey } = userInfoStore;
 	if (data.userKey === userKey) return;
-	faPopupRef.value.close(async () => {
-		const loginRes = await loginApi.tryLogin({ userKey: data.userKey });
-		if (loginRes.status !== LoginStatusEnum.Success) {
-			useToast.error(loginRes.message);
-			return;
+	await faPopupRef.value.close(async () => {
+		let tenantChanged = false;
+		try {
+			// 在登录响应替换 Token 前，使用旧连接退出 Hub 并停止自动重连
+			await closeWebSocket();
+			const loginRes = await loginApi.tryLogin({ userKey: data.userKey });
+			if (loginRes.status !== LoginStatusEnum.Success) {
+				useToast.error(loginRes.message);
+				return;
+			}
+			tenantChanged = true;
+			userInfoStore.login(loginRes);
+			// 删除 HTTP 缓存数据
+			Local.removeByPrefix("HTTP_CACHE_");
+			// 刷新用户信息
+			await userInfoStore.refreshUserInfo();
+			userInfoStore.hasUserInfo = true;
+		} catch (error) {
+			// 目标会话已经签发时，旧会话已被后端撤销，不能恢复旧身份数据
+			if (tenantChanged) {
+				userInfoStore.logoutClear();
+			}
+			throw error;
+		} finally {
+			if (userInfoStore.token && userInfoStore.hasUserInfo) {
+				await initWebSocket(userInfoStore);
+			}
 		}
-
-		userInfoStore.login(loginRes);
 		useToast.success(`切换工作空间【${data.tenantName}】成功`);
-
-		// 删除 HTTP 缓存数据
-		Local.removeByPrefix("HTTP_CACHE_");
-		// 刷新用户信息
-		await userInfoStore.refreshUserInfo();
-
 		emit("change", data);
 	});
-};
+});
 
 const open = () => {
 	faPopupRef.value.open(async () => {

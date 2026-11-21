@@ -8,7 +8,9 @@
 using Fast.Center.Domain;
 using Fast.Center.Service.Application.Dto;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SkiaSharp;
 
 namespace Fast.Center.Service.Application;
 
@@ -18,10 +20,12 @@ namespace Fast.Center.Service.Application;
 [ApiDescriptionSettings(ApiGroupConst.Center, Name = "application")]
 public class ApplicationService : IDynamicApplication
 {
+    private readonly HttpContext _httpContext;
     private readonly ISqlSugarRepository<ApplicationModel> _repository;
 
-    public ApplicationService(ISqlSugarRepository<ApplicationModel> repository)
+    public ApplicationService(IHttpContextAccessor httpContextAccessor, ISqlSugarRepository<ApplicationModel> repository)
     {
+        _httpContext = httpContextAccessor.HttpContext;
         _repository = repository;
     }
 
@@ -97,6 +101,7 @@ public class ApplicationService : IDynamicApplication
                     LoginComponent = sl.LoginComponent,
                     RequestTimeout = sl.RequestTimeout,
                     RequestEncipher = sl.RequestEncipher,
+                    AppStoreId = sl.AppStoreId,
                     WeChatMerchantNo = sl.WeChatMerchantNo,
                     AlipayMerchantNo = sl.AlipayMerchantNo,
                     Remark = sl.Remark,
@@ -247,5 +252,42 @@ public class ApplicationService : IDynamicApplication
         }
 
         await _repository.DeleteAsync(applicationModel);
+    }
+
+    /// <summary>
+    /// 获取应用下载
+    /// </summary>
+    [HttpPost]
+    [ApiInfo("获取应用下载", HttpRequestActionEnum.Query)]
+    [Permission(PermissionConst.App.Paged)]
+    [PlatformOnly]
+    public async Task<QueryAppDownloadOutput> QueryAppDownload(QueryAppDownloadInput input)
+    {
+        if (!await _repository.AnyAsync(a => a.AppId == input.AppId))
+        {
+            throw new UserFriendlyException("应用不存在！");
+        }
+
+        string baseUrl = input.BaseUrl?.Trim() ?? "";
+        if (baseUrl.Length == 0 || baseUrl.StartsWith('/'))
+        {
+            // 保留调用方传入的相对路径前缀。
+            baseUrl = $"{_httpContext.Request.Scheme}://{_httpContext.Request.Host}{baseUrl}";
+        }
+        else if (!Uri.TryCreate(baseUrl, UriKind.Absolute, out Uri uri)
+                 || uri.Scheme is not ("http" or "https")
+                 || !string.IsNullOrEmpty(uri.UserInfo)
+                 || !string.IsNullOrEmpty(uri.Query)
+                 || !string.IsNullOrEmpty(uri.Fragment))
+        {
+            throw new UserFriendlyException("API 基础地址无效！");
+        }
+
+        string downloadUrl = $"{baseUrl.TrimEnd('/')}/app/download/{input.AppId}";
+        using SKBitmap qrCode = ImageUtil.GenQrCode(downloadUrl, 280, 280);
+        return new QueryAppDownloadOutput
+        {
+            DownloadUrl = downloadUrl, QrCode = $"data:image/png;base64,{ImageUtil.ConvertToBase64Image(qrCode)}"
+        };
     }
 }

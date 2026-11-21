@@ -63,6 +63,11 @@ public class QueryApplicationClientDetailOutput : PagedOutput
     public bool RequestEncipher { get; set; }
 
     /// <summary>
+    /// App Store 应用Id
+    /// </summary>
+    public string AppStoreId { get; set; }
+
+    /// <summary>
     /// 微信商户号Id
     /// </summary>
     public long? WeChatMerchantId { get; set; }

@@ -8,8 +8,8 @@ export const authApi = {
 	/**
 	 * 刷新Token
 	 */
-	refreshToken(): Promise<void> {
-		return axiosUtil.request<void>({
+	refreshToken(): Promise<unknown> {
+		return axiosUtil.request({
 			url: "/refreshToken",
 			method: "get",
 			requestType: "auth",

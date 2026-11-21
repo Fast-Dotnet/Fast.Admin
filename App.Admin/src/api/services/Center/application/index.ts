@@ -2,6 +2,8 @@ import { axiosUtil } from "@fast-china/axios";
 import type { AddApplicationInput } from "./models/AddApplicationInput";
 import type { AppIdInput } from "./models/AppIdInput";
 import type { EditApplicationInput } from "./models/EditApplicationInput";
+import type { QueryAppDownloadInput } from "./models/QueryAppDownloadInput";
+import type { QueryAppDownloadOutput } from "./models/QueryAppDownloadOutput";
 import type { QueryApplicationDetailOutput } from "./models/QueryApplicationDetailOutput";
 import type { QueryApplicationPagedInput } from "./models/QueryApplicationPagedInput";
 import type { QueryApplicationPagedOutput } from "./models/QueryApplicationPagedOutput";
@@ -75,6 +77,17 @@ export const applicationApi = {
 			method: "post",
 			data,
 			requestType: "delete",
+		});
+	},
+	/**
+	 * 获取应用下载
+	 */
+	queryAppDownload(data: QueryAppDownloadInput): Promise<QueryAppDownloadOutput> {
+		return axiosUtil.request<QueryAppDownloadOutput>({
+			url: "/application/queryAppDownload",
+			method: "post",
+			data,
+			requestType: "query",
 		});
 	},
 };

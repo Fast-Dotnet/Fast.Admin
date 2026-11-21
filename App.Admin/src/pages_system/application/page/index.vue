@@ -83,11 +83,7 @@
 				<template #suffix>
 					<view class="application-option__actions">
 						<wd-icon v-if="state.selectedApplication?.appId === item.appId" name="check" size="32rpx" color="var(--wot-primary-6)" />
-						<view
-							v-if="userInfoStore.hasButtonPermission('App:Detail', 'App:Edit', 'App:Delete')"
-							class="application-option__more"
-							@click.stop="handleMoreClick(item)"
-						>
+						<view class="application-option__more" @click.stop="handleMoreClick(item)">
 							<wd-icon name="more" size="36rpx" color="var(--wot-icon-secondary)" />
 						</view>
 					</view>
@@ -100,6 +96,7 @@
 	<wd-action-sheet v-model="state.actionVisible" :actions="state.actionList" cancel-text="取消" @select="handleActionSelect" />
 
 	<ApplicationDetail ref="detailFormRef" />
+	<ApplicationDownload ref="downloadRef" />
 	<ApplicationClientDetail ref="clientDetailFormRef" />
 </template>
 
@@ -114,6 +111,7 @@ import { useLoading, useMessageBox, useToast } from "@/hooks";
 import { usePaging, useUserInfo } from "@/stores";
 import ApplicationClientDetail from "./components/clientDetail.vue";
 import ApplicationDetail from "./components/detail.vue";
+import ApplicationDownload from "./components/download.vue";
 import type { Action } from "@wot-ui/ui/components/wd-action-sheet/types";
 import type { QueryApplicationClientOutput } from "@/api/services/Center/application/models/QueryApplicationClientOutput";
 import type { QueryApplicationPagedOutput } from "@/api/services/Center/application/models/QueryApplicationPagedOutput";
@@ -134,6 +132,7 @@ const userInfoStore = useUserInfo();
 
 const faPopupRef = ref<FaPopupInstance>();
 const detailFormRef = ref<InstanceType<typeof ApplicationDetail>>();
+const downloadRef = ref<InstanceType<typeof ApplicationDownload>>();
 const clientDetailFormRef = ref<InstanceType<typeof ApplicationClientDetail>>();
 
 const state = reactive({
@@ -204,10 +203,11 @@ const handleMoreClick = throttle((item: QueryApplicationPagedOutput) => {
 	state.clickedApplication = item;
 	state.actionList = [
 		{ name: "应用详情", permission: "App:Detail" },
+		{ name: "下载应用" },
 		{ name: "编辑应用", permission: "App:Edit" },
 		{ name: "删除应用", color: "var(--wot-danger-main)", permission: "App:Delete" },
 	]
-		.filter(({ permission }) => userInfoStore.hasButtonPermission(permission))
+		.filter(({ permission }) => !permission || userInfoStore.hasButtonPermission(permission))
 		.map(({ name, color }) => ({ name, color }));
 	state.actionVisible = true;
 });
@@ -220,6 +220,10 @@ const handleActionSelect = throttle(async ({ item }: { item: Action }) => {
 			break;
 		case "编辑应用":
 			await handleEdit("edit", state.clickedApplication.appId);
+			break;
+		case "下载应用":
+			await faPopupRef.value.close();
+			await downloadRef.value.open(state.clickedApplication.appId, state.clickedApplication.appName);
 			break;
 		case "删除应用":
 			await useMessageBox.confirm("确定要删除应用？", {

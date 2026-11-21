@@ -54,6 +54,9 @@
 			<FaFormItem prop="remark" label="备注">
 				<el-input type="textarea" v-model="state.formData.remark" :rows="2" maxlength="200" placeholder="请输入备注" />
 			</FaFormItem>
+			<FaFormItem v-if="appTypes.includes(AppEnvironmentEnum.IOS)" prop="appStoreId" label="App Store ID">
+				<el-input v-model="state.formData.appStoreId" maxlength="30" placeholder="请输入 App Store 数字 ID" />
+			</FaFormItem>
 
 			<FaLayoutGridItem span="2">
 				<el-divider content-position="left">支付相关</el-divider>
@@ -122,6 +125,7 @@ const state = reactive({
 		appType: [{ required: true, message: "请选择应用类型", trigger: "change" }],
 		environmentType: [{ required: true, message: "请选择环境类型", trigger: "change" }],
 		requestTimeout: [{ required: true, message: "请输入请求超时时间", trigger: "blur" }],
+		appStoreId: [{ pattern: /^[0-9]+$/, message: "App Store ID 只能包含数字", trigger: "blur" }],
 	}),
 	dialogState: withDefineType<IPageStateType>("add"),
 	dialogTitle: "应用标识",

@@ -1,7 +1,11 @@
 /**
  * 获取部门分页列表输入
  */
-export interface QueryDepartmentPagedInput extends PagedInput  {
+export interface QueryDepartmentPagedInput {
+	/**
+	 * 搜索值
+	 */
+	searchValue?: string;
 	/**
 	 * 机构Id
 	 */
@@ -11,4 +15,3 @@ export interface QueryDepartmentPagedInput extends PagedInput  {
 	 */
 	treeData?: boolean;
 }
-

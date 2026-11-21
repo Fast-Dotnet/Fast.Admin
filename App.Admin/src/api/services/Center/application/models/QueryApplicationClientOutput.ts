@@ -38,6 +38,10 @@ export interface QueryApplicationClientOutput {
 	 */
 	requestEncipher?: boolean;
 	/**
+	 * App Store 应用Id
+	 */
+	appStoreId?: string;
+	/**
 	 * 微信商户号
 	 */
 	weChatMerchantNo?: string;

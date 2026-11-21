@@ -15,6 +15,7 @@
 			<FaField label="请求加密" center>
 				<FaTag name="BooleanEnum" :value="formData.requestEncipher" />
 			</FaField>
+			<FaField v-if="formData.appStoreId" label="App Store ID" :value="formData.appStoreId" copyable />
 			<FaField label="微信商户号" :value="formData.weChatMerchantNo" copyable />
 			<FaField label="支付宝商户号" :value="formData.alipayMerchantNo" copyable />
 			<FaField label="备注" :value="formData.remark" selectable />

@@ -9,6 +9,7 @@ using Fast.Cache;
 using Fast.Center.Domain;
 using Fast.Center.Service.App.Dto;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fast.Center.Service.App;
@@ -17,14 +18,17 @@ namespace Fast.Center.Service.App;
 /// App
 /// </summary>
 [ApiDescriptionSettings(ApiGroupConst.Center, Name = "app")]
-public class AppService : IDynamicApplication
+public partial class AppService : IDynamicApplication
 {
     private readonly ICache<CenterCCL> _centerCache;
+    private readonly HttpContext _httpContext;
     private readonly ISqlSugarRepository<ApplicationModel> _repository;
 
-    public AppService(ICache<CenterCCL> centerCache, ISqlSugarRepository<ApplicationModel> repository)
+    public AppService(ICache<CenterCCL> centerCache, IHttpContextAccessor httpContextAccessor,
+        ISqlSugarRepository<ApplicationModel> repository)
     {
         _centerCache = centerCache;
+        _httpContext = httpContextAccessor.HttpContext;
         _repository = repository;
     }
 
@@ -232,18 +236,5 @@ public class AppService : IDynamicApplication
                     $"{applicationVersionModel.FileUrl}?recordId={applicationVersionModel.RecordId}&appKey={Uri.EscapeDataString(applicationVersionModel.AppKey)}"
             }
         };
-    }
-
-    /// <summary>
-    /// 下载应用
-    /// </summary>
-    [HttpGet("/app/download/{appId:long}")]
-    [ApiInfo("下载应用", HttpRequestActionEnum.Other)]
-    [AllowAnonymous]
-    [DisabledRequestLog]
-    [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-    [ApiDescriptionSettings(false)]
-    public async Task DownloadApp([Range(1, long.MaxValue)] long appId)
-    {
     }
 }

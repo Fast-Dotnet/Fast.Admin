@@ -51,6 +51,10 @@
 				/>
 			</wd-form-item>
 
+			<wd-form-item v-if="appTypes.includes(AppEnvironmentEnum.IOS)" title="App Store ID" prop="appStoreId">
+				<wd-input v-model="state.formData.appStoreId" clearable :maxlength="30" placeholder="请输入数字 ID" />
+			</wd-form-item>
+
 			<wd-cell-group title="支付相关">
 				<FaMerchantSelect
 					title="微信商户号"
@@ -113,6 +117,7 @@ const state = reactive({
 	formData: withDefineType<EditApplicationClientInput & AddApplicationClientInput>({}),
 	formSchema: useFormSchema<EditApplicationClientInput & AddApplicationClientInput>({
 		appKey: { required: true, message: "请输入应用标识" },
+		appStoreId: { validator: (value) => (!value || /^[0-9]+$/.test(value) ? undefined : "App Store ID 只能包含数字") },
 		appType: { required: true, message: "请选择应用类型" },
 		environmentType: { required: true, message: "请选择环境类型" },
 		requestTimeout: {

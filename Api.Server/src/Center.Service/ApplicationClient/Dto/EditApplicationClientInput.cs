@@ -65,6 +65,13 @@ public class EditApplicationClientInput : UpdateVersionInput
     public bool RequestEncipher { get; set; }
 
     /// <summary>
+    /// App Store 应用Id
+    /// </summary>
+    [StringLength(30)]
+    [RegularExpression(@"^[0-9]+$", ErrorMessage = "App Store 应用Id只能包含数字")]
+    public string AppStoreId { get; set; }
+
+    /// <summary>
     /// 微信商户号Id
     /// </summary>
     public long? WeChatMerchantId { get; set; }

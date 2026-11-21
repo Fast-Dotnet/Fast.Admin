@@ -106,7 +106,7 @@ public class ChatHub : Hub<IChatClient>
         IHubContext<ChatHub, IChatClient> _hubContext = Context
             .GetHttpContext()
             ?.RequestServices.GetService<IHubContext<ChatHub, IChatClient>>();
-        _hubContext?.Clients.Client(Context.ConnectionId).ConnectSuccess();
+        await _hubContext?.Clients?.Client(Context.ConnectionId).ConnectSuccess();
     }
 
     /// <inheritdoc />
@@ -165,14 +165,14 @@ public class ChatHub : Hub<IChatClient>
 
         if (authUserInfo == null)
         {
-            _hubContext?.Clients.Client(Context.ConnectionId).LoginFail("连接失败，登录信息过期，请重新登录！");
+            await _hubContext?.Clients?.Client(Context.ConnectionId).LoginFail("连接失败，登录信息过期，请重新登录！");
             return;
         }
 
         // 判断设备信息是否和缓存中的一致
         if (GlobalContext.DeviceId != authUserInfo.DeviceId || GlobalContext.DeviceType != authUserInfo.DeviceType)
         {
-            _hubContext?.Clients.Client(Context.ConnectionId).LoginFail("连接失败，登录信息异常，请重新登录！");
+            await _hubContext?.Clients?.Client(Context.ConnectionId).LoginFail("连接失败，登录信息异常，请重新登录！");
             return;
         }
 
