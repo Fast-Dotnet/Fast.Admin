@@ -1,6 +1,7 @@
 .fa-layout {
 	width: min(100%, var(--fa-layout-max-width, 440px));
-	/* #ifdef MP-WEIXIN */
+	// App 由页面绘制底部安全区，短页面也需铺满视口，避免露出原生窗口底色。
+	/* #ifdef MP-WEIXIN || APP-PLUS */
 	min-height: 100vh;
 	/* #endif */
 	margin: 0 auto;

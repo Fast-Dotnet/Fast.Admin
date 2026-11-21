@@ -19,7 +19,7 @@
 			"background": "#f7f8fa",
 			"backgroundDark": "#141414",
 			"bottom": {
-				"offset": "auto"
+				"offset": "none"
 			}
 		},
 		"softinput": {
@@ -109,6 +109,7 @@
 			},
 			"splashscreen": {
 				"androidStyle": "common",
+				"androidNavigationBarColor": "#f7f8fa",
 				"useOriginalMsgbox": false
 			},
 			"icons": {

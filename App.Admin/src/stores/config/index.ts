@@ -1,6 +1,15 @@
 import { defineStore } from "pinia";
 import { computed, reactive } from "vue";
-import { addCssUnit, formatHexColor, mixHexColors, parseHexColor, pickHigherContrastColor, serializeStyle, withDefineType } from "@fast-china/utils";
+import {
+	addCssUnit,
+	formatHexColor,
+	logger,
+	mixHexColors,
+	parseHexColor,
+	pickHigherContrastColor,
+	serializeStyle,
+	withDefineType,
+} from "@fast-china/utils";
 import { CommonUniApp } from "@/common";
 import { useToast } from "@/hooks";
 import { defaultThemeColor, useApp } from "../app";
@@ -55,11 +64,10 @@ export const useConfig = defineStore(
 		/** 为当前页面同步原生导航栏配色；启动时未创建页面则由布局 onShow 应用。 */
 		const applyPageTheme = () => {
 			if (!getCurrentPages().length) return;
-			const { navbarBgColor, navbarFrontColor } = pageTheme.value;
+			const { navbarBgColor, navbarFrontColor, pageBackgroundColor } = pageTheme.value;
 			uni.setNavigationBarColor({ frontColor: navbarFrontColor, backgroundColor: navbarBgColor });
 
 			// #ifdef MP-WEIXIN
-			const { pageBackgroundColor } = pageTheme.value;
 			uni.setBackgroundColor({
 				backgroundColor: pageBackgroundColor,
 				backgroundColorTop: pageBackgroundColor,
@@ -69,6 +77,33 @@ export const useConfig = defineStore(
 			// #endif
 			// #ifdef APP-PLUS
 			plus.navigator.setStatusBarStyle(navbarFrontColor === "#ffffff" ? "light" : "dark");
+			if (plus.os.name === "Android") {
+				try {
+					const activity = plus.android.runtimeMainActivity();
+					const window = plus.android.invoke(activity, "getWindow");
+					const color = plus.android.invoke("android.graphics.Color", "parseColor", pageBackgroundColor);
+					const apiLevel = Number(plus.android.getAttribute("android.os.Build$VERSION", "SDK_INT"));
+					// Android 15 的透明系统栏由页面底色承接；旧系统同步设置原生导航栏背景。
+					if (apiLevel < 35) plus.android.invoke(window, "setNavigationBarColor", color);
+					// 图标明暗由应用设置，关闭系统额外的对比度遮罩，避免底部背景被再次加深。
+					if (apiLevel >= 29) plus.android.invoke(window, "setNavigationBarContrastEnforced", false);
+					if (apiLevel >= 30) {
+						const controller = plus.android.invoke(window, "getInsetsController");
+						// APPEARANCE_LIGHT_NAVIGATION_BARS 只调整底部图标，不覆盖状态栏外观。
+						if (controller) {
+							// @ts-expect-error -- DCloud invoke 声明遗漏可变参数，官方 API 支持传入多个原生方法参数
+							plus.android.invoke(controller, "setSystemBarsAppearance", layout.isDark ? 0 : 16, 16);
+						}
+					} else if (apiLevel >= 26) {
+						const decorView = plus.android.invoke(window, "getDecorView");
+						const flags = Number(plus.android.invoke(decorView, "getSystemUiVisibility"));
+						// 仅更新 SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR，保留沉浸式等已有标志。
+						plus.android.invoke(decorView, "setSystemUiVisibility", layout.isDark ? flags & ~16 : flags | 16);
+					}
+				} catch (error) {
+					logger.warn("Theme", "Android 系统导航栏配色同步失败", error);
+				}
+			}
 			// #endif
 		};
 
