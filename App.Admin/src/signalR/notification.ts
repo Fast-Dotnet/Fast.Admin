@@ -58,7 +58,7 @@ export const dismissNotification = (): void => {
 	if (activeNotification.value) showNextNotification();
 };
 
-/** 页面隐藏、退出登录和租户切换时清理通知，避免消息残留 */
+/** 退出登录和租户切换时清理通知，避免消息残留 */
 export const clearNotifications = (): void => {
 	pendingNotifications.length = 0;
 	activeNotification.value = null;

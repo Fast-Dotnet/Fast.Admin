@@ -9,6 +9,13 @@ interface RouteOptions {
 	 */
 	backgroundColor?: string;
 	/**
+	 * 通知栏顶部偏移
+	 *
+	 * @defaultValue "var(--fa-area-inset-top, 0px)"
+	 * @remarks 用于设置通知栏距离视口顶部的位置，支持 CSS 长度及 calc() 表达式。
+	 */
+	noticeBarTop?: string;
+	/**
 	 * 是否显示页脚
 	 *
 	 * @defaultValue true

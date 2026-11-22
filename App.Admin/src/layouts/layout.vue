@@ -19,7 +19,7 @@
 		<!-- #endif -->
 
 		<!-- 在线职员实时通知 -->
-		<view v-if="state.pageVisible && activeNotification" class="fa-layout__realtime-notice">
+		<view v-if="state.pageVisible && activeNotification" class="fa-layout__realtime-notice" :style="{ top: state.noticeBarTop }">
 			<wd-notice-bar
 				:key="activeNotification.id"
 				:text="activeNotification.messages"
@@ -143,7 +143,7 @@ import { LoginStatusEnum } from "@/api/enums/LoginStatusEnum";
 import { loginApi } from "@/api/services/Auth/login";
 import { CommonRoute } from "@/common";
 import { useMessageBox, wdHookState } from "@/hooks";
-import { activeNotification, clearNotifications, dismissNotification } from "@/signalR/notification";
+import { activeNotification, dismissNotification } from "@/signalR/notification";
 import defaultLogo from "@/static/logo.png";
 import { useApp, useConfig, useUserInfo } from "@/stores";
 import type { ButtonProps } from "@wot-ui/ui/components/wd-button/types";
@@ -186,6 +186,8 @@ const state = reactive({
 	isTabBar: false,
 	/** 背景颜色 */
 	backgroundColor: "var(--wot-filled-bottom)",
+	/** 通知栏顶部位置 */
+	noticeBarTop: "var(--fa-area-inset-top, 0px)",
 	/** 渲染结束 */
 	rendered: false,
 	/** 页面显示 */
@@ -437,7 +439,7 @@ onShow(() => {
 });
 onHide(() => {
 	state.pageVisible = false;
-	clearNotifications();
+
 	// 隐藏页面停止消费，避免多个页面布局同时响应同一提示请求。
 	wdNotifyWatch && wdNotifyWatch();
 	wdNotifyWatch = undefined;
@@ -462,12 +464,13 @@ onMounted(() => {
 });
 
 onBeforeMount(() => {
-	const { pageScroll, footer, watermark, isTabBar, backgroundColor } = useRoute();
+	const { pageScroll, footer, watermark, isTabBar, backgroundColor, noticeBarTop } = useRoute();
 	state.pageScroll = pageScroll ?? true;
 	state.footer = footer ?? true;
 	state.watermark = watermark ?? true;
 	state.isTabBar = isTabBar ?? false;
 	state.backgroundColor = backgroundColor ?? "var(--wot-filled-bottom)";
+	state.noticeBarTop = noticeBarTop ?? "var(--fa-area-inset-top, 0px)";
 });
 </script>
 

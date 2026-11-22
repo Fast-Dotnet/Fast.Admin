@@ -111,7 +111,6 @@
 .fa-layout__realtime-notice {
 	position: fixed;
 	z-index: 105;
-	top: var(--fa-area-inset-top, 0px);
 	left: 50%;
 	width: min(100%, var(--fa-layout-max-width, 440px));
 	transform: translateX(-50%);

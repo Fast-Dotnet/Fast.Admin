@@ -82,6 +82,7 @@ import type { FaSwitchTenantPopupInstance } from "@/components";
 definePage({
 	name: "Workbench",
 	isTabBar: true,
+	noticeBarTop: "calc(var(--fa-size-search-height) + 44px + var(--fa-spacing-section) + 2 * var(--fa-spacing-page))",
 	style: {
 		navigationStyle: "custom",
 		navigationBarTitleText: "工作台",
