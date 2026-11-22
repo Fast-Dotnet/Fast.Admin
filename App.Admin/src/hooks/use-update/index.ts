@@ -1,6 +1,8 @@
 import { checkAppUpdate } from "./app";
+import { checkH5Update, startH5AutoCheck } from "./h5";
 import { checkMiniProgramUpdate } from "./miniProgram";
 import type { AppUpdateResult } from "./app";
+import type { H5UpdateResult } from "./h5";
 import type { MiniProgramUpdateResult } from "./miniProgram";
 
 /**
@@ -12,7 +14,7 @@ import type { MiniProgramUpdateResult } from "./miniProgram";
  * 可按需 await；等待检测和下载提示，不等待用户确认或安装完成。
  * App 自动调用复用本次运行结果，手动调用重新检测；小程序由平台检测，仅复用监听结果。
  */
-const checkUpdate = (manual = false): Promise<AppUpdateResult | MiniProgramUpdateResult> => {
+const checkUpdate = (manual = false): Promise<AppUpdateResult | MiniProgramUpdateResult | H5UpdateResult> => {
 	// #ifdef APP-PLUS || APP-HARMONY
 	return checkAppUpdate(manual);
 	// #endif
@@ -21,8 +23,11 @@ const checkUpdate = (manual = false): Promise<AppUpdateResult | MiniProgramUpdat
 	return checkMiniProgramUpdate(manual);
 	// #endif
 
-	// #ifndef APP-PLUS || APP-HARMONY || MP
-	if (manual) uni.showToast({ title: "当前为网页版，刷新页面即可加载最新版本", icon: "none" });
+	// #ifdef H5
+	return checkH5Update(manual);
+	// #endif
+
+	// #ifndef APP-PLUS || APP-HARMONY || MP || H5
 	return Promise.resolve("unsupported");
 	// #endif
 };
@@ -30,4 +35,7 @@ const checkUpdate = (manual = false): Promise<AppUpdateResult | MiniProgramUpdat
 /** 应用更新入口 */
 export const useUpdate = {
 	checkUpdate,
+	// #ifdef H5
+	startH5AutoCheck,
+	// #endif
 };

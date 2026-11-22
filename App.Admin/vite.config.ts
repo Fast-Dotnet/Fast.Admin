@@ -1,3 +1,5 @@
+import { randomUUID } from "node:crypto";
+import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import UniPlugin from "@dcloudio/vite-plugin-uni";
 import { defineConfig, loadEnv } from "vite";
@@ -8,19 +10,39 @@ import UniHelperPages from "@uni-helper/vite-plugin-uni-pages";
 import { FastResolver } from "./resolver.fast";
 import { WotResolver } from "./resolver.wot-ui";
 import { transformForwardedSlots } from "./uni-slot-forwarding";
-import type { UserConfig } from "vite";
+import type { Plugin, UserConfig } from "vite";
 
 // 兼容插件的模块导出形式，优先使用 default 导出，否则使用模块本身。
 const Uni = (UniPlugin as typeof UniPlugin & { default?: typeof UniPlugin }).default ?? UniPlugin;
 const viteRoot = fileURLToPath(new URL(".", import.meta.url));
 
-export default defineConfig(({ mode }): UserConfig => {
+export default defineConfig(({ command, mode }): UserConfig => {
 	const viteEnv = loadEnv(mode, viteRoot, "") as ImportMetaEnv;
 	const isDevelopment = process.env.NODE_ENV === "development";
+
+	// 每次 H5 构建使用独立标识，业务版本不变时仍能识别重新部署。
+	const h5BuildId = randomUUID();
+	const { versionName: h5Version } = JSON.parse(readFileSync(new URL("./src/manifest.json", import.meta.url), "utf8")) as {
+		versionName: string;
+	};
+	const h5BuildInfoPlugin: Plugin = {
+		name: "fast-h5-build-info",
+		apply: "build",
+		generateBundle() {
+			this.emitFile({
+				type: "asset",
+				fileName: "build-info.json",
+				source: JSON.stringify({ version: h5Version, buildId: h5BuildId }),
+			});
+		},
+	};
 
 	return {
 		/* 固定以配置文件所在目录作为项目根目录，避免因启动位置不同而影响路径解析。 */
 		root: viteRoot,
+		define: {
+			__FA_H5_BUILD_ID__: JSON.stringify(h5BuildId),
+		},
 		resolve: {
 			/* 配置源码目录别名。 */
 			alias: {
@@ -94,6 +116,7 @@ export default defineConfig(({ mode }): UserConfig => {
 		},
 		/** Vite 插件 */
 		plugins: [
+			...(command === "build" && process.env.UNI_PLATFORM === "h5" ? [h5BuildInfoPlugin] : []),
 			/* 基于文件系统自动生成页面路由。 */
 			UniHelperPages({
 				outDir: "src",

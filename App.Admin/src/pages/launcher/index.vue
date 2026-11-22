@@ -149,7 +149,8 @@ const checkUpdate = async (manual = false) => {
 		state.statusText = "正在重启应用";
 		return;
 	}
-	if (result === "required" || result === "installing" || result === "failed") {
+	// H5 版本检测失败不应阻塞业务登录，原生端强制更新策略保持不变。
+	if (result === "required" || result === "installing" || (result === "failed" && process.env.UNI_PLATFORM !== "h5")) {
 		state.loading = false;
 		state.statusText =
 			result === "required"

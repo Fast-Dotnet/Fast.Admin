@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onHide, onLaunch, onShow } from "@dcloudio/uni-app";
-import { computed, watch } from "vue";
+import { computed, nextTick, watch } from "vue";
 import { axiosUtil } from "@fast-china/axios";
 import { configureInstallationIdentity, getOrCreateInstallationId, logger, useEventListener } from "@fast-china/utils";
 import { useRouter } from "@wot-ui/router";
@@ -75,12 +75,18 @@ const handleWindowResize = () => {
 onShow(() => {
 	setNotificationSoundForeground(true);
 	tryConnectWebSocket(userInfoStore);
+
+	// #ifdef H5
+	nextTick(() => useUpdate.startH5AutoCheck());
+	// #endif
+
 	if (!usePrivacy.hasAgreed() || !appStore.windowInfo) return;
 
 	// #ifdef MP-WEIXIN || H5 || APP-PLUS
 	// 返回前台时补偿可能未收到的窗口变化。
 	syncWindowInfo();
 	// #endif
+
 	if (configStore.layout.autoThemMode) configStore.switchAutoThemMode();
 	else configStore.setTheme(configStore.layout.themeColor);
 });
