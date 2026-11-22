@@ -22,6 +22,7 @@ export default defineConfig(({ command, mode }): UserConfig => {
 
 	// 每次 H5 构建使用独立标识，业务版本不变时仍能识别重新部署。
 	const h5BuildId = randomUUID();
+	const h5BuildTime = new Date().toISOString();
 	const { versionName: h5Version } = JSON.parse(readFileSync(new URL("./src/manifest.json", import.meta.url), "utf8")) as {
 		versionName: string;
 	};
@@ -32,7 +33,7 @@ export default defineConfig(({ command, mode }): UserConfig => {
 			this.emitFile({
 				type: "asset",
 				fileName: "build-info.json",
-				source: JSON.stringify({ version: h5Version, buildId: h5BuildId }),
+				source: JSON.stringify({ version: h5Version, buildId: h5BuildId, buildTime: h5BuildTime }),
 			});
 		},
 	};

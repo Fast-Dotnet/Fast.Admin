@@ -63,11 +63,22 @@ export const useConfig = defineStore(
 			return { navbarBgColor, navbarFrontColor, pageBackgroundColor: layout.isDark ? "#141414" : "#f7f8fa" };
 		});
 
-		/** 为当前页面同步原生导航栏配色；启动时未创建页面则由布局 onShow 应用。 */
+		/** 同步当前页面和原生系统栏；iOS 状态栏必须同时更新背景与前景色。 */
 		const applyPageTheme = () => {
 			if (!getCurrentPages().length) return;
 			const { navbarBgColor, navbarFrontColor, pageBackgroundColor } = pageTheme.value;
-			uni.setNavigationBarColor({ frontColor: navbarFrontColor, backgroundColor: navbarBgColor });
+			uni.setNavigationBarColor({
+				frontColor: navbarFrontColor,
+				backgroundColor: navbarBgColor,
+				// #ifdef APP-PLUS
+				// 等导航栏异步更新后再同步状态栏，避免 uni-app 覆盖先前设置。
+				complete: () => {
+					if (pageTheme.value.navbarBgColor !== navbarBgColor || pageTheme.value.navbarFrontColor !== navbarFrontColor) return;
+					plus.navigator.setStatusBarBackground(navbarBgColor);
+					plus.navigator.setStatusBarStyle(navbarFrontColor === "#ffffff" ? "light" : "dark");
+				},
+				// #endif
+			});
 
 			// #ifdef MP-WEIXIN
 			uni.setBackgroundColor({
@@ -78,6 +89,8 @@ export const useConfig = defineStore(
 			uni.setBackgroundTextStyle({ textStyle: layout.isDark ? "light" : "dark" });
 			// #endif
 			// #ifdef APP-PLUS
+			// 同步系统状态栏；导航栏异步调用完成后会再次校正。
+			plus.navigator.setStatusBarBackground(navbarBgColor);
 			plus.navigator.setStatusBarStyle(navbarFrontColor === "#ffffff" ? "light" : "dark");
 			if (plus.os.name === "Android") {
 				try {
@@ -130,10 +143,9 @@ export const useConfig = defineStore(
 			// iOS Safari 浏览器栏可能采样根背景，保持其与应用实际页面颜色一致。
 			root.style.backgroundColor = pageBackgroundColor;
 			document.body.style.backgroundColor = pageBackgroundColor;
-			// 同步亮/暗系统媒体查询和手动主题选择，避免只更新一侧后浏览器外观残留。
-			for (const meta of document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')) {
-				if (meta.content !== navbarBgColor) meta.content = navbarBgColor;
-			}
+			// 仅保留一个无 media 限制的 theme-color，避免手动主题与系统媒体查询互相竞争。
+			const themeMeta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+			if (themeMeta && themeMeta.content !== navbarBgColor) themeMeta.content = navbarBgColor;
 			const statusBarMeta = document.querySelector<HTMLMetaElement>('meta[name="apple-mobile-web-app-status-bar-style"]');
 			if (statusBarMeta) statusBarMeta.content = layout.isDark ? "black" : "default";
 			// #endif
@@ -178,9 +190,11 @@ export const useConfig = defineStore(
 			};
 
 			// #ifdef H5
-			// H5 的 100vh 包含导航栏和原生 TabBar 占位，内容高度需扣除它们。
+			// H5 使用浏览器提供的安全区，不能再减一次原生 App 的底部 inset。
+			styles["--fa-area-inset-top"] = window.matchMedia("(display-mode: standalone)").matches ? "env(safe-area-inset-top, 0px)" : "0px";
+			styles["--fa-area-inset-bottom"] = "env(safe-area-inset-bottom, 0px)";
 			styles["--fa-window-height"] =
-				`calc(var(--fa-viewport-height, 100vh) - var(--window-top, 0px) - var(--window-bottom, 0px) - ${appStore.windowInfo.safeAreaInsets.bottom}px)`;
+				"calc(var(--fa-viewport-height, 100vh) - var(--window-top, 0px) - var(--window-bottom, 0px))";
 			// #endif
 
 			const themeVars: ConfigProviderThemeVars = {

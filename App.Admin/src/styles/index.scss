@@ -95,6 +95,11 @@ uni-page-body {
 	background-color: var(--fa-page-background, #f7f8fa);
 }
 
+// 主题切换时原生 H5 导航栏宿主也需换色，避免出现亮/暗断层。
+uni-page-head {
+	background-color: var(--fa-navbar-background, #ffffff);
+}
+
 // 微信内置浏览器自带导航栏，统一隐藏 H5 默认标题栏及其占位。
 :root.fa-wechat-h5,
 :root.fa-wechat-h5 uni-page {

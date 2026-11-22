@@ -122,12 +122,11 @@ const headerStyle = computed(() => {
 	}
 	// #endif
 	// #ifdef H5
-	// 微信 H5 隐藏了 uni-app 导航栏，部分 iOS WebView 上报的安全区为 0。
-	if (/MicroMessenger/i.test(navigator.userAgent)) {
-		const minStatusBarHeight = appStore.isIphone ? "44px" : "24px";
-		style["padding-top"] =
-			`calc(max(var(--fa-status-bar-height, 0px), env(safe-area-inset-top, 0px), ${minStatusBarHeight}) + var(--fa-spacing-page))`;
-	}
+	// H5 视口已位于浏览器导航栏下方，不再叠加原生 App 的 statusBarHeight。
+	// 只有独立安装的 Web App 才需要主动预留顶部安全区。
+	style["padding-top"] = window.matchMedia("(display-mode: standalone)").matches
+		? "calc(env(safe-area-inset-top, 0px) + var(--fa-spacing-page))"
+		: "var(--fa-spacing-page)";
 	// #endif
 	return style;
 });
