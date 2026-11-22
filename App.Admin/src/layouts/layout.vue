@@ -8,7 +8,7 @@
 		<FaWatermark v-if="state.watermark" />
 
 		<!-- #ifdef H5 -->
-		<button v-if="showH5NavbarWorkbench && !isWeChatH5" class="fa-layout__navbar-workbench" @click="handleNavbarWorkbench">
+		<button v-if="showH5NavbarWorkbench" class="fa-layout__navbar-workbench" @click="handleNavbarWorkbench">
 			<FaIcon name="workbench" size="16px" />
 			<text>工作台</text>
 		</button>
@@ -194,21 +194,25 @@ const state = reactive({
 
 // #ifdef H5
 const isWeChatH5 = /MicroMessenger/i.test(navigator.userAgent);
-const showH5NavbarWorkbench = ref(false);
-/** 微信 H5 的业务页使用悬浮入口，避免隐藏默认导航栏后无法前往工作台。 */
-const showWeChatWorkbench = computed(() => {
+/** 当前页面栈深度；onShow 时刷新，避免在 computed 中读取非响应式页面栈。 */
+const pageStackDepth = ref(0);
+/** 只有已登录且没有可返回业务页面时，才提供工作台快捷入口。 */
+const showWorkbenchEntry = computed(() => {
 	const route = router.currentRoute.value;
 	return (
-		isWeChatH5 &&
 		state.pageVisible &&
+		pageStackDepth.value === 1 &&
 		!!userInfoStore.token &&
 		userInfoStore.hasUserInfo &&
 		!state.isTabBar &&
 		!route.isTabBar &&
 		!route.noLogin &&
-		!route.authForbidView
+		!route.authForbidView &&
+		route.style?.navigationStyle !== "custom"
 	);
 });
+const showH5NavbarWorkbench = computed(() => !isWeChatH5 && showWorkbenchEntry.value);
+const showWeChatWorkbench = computed(() => isWeChatH5 && showWorkbenchEntry.value);
 const handleNavbarWorkbench = () => router.pushTab(CommonRoute.Workbench);
 // #endif
 
@@ -428,8 +432,7 @@ onShow(() => {
 	configStore.applyPageTheme();
 
 	// #ifdef H5
-	const { path, style, isTabBar } = router.currentRoute.value;
-	showH5NavbarWorkbench.value = getCurrentPages().length === 1 && !isTabBar && path !== CommonRoute.Login && style?.navigationStyle !== "custom";
+	pageStackDepth.value = getCurrentPages().length;
 	// #endif
 });
 onHide(() => {

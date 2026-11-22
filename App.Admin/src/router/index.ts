@@ -104,7 +104,9 @@ router.beforeEach(async (to, from, next) => {
 				next({ path: redirectPath, navType: "pushTab" });
 				return;
 			} else {
-				next({ path: redirect, navType: "replace" });
+				// 登录和选择租户结束后清空认证页面栈；普通业务重定向仍只替换当前页。
+				const fromLogin = to.path === CommonRoute.Workbench && (from.path === CommonRoute.Login || from.path === CommonRoute.SelectTenant);
+				next({ path: redirect, navType: fromLogin ? "replaceAll" : "replace" });
 				return;
 			}
 		}
