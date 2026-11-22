@@ -48,7 +48,7 @@ public class DeleteSqlLogLocalJob : ISchedulerJob
     public async Task<string> Execute(IServiceProvider serviceProvider, ISqlSugarClient db, SchedulerJobLocalLogInfo logInfo)
     {
         // 进入方法的一瞬间记录时间
-        DateTime dateTime = DateTime.Now;
+        DateTime dateTime = DateTime.Today;
 
         // 解析服务
         ISqlSugarEntityService _sqlSugarEntityService = serviceProvider.GetService<ISqlSugarEntityService>();
@@ -64,7 +64,7 @@ public class DeleteSqlLogLocalJob : ISchedulerJob
         // 设置超时时间30分钟
         logDb.Ado.CommandTimeOut = 60 * 30;
 
-        DateTime expireDate = dateTime.Date.AddDays(-30);
+        DateTime expireDate = dateTime.AddDays(-30);
 
         int deleteCount = 0;
 

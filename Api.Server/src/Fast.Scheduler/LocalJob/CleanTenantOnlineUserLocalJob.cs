@@ -1,4 +1,4 @@
-﻿// Copyright © 2018-Present 小方
+// Copyright © 2018-Present 小方
 // SPDX-License-Identifier: Apache-2.0
 // 
 // 本文件依据 Apache License 2.0 授权，完整条款见仓库根目录 LICENSE。
@@ -48,8 +48,8 @@ public class CleanTenantOnlineUserLocalJob : ISchedulerJob
     {
         IDistributedCache cache = serviceProvider.GetRequiredService<IDistributedCache>();
 
-        DateTime now = DateTime.Now;
-        DateTime loginCutoff = now.Subtract(ChatConnectionLease.LeaseDuration);
+        DateTime dateTime = DateTime.Now;
+        DateTime loginCutoff = dateTime.Subtract(ChatConnectionLease.LeaseDuration);
         long nowMilliseconds = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
         // 新连接先留出一个租约周期，不参与本轮清理。
@@ -106,12 +106,12 @@ public class CleanTenantOnlineUserLocalJob : ISchedulerJob
         foreach (string[] batch in expiredConnectionIds.Chunk(200))
         {
             offlineCount += await db.Updateable<TenantOnlineUserModel>()
-                .SetColumns(_ => new TenantOnlineUserModel {IsOnline = false, OfflineTime = now})
+                .SetColumns(_ => new TenantOnlineUserModel {IsOnline = false, OfflineTime = dateTime})
                 .Where(wh => batch.Contains(wh.ConnectionId) && wh.IsOnline && wh.LastLoginTime < loginCutoff)
                 .ExecuteCommandAsync();
         }
 
-        DateTime offlineCutoff = now.AddHours(-24);
+        DateTime offlineCutoff = dateTime.AddHours(-24);
 
         int deleteCount = await db.Deleteable<TenantOnlineUserModel>()
             .Where(wh => !wh.IsOnline && wh.OfflineTime != null && wh.OfflineTime < offlineCutoff)
