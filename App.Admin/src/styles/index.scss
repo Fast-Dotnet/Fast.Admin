@@ -68,6 +68,14 @@ page {
 	color-scheme: dark;
 }
 
+// 启动首帧尚未载入用户配置时，先匹配系统外观，避免浏览器状态栏短暂反色。
+@media (prefers-color-scheme: dark) {
+	:root:not([data-fa-theme]) {
+		color-scheme: dark;
+		--fa-page-background: #141414;
+	}
+}
+
 // H5 标题栏由 uni-app 渲染，主题切换时同步样式，避免等待下一次页面 onShow。
 :root[data-fa-theme] uni-page-head > .uni-page-head {
 	background-color: var(--fa-navbar-background, #ffffff) !important;
@@ -98,6 +106,11 @@ uni-page-body {
 }
 
 :root.fa-wechat-h5 uni-page-wrapper {
+	top: 0 !important;
+}
+
+// 微信 H5 隐藏了 uni-app 导航栏，z-paging 的顶部固定插槽不能继续使用旧导航栏偏移。
+:root.fa-wechat-h5 .z-paging-content .zp-page-top {
 	top: 0 !important;
 }
 

@@ -82,6 +82,7 @@ onShow(() => {
 	syncWindowInfo();
 	// #endif
 	if (configStore.layout.autoThemMode) configStore.switchAutoThemMode();
+	else configStore.setTheme(configStore.layout.themeColor);
 });
 
 onHide(() => setNotificationSoundForeground(false));

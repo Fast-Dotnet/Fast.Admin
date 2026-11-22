@@ -123,10 +123,19 @@ export const useConfig = defineStore(
 			// #ifdef H5
 			const root = document.documentElement;
 			root.dataset.faTheme = layout.isDark ? "dark" : "light";
+			root.style.colorScheme = layout.isDark ? "dark" : "light";
 			root.style.setProperty("--fa-page-background", pageBackgroundColor);
 			root.style.setProperty("--fa-navbar-background", navbarBgColor);
 			root.style.setProperty("--fa-navbar-foreground", navbarFrontColor);
-			document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.setAttribute("content", navbarBgColor);
+			// iOS Safari 浏览器栏可能采样根背景，保持其与应用实际页面颜色一致。
+			root.style.backgroundColor = pageBackgroundColor;
+			document.body.style.backgroundColor = pageBackgroundColor;
+			// 同步亮/暗系统媒体查询和手动主题选择，避免只更新一侧后浏览器外观残留。
+			for (const meta of document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')) {
+				if (meta.content !== navbarBgColor) meta.content = navbarBgColor;
+			}
+			const statusBarMeta = document.querySelector<HTMLMetaElement>('meta[name="apple-mobile-web-app-status-bar-style"]');
+			if (statusBarMeta) statusBarMeta.content = layout.isDark ? "black" : "default";
 			// #endif
 
 			applyPageTheme();
