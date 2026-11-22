@@ -24,7 +24,7 @@ export const setNotificationSoundForeground = (value: boolean): void => {
 export const playNotificationSound = (): void => {
 	if (!isForeground || !useConfig().layout.notificationSound) return;
 	// #ifdef H5
-	if (document.visibilityState !== "visible" || !document.hasFocus()) return;
+	if (document.visibilityState !== "visible") return;
 	// #endif
 	const now = Date.now();
 	if (now - lastPlayedAt < 2000) return;
