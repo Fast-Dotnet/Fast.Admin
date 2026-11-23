@@ -168,7 +168,11 @@ export const useUserInfo = defineStore(
 			// 删除 HTTP 缓存数据
 			Local.removeByPrefix("HTTP_CACHE_");
 
-			const currentPage = getCurrentPages().at(-1) as { route?: string; $page?: { fullPath?: string } };
+			const pages = getCurrentPages();
+			const currentPage = pages[pages.length - 1] as {
+				route?: string;
+				$page?: { fullPath?: string };
+			};
 			const currentPath = currentPage?.route ? `/${currentPage.route.replace(/^\/+/, "")}` : "";
 			// 排除登录页面报错的问题
 			if (currentPath === CommonRoute.Login) {

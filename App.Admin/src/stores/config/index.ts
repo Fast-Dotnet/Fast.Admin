@@ -63,19 +63,44 @@ export const useConfig = defineStore(
 			return { navbarBgColor, navbarFrontColor, pageBackgroundColor: layout.isDark ? "#141414" : "#f7f8fa" };
 		});
 
-		/** 同步当前页面和原生系统栏；iOS 状态栏必须同时更新背景与前景色。 */
+		/** 同步系统状态栏背景及前景颜色。 */
+		const syncStatusBar = () => {
+			// #ifdef APP-PLUS
+			const { navbarBgColor, navbarFrontColor } = pageTheme.value;
+
+			plus.navigator.setStatusBarBackground(navbarBgColor);
+			plus.navigator.setStatusBarStyle(navbarFrontColor === "#ffffff" ? "light" : "dark");
+			// #endif
+		};
+
+		/** 同步当前页面主题及原生系统栏。 */
 		const applyPageTheme = () => {
 			if (!getCurrentPages().length) return;
+
 			const { navbarBgColor, navbarFrontColor, pageBackgroundColor } = pageTheme.value;
+
 			uni.setNavigationBarColor({
 				frontColor: navbarFrontColor,
 				backgroundColor: navbarBgColor,
 				// #ifdef APP-PLUS
-				// 等导航栏异步更新后再同步状态栏，避免 uni-app 覆盖先前设置。
 				complete: () => {
-					if (pageTheme.value.navbarBgColor !== navbarBgColor || pageTheme.value.navbarFrontColor !== navbarFrontColor) return;
-					plus.navigator.setStatusBarBackground(navbarBgColor);
-					plus.navigator.setStatusBarStyle(navbarFrontColor === "#ffffff" ? "light" : "dark");
+					// 避免异步回调将旧主题覆盖到当前页面。
+					if (pageTheme.value.navbarBgColor !== navbarBgColor || pageTheme.value.navbarFrontColor !== navbarFrontColor) {
+						return;
+					}
+
+					syncStatusBar();
+
+					// iOS 原生导航栏更新后再次校正状态栏颜色。
+					if (plus.os.name === "iOS") {
+						setTimeout(() => {
+							if (pageTheme.value.navbarBgColor !== navbarBgColor || pageTheme.value.navbarFrontColor !== navbarFrontColor) {
+								return;
+							}
+
+							syncStatusBar();
+						}, 100);
+					}
 				},
 				// #endif
 			});
@@ -88,23 +113,32 @@ export const useConfig = defineStore(
 			});
 			uni.setBackgroundTextStyle({ textStyle: layout.isDark ? "light" : "dark" });
 			// #endif
+
 			// #ifdef APP-PLUS
-			// 同步系统状态栏；导航栏异步调用完成后会再次校正。
-			plus.navigator.setStatusBarBackground(navbarBgColor);
-			plus.navigator.setStatusBarStyle(navbarFrontColor === "#ffffff" ? "light" : "dark");
+			// 立即同步状态栏，导航栏异步更新完成后再次校正。
+			syncStatusBar();
+
 			if (plus.os.name === "Android") {
 				try {
 					const activity = plus.android.runtimeMainActivity();
 					const window = plus.android.invoke(activity, "getWindow");
 					const color = plus.android.invoke("android.graphics.Color", "parseColor", pageBackgroundColor);
 					const apiLevel = Number(plus.android.getAttribute("android.os.Build$VERSION", "SDK_INT"));
+
 					// Android 15 的透明系统栏由页面底色承接；旧系统同步设置原生导航栏背景。
-					if (apiLevel < 35) plus.android.invoke(window, "setNavigationBarColor", color);
-					// 图标明暗由应用设置，关闭系统额外的对比度遮罩，避免底部背景被再次加深。
-					if (apiLevel >= 29) plus.android.invoke(window, "setNavigationBarContrastEnforced", false);
+					if (apiLevel < 35) {
+						plus.android.invoke(window, "setNavigationBarColor", color);
+					}
+
+					// 关闭系统额外的对比度遮罩，避免底部背景被再次加深。
+					if (apiLevel >= 29) {
+						plus.android.invoke(window, "setNavigationBarContrastEnforced", false);
+					}
+
 					if (apiLevel >= 30) {
 						const controller = plus.android.invoke(window, "getInsetsController");
-						// APPEARANCE_LIGHT_NAVIGATION_BARS 只调整底部图标，不覆盖状态栏外观。
+
+						// 仅调整底部导航栏图标，不覆盖状态栏外观。
 						if (controller) {
 							// @ts-expect-error -- DCloud invoke 声明遗漏可变参数，官方 API 支持传入多个原生方法参数
 							plus.android.invoke(controller, "setSystemBarsAppearance", layout.isDark ? 0 : 16, 16);
@@ -112,7 +146,8 @@ export const useConfig = defineStore(
 					} else if (apiLevel >= 26) {
 						const decorView = plus.android.invoke(window, "getDecorView");
 						const flags = Number(plus.android.invoke(decorView, "getSystemUiVisibility"));
-						// 仅更新 SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR，保留沉浸式等已有标志。
+
+						// 仅更新 SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR，保留其他系统 UI 标志。
 						plus.android.invoke(decorView, "setSystemUiVisibility", layout.isDark ? flags & ~16 : flags | 16);
 					}
 				} catch (error) {
@@ -193,8 +228,7 @@ export const useConfig = defineStore(
 			// H5 使用浏览器提供的安全区，不能再减一次原生 App 的底部 inset。
 			styles["--fa-area-inset-top"] = window.matchMedia("(display-mode: standalone)").matches ? "env(safe-area-inset-top, 0px)" : "0px";
 			styles["--fa-area-inset-bottom"] = "env(safe-area-inset-bottom, 0px)";
-			styles["--fa-window-height"] =
-				"calc(var(--fa-viewport-height, 100vh) - var(--window-top, 0px) - var(--window-bottom, 0px))";
+			styles["--fa-window-height"] = "calc(var(--fa-viewport-height, 100vh) - var(--window-top, 0px) - var(--window-bottom, 0px))";
 			// #endif
 
 			const themeVars: ConfigProviderThemeVars = {

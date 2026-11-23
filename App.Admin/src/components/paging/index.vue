@@ -525,10 +525,27 @@ const handleVirtualListChange = (list: TResult[]) => {
 const handleReload = async (animate?: boolean) => {
 	await nextTick();
 	const currentPaging = paging.value;
-	if (!currentPaging) return;
-	// 先触发视图更新，避免小程序中带动画的重载卡在 z-paging 内部的 $nextTick。
+	if (!currentPaging) return null;
+
+	// 先触发视图更新，兼容小程序下拉刷新。
 	currentPaging.$forceUpdate();
-	return await currentPaging.reload(animate);
+
+	const result = await currentPaging.reload(animate);
+
+	if (paging.value !== currentPaging || !props.autoScrollToTopWhenReload) {
+		return result;
+	}
+
+	await nextTick();
+	currentPaging.scrollToTop(false);
+
+	// #ifdef APP-PLUS
+	if (props.usePageScroll && uni.getSystemInfoSync().platform === "ios") {
+		uni.pageScrollTo({ scrollTop: 0, duration: 0 });
+	}
+	// #endif
+
+	return result;
 };
 
 /** 刷新已加载页的数据；传入页数时刷新至该页，省略时保留当前分页进度。 */

@@ -10,7 +10,8 @@ export const usePaging = defineStore("paging", () => {
 	 * @param page - 页面路径，默认当前页面
 	 */
 	const getPageVersion = (page?: string): number => {
-		const pageKey = (page ?? getCurrentPages().at(-1)?.route)?.replace(/^\/+/, "");
+		const pages = getCurrentPages();
+		const pageKey = (page ?? pages[pages.length - 1]?.route)?.replace(/^\/+/, "");
 		if (!pageKey) return 0;
 
 		return pageVersions.get(pageKey) ?? 0;
@@ -21,7 +22,8 @@ export const usePaging = defineStore("paging", () => {
 	 * @param page - 页面路径，默认当前页面
 	 */
 	const incrementPageVersion = (page?: string): number => {
-		const pageKey = (page ?? getCurrentPages().at(-1)?.route)?.replace(/^\/+/, "");
+		const pages = getCurrentPages();
+		const pageKey = (page ?? pages[pages.length - 1]?.route)?.replace(/^\/+/, "");
 		if (!pageKey) return 0;
 
 		const version = getPageVersion(pageKey) + 1;

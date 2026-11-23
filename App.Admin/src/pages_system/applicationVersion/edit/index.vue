@@ -226,7 +226,7 @@ const handleUpload = throttle(async () => {
 						resolve(undefined);
 						return;
 					}
-					const name = "name" in tempFile ? tempFile.name : path.split("/").at(-1);
+					const name = "name" in tempFile ? tempFile.name : path.split("/").pop();
 					const file = typeof File !== "undefined" && tempFile instanceof File ? tempFile : undefined;
 					resolve({ path, name: name ?? "", size: tempFile.size, file });
 				},
@@ -345,7 +345,7 @@ const handleLoad = async () => {
 				{
 					const apiRes = await applicationVersionApi.queryApplicationVersionDetail(state.recordId);
 					state.formData = apiRes;
-					state.fileName = apiRes.fileUrl.split("/").at(-1);
+					state.fileName = apiRes.fileUrl.split("/").pop();
 					uni.setNavigationBarTitle({ title: `编辑应用版本 - ${apiRes.versionName}` });
 				}
 				break;

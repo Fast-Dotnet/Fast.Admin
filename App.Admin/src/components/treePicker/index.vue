@@ -324,13 +324,13 @@ const handleSearch = () => {
 };
 
 const handleConfirm = () => {
-	const item = selectedList.value.at(-1);
+	const item = selectedList.value[selectedList.value.length - 1];
 	const hasChanged = (modelValue.value ?? undefined) !== item?.rawValue;
 	const path =
 		item?.rawValue === undefined
 			? []
 			: selectedList.value.flatMap((node) => (node.rawValue === undefined ? [] : [{ ...node, value: node.rawValue }]));
-	const selected = path.at(-1);
+	const selected = path[path.length - 1];
 
 	modelValue.value = item?.rawValue;
 	selectedLabel.value = selected?.label;

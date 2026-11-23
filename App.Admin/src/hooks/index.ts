@@ -10,7 +10,6 @@ export * from "./use-loading";
 export * from "./use-message-box";
 export * from "./use-notify";
 export * from "./use-overlay";
-export * from "./use-paging";
 export * from "./use-privacy";
 export * from "./use-toast";
 export * from "./use-update";
